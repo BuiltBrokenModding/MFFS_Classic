@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module external.linked.project.id="forge:main" external.linked.project.path="$MODULE_DIR$/../.." external.root.project.path="$MODULE_DIR$/../.." external.system.id="GRADLE" external.system.module.group="com.yourname.modid" external.system.module.type="sourceSet" external.system.module.version="1.0" type="JAVA_MODULE" version="4">
-  <component name="NewModuleRootManager" inherit-compiler-output="false">
-    <output url="file://$MODULE_DIR$/../../build/classes/main" />
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
-    <content url="file://$MODULE_DIR$/../../src/mffs">
-      <sourceFolder url="file://$MODULE_DIR$/../../src/mffs/java" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/../../src/mffs/resources" type="java-resource" />
+    <content url="file://$MODULE_DIR$/../../mod">
+      <sourceFolder url="file://$MODULE_DIR$/../../mod/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../mod/resources" type="java-resource" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="forge_api" />
     <orderEntry type="library" name="Gradle: :forgeSrc:1.7.10-10.13.4.1558-1.7.10" level="project" />
     <orderEntry type="library" name="Gradle: net.minecraft:launchwrapper:1.12" level="project" />
     <orderEntry type="library" name="Gradle: com.google.code.findbugs:jsr305:1.3.9" level="project" />
