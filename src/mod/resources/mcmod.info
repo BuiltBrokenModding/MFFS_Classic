@@ -1,0 +1,16 @@
+[
+{
+  "modid": "modular_forcefield",
+  "name": "MFFS",
+  "description": "Modular Forcefield System",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Poopsicle360", "Thunderdark", "Calclavia"],
+  "credits": "Thunderdark & Calclavia for making the original MFFS.",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
