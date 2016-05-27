@@ -1,6 +1,6 @@
 package com.mffs.mod.client;
 
-import com.mffs.mod.SharedLoader;
+import com.mffs.mod.api.SharedLoader;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
