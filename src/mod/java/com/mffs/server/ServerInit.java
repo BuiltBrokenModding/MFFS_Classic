@@ -1,6 +1,6 @@
-package com.mffs.mod.client;
+package com.mffs.server;
 
-import com.mffs.mod.api.SharedLoader;
+import com.mffs.api.SharedLoader;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -8,7 +8,7 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 /**
  * Created by pwaln on 5/22/2016.
  */
-public class ClientInit extends SharedLoader {
+public class ServerInit extends SharedLoader {
     /**
      * Called before the main INITIALIZE.
      * @param event Forge ModLoader event.

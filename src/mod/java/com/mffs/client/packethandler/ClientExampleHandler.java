@@ -1,6 +1,6 @@
-package com.mffs.mod.client.packethandler;
+package com.mffs.client.packethandler;
 
-import com.mffs.mod.api.packet.ClientExample;
+import com.mffs.api.packet.ClientExample;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
