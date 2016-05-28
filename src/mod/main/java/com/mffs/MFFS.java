@@ -1,6 +1,7 @@
 package com.mffs;
 
 import com.mffs.common.InitCommon;
+import com.mffs.common.ItemManager;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -15,6 +16,7 @@ public class MFFS
     public static final String MODID = "mffs";
     public static final String VERSION = "1.0";
     public static final String MOD_NAME = "Modular_Forcefields";
+    public static boolean DEV_MODE = true;
 
     @Mod.Instance
     public static MFFS mffs_mod;
@@ -28,6 +30,9 @@ public class MFFS
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         channel = new SimpleNetworkWrapper(MODID);
+        try {
+            ItemManager.parseItems();
+        } catch(Exception e) { e.printStackTrace();}
         initialize.preInit(event);
     }
     
