@@ -1,6 +1,6 @@
-package com.mffs.server;
+package com.mffs.client;
 
-import com.mffs.api.SharedLoader;
+import com.mffs.common.InitCommon;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -8,14 +8,13 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 /**
  * Created by pwaln on 5/22/2016.
  */
-public class ServerInit extends SharedLoader {
+public class InitClient extends InitCommon {
     /**
      * Called before the main INITIALIZE.
      * @param event Forge ModLoader event.
      */
     @Override
     public void preInit(FMLPreInitializationEvent event) {
-        super.preInit(event);
     }
 
     /**
@@ -25,7 +24,6 @@ public class ServerInit extends SharedLoader {
     @Override
     public void init(FMLInitializationEvent event)
     {
-        super.init(event);
     }
 
     /**
@@ -34,6 +32,5 @@ public class ServerInit extends SharedLoader {
      */
     @Override
     public void postInit(FMLPostInitializationEvent event) {
-        super.postInit(event);
     }
 }

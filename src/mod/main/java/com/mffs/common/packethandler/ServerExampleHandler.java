@@ -1,4 +1,4 @@
-package com.mffs.server.packethandler;
+package com.mffs.common.packethandler;
 
 import com.mffs.api.packet.ServerExample;
 import com.mffs.api.packet.ClientExample;

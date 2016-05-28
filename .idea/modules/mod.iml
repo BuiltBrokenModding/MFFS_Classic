@@ -3,8 +3,8 @@
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
     <content url="file://$MODULE_DIR$/../../src/mod">
-      <sourceFolder url="file://$MODULE_DIR$/../../src/mod/java" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/../../src/mod/resources" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/../../src/mod/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../src/mod/main/resources" type="java-resource" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
@@ -75,6 +75,14 @@
     <orderEntry type="library" name="Gradle: org.lwjgl.lwjgl:lwjgl-platform:natives-windows:2.9.1" level="project" />
     <orderEntry type="library" name="Gradle: org.lwjgl.lwjgl:lwjgl-platform:natives-linux:2.9.1" level="project" />
     <orderEntry type="library" name="Gradle: org.lwjgl.lwjgl:lwjgl-platform:natives-osx:2.9.1" level="project" />
-    <orderEntry type="library" name="lib" level="project" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../lib/CodeChickenLib-1.7.10-1.1.3.138-dev.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>
