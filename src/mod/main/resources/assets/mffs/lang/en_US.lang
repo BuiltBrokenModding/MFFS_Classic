@@ -1,2 +1,135 @@
 itemGroup.Modular_Forcefields=Modular Forcefield
+tile.ForceEnergyConverter.name=MFFS Force Energy Converter
+tile.Extractor.name=MFFS Extractor
+tile.DefenseStation.name=MFFS Defense Station
+tile.Capacitor.name=MFFS Capacitor
+tile.Projector.name=MFFS Projector
+tile.Fieldblock.name=MFFS Field
+tile.SecureStorage.name=MFFS Secure Storage
+tile.SecurityStation.name=MFFS Security Station
+tile.ControlSystem.name=MFFS Control System
+
+    <!-- Blocks: Misc -->
+tile.MonazitOre.name=Monazit Ore
+
+    <!-- Items: Cards -->
+item.EmptyCard.name=MFFS Card: Empty
+item.PowerLinkCard.name=MFFS Card: Power Link
+item.PersonalIDCard.name=MFFS Card: ID
+item.SecurityLinkCard.name=MFFS Card: Security Link
+item.InfinitePowerCard.name=MFFS Card: Infinite Power
+item.AccessCard.name=MFFS Card: Access
+item.DataLinkCard.name=MFFS Card: Data-Link
+
+    <!-- Items: Projector Modules -->
+item.ProjectorModuleDiagonalWall.name=Projector Module: Diagonal Wall
+item.ProjectorModuleSphere.name=Projector Module: Sphere
+item.ProjectorModuleCube.name=Projector Module: Cube
+item.ProjectorModuleWall.name=Projector Module: Wall
+item.ProjectorModuleDeflector.name=Projector Module: Deflector
+item.ProjectorModuleTube.name=Projector Module: Tube
+item.ProjectorModuleContainment.name=Projector Module: Containment
+item.ProjectorModuleAdvCube.name=Projector Module: Advanced Cube
+
+    <!-- Items: Projector Options -->
+item.ProjectorOptionZapper.name=Projector Option: Zapper
+item.ProjectorOptionSponge.name=Projector Option: Sponge
+item.ProjectorOptionDome.name=Projector Option: Dome
+item.ProjectorOptionCutter.name=Projector Option: Cutter
+item.ProjectorOptionDefenseStation.name=Projector Option: Defense Station
+item.ProjectorOptionMobKiller.name=Projector Option: Mob Killer
+item.ProjectorOptionFFJammer.name=Projector Option: Forcefield Jammer
+item.ProjectorOptionCamouflage.name=Projector Option: Camouflage
+item.ProjectorOptionFieldFusion.name=Projector Option: Field Fusion
+
+    <!-- Items: Projector Upgrades -->
+item.ProjectorFFDistance.name=Projector Upgrade: Field Distance
+item.ProjectorFFStrength.name=Projector Upgrade: Field Strength
+item.ProjectorFocusMatrix.name=Projector Upgrade: Focus Matrix
+
+    <!-- Items: Multi-Tool -->
+item.MultiToolWrench.name=Multi-Tool: Wrench
+item.MultiToolSwitch.name=Multi-Tool: Switch
+item.MultiToolFieldTransporter.name=Multi-Tool: Field Transporter
+item.MultiToolIDWriter.name=Multi-Tool: ID Writer
+item.MultiToolDebugger.name=Multi-Tool: Debugger
+item.MultiToolManual.name=Multi-Tool: Manual
+
+    <!-- Items: Extractor Upgrades -->
+item.ExtractorUpgradeBooster.name=Extractor Upgrade: Booster
+
+    <!-- Items: Capacitor Upgrades -->
+item.CapacitorUpgradeRange.name=Capacitor Upgrade: Range
+item.CapacitorUpgradeCapacity.name=Capacitor Upgrade: Capacity
+
+    <!-- Items: Misc -->
+item.ForcePowerCrystal.name=Force Power Crystal
 item.Forcicium.name=Forcicium
+item.ForciciumCell.name=Forcicium Cell
+
+    <!-- Field Messages -->
+field.highEnergyField=[Forcefield] Attention: High-Energy Field.
+
+    <!-- Field Security Messages -->
+fieldSecurity.accessDenied=[Field Security] Fail: Access Denied.
+fieldSecurity.accessGranted=[Field Security] Success: Access Granted.
+fieldSecurity.voidNotAllowed=[Field Security] Fail: Transmission into Void not allowed.
+fieldSecurity.detectedObstacle=[Field Security] Fail: Detected Obstacle.
+fieldSecurity.fieldTooString=[Field Security] Fail: Field too Strong.
+fieldSecurity.invalidItemInPowerLink=[Field Security] Fail: Invalid item in Power Link Slot.
+fieldSecurity.failedTransmutation=[Field Security] Fail: Block Transmute needs [Change Protected Block] Security Right.
+fieldSecurity.transmissionComplete=[Field Security] Success: Transmission Complete
+fieldSecurity.notEnoughFE=[Field Security] Fail: Not enough Force Energy, please charge.
+
+    <!-- Multi-Tool Messages -->
+multitool.idCardCreated=[MultiTool] Success: ID Card Created.
+multitool.notEnoughFE=[MultiTool] Fail: Not enough Force Energy, please charge.
+multitool.needBlankCard=[MultiTool] Fail: Needs a Blank MFFS Card in Inventory.
+multitool.dataLinkCreated=[MultiTool] Success: Data Link Card created.
+multitool.notInSwitchMode=[MultiTool] Fail: Object not in Switch-enabled mode.
+multitool.projectorRepaired=[MultiTool] Projector repaired.
+
+    <!-- Link Card Messages -->
+securityStation.cardCreated=[Security Station] Success: Security Station Link Card Created.
+securityStation.mustBeActive=[Security Station] Fail: Security Station must be active to create a Security Station Link Card card.
+capacitor.cardCreated=[Capacitor] Success: Power Link Card Created.
+linkCard.installed=Success: Power Link Card Installed.
+linkCard.copied=Success: Power Link Card Data Copied.
+linkCard.notEmpty=Fail: Slot is not empty.
+
+    <!-- Projector Module Messages -->
+projectorModule.installed=[Projector] Success: Projector Module '%s' installed.
+projectorModule.notEmpty=[Projector] Fail: Slot is not empty.
+
+    <!-- Item Info -->
+itemInfo.securityArea=Security Area: %s
+itemInfo.periodOfValidity=Period of Validity: %s min.
+itemInfo.rightsHoldShift=Rights: (Hold Shift)
+itemInfo.rights=Rights:
+itemInfo.compatibleWith=Compatible With:
+itemInfo.compatibleWithHoldShift=Compatible With: (Hold Shift)
+itemInfo.deviceType=Device Type: 
+itemInfo.devicename=Device Name: 
+itemInfo.infinitePower.lineOne=Admin Card to power MFFS machines
+itemInfo.infinitePower.lineTwo=or infinitely charge a Capacitor.
+itemInfo.forciciumCellActive=[Forcicium Cell] Active.
+itemInfo.forciciumCellInactive=[Forcicium Cell] Inactive.
+
+    <!-- Misc Warning Messages -->
+securityStation.expiredValidity=[Security Station] Access License has expired.
+securityStation.scanningRange=!!!! [Security Station][%s] Warning: You are now in Scanning range !!!!
+areaDefense.getOut=!!!! [Area Defense] Get out immediately, you have no right to be here !!!!
+areaDefense.beenWarned=!!!! [Area Defense] You have been warned. !!!!
+areaDefense.illegalItems=!!!! [Area Defense] You have illegal goods. %s will be confiscated !!!!
+
+    <!-- Generic Card Messages -->
+generic.card.installed=Success: %s Card installed.
+generic.card.copied=Success: %s Card data copied.
+generic.card.fail=Fail: Slot is not empty.
+
+    <!-- Misc Strings -->
+itemGroup.MFFS=MFFS
+death.attack.areaDefense=%1$s disregarded the warnings and was fried!
+death.attack.fieldShock=%1$s was fried by a forcefield!
+death.attack.fieldDefense=%1$s was fried!
+warning.areaDefense=!!!! [Area Defense] Leave or Die !!!!
