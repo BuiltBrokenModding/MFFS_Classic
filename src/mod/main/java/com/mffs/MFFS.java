@@ -31,7 +31,7 @@ public class MFFS
     public void preInit(FMLPreInitializationEvent event) {
         channel = new SimpleNetworkWrapper(MODID);
         try {
-            ItemManager.parseItems();
+            ItemManager.parseItems("");
         } catch(Exception e) { e.printStackTrace();}
         initialize.preInit(event);
     }
