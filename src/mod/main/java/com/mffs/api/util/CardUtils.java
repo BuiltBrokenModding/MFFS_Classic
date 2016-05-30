@@ -1,6 +1,6 @@
 package com.mffs.api.util;
 
-import com.mffs.api.ItemManager;
+import com.mffs.api.RegisterManager;
 import com.mffs.api.SecurityClearance;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -17,7 +17,7 @@ public class CardUtils {
      * @return
      */
     public static int validate(ItemStack stack, int min) {
-        NBTTagCompound tag = ItemManager.getTag(stack);
+        NBTTagCompound tag = RegisterManager.getTag(stack);
         if(min > 0) {
             tag.setInteger("validity", min);
         }
@@ -30,7 +30,7 @@ public class CardUtils {
      * @return The value assigned.
      */
     public static int validate(ItemStack stack) {
-        return ItemManager.getTag(stack).getInteger("validity");
+        return RegisterManager.getTag(stack).getInteger("validity");
     }
 
     /**
@@ -39,7 +39,7 @@ public class CardUtils {
      * @param name The name value.
      */
     public static void setOwner(ItemStack stack, String name) {
-        ItemManager.getTag(stack).setString("name", name);
+        RegisterManager.getTag(stack).setString("name", name);
     }
 
     /**
@@ -48,7 +48,7 @@ public class CardUtils {
      * @return
      */
     public static String getOwner(ItemStack stack) {
-        return ItemManager.getTag(stack).getString("name");
+        return RegisterManager.getTag(stack).getString("name");
     }
 
     /**
@@ -57,7 +57,7 @@ public class CardUtils {
      * @return
      */
     public static String getForcArea(ItemStack stack) {
-        return ItemManager.getTag(stack).getString("Areaname");
+        return RegisterManager.getTag(stack).getString("Areaname");
     }
 
     /**
@@ -66,7 +66,7 @@ public class CardUtils {
      * @param area The area key.
      */
     public static void setForcArea(ItemStack stack, String area) {
-        ItemManager.getTag(stack).setString("Areaname", area);
+        RegisterManager.getTag(stack).setString("Areaname", area);
     }
 
     /**
@@ -76,7 +76,7 @@ public class CardUtils {
      * @return
      */
     public static boolean hasClearance(ItemStack stack, SecurityClearance sec) {
-        NBTTagCompound rights = ItemManager.getTag(stack).getCompoundTag("rights");
+        NBTTagCompound rights = RegisterManager.getTag(stack).getCompoundTag("rights");
         if(rights == null) {
             return false;
         }
@@ -90,12 +90,12 @@ public class CardUtils {
      * @param value Given or removed.
      */
     public static void giveClearance(ItemStack stack, SecurityClearance sec, boolean value) {
-        NBTTagCompound rights = ItemManager.getTag(stack).getCompoundTag("rights");
+        NBTTagCompound rights = RegisterManager.getTag(stack).getCompoundTag("rights");
         if(rights == null) {
             rights = new NBTTagCompound();
         }
         rights.setBoolean(sec.name(), value);
-        ItemManager.getTag(stack).setTag("rights", rights);
+        RegisterManager.getTag(stack).setTag("rights", rights);
     }
 
 }

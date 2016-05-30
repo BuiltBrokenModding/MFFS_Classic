@@ -1,17 +1,17 @@
 package com.mffs.api.items.card;
 
-import com.mffs.api.ItemManager;
+import com.mffs.api.RegisterManager;
 import com.mffs.api.Vector4;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.Vec3;
 
 import java.util.List;
 
 /**
- * Created by pwaln on 5/29/2016.
+ * Original MFFS File.
+ * Credits: Thunderdark, Calclavia
  */
 public abstract class ItemCard extends Item{
 
@@ -41,7 +41,7 @@ public abstract class ItemCard extends Item{
      */
     @Override
     public void addInformation(ItemStack item, EntityPlayer usr, List info, boolean p_77624_4_) {
-        NBTTagCompound tag = ItemManager.getTag(item);
+        NBTTagCompound tag = RegisterManager.getTag(item);
 
         info.add("Links To: " + tag.getString("Areaname"));
         if (tag.hasKey("worldname"))
@@ -61,7 +61,7 @@ public abstract class ItemCard extends Item{
      * @return The target.
      */
     public Vector4 getTarget(ItemStack stack) {
-        NBTTagCompound tag = ItemManager.getTag(stack).getCompoundTag("linkTarget");
+        NBTTagCompound tag = RegisterManager.getTag(stack).getCompoundTag("linkTarget");
         int x = tag.getInteger("x");
         int y = tag.getInteger("y");
         int z = tag.getInteger("z");

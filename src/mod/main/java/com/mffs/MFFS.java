@@ -1,7 +1,7 @@
 package com.mffs;
 
 import com.mffs.common.InitCommon;
-import com.mffs.api.ItemManager;
+import com.mffs.api.RegisterManager;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -31,7 +31,8 @@ public class MFFS
     public void preInit(FMLPreInitializationEvent event) {
         channel = new SimpleNetworkWrapper(MODID);
         try {
-            ItemManager.parseItems("");
+            RegisterManager.parseItems("");
+            RegisterManager.parseBlocks("");
         } catch(Exception e) { e.printStackTrace();}
         initialize.preInit(event);
     }

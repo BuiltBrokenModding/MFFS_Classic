@@ -1,7 +1,7 @@
 package com.mffs.api.items.card;
 
 import com.mffs.MFFS;
-import com.mffs.api.ItemManager;
+import com.mffs.api.RegisterManager;
 import com.mffs.api.SecurityClearance;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -14,7 +14,8 @@ import org.lwjgl.input.Keyboard;
 import java.util.List;
 
 /**
- * Created by pwaln on 5/29/2016.
+ * Original MFFS File.
+ * Credits: Thunderdark, Calclavia
  */
 public class PersonalIDCard extends Item {
 
@@ -40,11 +41,11 @@ public class PersonalIDCard extends Item {
      */
     @Override
     public void addInformation(ItemStack stack, EntityPlayer usr, List tooltip, boolean dummy) {
-        tooltip.add(String.format("Owner: %s", ItemManager.getTag(stack).getString("name")));
+        tooltip.add(String.format("Owner: %s", RegisterManager.getTag(stack).getString("name")));
         if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)
                 || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
             tooltip.add(LanguageRegistry.instance().getStringLocalization("itemInfo.rights"));
-            NBTTagCompound rights = ItemManager.getTag(stack).getCompoundTag("rights");
+            NBTTagCompound rights = RegisterManager.getTag(stack).getCompoundTag("rights");
             for(SecurityClearance clr : SecurityClearance.values()) {
                 if(rights.getBoolean(clr.name())) {
                     tooltip.add("-"+clr.getName());

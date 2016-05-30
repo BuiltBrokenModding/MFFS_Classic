@@ -1,14 +1,12 @@
 package com.mffs.api.items.card;
 
 import com.mffs.MFFS;
-import com.mffs.api.ItemManager;
+import com.mffs.api.RegisterManager;
 import com.mffs.api.SecurityClearance;
-import com.mffs.api.util.CardUtils;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
@@ -17,7 +15,8 @@ import org.lwjgl.input.Keyboard;
 import java.util.List;
 
 /**
- * Created by pwaln on 5/29/2016.
+ * Original MFFS File.
+ * Credits: Thunderdark, Calclavia
  */
 public class AccessCard extends PersonalIDCard {
 
@@ -46,7 +45,7 @@ public class AccessCard extends PersonalIDCard {
      */
     @Override
     public void addInformation(ItemStack stack, EntityPlayer usr, List tooltip, boolean dummy) {
-        NBTTagCompound tag = ItemManager.getTag(stack);
+        NBTTagCompound tag = RegisterManager.getTag(stack);
         tooltip.add(String.format(LanguageRegistry.instance().getStringLocalization("itemInfo.securityArea"), tag.getString("Areaname")));
         tooltip.add(String.format(LanguageRegistry.instance().getStringLocalization("itemInfo.periodOfValidity"), tag.getInteger("validity")));
         if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)
@@ -76,7 +75,7 @@ public class AccessCard extends PersonalIDCard {
     @Override
     public void onUpdate(ItemStack stack, World p_77663_2_, Entity p_77663_3_, int p_77663_4_, boolean p_77663_5_) {
         if(this.tick > 1_200) {
-            NBTTagCompound tag = ItemManager.getTag(stack);
+            NBTTagCompound tag = RegisterManager.getTag(stack);
             int timer = tag.getInteger("validate");
             if(timer > 0) {
                 tag.setInteger("validate", timer - 1);

@@ -1,25 +1,23 @@
 package com.mffs.api.items;
 
 import com.mffs.MFFS;
-import com.mffs.api.ItemManager;
+import com.mffs.api.RegisterManager;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.IChatComponent;
-import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
 import java.util.List;
 
 /**
- * Created by pwaln on 5/29/2016.
+ * Original MFFS File.
+ * Credits: Thunderdark, Calclavia
  */
 public class ForciciumCell extends Item {
 
@@ -53,7 +51,7 @@ public class ForciciumCell extends Item {
      */
     @Override
     public int getDamage(ItemStack stack) {
-        return 101 -  ItemManager.getTag(stack).getShort("level") * 100 / 1000;
+        return 101 -  RegisterManager.getTag(stack).getShort("level") * 100 / 1000;
     }
 
     /**
@@ -69,7 +67,7 @@ public class ForciciumCell extends Item {
     @Override
     public void onUpdate(ItemStack stack, World world, Entity entity, int u1, boolean u2) {
         if(!world.isRemote && this.isActivated) {
-            short level = ItemManager.getTag(stack).getShort("level");
+            short level = RegisterManager.getTag(stack).getShort("level");
             if(level < 1_000 && entity instanceof EntityPlayer) {
                 List<Slot> invSlot = ((EntityPlayer)entity).inventoryContainer.inventorySlots;
                 Forcicium forc = (Forcicium) Item.itemRegistry.getObject(MFFS.MODID+":Forcicium");
@@ -77,7 +75,7 @@ public class ForciciumCell extends Item {
                 {
                     ItemStack item = slot.getStack();
                     if(item != null && item.getItem() == forc) {
-                        ItemManager.getTag(stack).setShort("level", (short) (level + 1));
+                        RegisterManager.getTag(stack).setShort("level", (short) (level + 1));
                         slot.decrStackSize(1);
                         return;
                     }
@@ -96,7 +94,7 @@ public class ForciciumCell extends Item {
      */
     @Override
     public void addInformation(ItemStack stack, EntityPlayer usr, List list, boolean u1) {
-        list.add(String.format("%d / %d  Forcicium", ItemManager.getTag(stack).getShort("level"), 1_000));
+        list.add(String.format("%d / %d  Forcicium", RegisterManager.getTag(stack).getShort("level"), 1_000));
     }
 
     /**
@@ -127,12 +125,12 @@ public class ForciciumCell extends Item {
     public void getSubItems(Item item, CreativeTabs tab, List list) {
         ItemStack sub1 = new ItemStack(this, 1);
         sub1.setItemDamage(1);
-        ItemManager.getTag(sub1).setShort("level", (short) 1_000);
+        RegisterManager.getTag(sub1).setShort("level", (short) 1_000);
         list.add(sub1);
 
         ItemStack sub2 = new ItemStack(this, 1);
         sub2.setItemDamage(100);
-        ItemManager.getTag(sub2).setShort("level", (short) 0);
+        RegisterManager.getTag(sub2).setShort("level", (short) 0);
         list.add(sub2);
     }
 }

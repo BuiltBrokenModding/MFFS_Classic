@@ -4,7 +4,8 @@ import com.mffs.MFFS;
 import net.minecraft.item.Item;
 
 /**
- * Created by pwaln on 5/28/2016.
+ * Original MFFS File.
+ * Credits: Thunderdark, Calclavia
  */
 public class Forcicium extends Item {
 

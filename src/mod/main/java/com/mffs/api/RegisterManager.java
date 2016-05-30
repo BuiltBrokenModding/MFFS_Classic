@@ -4,6 +4,7 @@ import com.mffs.MFFS;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -15,7 +16,7 @@ import java.lang.reflect.Modifier;
 /**
  * Created by pwaln on 5/28/2016.
  */
-public class ItemManager {
+public class RegisterManager {
 
     /* This is the tab we shall store everything in */
     public static CreativeTabs MFFS_TAB = new CreativeTabs(MFFS.MOD_NAME) {
@@ -46,6 +47,28 @@ public class ItemManager {
             item.setUnlocalizedName(name);
             item.setCreativeTab(MFFS_TAB);
             GameRegistry.registerItem(item, name);
+        }
+    }
+
+    /**
+     * Simply parses the item directory and registers them.
+     */
+    public static void parseBlocks(String offset) throws Exception{
+        File[] files = new File((!MFFS.DEV_MODE ? "./mods/" : "./production/mod/")+"com/mffs/api/blocks/"+offset.replace(".", "/")).listFiles();
+        for(File file : files) {
+            if(file.isDirectory()) {
+                parseBlocks(offset+file.getName()+"/");
+                continue;
+            }
+            String name = file.getName().substring(0, file.getName().length() - 6);
+            Class rawClass = (Class) Class.forName("com.mffs.api.blocks." + offset.replace("/", ".") + name);
+            if(Modifier.isAbstract(rawClass.getModifiers())) { //This is a abstract class and we simply override it in others!
+                continue;
+            }
+            Block block= (Block) rawClass.newInstance();
+            block.setCreativeTab(MFFS_TAB);
+            block.setBlockName(name);
+            GameRegistry.registerBlock(block, name);
         }
     }
 

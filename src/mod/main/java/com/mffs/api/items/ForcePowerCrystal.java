@@ -1,7 +1,7 @@
 package com.mffs.api.items;
 
 import com.mffs.MFFS;
-import com.mffs.api.ItemManager;
+import com.mffs.api.RegisterManager;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,7 +12,8 @@ import net.minecraft.util.IIcon;
 import java.util.List;
 
 /**
- * Created by pwaln on 5/30/2016.
+ * Original MFFS File.
+ * Credits: Thunderdark, Calclavia
  */
 public class ForcePowerCrystal extends Item {
 
@@ -57,7 +58,7 @@ public class ForcePowerCrystal extends Item {
      */
     @Override
     public int getDamage(ItemStack stack) {
-        return 101 - ItemManager.getTag(stack).getInteger("ForceEnergy") * 100 / 5_000_000;
+        return 101 - RegisterManager.getTag(stack).getInteger("ForceEnergy") * 100 / 5_000_000;
     }
 
     /**
@@ -70,7 +71,7 @@ public class ForcePowerCrystal extends Item {
      */
     @Override
     public void addInformation(ItemStack stack, EntityPlayer usr, List list, boolean u1) {
-        list.add(String.format("%d FE/%d FE ", ItemManager.getTag(stack).getInteger("ForceEnergy"), 5_000_000));
+        list.add(String.format("%d FE/%d FE ", RegisterManager.getTag(stack).getInteger("ForceEnergy"), 5_000_000));
     }
 
     /**
@@ -84,12 +85,12 @@ public class ForcePowerCrystal extends Item {
     public void getSubItems(Item item, CreativeTabs tab, List list) {
         ItemStack charged = new ItemStack(this, 1);
         charged.setItemDamage(1);
-        ItemManager.getTag(charged).setInteger("ForceEnergy", 5_000_000);
+        RegisterManager.getTag(charged).setInteger("ForceEnergy", 5_000_000);
         list.add(charged);
 
         ItemStack empty = new ItemStack(this, 1);
         empty.setItemDamage(100);
-        ItemManager.getTag(empty).setInteger("ForceEnergy", 0);
+        RegisterManager.getTag(empty).setInteger("ForceEnergy", 0);
         list.add(empty);
     }
 }
