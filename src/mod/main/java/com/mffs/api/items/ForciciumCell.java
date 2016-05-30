@@ -2,11 +2,18 @@ package com.mffs.api.items;
 
 import com.mffs.MFFS;
 import com.mffs.api.ItemManager;
+import cpw.mods.fml.common.registry.LanguageRegistry;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.IChatComponent;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -14,7 +21,7 @@ import java.util.List;
 /**
  * Created by pwaln on 5/29/2016.
  */
-public class ForcicumCell extends Item {
+public class ForciciumCell extends Item {
 
     /* If the item is activated */
     private boolean isActivated;
@@ -22,8 +29,14 @@ public class ForcicumCell extends Item {
     /**
      * Constructor.
      */
-    public ForcicumCell() {
-        setTextureName(MFFS.MODID+"ForciumCell");
+    public ForciciumCell() {
+        setMaxStackSize(1);
+        setMaxDamage(100);
+    }
+
+    @Override
+    public void registerIcons(IIconRegister p_94581_1_) {
+        this.itemIcon = p_94581_1_.registerIcon(MFFS.MODID+":ForciciumCell");
     }
 
     @Override
@@ -55,16 +68,31 @@ public class ForcicumCell extends Item {
      */
     @Override
     public void onUpdate(ItemStack stack, World world, Entity entity, int u1, boolean u2) {
-        super.onUpdate(stack, world, entity, u1, u2);
+        if(!world.isRemote && this.isActivated) {
+            short level = ItemManager.getTag(stack).getShort("level");
+            if(level < 1_000 && entity instanceof EntityPlayer) {
+                List<Slot> invSlot = ((EntityPlayer)entity).inventoryContainer.inventorySlots;
+                Forcicium forc = (Forcicium) Item.itemRegistry.getObject(MFFS.MODID+":Forcicium");
+                for(Slot slot : invSlot)
+                {
+                    ItemStack item = slot.getStack();
+                    if(item != null && item.getItem() == forc) {
+                        ItemManager.getTag(stack).setShort("level", (short) (level + 1));
+                        slot.decrStackSize(1);
+                        return;
+                    }
+                }
+            }
+        }
     }
 
     /**
      * allows items to add custom lines of information to the mouseover description
      *
-     * @param stack
-     * @param usr
-     * @param list
-     * @param u1
+     * @param stack The item being hovered.
+     * @param usr The user hovering over the item.
+     * @param list A list of tooltips.
+     * @param u1 Unkown
      */
     @Override
     public void addInformation(ItemStack stack, EntityPlayer usr, List list, boolean u1) {
@@ -80,7 +108,12 @@ public class ForcicumCell extends Item {
      */
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer entity) {
-        return super.onItemRightClick(stack, world, entity);
+        if(world.isRemote) {
+            return stack;
+        }
+        this.isActivated = !this.isActivated;
+        entity.addChatMessage(new ChatComponentText(LanguageRegistry.instance().getStringLocalization("itemInfo.forciciumCell"+(isActivated ? "Active" : "Inactive"))));
+        return stack;
     }
 
     /**
@@ -92,6 +125,14 @@ public class ForcicumCell extends Item {
      */
     @Override
     public void getSubItems(Item item, CreativeTabs tab, List list) {
-        super.getSubItems(item, tab, list);
+        ItemStack sub1 = new ItemStack(this, 1);
+        sub1.setItemDamage(1);
+        ItemManager.getTag(sub1).setShort("level", (short) 1_000);
+        list.add(sub1);
+
+        ItemStack sub2 = new ItemStack(this, 1);
+        sub2.setItemDamage(100);
+        ItemManager.getTag(sub2).setShort("level", (short) 0);
+        list.add(sub2);
     }
 }

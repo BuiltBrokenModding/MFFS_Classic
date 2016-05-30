@@ -2,6 +2,8 @@ package com.mffs.api.items.card;
 
 import com.mffs.MFFS;
 import com.mffs.api.ItemManager;
+import com.mffs.api.SecurityClearance;
+import com.mffs.api.util.CardUtils;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
@@ -17,11 +19,15 @@ import java.util.List;
 /**
  * Created by pwaln on 5/29/2016.
  */
-public class AccessCard extends Item {
+public class AccessCard extends PersonalIDCard {
+
+    /* Amount of ticks on this item */
+    private short tick;
 
     public AccessCard() {
         super();
         setHasSubtypes(true);
+        setMaxStackSize(1);
         setTextureName(MFFS.MODID+":AccessCard");
     }
 
@@ -47,6 +53,11 @@ public class AccessCard extends Item {
                 || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
             NBTTagCompound rights = tag.getCompoundTag("rights");
             tooltip.add(LanguageRegistry.instance().getStringLocalization("itemInfo.rights"));
+            for(SecurityClearance clr : SecurityClearance.values()) {
+                if(rights.getBoolean(clr.name())) {
+                    tooltip.add("-"+clr.getName());
+                }
+            }
         } else {
             tooltip.add(LanguageRegistry.instance().getStringLocalization("itemInfo.rightsHoldShift"));
         }
@@ -56,14 +67,27 @@ public class AccessCard extends Item {
      * Called each tick as long the item is on a player inventory. Uses by maps to check if is on a player hand and
      * update it's contents.
      *
-     * @param p_77663_1_
+     * @param stack
      * @param p_77663_2_
      * @param p_77663_3_
      * @param p_77663_4_
      * @param p_77663_5_
      */
     @Override
-    public void onUpdate(ItemStack p_77663_1_, World p_77663_2_, Entity p_77663_3_, int p_77663_4_, boolean p_77663_5_) {
+    public void onUpdate(ItemStack stack, World p_77663_2_, Entity p_77663_3_, int p_77663_4_, boolean p_77663_5_) {
+        if(this.tick > 1_200) {
+            NBTTagCompound tag = ItemManager.getTag(stack);
+            int timer = tag.getInteger("validate");
+            if(timer > 0) {
+                tag.setInteger("validate", timer - 1);
+            }
 
+            int SEC_ID = tag.getInteger("linkID");
+            if(SEC_ID != 0) {
+
+            }
+            this.tick = 0;
+        }
+        this.tick++;
     }
 }

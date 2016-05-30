@@ -1,6 +1,7 @@
 package com.mffs.api.util;
 
 import com.mffs.api.ItemManager;
+import com.mffs.api.SecurityClearance;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -67,4 +68,34 @@ public class CardUtils {
     public static void setForcArea(ItemStack stack, String area) {
         ItemManager.getTag(stack).setString("Areaname", area);
     }
+
+    /**
+     * Checks if there card has security clearance.
+     * @param stack
+     * @param sec
+     * @return
+     */
+    public static boolean hasClearance(ItemStack stack, SecurityClearance sec) {
+        NBTTagCompound rights = ItemManager.getTag(stack).getCompoundTag("rights");
+        if(rights == null) {
+            return false;
+        }
+        return rights.getBoolean(sec.name());
+    }
+
+    /**
+     * Gives or removes clearance to a specified item.
+     * @param stack The item to be checked.
+     * @param sec The clearance to be operated.
+     * @param value Given or removed.
+     */
+    public static void giveClearance(ItemStack stack, SecurityClearance sec, boolean value) {
+        NBTTagCompound rights = ItemManager.getTag(stack).getCompoundTag("rights");
+        if(rights == null) {
+            rights = new NBTTagCompound();
+        }
+        rights.setBoolean(sec.name(), value);
+        ItemManager.getTag(stack).setTag("rights", rights);
+    }
+
 }
