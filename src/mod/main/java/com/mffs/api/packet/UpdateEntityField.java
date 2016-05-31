@@ -10,6 +10,7 @@ public class UpdateEntityField implements IMessage {
 
     /* Coordinates of this entity */
     private int x, y, z;
+
     /**
      * Convert from the supplied buffer into your specific message type
      *
