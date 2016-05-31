@@ -1,4 +1,4 @@
-package com.mffs.common;
+package com.mffs;
 
 import com.mffs.MFFS;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -24,7 +24,7 @@ public class RegisterManager {
         @Override
         @SideOnly(Side.CLIENT)
         public Item getTabIconItem() {
-            return (Item) Item.itemRegistry.getObject(MFFS.MODID + ":Forcicium");
+            return (Item) Item.itemRegistry.getObject(MFFS.MODID + ":cardBlank");
         }
     };
 
@@ -32,19 +32,21 @@ public class RegisterManager {
      * Simply parses the item directory and registers them.
      */
     public static void parseItems(String offset) throws Exception{
-        File[] files = new File((!MFFS.DEV_MODE ? "./mods/" : "./production/mod/")+ "com/mffs/common/items/" +offset.replace(".", "/")).listFiles();
+        File[] files = new File((!MFFS.DEV_MODE ? "./mods/" : "./production/mod/")+ "com/mffs/items/" +offset.replace(".", "/")).listFiles();
         for(File file : files) {
             if(file.isDirectory()) {
                 parseItems(offset+file.getName()+"/");
                 continue;
             }
             String name = file.getName().substring(0, file.getName().length() - 6);
-            Class rawClass = (Class) Class.forName("com.mffs.common.items." + offset.replace("/", ".") + name);
+            Class rawClass = (Class) Class.forName("com.mffs.items." + offset.replace("/", ".") + name);
             if(Modifier.isAbstract(rawClass.getModifiers())) { //This is a abstract class and we simply override it in others!
                 continue;
             }
             Item item = (Item) rawClass.newInstance();
+            name = name.substring(0, 1).toLowerCase() + name.substring(1, name.length());
             item.setUnlocalizedName(name);
+            item.setTextureName(MFFS.MODID+":"+name);
             item.setCreativeTab(MFFS_TAB);
             GameRegistry.registerItem(item, name);
         }
@@ -54,14 +56,18 @@ public class RegisterManager {
      * Simply parses the item directory and registers them.
      */
     public static void parseBlocks(String offset) throws Exception{
-        File[] files = new File((!MFFS.DEV_MODE ? "./mods/" : "./production/mod/")+ "com/mffs/common/blocks/" +offset.replace(".", "/")).listFiles();
+        File[] files = new File((!MFFS.DEV_MODE ? "./mods/" : "./production/mod/")+ "com/mffs/blocks/" +offset.replace(".", "/")).listFiles();
+        if(files == null) {
+            return;
+        }
         for(File file : files) {
+            if(file == null) continue;
             if(file.isDirectory()) {
                 parseBlocks(offset+file.getName()+"/");
                 continue;
             }
             String name = file.getName().substring(0, file.getName().length() - 6);
-            Class rawClass = (Class) Class.forName("com.mffs.common.blocks." + offset.replace("/", ".") + name);
+            Class rawClass = (Class) Class.forName("com.mffs.blocks." + offset.replace("/", ".") + name);
             if(Modifier.isAbstract(rawClass.getModifiers())) { //This is a abstract class and we simply override it in others!
                 continue;
             }

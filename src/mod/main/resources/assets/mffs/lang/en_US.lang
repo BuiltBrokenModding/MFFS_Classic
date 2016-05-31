@@ -1,0 +1,214 @@
+# Modular Force Field System Language Properties
+# @author Calclavia
+
+itemGroup.Modular_Forcefields=Modular Force Field System
+
+fluid.fortron=Fortron
+
+# Chat Messages
+death.attack.areaDefense=%1$s disregarded warnings and was disintegrated.
+death.attack.fieldShock=%1$s was disintegrated by a force field.
+
+message.cardFrequency.generated=Generated random frequency:
+message.cardFrequency.set=Frequency set to: %p
+message.remoteController.linked=Linked to position: %p with block: %q
+message.remoteController.fail=Unable to harness %p from the Fortron field.
+message.moduleAntiPersonnel.death=Farewell.
+message.moduleConfiscate.confiscate=%p of your item(s) has been confiscated.
+message.moduleWarn.warn=Leave this zone immediately. You have no right to enter.
+message.interdictionMatrix.warn=Warning! You are near the scanning range!
+message.modeCustom.modeChange=Changed selection mode to %p
+message.modeCustom.saved=Field structure saved.
+
+# Blocks
+tile.fortronite.name=Fortronite
+tile.biometricIdentifier.name=Biometric Identifier
+tile.interdictionMatrix.name=Interdiction Matrix
+tile.fortronCapacitor.name=Fortron Capacitor
+tile.projector.name=Force Field Projector
+tile.coercionDeriver.name=Coercion Deriver
+tile.manipulator.name=Force Manipulator
+tile.forceField.name=Force Field
+
+
+# Cards
+item.cardBlank.name=Blank Card
+item.cardInfinite.name=Infinite Power Card
+item.cardInfinite.tooltip=The infinite power card is a creative-only item that can be placed inside a capacitor for infinite energy.
+item.cardFrequency.name=Frequency Card
+item.cardFrequency.tooltip=The frequency card is used for ease of frequency transmission. Shift-right clicking the card will generate a random frequency.
+item.cardLink.name=Link Card
+item.cardLink.tooltip=Right clicking the link card on a block will create a link to that specific position.
+item.cardID.name=Identification Card
+item.cardD.tooltip=Right click on the ID card to biometrically lock it to your name.
+
+#Items
+item.remoteController.name=Remote Controller
+item.fortron.name=Fortron
+item.focusMatrix.name=Focus Matrix
+
+#Projection Modes
+item.modeCube.name=Cube Mode
+item.modeTube.name=Tube Mode
+item.modeSphere.name=Sphere Mode
+item.modePyramid.name=Pyramid Mode
+item.modeCylinder.name=Cylinder Mode
+item.modeCustom.name=Custom Mode
+item.modeCustom.tooltip=Create your own mode by right clicking two points to define an area. Shift right click to save the area.
+
+# Modules
+## General Modules
+item.moduleScale.name=Scale Module
+item.moduleScale.tooltip=The scale module increases the scale of a certain component.
+item.moduleTranslate.name=Translation Module
+item.moduleTranslate.tooltip=The translation module translates the field, displacing it away from the origin.
+item.moduleRotate.name=Rotation Module
+item.moduleRotate.tooltip=The rotation module rotates a field with a specific angle.
+
+item.moduleCapacity.name=Capacity Module
+item.moduleCapacity.tooltip=Increases the capacity of a device.
+item.moduleSpeed.name=Speed Module
+item.moduleSpeed.tooltip=Increases the speed of a device.
+
+## Force Field Projector Modules
+item.moduleShock.name=Shock Module
+item.moduleSponge.name=Sponge Module
+item.moduleDome.name=Dome Module
+item.moduleFusion.name=Field Fusion Module
+item.moduleCamouflage.name=Camouflage Module
+item.moduleCamouflage.tooltip=Camouflages the force field. Using this module with the disintegration module inverts the disintegration filter.
+item.moduleDisintegration.name=Disintegration Module
+item.moduleDisintegration.tooltip=Disintegrates the blocks space occupied by the force field and drops them.
+item.moduleGlow.name=Glow Module
+item.moduleStabilize.name=Field Stabilizer Module
+item.moduleStabilize.tooltip=Stabilizes the projected force field and crystallizes the field into solid blocks. Place a chest next the projector with blocks to stablize the field.
+item.moduleCollection.name=Collection Module
+item.moduleCollection.tooltip=Collection module allows you to collect dropped blocks from the disintegration module.
+item.moduleInvert.name=Invert Module
+item.moduleInvert.tooltip=Inverts the field to use negative space instead of the positive space.
+item.moduleSilence.name=Silence Module
+item.moduleSilence.tooltip=Silences the force field and prevents it from making sound.
+item.moduleRepulsion.name=Repulsion Module
+item.moduleRepulsion.tooltip=Creates an entity repulsion field with no blocks.
+item.moduleArray.name=Array Module
+item.moduleArray.tooltip=Repeats the field in a pattern specified by direction.
+item.moduleApproximation.name=Approximation Module
+item.moduleApproximation.tooltip=Causes the field to approximate and ignore metadata when stabilizing or disintegrating.
+
+## Interdiction Matrix Modules
+item.moduleAntiPersonnel.name=Anti-Personnel Module
+item.moduleAntiPersonnel.tooltip=Will cause Interdiction Matrix to kill all players.
+item.moduleAntiFriendly.name=Anti-Friendly Module
+item.moduleAntiFriendly.tooltip=Will cause Interdiction Matrix to kill all friendly mobs.
+item.moduleAntiHostile.name=Anti-Hostile Module
+item.moduleAntiHostile.tooltip=Will cause Interdiction Matrix to kill all hostile mobs.
+item.moduleWarn.name=Warn Module
+item.moduleWarn.tooltip=Sends a warning to the intruder.
+item.moduleConfiscate.name=Confiscate Module
+item.moduleConfiscate.tooltip=Confiscates the intruder's items.
+item.moduleBlockAccess.name=Block Access Module
+item.moduleBlockAccess.tooltip=Prevents an intruder from right clicking on blocks.
+item.moduleBlockAlter.name=Block Alter Module
+item.moduleBlockAlter.tooltip=Prevents an intruder from placing or breaking blocks.
+item.moduleAntiSpawn.name=Anti-Spawn Module
+item.moduleAntiSpawn.tooltip=Prevents entities from spawning in a specific region.
+
+# Multitool
+item.itemMultiTool.name=Multi-Tool
+
+# GUI
+gui.frequency.name=Frequency
+gui.frequency.tooltip=Machines with the same frequency will share Fortron energy.
+gui.progress.name=Progress
+gui.fortron.name=Fortron
+gui.fortron.tooltip=Fortron is the type of force energy used in MFFS machines.
+gui.upgrade.name=Upgrade
+gui.matrix.name=Matrix
+gui.matrix.tooltip=The projection matrix is used to determine how the projection should be created.
+gui.master.name=Master
+gui.master.tooltip=The Master Card will denote the player in the card owner of the Biometric Identifier.
+gui.deriver.derive=Derive
+gui.deriver.integrate=Integrate
+gui.deriver.running=Running
+gui.deriver.idle=Idle
+gui.manipulator.anchor=Anchor:
+gui.manipulator.fortron=Fortron:
+
+# Capacitor
+gui.linkedDevice.name=Linked Device
+gui.linkedDevice.tooltip=The amount of devices linked to this machine.
+gui.range.name=Range
+gui.range.tooltip=The range can be upgraded with a range module.
+gui.transmissionRate.name=Transmission Rate
+gui.transmissionRate.tooltip=The rate in which this capacitor can transfer fortron energy.
+
+## Transfer Modes
+gui.transferModeEqualize.name=Equalize
+gui.transferModeEqualize.tooltip=Spread fortron energy with machines based on the machine's capacity percentage.
+gui.transferModeDistribute.name=Distribute
+gui.transferModeDistribute.tooltip=Spread fortron energy evenly based on the energy amount.
+gui.transferModeDrain.name=Drain
+gui.transferModeDrain.tooltip=Drains out the capacitor's energy and equalizes them to linked machines.
+gui.transferModeFill.name=Fill
+gui.transferModeFill.tooltip=Fills up the capacitor's energy. Equalizes the overflowing energy.
+
+# Permissions
+gui.rights.name=Rights
+gui.rights.tooltip=Assign rights to the card to your left here.
+gui.WARP.name=Warp
+gui.WARP.tooltip=Allow the player to go through and bypass force fields.
+gui.BLOCK_PLACE_ACCESS.name=Block Alter
+gui.BLOCK_PLACE_ACCESS.tooltip=Allow the player to place and break blocks.
+gui.BLOCK_ACCESS.name=Block Access
+gui.BLOCK_ACCESS.tooltip=Allow the player to interact and open GUIs in blocks.
+gui.CONFIGURE.name=Configure
+gui.CONFIGURE.tooltip=Allow the player to configure the Biometric Identifier.
+gui.BYPASS_DEFENSE.name=Bypass Defense
+gui.BYPASS_DEFENSE.tooltip=Allow the player to bypass Interdiction Matrix restrictions.
+gui.BYPASS_CONFISCATION.name=Bypass Confiscation
+gui.BYPASS_CONFISCATION.tooltip=Allow the player to bypass the Interdiction Matrix confiscation.
+gui.remoteControl.name=Remote Control
+gui.remoteControl.tooltip=Allow the player to use the remote control within defensive region.
+
+# Interdiction Matrix
+gui.filterMode.name=Filter Mode
+gui.filterMode.tooltip=The mode in which to filter out items and blocks.
+gui.warn.name=Warning
+gui.warn.tooltip=The range in which the Interdiction Matrix will give the player a warning.
+gui.action.name=Action
+gui.action.tooltip=The range in which the Interdiction Matrix will apply the modulated actions to the player.
+gui.matrix.banned=Banned
+gui.matrix.allowed=Allowed
+
+# Force Field Projector
+gui.projector.mode=Mode
+gui.projector.up=Up
+gui.projector.down=Down
+gui.projector.north=North
+gui.projector.south=South
+gui.projector.east=East
+gui.projector.west=West
+gui.projector.front=Front
+gui.projector.back=Back
+gui.projector.left=Left
+gui.projector.right=Right
+
+# Custom Mode
+info.modeCustom.mode=Mode:
+info.modeCustom.substraction=Subtraction
+info.modeCustom.additive=Additive
+info.modeCustom.point1=Point 1:
+info.modeCustom.point2=Point 2:
+info.modeCustom.modeID=Mode ID:
+info.modeCustom.fieldSize=Field size:
+info.modeCustom.notSaved=Field not saved.
+info.modeCustom.shift=Hold shift for more...
+
+# More tooltips
+info.item.linkedWith=Linked with:
+info.item.dimension=Dimension:
+info.item.notLinked=Not linked.
+info.item.fortron=Fortron:
+info.cardFrequency.freq=Frequency:
+info.cardIdentification.username=Username:
+info.cardIdentification.empty=Unidentified

@@ -1,4 +1,4 @@
-package com.mffs.common;
+package com.mffs;
 
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;

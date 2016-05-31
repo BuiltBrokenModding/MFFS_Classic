@@ -1,6 +1,6 @@
 package com.mffs.client;
 
-import com.mffs.common.InitCommon;
+import com.mffs.InitCommon;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;

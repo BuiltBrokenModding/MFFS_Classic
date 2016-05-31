@@ -1,7 +1,5 @@
 package com.mffs;
 
-import com.mffs.common.InitCommon;
-import com.mffs.common.RegisterManager;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -21,7 +19,7 @@ public class MFFS
     @Mod.Instance
     public static MFFS mffs_mod;
 
-    @SidedProxy(clientSide="com.mffs.client.InitClient", serverSide="com.mffs.common.InitCommon")
+    @SidedProxy(clientSide="com.mffs.client.InitClient", serverSide="com.mffs.InitCommon")
     public static InitCommon initialize;
 
     /* This is the communication channel of the mod */
