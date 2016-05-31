@@ -1,6 +1,6 @@
 package com.mffs.api.util;
 
-import com.mffs.api.RegisterManager;
+import com.mffs.common.RegisterManager;
 import com.mffs.api.SecurityClearance;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -97,5 +97,4 @@ public class CardUtils {
         rights.setBoolean(sec.name(), value);
         RegisterManager.getTag(stack).setTag("rights", rights);
     }
-
 }

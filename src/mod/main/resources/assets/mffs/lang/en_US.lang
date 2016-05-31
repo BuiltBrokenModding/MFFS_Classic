@@ -6,7 +6,7 @@ tile.Capacitor.name=MFFS Capacitor
 tile.Projector.name=MFFS Projector
 tile.Fieldblock.name=MFFS Field
 tile.SecureStorage.name=MFFS Secure Storage
-tile.SecurityStation.name=MFFS Security Station
+tile.AdvSecurityStation.name=MFFS Security Station
 tile.ControlSystem.name=MFFS Control System
 
     <!-- Blocks: Misc -->

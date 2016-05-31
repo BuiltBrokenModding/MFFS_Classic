@@ -1,7 +1,7 @@
-package com.mffs.api.items.card;
+package com.mffs.common.items.card;
 
 import com.mffs.MFFS;
-import com.mffs.api.RegisterManager;
+import com.mffs.common.RegisterManager;
 import com.mffs.api.SecurityClearance;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import net.minecraft.client.renderer.texture.IIconRegister;

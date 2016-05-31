@@ -1,7 +1,7 @@
 package com.mffs;
 
 import com.mffs.common.InitCommon;
-import com.mffs.api.RegisterManager;
+import com.mffs.common.RegisterManager;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;

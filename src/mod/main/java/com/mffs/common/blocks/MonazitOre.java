@@ -1,4 +1,4 @@
-package com.mffs.api.blocks;
+package com.mffs.common.blocks;
 
 import com.mffs.MFFS;
 import net.minecraft.block.Block;

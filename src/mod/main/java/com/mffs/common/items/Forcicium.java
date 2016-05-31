@@ -1,4 +1,4 @@
-package com.mffs.api.items;
+package com.mffs.common.items;
 
 import com.mffs.MFFS;
 import net.minecraft.item.Item;

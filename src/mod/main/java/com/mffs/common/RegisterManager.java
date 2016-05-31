@@ -1,4 +1,4 @@
-package com.mffs.api;
+package com.mffs.common;
 
 import com.mffs.MFFS;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -32,14 +32,14 @@ public class RegisterManager {
      * Simply parses the item directory and registers them.
      */
     public static void parseItems(String offset) throws Exception{
-        File[] files = new File((!MFFS.DEV_MODE ? "./mods/" : "./production/mod/")+"com/mffs/api/items/"+offset.replace(".", "/")).listFiles();
+        File[] files = new File((!MFFS.DEV_MODE ? "./mods/" : "./production/mod/")+ "com/mffs/common/items/" +offset.replace(".", "/")).listFiles();
         for(File file : files) {
             if(file.isDirectory()) {
                 parseItems(offset+file.getName()+"/");
                 continue;
             }
             String name = file.getName().substring(0, file.getName().length() - 6);
-            Class rawClass = (Class) Class.forName("com.mffs.api.items." + offset.replace("/", ".") + name);
+            Class rawClass = (Class) Class.forName("com.mffs.common.items." + offset.replace("/", ".") + name);
             if(Modifier.isAbstract(rawClass.getModifiers())) { //This is a abstract class and we simply override it in others!
                 continue;
             }
@@ -54,14 +54,14 @@ public class RegisterManager {
      * Simply parses the item directory and registers them.
      */
     public static void parseBlocks(String offset) throws Exception{
-        File[] files = new File((!MFFS.DEV_MODE ? "./mods/" : "./production/mod/")+"com/mffs/api/blocks/"+offset.replace(".", "/")).listFiles();
+        File[] files = new File((!MFFS.DEV_MODE ? "./mods/" : "./production/mod/")+ "com/mffs/common/blocks/" +offset.replace(".", "/")).listFiles();
         for(File file : files) {
             if(file.isDirectory()) {
                 parseBlocks(offset+file.getName()+"/");
                 continue;
             }
             String name = file.getName().substring(0, file.getName().length() - 6);
-            Class rawClass = (Class) Class.forName("com.mffs.api.blocks." + offset.replace("/", ".") + name);
+            Class rawClass = (Class) Class.forName("com.mffs.common.blocks." + offset.replace("/", ".") + name);
             if(Modifier.isAbstract(rawClass.getModifiers())) { //This is a abstract class and we simply override it in others!
                 continue;
             }

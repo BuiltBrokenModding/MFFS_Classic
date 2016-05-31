@@ -1,6 +1,6 @@
-package com.mffs.api.items.card;
+package com.mffs.common.items.card;
 
-import com.mffs.api.RegisterManager;
+import com.mffs.common.RegisterManager;
 import com.mffs.api.Vector4;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;

@@ -1,7 +1,7 @@
-package com.mffs.api.items;
+package com.mffs.common.items;
 
 import com.mffs.MFFS;
-import com.mffs.api.RegisterManager;
+import com.mffs.common.RegisterManager;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
