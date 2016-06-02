@@ -1,17 +1,14 @@
-package com.mffs.items.card;
+package com.mffs.model.items.card;
 
 import com.mffs.RegisterManager;
-import com.mffs.api.IItemFrequency;
 import com.mffs.api.card.ICoordLink;
-import com.mffs.api.utils.Util;
-import cpw.mods.fml.client.config.GuiConfigEntries;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import mekanism.api.Coord4D;
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
@@ -66,5 +63,33 @@ public class CardLink extends CardBlank implements ICoordLink {
         link.zCoord = linkTag.getInteger("z");
         link.dimensionId = linkTag.getInteger("id");
         return link;
+    }
+
+    /**
+     * This is called when the item is used, before the block is activated.
+     *
+     * @param stack  The Item Stack
+     * @param player The Player that used the item
+     * @param world  The Current World
+     * @param x      Target X Position
+     * @param y      Target Y Position
+     * @param z      Target Z Position
+     * @param side   The side of the target hit
+     * @param hitX
+     * @param hitY
+     * @param hitZ   @return Return true to prevent any further processing.
+     */
+    @Override
+    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
+        if(!world.isRemote) {
+            Coord4D coord = new Coord4D(x, y, z, world.provider.dimensionId);
+            setLink(stack, coord);
+
+            Block block = coord.getBlock(world);
+            if(block != null) {
+                player.addChatMessage(new ChatComponentText(String.format(LanguageRegistry.instance().getStringLocalization("info.item.linkedWith")+" %d %d %d %s", x, y, z, block.getLocalizedName())));
+            }
+        }
+        return true;
     }
 }

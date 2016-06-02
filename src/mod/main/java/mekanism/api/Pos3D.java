@@ -63,8 +63,8 @@ public class Pos3D
     }
 
     /**
-     * Creates a Pos3D with a TileEntity's xCoord, yCoord and zCoord values.
-     * @param tileEntity - TileEntity to create the Pos3D from
+     * Creates a Pos3D with a TileMFFS's xCoord, yCoord and zCoord values.
+     * @param tileEntity - TileMFFS to create the Pos3D from
      */
     public Pos3D(TileEntity tileEntity)
     {

@@ -1,6 +1,5 @@
-package com.mffs.items.card;
+package com.mffs.model.items.card;
 
-import com.mffs.MFFS;
 import com.mffs.api.card.ICardInfinite;
 
 /**

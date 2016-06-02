@@ -1,11 +1,9 @@
-package com.mffs.blocks;
+package com.mffs.model;
 
 import com.mffs.MFFS;
 import com.mffs.api.IBiometricIdentifierLink;
-import com.mffs.api.security.IBiometricIdentifier;
 import com.mffs.api.security.Permission;
-import com.mffs.items.card.CardLink;
-import com.mffs.tile.TileMachine;
+import com.mffs.model.items.card.CardLink;
 import mekanism.api.IMekWrench;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
@@ -32,14 +30,14 @@ public abstract class MFFSMachine extends Block implements ITileEntityProvider {
     public MFFSMachine() {
         super(Material.iron);
         this.isBlockContainer = true;
-        setHardness(100F);
-        setResistance(Float.MAX_VALUE); //why is it resistant to explosions
+        setHardness(Float.MAX_VALUE);
+        setResistance(100F); //why is it resistant to explosions
     }
 
     @Override
     public IIcon getIcon(IBlockAccess blockAccess, int x, int y, int z, int side) {
         TileEntity entity = blockAccess.getTileEntity(x, y, z);
-        if(entity instanceof TileMachine && ((TileMachine)entity).isActiv()) {
+        if(entity instanceof TileMFFS && ((TileMFFS)entity).isActive()) {
             if(side < 2) {
                 return side_textures[1];
             }
@@ -53,11 +51,12 @@ public abstract class MFFSMachine extends Block implements ITileEntityProvider {
 
     @Override
     public void registerBlockIcons(IIconRegister reg) {
-        this.blockIcon = reg.registerIcon(MFFS.MODID+":"+this.getLocalizedName());
+        String name = getUnlocalizedName().substring(5);
+        this.blockIcon = reg.registerIcon(MFFS.MODID+":"+name);
         side_textures = new IIcon[]{
-                reg.registerIcon(MFFS.MODID+":"+this.getLocalizedName()+"_top"),
-            reg.registerIcon(MFFS.MODID+":"+this.getLocalizedName()+"_top_on"),
-            reg.registerIcon(MFFS.MODID+":"+this.getLocalizedName()+"_on")
+                reg.registerIcon(MFFS.MODID+":"+name+"_top"),
+                reg.registerIcon(MFFS.MODID+":"+name+"_top_on"),
+                reg.registerIcon(MFFS.MODID+":"+name+"_on")
         };
     }
 
@@ -99,10 +98,10 @@ public abstract class MFFSMachine extends Block implements ITileEntityProvider {
      */
     @Override
     public void onNeighborBlockChange(World world, int x, int y, int z, Block block) {
-        if(world.isRemote) {
+        if(!world.isRemote) {
             TileEntity entity = world.getTileEntity(x, y, z);
-            if(entity instanceof TileMachine) {
-                ((TileMachine)entity).setActiv(world.isBlockIndirectlyGettingPowered(x, y, z));
+            if(entity instanceof TileMFFS) {
+                ((TileMFFS)entity).setActive(world.isBlockIndirectlyGettingPowered(x, y, z));
             }
         }
     }
@@ -117,5 +116,13 @@ public abstract class MFFSMachine extends Block implements ITileEntityProvider {
      * @param side The side being clicked.
      * @return
      */
-    abstract boolean wrenchMachine(World world, int x, int y, int z, EntityPlayer player, int side);
+    public abstract boolean wrenchMachine(World world, int x, int y, int z, EntityPlayer player, int side);
+
+    @Override
+    public boolean isOpaqueCube() {
+        return false;
+    }
+
+    @Override
+    public boolean renderAsNormalBlock() { return false;}
 }

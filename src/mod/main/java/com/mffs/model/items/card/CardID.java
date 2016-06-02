@@ -1,7 +1,5 @@
-package com.mffs.items.card;
+package com.mffs.model.items.card;
 
-import akka.io.Tcp;
-import com.mffs.MFFS;
 import com.mffs.RegisterManager;
 import com.mffs.api.card.ICardIdentification;
 import com.mffs.api.security.Permission;

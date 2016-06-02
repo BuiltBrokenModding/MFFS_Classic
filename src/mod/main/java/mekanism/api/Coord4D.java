@@ -94,9 +94,9 @@ public class Coord4D
     }
 
     /**
-     * Gets the TileEntity of the block representing this Coord4D.
+     * Gets the TileMFFS of the block representing this Coord4D.
      * @param world - world this Coord4D is in
-     * @return the TileEntity of this Coord4D's block
+     * @return the TileMFFS of this Coord4D's block
      */
     public TileEntity getTileEntity(IBlockAccess world)
     {
@@ -224,9 +224,9 @@ public class Coord4D
     }
 
     /**
-     * Returns a new Coord4D from a defined TileEntity's xCoord, yCoord and zCoord values.
-     * @param tileEntity - TileEntity at the location that will represent this Coord4D
-     * @return the Coord4D object from the TileEntity
+     * Returns a new Coord4D from a defined TileMFFS's xCoord, yCoord and zCoord values.
+     * @param tileEntity - TileMFFS at the location that will represent this Coord4D
+     * @return the Coord4D object from the TileMFFS
      */
     public static Coord4D get(TileEntity tileEntity)
     {

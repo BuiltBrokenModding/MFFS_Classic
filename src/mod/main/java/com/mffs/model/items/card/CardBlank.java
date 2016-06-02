@@ -1,10 +1,8 @@
-package com.mffs.items.card;
+package com.mffs.model.items.card;
 
-import com.mffs.MFFS;
 import com.mffs.api.card.ICard;
 import com.mffs.api.utils.Util;
 import cpw.mods.fml.common.registry.LanguageRegistry;
-import net.minecraft.client.resources.LanguageManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

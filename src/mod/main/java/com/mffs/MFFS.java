@@ -31,6 +31,8 @@ public class MFFS
         try {
             RegisterManager.parseItems("");
             RegisterManager.parseBlocks("");
+            RegisterManager.parseEntity("");
+            RegisterManager.parseFluid("");
         } catch(Exception e) { e.printStackTrace();}
         initialize.preInit(event);
     }

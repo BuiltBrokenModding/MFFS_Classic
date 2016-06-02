@@ -1,13 +1,11 @@
-package com.mffs.items.card;
+package com.mffs.model.items.card;
 
 import com.mffs.RegisterManager;
 import com.mffs.api.IBlockFrequency;
 import com.mffs.api.IItemFrequency;
-import com.mffs.api.utils.Util;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
@@ -86,7 +84,7 @@ public class CardFrequency extends CardBlank implements IItemFrequency {
      * @param hitZ   @return Return true to prevent any further processing.
      */
     @Override
-    public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
+    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
         TileEntity tile = world.getTileEntity(x, y, z);
         if(tile instanceof IBlockFrequency) {
             if(!world.isRemote) {
