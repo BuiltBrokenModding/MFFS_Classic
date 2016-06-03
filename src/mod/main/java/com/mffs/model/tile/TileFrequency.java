@@ -53,7 +53,7 @@ public abstract class TileFrequency extends TileMFFSInventory implements IBlockF
 
 
         ItemStack itemStack = getStackInSlot(0);
-        if ((itemStack != null) && ((itemStack.getItem() instanceof ICoordLink))) {
+        if (itemStack != null && itemStack.getItem() instanceof ICoordLink) {
             Coord4D linkedPosition = ((ICoordLink) itemStack.getItem()).getLink(itemStack);
 
             if (linkedPosition != null) {

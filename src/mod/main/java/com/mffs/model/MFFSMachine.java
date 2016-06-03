@@ -83,6 +83,7 @@ public abstract class MFFSMachine extends Block implements ITileEntityProvider {
                 return false;
             }
         }
+        player.openGui(MFFS.mffs_mod, 0, world, x, y, z);
         return true;
     }
 

@@ -29,9 +29,9 @@ import java.util.Map;
  */
 public class GuiContainerBase extends GuiContainer{
     
-    public static final ResourceLocation GUI_COMPONENTS = new ResourceLocation(MFFS.MODID, "gui_components.png");
+    public static final ResourceLocation GUI_COMPONENTS = new ResourceLocation(MFFS.MODID, "textures/gui/gui_components.png");
     
-        public ResourceLocation baseTexture;
+        public static final ResourceLocation baseTexture = new ResourceLocation(MFFS.MODID, "textures/gui/gui_base.png");;
 
         public enum SlotType
         {
@@ -53,7 +53,6 @@ public class GuiContainerBase extends GuiContainer{
         {
             super(container);
             this.ySize = 217;
-            this.baseTexture = new ResourceLocation(MFFS.MODID, "gui_base.png");
         }
 
         public void onGuiClosed()
@@ -274,7 +273,7 @@ public class GuiContainerBase extends GuiContainer{
                 }
                 else
                 {
-                    drawTooltip(mouseX - this.guiLeft, mouseY - this.guiTop + 10, new String[] { "Click to change unit." });
+                    drawTooltip(mouseX - this.guiLeft, mouseY - this.guiTop + 10, "Click to change unit." );
                 }
             }
             this.lastChangeFrameTime -= 1.0F;

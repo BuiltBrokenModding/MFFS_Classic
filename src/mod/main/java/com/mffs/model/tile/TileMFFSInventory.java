@@ -14,7 +14,7 @@ import net.minecraftforge.common.util.Constants;
 public abstract class TileMFFSInventory extends TileMFFS implements IInventory {
 
     /* Inventory of this object */
-    protected ItemStack[] inventory;
+    protected ItemStack[] inventory = new ItemStack[getSizeInventory()];
 
     /**
      * Returns the number of slots in the inventory.
@@ -149,7 +149,7 @@ public abstract class TileMFFSInventory extends TileMFFS implements IInventory {
     @Override
     public void writeToNBT(NBTTagCompound nbt) {
         super.writeToNBT(nbt);
-        NBTTagList nbtTagList = new NBTTagList();
+        /*NBTTagList nbtTagList = new NBTTagList();
         for (int i = 0; i < this.inventory.length; i++) {
             if (this.inventory[i] != null) {
                 NBTTagCompound nbttagcompound1 = new NBTTagCompound();
@@ -159,13 +159,13 @@ public abstract class TileMFFSInventory extends TileMFFS implements IInventory {
             }
         }
 
-        nbt.setTag("Items", nbtTagList);
+        nbt.setTag("Items", nbtTagList);*/
     }
 
     @Override
     public void readFromNBT(NBTTagCompound nbt) {
         super.readFromNBT(nbt);
-        NBTTagList nbtTagList = nbt.getTagList("Items", Constants.NBT.TAG_COMPOUND);
+        /*NBTTagList nbtTagList = nbt.getTagList("Items", Constants.NBT.TAG_COMPOUND);
         this.inventory = new ItemStack[getSizeInventory()];
 
         for (int i = 0; i < nbtTagList.tagCount(); i++) {
@@ -175,6 +175,6 @@ public abstract class TileMFFSInventory extends TileMFFS implements IInventory {
             if ((byte0 >= 0) && (byte0 < this.inventory.length)) {
                 this.inventory[byte0] = ItemStack.loadItemStackFromNBT(nbttagcompound1);
             }
-        }
+        }*/
     }
 }

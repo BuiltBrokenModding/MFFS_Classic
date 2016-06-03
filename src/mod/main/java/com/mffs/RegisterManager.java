@@ -86,18 +86,20 @@ public class RegisterManager {
          * Simply parses the item directory and registers them.
          */
     public static void parseEntity(String offset) throws Exception{
-        File[] files = new File((!MFFS.DEV_MODE ? "./mods/" : "./production/mod/")+ "com/mffs/model/tiles/" +offset.replace(".", "/")).listFiles();
+        File[] files = new File((!MFFS.DEV_MODE ? "./mods/" : "./production/mod/")+ "com/mffs/model/tile/" +offset.replace(".", "/")).listFiles();
         if(files == null) {
             return;
         }
         for(File file : files) {
-            if(file == null) continue;
-            if(file.isDirectory()) {
-                parseBlocks(offset+file.getName()+"/");
+            if(file == null)  {
+                continue;
+            }
+            if(file.isDirectory()) {System.out.println("Parsing directory: "+file.getName());
+                parseEntity(offset+file.getName()+"/");
                 continue;
             }
             String name = file.getName().substring(0, file.getName().length() - 6);
-            Class rawClass = (Class) Class.forName("com.mffs.model.tiles." + offset.replace("/", ".") + name);
+            Class rawClass = (Class) Class.forName("com.mffs.model.tile." + offset.replace("/", ".") + name);
             if(Modifier.isAbstract(rawClass.getModifiers())) { //This is a abstract class and we simply override it in others!
                 continue;
             }
@@ -118,7 +120,7 @@ public class RegisterManager {
         for(File file : files) {
             if(file == null) continue;
             if(file.isDirectory()) {
-                parseBlocks(offset+file.getName()+"/");
+                parseFluid(offset+file.getName()+"/");
                 continue;
             }
             String name = file.getName().substring(0, file.getName().length() - 6);

@@ -13,7 +13,7 @@ import net.minecraft.world.World;
 /**
  * Created by pwaln on 6/1/2016.
  */
-public class BlockCoercionDeriver extends MFFSMachine {
+public final class BlockCoercionDeriver extends MFFSMachine {
     /**
      * @param world  The current world.
      * @param x      X position of block.

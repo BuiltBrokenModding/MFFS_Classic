@@ -6,6 +6,7 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 
 @Mod(modid = MFFS.MODID, name = MFFS.MOD_NAME, version = MFFS.VERSION)
@@ -19,8 +20,8 @@ public class MFFS
     @Mod.Instance
     public static MFFS mffs_mod;
 
-    @SidedProxy(clientSide="com.mffs.client.InitClient", serverSide="com.mffs.InitCommon")
-    public static InitCommon initialize;
+    @SidedProxy(clientSide="com.mffs.client.ClientProxy", serverSide="com.mffs.CommonProxy")
+    public static CommonProxy initialize;
 
     /* This is the communication channel of the mod */
     public static SimpleNetworkWrapper channel;
@@ -33,6 +34,7 @@ public class MFFS
             RegisterManager.parseBlocks("");
             RegisterManager.parseEntity("");
             RegisterManager.parseFluid("");
+            NetworkRegistry.INSTANCE.registerGuiHandler(this, initialize);
         } catch(Exception e) { e.printStackTrace();}
         initialize.preInit(event);
     }
