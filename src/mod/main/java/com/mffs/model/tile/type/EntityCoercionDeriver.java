@@ -102,10 +102,10 @@ public class EntityCoercionDeriver extends TileElectrical {
             switch (slotID) {
                 case 0:
                     return itemStack.getItem() instanceof CardFrequency;
-                //case 1:
-                //   return CompatibilityModule.isHandler(itemStack.func_77973_b());
-                // case 2:
-                //   return (itemStack.isItemEqual(new ItemStack(Item., 1, 4))) || (itemStack.isItemEqual(new ItemStack(Item.field_94583_ca)));
+                case 1://battery
+                   return false;
+                 //case 2:
+                 //  return (itemStack.isItemEqual(new ItemStack(Item., 1, 4))) || (itemStack.isItemEqual(new ItemStack(Item.field_94583_ca)));
             }
 
         }

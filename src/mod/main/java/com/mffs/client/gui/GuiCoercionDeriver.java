@@ -1,6 +1,7 @@
 package com.mffs.client.gui;
 
 import com.mffs.api.gui.GuiContainerBase;
+import com.mffs.api.gui.GuiSlotType;
 import com.mffs.api.utils.UnitDisplay;
 import com.mffs.client.MFFSGui;
 import com.mffs.model.container.CoercionDeriverContainer;
@@ -51,8 +52,8 @@ public class GuiCoercionDeriver extends MFFSGui {
             }
         }
 
-        renderUniversalDisplay(85, 30, (float) this.tileEntity.getWattage(), x, y, UnitDisplay.Unit.WATT);
-        this.fontRendererObj.drawString(UnitDisplay.getDisplayShort(240L, UnitDisplay.Unit.VOLTAGE), 85, 40, 4210752);
+        renderUniversalDisplay(85, 30, this.tileEntity.getWattage(), x, y, UnitDisplay.Unit.REDFLUX);
+        this.fontRendererObj.drawString(UnitDisplay.getDisplayShort(240L, UnitDisplay.Unit.REDFLUX), 85, 40, 4210752);
 
         drawTextWithTooltip("progress", "%1: " + (this.tileEntity.isActive() ? LanguageRegistry.instance().getStringLocalization("gui.deriver.running") : LanguageRegistry.instance().getStringLocalization("gui.deriver.idle")), 8, 70, x, y);
         drawTextWithTooltip("fortron", "%1: " + UnitDisplay.getDisplayShort(this.tileEntity.getFortronEnergy(), UnitDisplay.Unit.LITER), 8, 105, x, y);
@@ -76,7 +77,7 @@ public class GuiCoercionDeriver extends MFFSGui {
         drawSlot(8, 40);
 
 
-        drawSlot(8, 82, GuiContainerBase.SlotType.BATTERY);
+        drawSlot(8, 82, GuiSlotType.BATTERY);
         drawSlot(28, 82);
 
         drawBar(50, 84, 1.0F);

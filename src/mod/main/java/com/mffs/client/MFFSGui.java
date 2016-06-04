@@ -117,7 +117,7 @@ public class MFFSGui extends GuiContainerBase {
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 
         if (this.textFieldFrequency != null) {
-            if (this.isWithinBounds((int) this.textFieldPos.x, (int) this.textFieldPos.y, this.textFieldFrequency.getWidth(), 12, mouseX, mouseY)) {
+            if (func_146978_c((int) this.textFieldPos.x, (int) this.textFieldPos.y, this.textFieldFrequency.getWidth(), 12, mouseX, mouseY)) {
                 this.tooltip = LanguageRegistry.instance().getStringLocalization("gui.frequency.tooltip");
             }
         }

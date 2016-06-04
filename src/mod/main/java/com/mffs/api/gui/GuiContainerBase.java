@@ -33,11 +33,6 @@ public class GuiContainerBase extends GuiContainer{
     
         public static final ResourceLocation baseTexture = new ResourceLocation(MFFS.MODID, "textures/gui/gui_base.png");;
 
-        public enum SlotType
-        {
-            NONE,  BATTERY,  LIQUID,  GAS,  ARR_UP,  ARR_DOWN,  ARR_LEFT,  ARR_RIGHT,  ARR_UP_RIGHT,  ARR_UP_LEFT,  ARR_DOWN_LEFT,  ARR_DOWN_RIGHT;
-        }
-
         protected int meterX = 54;
         protected int meterHeight = 49;
         protected int meterWidth = 14;
@@ -70,7 +65,7 @@ public class GuiContainerBase extends GuiContainer{
                 Map.Entry<Matrix2D, String> entry = (Map.Entry)it.next();
                 if (entry.getKey().isWithin(mouseX - this.guiLeft, mouseY - this.guiTop))
                 {
-                    this.tooltip = ((String)entry.getValue());
+                    this.tooltip = (entry.getValue());
                     break;
                 }
             }
@@ -134,7 +129,7 @@ public class GuiContainerBase extends GuiContainer{
 
             String tooltip = LanguageRegistry.instance().getStringLocalization("gui." + textName + ".tooltip");
             if ((tooltip != null) && (tooltip != "")) {
-                if (isWithinBounds(x, y, mouseX, mouseY, (int) (text.length() * 4.8), 12)) {
+                if (func_146978_c(x, y, (int) (text.length() * 4.8), 12, mouseX, mouseY)) {
                     this.tooltip = tooltip;
                 }
             }
@@ -229,22 +224,6 @@ public class GuiContainerBase extends GuiContainer{
             drawTexturedModalRect(this.containerWidth + x, this.containerHeight + y, 40, 98, this.meterWidth, this.meterHeight);
         }
 
-        protected void drawSlot(int x, int y, SlotType type, float r, float g, float b)
-        {
-            this.mc.renderEngine.bindTexture(GUI_COMPONENTS);
-            GL11.glColor4f(r, g, b, 1.0F);
-
-            drawTexturedModalRect(this.containerWidth + x, this.containerHeight + y, 0, 0, 18, 18);
-            if (type != SlotType.NONE) {
-                drawTexturedModalRect(this.containerWidth + x, this.containerHeight + y, 0, 18 * type.ordinal(), 18, 18);
-            }
-        }
-
-        protected void drawSlot(int x, int y, SlotType type)
-        {
-            drawSlot(x, y, type, 1.0F, 1.0F, 1.0F);
-        }
-
         public void renderUniversalDisplay(int x, int y, float energy, int mouseX, int mouseY, UnitDisplay.Unit unit)
         {
             String displaySuffix = "";
@@ -265,7 +244,7 @@ public class GuiContainerBase extends GuiContainer{
                         display = UnitDisplay.roundDecimals(energy * CompatibilityType.THERMAL_EXPANSION.ratio) + " RF" + displaySuffix;
                 }
             }
-            if (isWithinBounds(x, y, mouseX, mouseY, display.length() * 5, 9)) {
+            if (func_146978_c(x, y, display.length() * 5, 9, mouseX, mouseY)) {
                 if ((Mouse.isButtonDown(0)) && (this.lastChangeFrameTime <= 0.0F))
                 {
                     this.energyType = ((this.energyType + 1) % 4);
@@ -371,9 +350,4 @@ public class GuiContainerBase extends GuiContainer{
                 }
             }
         }
-
-    protected boolean isWithinBounds(int x, int y, int mouseX, int mouseY, int width, int height) {//x, y, display.length() * 5, 9, mouseX, mouseY
-        int topX = x + width, topY = y + height;
-        return mouseX >= x && mouseX <= topX && mouseY >= y && mouseY <= topY;
-    }
 }

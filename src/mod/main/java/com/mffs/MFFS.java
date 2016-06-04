@@ -8,6 +8,7 @@ import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import jdk.internal.org.objectweb.asm.commons.Method;
 
 @Mod(modid = MFFS.MODID, name = MFFS.MOD_NAME, version = MFFS.VERSION)
 public class MFFS

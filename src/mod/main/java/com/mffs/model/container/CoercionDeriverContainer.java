@@ -1,6 +1,8 @@
 package com.mffs.model.container;
 
 import com.mffs.api.IPlayerUsing;
+import com.mffs.api.slots.CardSlot;
+import com.mffs.api.slots.MachineSlot;
 import com.mffs.model.tile.type.EntityCoercionDeriver;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -14,9 +16,9 @@ import net.minecraft.item.ItemStack;
 public class CoercionDeriverContainer extends Container {
 
     protected int slotCount = 0;
-    protected int xInventoryDisplacement = 8;
-    protected int yInventoryDisplacement = 135;
-    protected int yHotBarDisplacement = 193;
+    public static int xInventoryDisplacement = 8;
+    public static int yInventoryDisplacement = 135;
+    public static int yHotBarDisplacement = 193;
     private IInventory inventory;
 
     public CoercionDeriverContainer(EntityPlayer player, EntityCoercionDeriver driver) {
@@ -25,6 +27,15 @@ public class CoercionDeriverContainer extends Container {
         if ((inventory instanceof IPlayerUsing)) {
             ((IPlayerUsing) inventory).getPlayersUsing().add(player);
         }
+        //Add slots
+        addSlotToContainer(new CardSlot<>(driver, 0, 9, 41));
+        addSlotToContainer(new MachineSlot<>(driver, 1, 9, 83));
+        addSlotToContainer(new MachineSlot<>(driver, 2, 29, 83));
+
+        addSlotToContainer(new MachineSlot<>(driver, 3, 154, 67));
+        addSlotToContainer(new MachineSlot<>(driver, 4, 154, 87));
+        addSlotToContainer(new MachineSlot<>(driver, 5, 154, 47));
+        addPlayerInventory(player);
     }
     @Override
     public void onContainerClosed(EntityPlayer entityplayer) {
@@ -34,6 +45,10 @@ public class CoercionDeriverContainer extends Container {
         super.onContainerClosed(entityplayer);
     }
 
+    /**
+     *
+     * @param player
+     */
     public void addPlayerInventory(EntityPlayer player) {
         if ((this.inventory instanceof IPlayerUsing)) {
             ((IPlayerUsing) this.inventory).getPlayersUsing().add(player);
@@ -79,7 +94,7 @@ public class CoercionDeriverContainer extends Container {
                 return null;
             }
             if (itemStack.stackSize == 0) {
-                var3.putStack((ItemStack) null);
+                var3.putStack(null);
             } else {
                 var3.onSlotChanged();
             }

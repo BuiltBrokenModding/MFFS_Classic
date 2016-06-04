@@ -58,7 +58,7 @@ public class ClientProxy extends CommonProxy {
         TileEntity tileEntity = world.getTileEntity(x, y, z);
         if(tileEntity != null) {
             if(tileEntity instanceof EntityCoercionDeriver) {
-                return new GuiCoercionDeriver(player, (EntityCoercionDeriver)tileEntity);
+                return new GuiCoercionDeriver(player, (EntityCoercionDeriver) tileEntity);
             }
         }
         return null;
