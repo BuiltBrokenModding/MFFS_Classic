@@ -19,6 +19,8 @@ public abstract class TileMFFS extends TileEntity implements IActivatable {
     /* Ticks */
     protected long ticks;
 
+    public float animation;
+
     @Override
     public void updateEntity() {
         if(ticks == 0) {

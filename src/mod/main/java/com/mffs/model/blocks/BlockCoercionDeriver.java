@@ -1,6 +1,8 @@
 package com.mffs.model.blocks;
 
+import codechicken.lib.render.BlockRenderer;
 import com.mffs.MFFS;
+import com.mffs.client.render.RenderBlockHandler;
 import com.mffs.model.MFFSMachine;
 import com.mffs.model.tile.type.EntityCoercionDeriver;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -49,5 +51,9 @@ public final class BlockCoercionDeriver extends MFFSMachine {
         return this.blockIcon;
     }
 
+    @Override
+    public int getRenderType() { return RenderBlockHandler.RENDER_ID;}
 
+    @Override
+    public boolean renderAsNormalBlock() { return false;}
 }

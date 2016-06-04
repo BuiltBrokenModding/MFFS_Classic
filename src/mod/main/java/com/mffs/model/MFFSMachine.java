@@ -123,7 +123,4 @@ public abstract class MFFSMachine extends Block implements ITileEntityProvider {
     public boolean isOpaqueCube() {
         return false;
     }
-
-    @Override
-    public boolean renderAsNormalBlock() { return false;}
 }

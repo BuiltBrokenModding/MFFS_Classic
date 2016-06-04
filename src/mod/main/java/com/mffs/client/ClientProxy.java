@@ -1,15 +1,23 @@
 package com.mffs.client;
 
 import com.mffs.CommonProxy;
+import com.mffs.MFFS;
 import com.mffs.client.gui.GuiCoercionDeriver;
+import com.mffs.client.render.RenderBlockHandler;
+import com.mffs.client.render.RenderCoercionDeriver;
+import com.mffs.client.render.RenderIDCard;
 import com.mffs.model.container.CoercionDeriverContainer;
 import com.mffs.model.tile.type.EntityCoercionDeriver;
+import cpw.mods.fml.client.registry.ClientRegistry;
+import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import net.minecraftforge.client.MinecraftForgeClient;
 
 /**
  * Created by pwaln on 5/22/2016.
@@ -30,6 +38,9 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void init(FMLInitializationEvent event)
     {
+        RenderingRegistry.registerBlockHandler(new RenderBlockHandler());
+        MinecraftForgeClient.registerItemRenderer((Item) Item.itemRegistry.getObject(MFFS.MODID + ":cardID"), new RenderIDCard());
+        ClientRegistry.bindTileEntitySpecialRenderer(EntityCoercionDeriver.class, new RenderCoercionDeriver());
     }
 
     /**

@@ -24,6 +24,8 @@ public class MFFSGui extends GuiContainerBase {
     protected Vector2d textFieldPos = new Vector2d();
     protected IBlockFrequency frequencyTile;
 
+    public int animation;
+
     /**
      * @param container
      */

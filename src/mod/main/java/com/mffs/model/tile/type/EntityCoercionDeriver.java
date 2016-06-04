@@ -59,6 +59,7 @@ public class EntityCoercionDeriver extends TileElectrical {
                     }
                 }
             }//animation
+            animation++;
         }
     }
 
