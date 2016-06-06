@@ -1,38 +1,37 @@
 package com.mffs.model;
 
-import cofh.api.energy.TileEnergyHandler;
 import com.mffs.api.IActivatable;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 
 /**
- * Created by pwaln on 6/1/2016.
+ * @author Calclavia
  */
 public abstract class TileMFFS extends TileEntity implements IActivatable {
 
+    public float animation;
+    /* Ticks */
+    protected long ticks;
     /* If this machine is on */
     private boolean isActivated;
-
     /* If this tile requires a restone signal */
     private boolean isProvidingSignal;
 
-    /* Ticks */
-    protected long ticks;
-
-    public float animation;
-
     @Override
     public void updateEntity() {
-        if(ticks == 0) {
+        if (ticks == 0) {
             start();
-        } else if(ticks >= Long.MAX_VALUE) {
+        } else if (ticks >= Long.MAX_VALUE) {
             ticks = 1;
         }
         ticks++;
     }
 
     /* Starts the entity */
-    public void start(){};
+    public void start() {
+    }
+
+    ;
 
     @Override
     public void writeToNBT(NBTTagCompound nbt) {

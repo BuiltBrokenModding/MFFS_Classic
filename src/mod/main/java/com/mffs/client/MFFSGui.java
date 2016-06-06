@@ -20,11 +20,10 @@ import javax.vecmath.Vector2d;
  */
 public class MFFSGui extends GuiContainerBase {
 
+    public int animation;
     protected GuiTextField textFieldFrequency;
     protected Vector2d textFieldPos = new Vector2d();
     protected IBlockFrequency frequencyTile;
-
-    public int animation;
 
     /**
      * @param container

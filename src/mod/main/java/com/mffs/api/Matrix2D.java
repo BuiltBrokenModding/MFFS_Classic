@@ -1,13 +1,10 @@
 package com.mffs.api;
 
-import org.lwjgl.util.vector.Matrix2f;
-
 import javax.vecmath.Vector2d;
-import javax.vecmath.Vector3d;
 
 /**
  * Created by pwaln on 6/2/2016.
- *
+ * <p>
  * Create a 2x3 Matrix
  */
 public class Matrix2D {
@@ -25,6 +22,7 @@ public class Matrix2D {
 
     /**
      * Deteremines if we are within the Vector.
+     *
      * @param v
      * @return
      */

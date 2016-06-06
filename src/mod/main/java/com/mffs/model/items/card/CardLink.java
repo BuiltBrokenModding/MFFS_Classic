@@ -16,7 +16,7 @@ import net.minecraftforge.common.DimensionManager;
 import java.util.List;
 
 /**
- * Created by pwaln on 5/31/2016.
+ * @author Calclavia
  */
 public class CardLink extends CardBlank implements ICoordLink {
 
@@ -27,17 +27,17 @@ public class CardLink extends CardBlank implements ICoordLink {
     public void addInformation(ItemStack stack, EntityPlayer usr, List list, boolean dummy) {
         NBTTagCompound tag = RegisterManager.getTag(stack);
         Coord4D link = getLink(stack);
-        if(link != null) {
+        if (link != null) {
             World world = DimensionManager.getWorld(link.dimensionId);
             Block block = link.getBlock(world);
-            if(block != null) {
+            if (block != null) {
                 list.add(LanguageRegistry.instance().getStringLocalization("info.item.linkedWith") + " " + block.getLocalizedName());
             }
             list.add(link.xCoord + ", " + link.yCoord + ", " + link.zCoord);
             list.add(LanguageRegistry.instance().getStringLocalization("info.item.dimension") + " " + world.getWorldInfo().getWorldName());
         } else {
             super.addInformation(stack, usr, list, dummy);
-            list.add(EnumChatFormatting.RED+LanguageRegistry.instance().getStringLocalization("info.item.notLinked"));
+            list.add(EnumChatFormatting.RED + LanguageRegistry.instance().getStringLocalization("info.item.notLinked"));
         }
     }
 
@@ -45,18 +45,20 @@ public class CardLink extends CardBlank implements ICoordLink {
     public void setLink(ItemStack paramItemStack, Coord4D paramVectorWorld) {
         NBTTagCompound tag = RegisterManager.getTag(paramItemStack);
         tag.setTag("mffs_link", paramVectorWorld.write(tag.getCompoundTag("mffs_link")));
+        this.link = paramVectorWorld;
     }
 
     @Override
     public Coord4D getLink(ItemStack paramItemStack) {
         NBTTagCompound tag = RegisterManager.getTag(paramItemStack);
-        if(!tag.hasKey("mffs_link")) {
+        if (!tag.hasKey("mffs_link")) {
             return null;
         }
         NBTTagCompound linkTag = tag.getCompoundTag("mffs_link");
-        if(link == null) {
+        if (link == null) {
             return link = Coord4D.read(linkTag);
         }
+        //TODO: Since we cache it, we really do not need to obtain it every single time.
         //We just update our variable!
         link.xCoord = linkTag.getInteger("x");
         link.yCoord = linkTag.getInteger("y");
@@ -81,13 +83,13 @@ public class CardLink extends CardBlank implements ICoordLink {
      */
     @Override
     public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
-        if(!world.isRemote) {
+        if (!world.isRemote) {
             Coord4D coord = new Coord4D(x, y, z, world.provider.dimensionId);
             setLink(stack, coord);
 
             Block block = coord.getBlock(world);
-            if(block != null) {
-                player.addChatMessage(new ChatComponentText(String.format(LanguageRegistry.instance().getStringLocalization("info.item.linkedWith")+" %d %d %d %s", x, y, z, block.getLocalizedName())));
+            if (block != null) {
+                player.addChatMessage(new ChatComponentText(String.format(LanguageRegistry.instance().getStringLocalization("info.item.linkedWith") + " %d %d %d %s", x, y, z, block.getLocalizedName())));
             }
         }
         return true;

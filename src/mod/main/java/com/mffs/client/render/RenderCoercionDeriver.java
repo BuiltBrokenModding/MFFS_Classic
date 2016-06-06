@@ -23,15 +23,15 @@ public class RenderCoercionDeriver extends TileEntitySpecialRenderer {
 
     @Override
     public void renderTileEntityAt(TileEntity t, double x, double y, double z, float f) {
-        TileMFFS tileEntity = (TileMFFS)t;
-       FMLClientHandler.instance().getClient().renderEngine.bindTexture(tileEntity.isActive() ? TEXTURE_ON : TEXTURE_OFF);
-     GL11.glPushMatrix();
-     GL11.glTranslated(x + 0.5D, y + 1.95D, z + 0.5D);
-     GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
-     GL11.glScalef(1.3F, 1.3F, 1.3F);
+        TileMFFS tileEntity = (TileMFFS) t;
+        FMLClientHandler.instance().getClient().renderEngine.bindTexture(tileEntity.isActive() ? TEXTURE_ON : TEXTURE_OFF);
+        GL11.glPushMatrix();
+        GL11.glTranslated(x + 0.5D, y + 1.95D, z + 0.5D);
+        GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
+        GL11.glScalef(1.3F, 1.3F, 1.3F);
 
-     MODEL.render(tileEntity.animation, 0.0625F);
+        MODEL.render(tileEntity.animation, 0.0625F);
 
-     GL11.glPopMatrix();
+        GL11.glPopMatrix();
     }
 }

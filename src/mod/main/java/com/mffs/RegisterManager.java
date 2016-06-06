@@ -32,23 +32,23 @@ public class RegisterManager {
     /**
      * Simply parses the item directory and registers them.
      */
-    public static void parseItems(String offset) throws Exception{
-        File[] files = new File((!MFFS.DEV_MODE ? "./mods/" : "./production/mod/")+ "com/mffs/model/items/" +offset.replace(".", "/")).listFiles();
-        for(File file : files) {
-            if(file.isDirectory()) {
-                parseItems(offset+file.getName()+"/");
+    public static void parseItems(String offset) throws Exception {
+        File[] files = new File((!MFFS.DEV_MODE ? "./mods/" : "./production/mod/") + "com/mffs/model/items/" + offset.replace(".", "/")).listFiles();
+        for (File file : files) {
+            if (file.isDirectory()) {
+                parseItems(offset + file.getName() + "/");
                 continue;
             }
             String name = file.getName().substring(0, file.getName().length() - 6);
             Class rawClass = (Class) Class.forName("com.mffs.model.items." + offset.replace("/", ".") + name);
-            if(Modifier.isAbstract(rawClass.getModifiers())) { //This is a abstract class and we simply override it in others!
+            if (Modifier.isAbstract(rawClass.getModifiers())) { //This is a abstract class and we simply override it in others!
                 continue;
             }
             Item item = (Item) rawClass.newInstance();
             name = name.replace("Item", "");
             name = name.substring(0, 1).toLowerCase() + name.substring(1, name.length());
             item.setUnlocalizedName(name);
-            item.setTextureName(MFFS.MODID+":"+name);
+            item.setTextureName(MFFS.MODID + ":" + name);
             item.setCreativeTab(MFFS_TAB);
             GameRegistry.registerItem(item, name);
         }
@@ -82,25 +82,26 @@ public class RegisterManager {
         }
     }
 
-        /**
-         * Simply parses the item directory and registers them.
-         */
-    public static void parseEntity(String offset) throws Exception{
-        File[] files = new File((!MFFS.DEV_MODE ? "./mods/" : "./production/mod/")+ "com/mffs/model/tile/" +offset.replace(".", "/")).listFiles();
-        if(files == null) {
+    /**
+     * Simply parses the item directory and registers them.
+     */
+    public static void parseEntity(String offset) throws Exception {
+        File[] files = new File((!MFFS.DEV_MODE ? "./mods/" : "./production/mod/") + "com/mffs/model/tile/" + offset.replace(".", "/")).listFiles();
+        if (files == null) {
             return;
         }
-        for(File file : files) {
-            if(file == null)  {
+        for (File file : files) {
+            if (file == null) {
                 continue;
             }
-            if(file.isDirectory()) {System.out.println("Parsing directory: "+file.getName());
-                parseEntity(offset+file.getName()+"/");
+            if (file.isDirectory()) {
+                System.out.println("Parsing directory: " + file.getName());
+                parseEntity(offset + file.getName() + "/");
                 continue;
             }
             String name = file.getName().substring(0, file.getName().length() - 6);
             Class rawClass = (Class) Class.forName("com.mffs.model.tile." + offset.replace("/", ".") + name);
-            if(Modifier.isAbstract(rawClass.getModifiers())) { //This is a abstract class and we simply override it in others!
+            if (Modifier.isAbstract(rawClass.getModifiers())) { //This is a abstract class and we simply override it in others!
                 continue;
             }
             name = name.replace("Entity", "");
@@ -112,20 +113,20 @@ public class RegisterManager {
     /**
      * Simply parses the item directory and registers them.
      */
-    public static void parseFluid(String offset) throws Exception{
-        File[] files = new File((!MFFS.DEV_MODE ? "./mods/" : "./production/mod/")+ "com/mffs/model/fluids/" +offset.replace(".", "/")).listFiles();
-        if(files == null) {
+    public static void parseFluid(String offset) throws Exception {
+        File[] files = new File((!MFFS.DEV_MODE ? "./mods/" : "./production/mod/") + "com/mffs/model/fluids/" + offset.replace(".", "/")).listFiles();
+        if (files == null) {
             return;
         }
-        for(File file : files) {
-            if(file == null) continue;
-            if(file.isDirectory()) {
-                parseFluid(offset+file.getName()+"/");
+        for (File file : files) {
+            if (file == null) continue;
+            if (file.isDirectory()) {
+                parseFluid(offset + file.getName() + "/");
                 continue;
             }
             String name = file.getName().substring(0, file.getName().length() - 6);
             Class rawClass = (Class) Class.forName("com.mffs.model.fluids." + offset.replace("/", ".") + name);
-            if(Modifier.isAbstract(rawClass.getModifiers())) { //This is a abstract class and we simply override it in others!
+            if (Modifier.isAbstract(rawClass.getModifiers())) { //This is a abstract class and we simply override it in others!
                 continue;
             }
             Fluid fluid = (Fluid) rawClass.newInstance();
@@ -137,11 +138,12 @@ public class RegisterManager {
 
     /**
      * Extracts a NBT tag from a item. Creates and attaches one if it does not exist.
+     *
      * @param stack
      * @return
      */
     public static NBTTagCompound getTag(ItemStack stack) {
-        if(stack.getTagCompound() == null) {
+        if (stack.getTagCompound() == null) {
             stack.setTagCompound(new NBTTagCompound());
         }
         return stack.getTagCompound();

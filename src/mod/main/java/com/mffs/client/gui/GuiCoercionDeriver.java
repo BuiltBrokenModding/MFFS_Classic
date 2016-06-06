@@ -1,6 +1,5 @@
 package com.mffs.client.gui;
 
-import com.mffs.api.gui.GuiContainerBase;
 import com.mffs.api.gui.GuiSlotType;
 import com.mffs.api.utils.UnitDisplay;
 import com.mffs.client.MFFSGui;

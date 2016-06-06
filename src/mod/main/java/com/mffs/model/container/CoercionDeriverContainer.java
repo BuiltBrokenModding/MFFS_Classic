@@ -15,10 +15,10 @@ import net.minecraft.item.ItemStack;
  */
 public class CoercionDeriverContainer extends Container {
 
-    protected int slotCount = 0;
     public static int xInventoryDisplacement = 8;
     public static int yInventoryDisplacement = 135;
     public static int yHotBarDisplacement = 193;
+    protected int slotCount = 0;
     private IInventory inventory;
 
     public CoercionDeriverContainer(EntityPlayer player, EntityCoercionDeriver driver) {
@@ -37,6 +37,7 @@ public class CoercionDeriverContainer extends Container {
         addSlotToContainer(new MachineSlot<>(driver, 5, 154, 47));
         addPlayerInventory(player);
     }
+
     @Override
     public void onContainerClosed(EntityPlayer entityplayer) {
         if ((this.inventory instanceof IPlayerUsing)) {
@@ -46,7 +47,6 @@ public class CoercionDeriverContainer extends Container {
     }
 
     /**
-     *
      * @param player
      */
     public void addPlayerInventory(EntityPlayer player) {

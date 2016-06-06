@@ -1,6 +1,5 @@
 package com.mffs.model.blocks;
 
-import codechicken.lib.render.BlockRenderer;
 import com.mffs.MFFS;
 import com.mffs.client.render.RenderBlockHandler;
 import com.mffs.model.MFFSMachine;
@@ -42,8 +41,8 @@ public final class BlockCoercionDeriver extends MFFSMachine {
     }
 
     @Override
-    public void  registerBlockIcons(IIconRegister reg) {
-        this.blockIcon = reg.registerIcon(MFFS.MODID+":machine");
+    public void registerBlockIcons(IIconRegister reg) {
+        this.blockIcon = reg.registerIcon(MFFS.MODID + ":machine");
     }
 
     @Override
@@ -52,8 +51,12 @@ public final class BlockCoercionDeriver extends MFFSMachine {
     }
 
     @Override
-    public int getRenderType() { return RenderBlockHandler.RENDER_ID;}
+    public int getRenderType() {
+        return RenderBlockHandler.RENDER_ID;
+    }
 
     @Override
-    public boolean renderAsNormalBlock() { return false;}
+    public boolean renderAsNormalBlock() {
+        return false;
+    }
 }

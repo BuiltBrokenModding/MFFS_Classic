@@ -20,6 +20,19 @@ public class FrequencyGrid {
 
     private final Set<IBlockFrequency> frequencyGrid = Collections.newSetFromMap(new WeakHashMap<IBlockFrequency, Boolean>());
 
+    /**
+     * Called to re-initiate the grid. Used when server restarts or when player rejoins a world to
+     * clean up previously registered objects.
+     */
+    public static void reinitiate() {
+        CLIENT_INSTANCE = new FrequencyGrid();
+        SERVER_INSTANCE = new FrequencyGrid();
+    }
+
+    public static FrequencyGrid instance() {
+        return FMLCommonHandler.instance().getEffectiveSide().isClient() ? CLIENT_INSTANCE : SERVER_INSTANCE;
+    }
+
     public void register(IBlockFrequency tileEntity) {
         synchronized (frequencyGrid) {
             try {
@@ -121,18 +134,5 @@ public class FrequencyGrid {
         }
         return set;
 
-    }
-
-    /**
-     * Called to re-initiate the grid. Used when server restarts or when player rejoins a world to
-     * clean up previously registered objects.
-     */
-    public static void reinitiate() {
-        CLIENT_INSTANCE = new FrequencyGrid();
-        SERVER_INSTANCE = new FrequencyGrid();
-    }
-
-    public static FrequencyGrid instance() {
-        return FMLCommonHandler.instance().getEffectiveSide().isClient() ? CLIENT_INSTANCE : SERVER_INSTANCE;
     }
 }

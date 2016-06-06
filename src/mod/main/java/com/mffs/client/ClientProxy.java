@@ -6,7 +6,6 @@ import com.mffs.client.gui.GuiCoercionDeriver;
 import com.mffs.client.render.RenderBlockHandler;
 import com.mffs.client.render.RenderCoercionDeriver;
 import com.mffs.client.render.RenderIDCard;
-import com.mffs.model.container.CoercionDeriverContainer;
 import com.mffs.model.tile.type.EntityCoercionDeriver;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
@@ -25,6 +24,7 @@ import net.minecraftforge.client.MinecraftForgeClient;
 public class ClientProxy extends CommonProxy {
     /**
      * Called before the main INITIALIZE.
+     *
      * @param event Forge ModLoader event.
      */
     @Override
@@ -33,11 +33,11 @@ public class ClientProxy extends CommonProxy {
 
     /**
      * Called along with the main Initialize.
+     *
      * @param event Forge ModLoader event.
      */
     @Override
-    public void init(FMLInitializationEvent event)
-    {
+    public void init(FMLInitializationEvent event) {
         RenderingRegistry.registerBlockHandler(new RenderBlockHandler());
         MinecraftForgeClient.registerItemRenderer((Item) Item.itemRegistry.getObject(MFFS.MODID + ":cardID"), new RenderIDCard());
         ClientRegistry.bindTileEntitySpecialRenderer(EntityCoercionDeriver.class, new RenderCoercionDeriver());
@@ -45,6 +45,7 @@ public class ClientProxy extends CommonProxy {
 
     /**
      * Called after the main Init.
+     *
      * @param event Forge ModLoader event.
      */
     @Override
@@ -67,8 +68,8 @@ public class ClientProxy extends CommonProxy {
     @Override
     public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
         TileEntity tileEntity = world.getTileEntity(x, y, z);
-        if(tileEntity != null) {
-            if(tileEntity instanceof EntityCoercionDeriver) {
+        if (tileEntity != null) {
+            if (tileEntity instanceof EntityCoercionDeriver) {
                 return new GuiCoercionDeriver(player, (EntityCoercionDeriver) tileEntity);
             }
         }

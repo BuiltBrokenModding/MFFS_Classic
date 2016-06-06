@@ -13,14 +13,14 @@ import net.minecraft.world.IBlockAccess;
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
-public class RenderBlockHandler implements ISimpleBlockRenderingHandler{
+public class RenderBlockHandler implements ISimpleBlockRenderingHandler {
 
     /* Creates a render ID */
     public static int RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
 
     @Override
     public void renderInventoryBlock(Block block, int metadata, int modelId, RenderBlocks renderer) {
-        if(modelId != RENDER_ID) {
+        if (modelId != RENDER_ID) {
             Tessellator tessellator = Tessellator.instance;
 
             block.setBlockBoundsForItemRender();
@@ -57,12 +57,12 @@ public class RenderBlockHandler implements ISimpleBlockRenderingHandler{
             return;
         }
         GL11.glPushMatrix();
-        if(block instanceof BlockCoercionDeriver) {
+        if (block instanceof BlockCoercionDeriver) {
             FMLClientHandler.instance().getClient().renderEngine.bindTexture(RenderCoercionDeriver.TEXTURE_ON);
-         GL11.glTranslated(0.5D, 1.9D, 0.5D);
-         GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
-         GL11.glScalef(1.3F, 1.3F, 1.3F);
-         RenderCoercionDeriver.MODEL.render(0.0F, 0.0625F);
+            GL11.glTranslated(0.5D, 1.9D, 0.5D);
+            GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
+            GL11.glScalef(1.3F, 1.3F, 1.3F);
+            RenderCoercionDeriver.MODEL.render(0.0F, 0.0625F);
         }
         GL11.glPopMatrix();
     }

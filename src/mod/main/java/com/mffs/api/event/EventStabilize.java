@@ -1,4 +1,4 @@
-package com.mffs.api;
+package com.mffs.api.event;
 
 import cpw.mods.fml.common.eventhandler.Cancelable;
 import net.minecraft.item.ItemStack;

@@ -13,7 +13,7 @@ import net.minecraft.world.World;
 import java.util.List;
 
 /**
- * Created by pwaln on 5/31/2016.
+ * @author Calclavia
  */
 public class CardID extends CardBlank implements ICardIdentification {
 
@@ -27,8 +27,8 @@ public class CardID extends CardBlank implements ICardIdentification {
      */
     @Override
     public boolean hitEntity(ItemStack stack, EntityLivingBase entity, EntityLivingBase hit) {
-        if(entity instanceof EntityPlayer) {
-            setUsername(stack, ((EntityPlayer)entity).getGameProfile().getName());
+        if (entity instanceof EntityPlayer) {
+            setUsername(stack, ((EntityPlayer) entity).getGameProfile().getName());
         }
         return false;
     }
@@ -45,15 +45,15 @@ public class CardID extends CardBlank implements ICardIdentification {
     public void addInformation(ItemStack stack, EntityPlayer usr, List list, boolean dummy) {
         String user = getUsername(stack);
         list.add(user != null && !user.isEmpty() ? LanguageRegistry.instance().getStringLocalization("info.cardIdentification.username") + " " + user
-            : LanguageRegistry.instance().getStringLocalization("info.cardIdentification.empty"));
+                : LanguageRegistry.instance().getStringLocalization("info.cardIdentification.empty"));
 
         String tooltip = "";
-        for(Permission perm : Permission.values()) {
-            if(hasPermission(stack, perm)) {
-                tooltip = (tooltip.isEmpty() ? "" : ", ") + LanguageRegistry.instance().getStringLocalization("gui."+perm.name() + ".name");
+        for (Permission perm : Permission.values()) {
+            if (hasPermission(stack, perm)) {
+                tooltip = (tooltip.isEmpty() ? "" : ", ") + LanguageRegistry.instance().getStringLocalization("gui." + perm.name() + ".name");
             }
         }
-        if(tooltip != null && tooltip.length() > 0) {
+        if (tooltip != null && tooltip.length() > 0) {
             list.add(Util.sepString(tooltip, 25));
         }
     }
@@ -73,18 +73,18 @@ public class CardID extends CardBlank implements ICardIdentification {
 
     @Override
     public boolean hasPermission(ItemStack paramItemStack, Permission paramPermission) {
-        return RegisterManager.getTag(paramItemStack).getBoolean("mffs_permission_"+paramPermission.ordinal());
+        return RegisterManager.getTag(paramItemStack).getBoolean("mffs_permission_" + paramPermission.ordinal());
     }
 
     @Override
     public boolean addPermission(ItemStack paramItemStack, Permission paramPermission) {
-        RegisterManager.getTag(paramItemStack).setBoolean("mffs_permission_"+paramPermission.ordinal(), true);
+        RegisterManager.getTag(paramItemStack).setBoolean("mffs_permission_" + paramPermission.ordinal(), true);
         return false;
     }
 
     @Override
     public boolean removePermission(ItemStack paramItemStack, Permission paramPermission) {
-        RegisterManager.getTag(paramItemStack).setBoolean("mffs_permission_"+paramPermission.ordinal(), false);
+        RegisterManager.getTag(paramItemStack).setBoolean("mffs_permission_" + paramPermission.ordinal(), false);
         return false;
     }
 

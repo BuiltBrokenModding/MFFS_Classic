@@ -15,9 +15,10 @@ import net.minecraftforge.fluids.FluidRegistry;
 /**
  * Created by pwaln on 5/22/2016.
  */
-public class CommonProxy implements IGuiHandler{
+public class CommonProxy implements IGuiHandler {
     /**
      * Called before the main INITIALIZE.
+     *
      * @param event Forge ModLoader event.
      */
     public void preInit(FMLPreInitializationEvent event) {
@@ -26,13 +27,15 @@ public class CommonProxy implements IGuiHandler{
 
     /**
      * Called along with the main Initialize.
+     *
      * @param event Forge ModLoader event.
      */
-    public void init(FMLInitializationEvent event){
+    public void init(FMLInitializationEvent event) {
     }
 
     /**
      * Called after the main Init.
+     *
      * @param event Forge ModLoader event.
      */
     public void postInit(FMLPostInitializationEvent event) {
@@ -53,9 +56,9 @@ public class CommonProxy implements IGuiHandler{
     @Override
     public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
         TileEntity tileEntity = world.getTileEntity(x, y, z);
-        if(tileEntity != null) {
-            if(tileEntity instanceof EntityCoercionDeriver) {
-                return new CoercionDeriverContainer(player, (EntityCoercionDeriver)tileEntity);
+        if (tileEntity != null) {
+            if (tileEntity instanceof EntityCoercionDeriver) {
+                return new CoercionDeriverContainer(player, (EntityCoercionDeriver) tileEntity);
             }
         }
         return null;

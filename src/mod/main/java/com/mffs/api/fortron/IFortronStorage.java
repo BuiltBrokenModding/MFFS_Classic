@@ -7,9 +7,9 @@ package com.mffs.api.fortron;
  * @author Calclavia
  */
 public interface IFortronStorage {
-    void setFortronEnergy(int paramInt);
-
     int getFortronEnergy();
+
+    void setFortronEnergy(int paramInt);
 
     int getFortronCapacity();
 

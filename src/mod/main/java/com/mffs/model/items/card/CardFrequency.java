@@ -14,7 +14,7 @@ import net.minecraft.world.World;
 import java.util.List;
 
 /**
- * Created by pwaln on 5/31/2016.
+ * @author Calclavia
  */
 public class CardFrequency extends CardBlank implements IItemFrequency {
     /**
@@ -23,7 +23,7 @@ public class CardFrequency extends CardBlank implements IItemFrequency {
      */
     @Override
     public int getFrequency(ItemStack itemStack) {
-        if(itemStack != null) {
+        if (itemStack != null) {
             return RegisterManager.getTag(itemStack).getInteger("mffs_freq");
         }
         return 0;
@@ -37,7 +37,7 @@ public class CardFrequency extends CardBlank implements IItemFrequency {
      */
     @Override
     public void setFrequency(int frequency, ItemStack itemStack) {
-        if(itemStack != null) {
+        if (itemStack != null) {
             RegisterManager.getTag(itemStack).setInteger("mffs_freq", frequency);
         }
     }
@@ -45,10 +45,10 @@ public class CardFrequency extends CardBlank implements IItemFrequency {
     @Override
     public void addInformation(ItemStack stack, EntityPlayer usr, List list, boolean dummy) {
         int freq = getFrequency(stack);
-        if(freq == 0) {
+        if (freq == 0) {
             super.addInformation(stack, usr, list, dummy);
         } else {
-            list.add(EnumChatFormatting.GREEN+LanguageRegistry.instance().getStringLocalization("info.cardFrequency.freq") + " " + freq);
+            list.add(EnumChatFormatting.GREEN + LanguageRegistry.instance().getStringLocalization("info.cardFrequency.freq") + " " + freq);
         }
     }
 
@@ -61,10 +61,10 @@ public class CardFrequency extends CardBlank implements IItemFrequency {
      */
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World wrld, EntityPlayer usr) {
-        if(wrld.isRemote) return stack;
-        if(usr.isSneaking()) {
+        if (wrld.isRemote) return stack;
+        if (usr.isSneaking()) {
             setFrequency(wrld.rand.nextInt((int) Math.pow(10, 5)), stack);
-            usr.addChatMessage(new ChatComponentText(EnumChatFormatting.RED+LanguageRegistry.instance().getStringLocalization("message.cardFrequency.generated") + " "+getFrequency(stack)));
+            usr.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + LanguageRegistry.instance().getStringLocalization("message.cardFrequency.generated") + " " + getFrequency(stack)));
         }
         return stack;
     }
@@ -86,12 +86,12 @@ public class CardFrequency extends CardBlank implements IItemFrequency {
     @Override
     public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
         TileEntity tile = world.getTileEntity(x, y, z);
-        if(tile instanceof IBlockFrequency) {
-            if(!world.isRemote) {
+        if (tile instanceof IBlockFrequency) {
+            if (!world.isRemote) {
                 int freq = getFrequency(stack);
                 world.markBlockForUpdate(x, y, z);
-                ((IBlockFrequency)tile).setFrequency(freq);
-                player.addChatMessage(new ChatComponentText(EnumChatFormatting.RED+LanguageRegistry.instance().getStringLocalization("message.cardFrequency.set").replaceAll("%p", "" + freq)));
+                ((IBlockFrequency) tile).setFrequency(freq);
+                player.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + LanguageRegistry.instance().getStringLocalization("message.cardFrequency.set").replaceAll("%p", "" + freq)));
             }
             return true;
         }

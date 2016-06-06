@@ -12,13 +12,14 @@ public class Util {
 
     /**
      * Gets a string and seperates it based on the count parameter.
+     *
      * @param s
      * @param count
      * @return
      */
     public static List<String> sepString(String s, int count) {
         List<String> list = new ArrayList<>();
-        Pattern regex = Pattern.compile(".{1,"+count+"}(?:\\s|$)", Pattern.DOTALL);
+        Pattern regex = Pattern.compile(".{1," + count + "}(?:\\s|$)", Pattern.DOTALL);
         Matcher regexMatcher = regex.matcher(s);
         while (regexMatcher.find()) {
             list.add(regexMatcher.group());
@@ -29,12 +30,10 @@ public class Util {
     /**
      * @author Calclavia
      */
-    public static List<String> splitStringPerWord(String string, int wordsPerLine)
-    {
+    public static List<String> splitStringPerWord(String string, int wordsPerLine) {
         String[] words = string.split(" ");
         List<String> lines = new ArrayList();
-        for (int lineCount = 0; lineCount < Math.ceil(words.length / wordsPerLine); lineCount++)
-        {
+        for (int lineCount = 0; lineCount < Math.ceil(words.length / wordsPerLine); lineCount++) {
             String stringInLine = "";
             for (int i = lineCount * wordsPerLine; i < Math.min(wordsPerLine + lineCount * wordsPerLine, words.length); i++) {
                 stringInLine = stringInLine + words[i] + " ";

@@ -10,9 +10,9 @@ import net.minecraft.item.ItemStack;
 import java.util.List;
 
 /**
- * Created by pwaln on 5/31/2016.
+ * @author Calclavia
  */
-public class CardBlank extends Item implements ICard{
+public class CardBlank extends Item implements ICard {
 
     /**
      * allows items to add custom lines of information to the mouseover description
@@ -24,10 +24,9 @@ public class CardBlank extends Item implements ICard{
      */
     @Override
     public void addInformation(ItemStack stack, EntityPlayer usr, List list, boolean dummy) {
-        String tooltip = LanguageRegistry.instance().getStringLocalization(getUnlocalizedName()+".tooltip");
-         if (tooltip != null && tooltip.length() > 0)
-         {
-          list.addAll(Util.sepString(tooltip, 30));
+        String tooltip = LanguageRegistry.instance().getStringLocalization(getUnlocalizedName() + ".tooltip");
+        if (tooltip != null && tooltip.length() > 0) {
+            list.addAll(Util.sepString(tooltip, 30));
         }
     }
 }

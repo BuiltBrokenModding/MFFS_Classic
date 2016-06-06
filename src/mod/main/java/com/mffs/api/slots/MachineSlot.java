@@ -1,6 +1,5 @@
 package com.mffs.api.slots;
 
-import com.mffs.model.tile.TileMFFSInventory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -15,10 +14,11 @@ public class MachineSlot<ENTITY extends IInventory> extends Slot {
 
     /**
      * Constructor.
+     *
      * @param entity The entity
      * @param slotId The slot id.
-     * @param xPos The Xpossition of the slot.
-     * @param yPos The Y position of the slot.
+     * @param xPos   The Xpossition of the slot.
+     * @param yPos   The Y position of the slot.
      */
     public MachineSlot(ENTITY entity, int slotId, int xPos, int yPos) {
         super(entity, slotId, xPos, yPos);
@@ -32,7 +32,7 @@ public class MachineSlot<ENTITY extends IInventory> extends Slot {
 
     public int getSlotStackLimit() {
         ItemStack stack = inventoryTile.getStackInSlot(this.slotNumber);
-        if(stack != null) {
+        if (stack != null) {
             return stack.getMaxStackSize();
         }
         return inventoryTile.getInventoryStackLimit();
