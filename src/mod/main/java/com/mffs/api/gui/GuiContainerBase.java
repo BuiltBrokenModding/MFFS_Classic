@@ -1,10 +1,10 @@
 package com.mffs.api.gui;
 
 import com.mffs.MFFS;
-import com.mffs.api.Matrix2D;
 import com.mffs.api.utils.CompatibilityType;
 import com.mffs.api.utils.UnitDisplay;
 import com.mffs.api.utils.Util;
+import com.mffs.api.vector.Matrix2d;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import net.minecraft.client.gui.GuiScreen;
@@ -38,7 +38,7 @@ public class GuiContainerBase extends GuiContainer {
     protected int meterWidth = 14;
     protected int meterEnd = this.meterX + this.meterWidth;
     protected int energyType = 0;
-    protected HashMap<Matrix2D, String> tooltips = new HashMap();
+    protected HashMap<Matrix2d, String> tooltips = new HashMap();
     protected int containerWidth;
     protected int containerHeight;
     private float lastChangeFrameTime;
@@ -55,10 +55,10 @@ public class GuiContainerBase extends GuiContainer {
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        Iterator<Map.Entry<Matrix2D, String>> it = this.tooltips.entrySet().iterator();
+        Iterator<Map.Entry<Matrix2d, String>> it = this.tooltips.entrySet().iterator();
         while (it.hasNext()) {
-            Map.Entry<Matrix2D, String> entry = (Map.Entry) it.next();
-            if (entry.getKey().isWithin(mouseX - this.guiLeft, mouseY - this.guiTop)) {
+            Map.Entry<Matrix2d, String> entry = (Map.Entry) it.next();
+            if (entry.getKey().isIn(mouseX - this.guiLeft, mouseY - this.guiTop)) {
                 this.tooltip = (entry.getValue());
                 break;
             }

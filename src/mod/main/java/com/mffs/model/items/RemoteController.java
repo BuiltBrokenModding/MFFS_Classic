@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * @author Calclavia
  */
-public class RemoteController extends CardFrequency implements ICoordLink{
+public class RemoteController extends CardFrequency implements ICoordLink {
 
     /* This is the local version for caching */
     private Coord4D link;
@@ -52,24 +52,15 @@ public class RemoteController extends CardFrequency implements ICoordLink{
     }
 
 
-
     @Override
     public Coord4D getLink(ItemStack paramItemStack) {
         NBTTagCompound tag = RegisterManager.getTag(paramItemStack);
         if (!tag.hasKey("mffs_link"))
             return null;
-        NBTTagCompound linkTag = tag.getCompoundTag("mffs_link");
         if (link == null)
-            return link = Coord4D.read(linkTag);
-        //TODO: Since we cache it, we really do not need to obtain it every single time.
-        //We just update our variable!
-        link.xCoord = linkTag.getInteger("x");
-        link.yCoord = linkTag.getInteger("y");
-        link.zCoord = linkTag.getInteger("z");
-        link.dimensionId = linkTag.getInteger("id");
+            return link = Coord4D.read(tag.getCompoundTag("mffs_link"));
         return link;
     }
-
 
 
     /**
@@ -95,7 +86,7 @@ public class RemoteController extends CardFrequency implements ICoordLink{
             Block block = coord.getBlock(world);
             if (block != null) {
                 player.addChatMessage(new ChatComponentText(String.format(LanguageRegistry.instance().getStringLocalization("info.remoteController.linked")
-                        .replace("%p", x+ ", " +y+ ", "+z)
+                        .replace("%p", x + ", " + y + ", " + z)
                         .replace("%q", block.getLocalizedName()))));
             }
         }
@@ -113,7 +104,7 @@ public class RemoteController extends CardFrequency implements ICoordLink{
     public ItemStack onItemRightClick(ItemStack stack, World wrld, EntityPlayer usr) {
      /*if (!entityPlayer.func_70093_af())
      {
-       Vector3 position = getLink(itemStack);
+       Vector3D position = getLink(itemStack);
        
        if (position != null)
        {
@@ -125,10 +116,10 @@ public class RemoteController extends CardFrequency implements ICoordLink{
            
            if ((chunk != null) && (chunk.field_76636_d) && ((MFFSHelper.hasPermission(world, position, PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK, entityPlayer)) || (MFFSHelper.hasPermission(world, position, Permission.REMOTE_CONTROL, entityPlayer))))
            {
-             float requiredEnergy = (float)Vector3.distance(new Vector3(entityPlayer), position) * 10.0F;
+             float requiredEnergy = (float)Vector3D.distance(new Vector3D(entityPlayer), position) * 10.0F;
              int receivedEnergy = 0;
              
-             Set<IFortronFrequency> fortronTiles = FrequencyGrid.instance().getFortronTiles(world, new Vector3(entityPlayer), 50, getFrequency(itemStack));
+             Set<IFortronFrequency> fortronTiles = FrequencyGrid.instance().getFortronTiles(world, new Vector3D(entityPlayer), 50, getFrequency(itemStack));
              
              for (IFortronFrequency fortronTile : fortronTiles)
              {
@@ -138,7 +129,7 @@ public class RemoteController extends CardFrequency implements ICoordLink{
                {
                  if (world.field_72995_K)
                  {
-                   ModularForceFieldSystem.proxy.renderBeam(world, new Vector3(entityPlayer).add(new Vector3(0.0D, entityPlayer.func_70047_e() - 0.2D, 0.0D)), new Vector3((TileEntity)fortronTile).add(0.5D), 0.6F, 0.6F, 1.0F, 20);
+                   ModularForceFieldSystem.proxy.renderBeam(world, new Vector3D(entityPlayer).add(new Vector3D(0.0D, entityPlayer.func_70047_e() - 0.2D, 0.0D)), new Vector3D((TileEntity)fortronTile).add(0.5D), 0.6F, 0.6F, 1.0F, 20);
                  }
                  
                  receivedEnergy += consumedEnergy;
@@ -191,7 +182,7 @@ public class RemoteController extends CardFrequency implements ICoordLink{
      {
        for (ItemStack itemStack : this.remotesCached)
        {
-         if ((!this.temporaryRemoteBlacklist.contains(itemStack)) && (new Vector3(evt.beforeX, evt.beforeY, evt.beforeZ).equals(getLink(itemStack))))
+         if ((!this.temporaryRemoteBlacklist.contains(itemStack)) && (new Vector3D(evt.beforeX, evt.beforeY, evt.beforeZ).equals(getLink(itemStack))))
          {
  
            setLink(itemStack, new VectorWorld(evt.world, evt.afterX, evt.afterY, evt.afterZ));

@@ -1,5 +1,7 @@
 package com.mffs.api.utils;
 
+import codechicken.lib.vec.Vector3;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -41,5 +43,18 @@ public class Util {
             lines.add(stringInLine.trim());
         }
         return lines;
+    }
+
+    /**
+     * Gets the distance between 2 vectors.
+     * @param vec1
+     * @param vec2
+     * @return
+     */
+    public static int getDist(Vector3 vec1, Vector3 vec2) {
+        double x = Math.pow(vec1.x + vec2.x, 2);
+        double y = Math.pow(vec1.y + vec2.y, 2);
+        double z = Math.pow(vec1.z + vec2.z, 2);
+        return (int) Math.floor(Math.sqrt(x + y + z));
     }
 }

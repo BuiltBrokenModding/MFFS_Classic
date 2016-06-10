@@ -14,6 +14,13 @@ import java.util.Set;
  */
 public interface IModule
         extends IFortronCost {
+
+    /**
+     * Calls this on projection.
+     * @param paramIProjector The projector interface.
+     * @param paramSet A set of fields that are projected.
+     * @return
+     */
     boolean onProject(IProjector paramIProjector, Set<Vector3> paramSet);
 
     boolean onDestroy(IProjector paramIProjector, Set<Vector3> paramSet);

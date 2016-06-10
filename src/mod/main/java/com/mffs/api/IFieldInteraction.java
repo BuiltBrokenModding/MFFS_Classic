@@ -32,7 +32,7 @@ public interface IFieldInteraction
 
     int getRotationYaw();
 
-    int getRotationPitch();
+    Vector3 getRotationPitch();
 
     Set<Vector3> getCalculatedField();
 
