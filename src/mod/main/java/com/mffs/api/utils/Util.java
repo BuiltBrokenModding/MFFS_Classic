@@ -52,9 +52,9 @@ public class Util {
      * @return
      */
     public static int getDist(Vector3 vec1, Vector3 vec2) {
-        double x = Math.pow(vec1.x + vec2.x, 2);
-        double y = Math.pow(vec1.y + vec2.y, 2);
-        double z = Math.pow(vec1.z + vec2.z, 2);
+        double x = Math.pow(-vec1.x + vec2.x, 2);
+        double y = Math.pow(-vec1.y + vec2.y, 2);
+        double z = Math.pow(-vec1.z + vec2.z, 2);
         return (int) Math.floor(Math.sqrt(x + y + z));
     }
 }
