@@ -13,7 +13,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Created by pwaln on 6/9/2016.
+ * @author Calclavia
  */
 public class ModePyramid extends ItemMode {
 
@@ -78,7 +78,7 @@ public class ModePyramid extends ItemMode {
                 for (float y = 0.0F; y <= yStretch; y += 1.0F) {
                     Vector3 position = new Vector3(x, y, z).add(translation);
 
-                    if (isInField(projector, position.copy().add(Vector3.fromTileEntity((TileEntity) projector)))) {
+                    if (isInField(projector, position.add(Vector3.fromTileEntity((TileEntity) projector)))) {
                         fieldBlocks.add(position);
                     }
                 }

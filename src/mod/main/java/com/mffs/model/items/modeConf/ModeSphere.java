@@ -48,7 +48,7 @@ public class ModeSphere extends ItemMode {
                 for (int y = -radius; y <= radius; y++) {
                     Vector3 position = new Vector3(x, y, z);
 
-                    if (!isInField(projector, position.copy().add(Vector3.fromTileEntity((TileEntity) projector)).add(translation))) {
+                    if (!isInField(projector, position.add(Vector3.fromTileEntity((TileEntity) projector)).add(translation))) {
                         continue;
                     }
                     fieldBlocks.add(position);

@@ -58,7 +58,7 @@ public class ModeCylinder extends ItemMode {
                 for (int y = 0; y < height; y++) {
                     Vector3 position = new Vector3(x, y, z);
 
-                    if (isInField(projector, position.copy().add(Vector3.fromTileEntity((TileEntity) projector)).add(translation))) {
+                    if (isInField(projector, position.add(Vector3.fromTileEntity((TileEntity) projector)).add(translation))) {
                         fieldBlocks.add(position);
                     }
                 }

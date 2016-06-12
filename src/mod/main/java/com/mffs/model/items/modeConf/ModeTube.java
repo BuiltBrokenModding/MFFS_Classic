@@ -13,7 +13,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Created by pwaln on 6/9/2016.
+ * @author Calclavia
  */
 public class ModeTube extends ModeCube {
 
