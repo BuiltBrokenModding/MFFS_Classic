@@ -1,4 +1,4 @@
-package com.mffs.model.items.modeConf;
+package com.mffs.model.items.modules.projector.type;
 
 import codechicken.lib.vec.Vector3;
 import com.mffs.api.ICache;

@@ -1,4 +1,4 @@
-package com.mffs.model.items.modeConf;
+package com.mffs.model.items.modules.projector.type;
 
 import codechicken.lib.vec.Vector3;
 import com.mffs.api.IFieldInteraction;
@@ -6,6 +6,7 @@ import com.mffs.api.IProjector;
 import com.mffs.api.render.ModelCube;
 import com.mffs.api.utils.Util;
 import com.mffs.model.items.ItemMode;
+import com.mffs.model.items.modules.upgrades.ModuleScale;
 import net.minecraft.tileentity.TileEntity;
 import org.lwjgl.opengl.GL11;
 
@@ -19,7 +20,7 @@ public class ModeSphere extends ItemMode {
     @Override
     public Set<Vector3> getExteriorPoints(IFieldInteraction projector) {
         Set<Vector3> fieldBlocks = new HashSet();
-        int radius = projector.getModuleCount(null /* Scale */);
+        int radius = projector.getModuleCount(ModuleScale.class);
 
         int steps = (int) Math.ceil(3.141592653589793D / Math.atan(1.0D / radius / 2.0D));
 
@@ -41,7 +42,7 @@ public class ModeSphere extends ItemMode {
         Set<Vector3> fieldBlocks = new HashSet();
         Vector3 translation = projector.getTranslation();
 
-        int radius = projector.getModuleCount(null /*module scale */);
+        int radius = projector.getModuleCount(ModuleScale.class);
 
         for (int x = -radius; x <= radius; x++) {
             for (int z = -radius; z <= radius; z++) {
@@ -62,7 +63,7 @@ public class ModeSphere extends ItemMode {
     @Override
     public boolean isInField(IFieldInteraction projector, Vector3 position) {
 
-        return Util.getDist(Vector3.fromTileEntity((TileEntity) projector).add(projector.getTranslation()), position) < projector.getModuleCount(null /*module scale */);
+        return Util.getDist(Vector3.fromTileEntity((TileEntity) projector).add(projector.getTranslation()), position) < projector.getModuleCount(ModuleScale.class);
     }
 
     @Override

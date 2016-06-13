@@ -14,7 +14,7 @@ public class ModuleShock extends ItemModule {
     /**
      * This represents the source of damage of this module!
      */
-    private static final DamageSource SHOCK_SOURCE = new DamageSource("fieldShock").setDamageBypassesArmor();
+    public static final DamageSource SHOCK_SOURCE = new DamageSource("fieldShock").setDamageBypassesArmor();
 
     @Override
     public boolean onCollideWithForceField(World world, int x, int y, int z, Entity entity, ItemStack moduleStack) {

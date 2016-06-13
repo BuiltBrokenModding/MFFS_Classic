@@ -14,6 +14,10 @@ import java.util.Set;
  */
 public class ModuleArray extends ItemModule {
 
+    public ModuleArray() {
+        setCost(3F);
+    }
+
     /**
      * @param projector   The projector associated with these blocks.
      * @param fieldBlocks A set of blocks given by the vectors.

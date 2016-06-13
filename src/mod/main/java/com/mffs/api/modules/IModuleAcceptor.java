@@ -8,9 +8,9 @@ import java.util.Set;
  * @author Calclavia
  */
 public interface IModuleAcceptor {
-    ItemStack getModule(IModule paramIModule);
+    ItemStack getModule(Class<? extends IModule> paramIModule);
 
-    int getModuleCount(IModule paramIModule, int... paramVarArgs);
+    int getModuleCount(Class<? extends IModule> paramIModule, int... paramVarArgs);
 
     Set<ItemStack> getModuleStacks(int... paramVarArgs);
 

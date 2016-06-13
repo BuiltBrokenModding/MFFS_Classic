@@ -2,6 +2,7 @@ package com.mffs.model.tile;
 
 import com.mffs.api.modules.IModule;
 import com.mffs.api.modules.IModuleAcceptor;
+import com.mffs.model.items.modules.upgrades.ModuleCapacity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -17,8 +18,9 @@ public abstract class TileModuleAcceptor extends TileFortron implements IModuleA
     public int clientFortronCost = 0;
     protected int capacityBase = 500;
     protected int capacityBoost = 5;
+
     /* This is the index of first module slot, and the number of slots. */
-    protected byte module_index, module_size;
+    protected byte module_index, module_end = (byte) getSizeInventory();
 
     @Override
     public void start() {
@@ -27,30 +29,32 @@ public abstract class TileModuleAcceptor extends TileFortron implements IModuleA
     }
 
     @Override
-    public ItemStack getModule(IModule paramIModule) {
-        ItemStack returnStack = new ItemStack((Item) paramIModule, 0);
-
-        for (ItemStack comparedModule : getModuleStacks()) {
-            if (comparedModule.getItem() == paramIModule) {
-                returnStack.stackSize += comparedModule.stackSize;
+    public ItemStack getModule(Class<? extends IModule> module) {
+        ItemStack returnStack = null;
+            for(ItemStack stack : inventory) {
+                if (stack != null && module.isAssignableFrom(stack.getItem().getClass())) {
+                    if(returnStack == null) {//We can do this, or call module.newInstance()
+                        returnStack = new ItemStack(stack.getItem(), 0);
+                    }
+                    returnStack.stackSize += stack.stackSize;
+                }
             }
-        }
         return returnStack;
     }
 
     @Override
-    public int getModuleCount(IModule paramIModule, int... paramVarArgs) {
+    public int getModuleCount(Class<? extends IModule> paramIModule, int... paramVarArgs) {
         int count = 0;
         if (paramVarArgs != null) {
             for (int slot : paramVarArgs) {
                 ItemStack stack = getStackInSlot(slot);
-                if (stack != null && stack.getItem() == paramIModule) {
+                if (stack != null && paramIModule.isAssignableFrom(stack.getItem().getClass())) {
                     count += stack.stackSize;
                 }
             }
         } else {
             for (ItemStack stack : getModuleStacks()) {
-                if (stack != null && stack.getItem() == paramIModule) {
+                if (stack != null && paramIModule.isAssignableFrom(stack.getItem().getClass())) {
                     count += stack.stackSize;
                 }
             }
@@ -69,7 +73,7 @@ public abstract class TileModuleAcceptor extends TileFortron implements IModuleA
                 }
             }
         } else {
-            for (int i = module_index; i < module_index + module_size; i++) {
+            for (int i = module_index; i < module_end; i++) {
                 ItemStack stack = getStackInSlot(i);
                 if (stack != null && stack.getItem() instanceof IModule) {
                     stacks.add(stack);
@@ -86,14 +90,14 @@ public abstract class TileModuleAcceptor extends TileFortron implements IModuleA
             for (int slot : paramVarArgs) {
                 ItemStack stack = getStackInSlot(slot);
                 if (stack != null && stack.getItem() instanceof IModule) {
-
+                    stacks.add((IModule) stack.getItem());
                 }
             }
         } else {
-            for (int i = module_index; i < module_index + module_size; i++) {
+            for (int i = module_index; i < module_end; i++) {
                 ItemStack stack = getStackInSlot(i);
                 if (stack != null && stack.getItem() instanceof IModule) {
-
+                    stacks.add((IModule) stack.getItem());
                 }
             }
         }
@@ -126,6 +130,6 @@ public abstract class TileModuleAcceptor extends TileFortron implements IModuleA
     @Override
     public void fireEvents(int... slots) {
         super.fireEvents(slots);
-        this.tank.setCapacity(getModuleCount(null) * capacityBoost + capacityBase * 1000);
+        this.tank.setCapacity(getModuleCount(ModuleCapacity.class) * capacityBoost + capacityBase * 1000);
     }
 }

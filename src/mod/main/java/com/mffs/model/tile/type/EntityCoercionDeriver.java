@@ -2,6 +2,8 @@ package com.mffs.model.tile.type;
 
 import com.mffs.api.modules.IModule;
 import com.mffs.model.items.card.CardFrequency;
+import com.mffs.model.items.modules.upgrades.ModuleScale;
+import com.mffs.model.items.modules.upgrades.ModuleSpeed;
 import com.mffs.model.tile.TileElectrical;
 import net.minecraft.item.ItemStack;
 
@@ -51,7 +53,7 @@ public class EntityCoercionDeriver extends TileElectrical {
                         storage.extractEnergy(storage.getMaxExtract(), true);
                         if (processTime == 0 && isItemValidForSlot(2, getStackInSlot(2))) {
                             decrStackSize(2, 1);
-                            this.processTime = (200 * Math.max(getModuleCount(null, new int[0]) / 20, 1));
+                            this.processTime = (200 * Math.max(getModuleCount(ModuleScale.class) / 20, 1));
                         }
                         if (processTime > 0) {
                             processTime--;
@@ -76,7 +78,7 @@ public class EntityCoercionDeriver extends TileElectrical {
     }
 
     public float getWattage() {
-        return (5000000.0F + 5000000.0F * (getModuleCount(null) / 8.0F));
+        return (5000000.0F + 5000000.0F * (getModuleCount(ModuleSpeed.class) / 8.0F));
     }
 
     public int getProductionRate() {

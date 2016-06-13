@@ -12,7 +12,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 /**
- * Created by pwaln on 6/1/2016.
+ * @author Calclavia
  */
 public final class BlockCoercionDeriver extends MFFSMachine {
     /**
