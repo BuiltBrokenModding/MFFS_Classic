@@ -1,9 +1,10 @@
 package com.mffs.client.gui;
 
+import com.mffs.MFFS;
 import com.mffs.api.gui.GuiSlotType;
 import com.mffs.api.utils.UnitDisplay;
-import com.mffs.client.MFFSGui;
 import com.mffs.model.container.CoercionDeriverContainer;
+import com.mffs.model.packet.EntityToggle;
 import com.mffs.model.tile.type.EntityCoercionDeriver;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import net.minecraft.client.gui.GuiButton;
@@ -17,11 +18,8 @@ import javax.vecmath.Vector2d;
  */
 public class GuiCoercionDeriver extends MFFSGui {
 
-    private EntityCoercionDeriver tileEntity;
-
     public GuiCoercionDeriver(EntityPlayer player, EntityCoercionDeriver tileentity) {
         super(new CoercionDeriverContainer(player, tileentity), tileentity);
-        this.tileEntity = tileentity;
     }
 
     public void initGui() {
@@ -30,10 +28,19 @@ public class GuiCoercionDeriver extends MFFSGui {
         this.buttonList.add(new GuiButton(1, this.width / 2 - 10, this.height / 2 - 28, 58, 20, LanguageRegistry.instance().getStringLocalization("gui.deriver.derive")));
     }
 
+    /**
+     * Gets the tile entity represented.
+     * @return
+     */
+    private EntityCoercionDeriver getEntity() {
+        return ((EntityCoercionDeriver) this.frequencyTile);
+    }
+
 
     @Override
     protected void drawGuiContainerForegroundLayer(int x, int y) {
-        this.fontRendererObj.drawString(this.tileEntity.getInventoryName(), this.xSize / 2 - this.fontRendererObj.getStringWidth(this.tileEntity.getInventoryName()) / 2, 6, 4210752);
+        EntityCoercionDeriver entity = getEntity();
+        this.fontRendererObj.drawString(entity.getInventoryName(), this.xSize / 2 - this.fontRendererObj.getStringWidth(entity.getInventoryName()) / 2, 6, 4210752);
 
         drawTextWithTooltip("frequency", "%1:", 8, 30, x, y);
         this.textFieldFrequency.drawTextBox();
@@ -44,20 +51,20 @@ public class GuiCoercionDeriver extends MFFSGui {
         GL11.glPopMatrix();
 
         if ((this.buttonList.get(1) instanceof GuiButton)) {
-            if (!this.tileEntity.isInversed) {
+            if (!entity.isInversed) {
                 ((GuiButton) this.buttonList.get(1)).displayString = LanguageRegistry.instance().getStringLocalization("gui.deriver.derive");
             } else {
                 ((GuiButton) this.buttonList.get(1)).displayString = LanguageRegistry.instance().getStringLocalization("gui.deriver.integrate");
             }
         }
 
-        renderUniversalDisplay(85, 30, this.tileEntity.getWattage(), x, y, UnitDisplay.Unit.REDFLUX);
+        renderUniversalDisplay(85, 30, entity.getWattage(), x, y, UnitDisplay.Unit.REDFLUX);
         this.fontRendererObj.drawString(UnitDisplay.getDisplayShort(240L, UnitDisplay.Unit.REDFLUX), 85, 40, 4210752);
 
-        drawTextWithTooltip("progress", "%1: " + (this.tileEntity.isActive() ? LanguageRegistry.instance().getStringLocalization("gui.deriver.running") : LanguageRegistry.instance().getStringLocalization("gui.deriver.idle")), 8, 70, x, y);
-        drawTextWithTooltip("fortron", "%1: " + UnitDisplay.getDisplayShort(this.tileEntity.getFortronEnergy(), UnitDisplay.Unit.LITER), 8, 105, x, y);
+        drawTextWithTooltip("progress", "%1: " + (entity.isActive() ? LanguageRegistry.instance().getStringLocalization("gui.deriver.running") : LanguageRegistry.instance().getStringLocalization("gui.deriver.idle")), 8, 70, x, y);
+        drawTextWithTooltip("fortron", "%1: " + UnitDisplay.getDisplayShort(entity.getFortronEnergy(), UnitDisplay.Unit.LITER), 8, 105, x, y);
 
-        this.fontRendererObj.drawString((this.tileEntity.isInversed ? "ยง4-" : "ยง2+") + UnitDisplay.getDisplayShort(this.tileEntity.getProductionRate() * 20, UnitDisplay.Unit.LITER) + "/s", 118, 117, 4210752);
+        this.fontRendererObj.drawString((entity.isInversed ? "ยง4-" : "ยง2+") + UnitDisplay.getDisplayShort(entity.getProductionRate() * 20, UnitDisplay.Unit.LITER) + "/s", 118, 117, 4210752);
 
         super.drawGuiContainerForegroundLayer(x, y);
     }
@@ -65,6 +72,7 @@ public class GuiCoercionDeriver extends MFFSGui {
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float f, int x, int y) {
+        EntityCoercionDeriver entity = getEntity();
         super.drawGuiContainerBackgroundLayer(f, x, y);
 
 
@@ -82,16 +90,15 @@ public class GuiCoercionDeriver extends MFFSGui {
         drawBar(50, 84, 1.0F);
 
 
-        drawForce(8, 115, this.tileEntity.getFortronEnergy() > 0 ? this.tileEntity.getFortronEnergy() / this.tileEntity.getFortronCapacity() : 0);
+        drawForce(8, 115, entity.getFortronEnergy() > 0 ? entity.getFortronEnergy() / entity.getFortronCapacity() : 0);
     }
 
 
     @Override
     protected void actionPerformed(GuiButton guibutton) {
         super.actionPerformed(guibutton);
-
         if (guibutton.id == 1) {
-            // PacketDispatcher.sendPacketToServer(ModularForceFieldSystem.PACKET_TILE.getPacket((TileEntity)this.frequencyTile, new Object[] { Integer.valueOf(TileMFFS.TilePacketType.TOGGLE_MODE.ordinal()) }));
+            MFFS.channel.sendToServer(new EntityToggle(getEntity(), (byte) 1));
         }
     }
 }

@@ -2,11 +2,13 @@ package com.mffs;
 
 import com.mffs.model.container.CoercionDeriverContainer;
 import com.mffs.model.fluids.Fortron;
+import com.mffs.model.packet.EntityToggle;
 import com.mffs.model.tile.type.EntityCoercionDeriver;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.IGuiHandler;
+import cpw.mods.fml.relauncher.Side;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;

@@ -1,16 +1,19 @@
-package com.mffs.client;
+package com.mffs.client.gui;
 
+import com.mffs.MFFS;
 import com.mffs.api.IBiometricIdentifierLink;
 import com.mffs.api.IBlockFrequency;
 import com.mffs.api.gui.GuiContainerBase;
 import com.mffs.client.buttons.GuiIcon;
 import com.mffs.model.TileMFFS;
+import com.mffs.model.packet.EntityToggle;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import org.lwjgl.input.Keyboard;
 
 import javax.vecmath.Vector2d;
@@ -46,7 +49,7 @@ public class MFFSGui extends GuiContainerBase {
     public void initGui() {
         super.initGui();
         buttonList.clear();
-        this.buttonList.add(new GuiIcon(0, this.width / 2 - 82, this.height / 2 - 104, new ItemStack(Blocks.redstone_torch), new ItemStack(Blocks.unlit_redstone_torch)));
+        this.buttonList.add(new GuiIcon(0, this.width / 2 - 82, this.height / 2 - 104, new ItemStack(Blocks.redstone_torch), null));
         Keyboard.enableRepeatEvents(true);
         if (this.frequencyTile != null) {
             this.textFieldFrequency = new GuiTextField(this.fontRendererObj, (int) this.textFieldPos.x, (int) this.textFieldPos.y, 50, 12);
@@ -80,7 +83,7 @@ public class MFFSGui extends GuiContainerBase {
         super.actionPerformed(guiButton);
 
         if ((this.frequencyTile != null) && (guiButton.id == 0)) {
-            // PacketDispatcher.sendPacketToServer(ModularForceFieldSystem.PACKET_TILE.getPacket((TileEntity)this.frequencyTile, new Object[] { Integer.valueOf(TileMFFS.TilePacketType.TOGGLE_ACTIVATION.ordinal()) }));
+            MFFS.channel.sendToServer(new EntityToggle((TileEntity) frequencyTile, EntityToggle.REDSTONE_TOGGLE));
         }
     }
 
@@ -97,7 +100,7 @@ public class MFFSGui extends GuiContainerBase {
 
         if ((this.frequencyTile instanceof TileMFFS)) {
             if ((this.buttonList.size() > 0) && (this.buttonList.get(0) != null)) {
-                ((GuiIcon) this.buttonList.get(0)).setIndex(((TileMFFS) this.frequencyTile).isActive() ? 1 : 0);
+                ((GuiIcon) this.buttonList.get(0)).setIndex(((TileMFFS) this.frequencyTile).isActive() ? 0 : 1);
             }
         }
     }

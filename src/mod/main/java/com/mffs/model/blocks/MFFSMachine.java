@@ -1,8 +1,9 @@
-package com.mffs.model;
+package com.mffs.model.blocks;
 
 import com.mffs.MFFS;
 import com.mffs.api.IBiometricIdentifierLink;
 import com.mffs.api.security.Permission;
+import com.mffs.model.TileMFFS;
 import com.mffs.model.items.card.CardLink;
 import mekanism.api.IMekWrench;
 import net.minecraft.block.Block;

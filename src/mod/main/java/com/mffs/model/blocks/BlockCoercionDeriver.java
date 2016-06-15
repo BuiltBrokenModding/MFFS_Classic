@@ -2,7 +2,6 @@ package com.mffs.model.blocks;
 
 import com.mffs.MFFS;
 import com.mffs.client.render.RenderBlockHandler;
-import com.mffs.model.MFFSMachine;
 import com.mffs.model.tile.type.EntityCoercionDeriver;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;

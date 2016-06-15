@@ -1,5 +1,6 @@
 package com.mffs;
 
+import com.mffs.model.packet.EntityToggle;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.SidedProxy;
@@ -8,6 +9,7 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import cpw.mods.fml.relauncher.Side;
 
 @Mod(modid = MFFS.MODID, name = MFFS.MOD_NAME, version = MFFS.VERSION)
 public class MFFS {
@@ -37,6 +39,7 @@ public class MFFS {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        MFFS.channel.registerMessage(EntityToggle.Handler.class, EntityToggle.class, 0, Side.SERVER);
         initialize.preInit(event);
     }
 

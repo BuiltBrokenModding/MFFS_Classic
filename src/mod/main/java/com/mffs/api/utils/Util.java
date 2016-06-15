@@ -1,6 +1,8 @@
 package com.mffs.api.utils;
 
 import codechicken.lib.vec.Vector3;
+import mekanism.api.Pos3D;
+import net.minecraft.tileentity.TileEntity;
 
 import java.util.ArrayList;
 import java.util.List;

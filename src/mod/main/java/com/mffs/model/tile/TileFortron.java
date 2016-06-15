@@ -1,12 +1,16 @@
 package com.mffs.model.tile;
 
 import com.mffs.api.card.ICard;
+import com.mffs.api.fortron.FrequencyGrid;
 import com.mffs.api.fortron.IFortronFrequency;
 import com.mffs.model.fluids.Fortron;
+import mekanism.api.Pos3D;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.*;
+
+import java.util.Set;
 
 /**
  * Created by pwaln on 6/2/2016.
@@ -23,14 +27,23 @@ public abstract class TileFortron extends TileFrequency implements IFluidHandler
         super.updateEntity();
 
         if (this.ticks % 60 == 0) {
-            //TODO: Sebd fortron
+            //TODO: Send fortron
+
         }
     }
 
     @Override
     public void invalidate() {
         if (sendFortron) {
-
+            int totalFortron = 0, totalCapacity = 0;
+            Set<IFortronFrequency> connections = FrequencyGrid.instance().getFortronTiles(this.worldObj, new Pos3D(this.xCoord, this.yCoord, this.zCoord), 100, getFrequency());
+            for (IFortronFrequency machine : connections) {
+                if(machine != null) {
+                    totalCapacity += machine.getFortronCapacity();
+                    totalFortron += machine.getFortronEnergy();
+                }
+            }
+            if(totalCapacity <= 0 ||totalFortron <= 0) return;
         }
         super.invalidate();
     }

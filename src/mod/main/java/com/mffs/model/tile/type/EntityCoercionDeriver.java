@@ -6,11 +6,14 @@ import com.mffs.model.items.modules.upgrades.ModuleScale;
 import com.mffs.model.items.modules.upgrades.ModuleSpeed;
 import com.mffs.model.tile.TileElectrical;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 
 /**
  * Created by pwaln on 6/1/2016.
  */
-public class EntityCoercionDeriver extends TileElectrical {
+public final class EntityCoercionDeriver extends TileElectrical {
 
     public static final int FUEL_PROCESS_TIME = 200;
     public static final int MULTIPLE_PRODUCTION = 4;
@@ -115,4 +118,25 @@ public class EntityCoercionDeriver extends TileElectrical {
         return false;
     }
 
+    /**
+     * Overriden in a sign to provide the text.
+     */
+    @Override
+    public Packet getDescriptionPacket() {
+        return super.getDescriptionPacket();
+    }
+
+    /**
+     * Called when you receive a TileEntityData packet for the location this
+     * TileEntity is currently in. On the client, the NetworkManager will always
+     * be the remote server. On the server, it will be whomever is responsible for
+     * sending the packet.
+     *
+     * @param net The NetworkManager the packet originated from
+     * @param pkt The data packet
+     */
+    @Override
+    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
+        super.onDataPacket(net, pkt);
+    }
 }

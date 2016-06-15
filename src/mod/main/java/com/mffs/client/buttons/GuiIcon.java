@@ -5,6 +5,8 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
@@ -43,9 +45,9 @@ public class GuiIcon extends GuiButton {
         super.drawButton(par1Minecraft, par2, par3);
 
         if (this.enabled && (this.itemStacks[this.index] != null)) {
-            int yDisplacement = 2;
+            int yDisplacement = 0;
 
-            //if ((this.itemStacks[this.index].getItem().eq) || (this.itemStacks[this.index].field_77993_c == Block.field_72035_aQ.field_71990_ca)) {
+            //if ((this.itemStacks[this.index].getItem() == Blocks.unlit_redstone_torch.) || (this.itemStacks[this.index].field_77993_c == Block.field_72035_aQ.field_71990_ca)) {
             //    yDisplacement = 0;
             //} else
             if ((this.itemStacks[this.index].getItem() instanceof ItemBlock)) {
@@ -67,8 +69,10 @@ public class GuiIcon extends GuiButton {
         GL11.glTranslatef(0.0F, 0.0F, 32.0F);
         this.zLevel = 500.0F;
         itemRenderer.zLevel = 500.0F;
-        itemRenderer.renderItemAndEffectIntoGUI(fontRenderer, mc.renderEngine, itemStack, x, y);
-        itemRenderer.renderItemOverlayIntoGUI(fontRenderer, mc.renderEngine, itemStack, x, y);
+        if(itemStack != null) {
+            itemRenderer.renderItemAndEffectIntoGUI(fontRenderer, mc.renderEngine, itemStack, x, y);
+            itemRenderer.renderItemOverlayIntoGUI(fontRenderer, mc.renderEngine, itemStack, x, y);
+        }
         this.zLevel = 0.0F;
         itemRenderer.zLevel = 0.0F;
         RenderHelper.disableStandardItemLighting();
