@@ -3,7 +3,6 @@ package com.mffs.model.container;
 import com.mffs.api.IPlayerUsing;
 import com.mffs.api.slots.CardSlot;
 import com.mffs.api.slots.MachineSlot;
-import com.mffs.model.items.modules.upgrades.ModuleScale;
 import com.mffs.model.tile.type.EntityCoercionDeriver;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;

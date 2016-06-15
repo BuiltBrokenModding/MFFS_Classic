@@ -24,9 +24,6 @@ public abstract class TileMFFS extends TileEntity implements IActivatable {
     /* If this tile requires a restone signal */
     private boolean isProvidingSignal;
 
-    /* Store the update flags here */
-    private NBTTagCompound requiredUpdates = new NBTTagCompound();
-
     @Override
     public void updateEntity() {
         if (ticks == 0) {
@@ -73,26 +70,19 @@ public abstract class TileMFFS extends TileEntity implements IActivatable {
 
     /**
      * Handles the message given by the handler.
+     *
      * @param imessage The message.
      */
     public IMessage handleMessage(IMessage imessage) {
-        if(imessage instanceof EntityToggle) {
+        if (imessage instanceof EntityToggle) {
             EntityToggle tog = (EntityToggle) imessage;
-            if(tog.toggle_opcode == EntityToggle.REDSTONE_TOGGLE) {
+            if (tog.toggle_opcode == EntityToggle.REDSTONE_TOGGLE) {
                 this.isProvidingSignal = !this.isProvidingSignal;
                 this.isActivated = this.isProvidingSignal;
                 this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
             }
         }
         return null;
-    }
-
-    /**
-     * Gets the required update information.
-     * @return
-     */
-    public NBTTagCompound getRequiredUpdates() {
-        return requiredUpdates;
     }
 
     /**
@@ -119,7 +109,7 @@ public abstract class TileMFFS extends TileEntity implements IActivatable {
     @Override
     public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
         //this.isActivated = pkt.func_148857_g().getBoolean("active");
-       // this.isProvidingSignal = pkt.func_148857_g().getBoolean("redstone");
+        //this.isProvidingSignal = pkt.func_148857_g().getBoolean("redstone");
         readFromNBT(pkt.func_148857_g());
         super.onDataPacket(net, pkt);
     }

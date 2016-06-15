@@ -1,14 +1,12 @@
 package com.mffs.model.tile.type;
 
+import com.mffs.MFFSConfig;
 import com.mffs.api.modules.IModule;
 import com.mffs.model.items.card.CardFrequency;
 import com.mffs.model.items.modules.upgrades.ModuleScale;
 import com.mffs.model.items.modules.upgrades.ModuleSpeed;
 import com.mffs.model.tile.TileElectrical;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 
 /**
  * Created by pwaln on 6/1/2016.
@@ -24,11 +22,13 @@ public final class EntityCoercionDeriver extends TileElectrical {
     public static final int SLOT_FUEL = 2;
     private static final int DEFAULT_WATTAGE = 5000000;
     public int processTime = 0;
-    public boolean isInversed = false;
+    public boolean isInversed;
 
     public EntityCoercionDeriver() {
         this.storage.setCapacity(30);
         this.module_index = 3;
+        storage.setCapacity(Math.round(getWattage()));
+        storage.setMaxTransfer(Math.round(getWattage() / 20L));
     }
 
     @Override
@@ -44,18 +44,21 @@ public final class EntityCoercionDeriver extends TileElectrical {
         if (!worldObj.isRemote) {
 
             if (isActive()) {
-                if (isInversed) {
+                if (isInversed && MFFSConfig.ENABLE_ELECTRICITY) {
                     if (storage.getEnergyStored() < storage.getMaxEnergyStored()) {
-                        float produce = requestFortron(getProductionRate() / 20, true) / 0.001F;
+                        int produce = (int) Math.floor(requestFortron(getProductionRate() / 20, true) / 0.001);
+                        storage.receiveEnergy(produce, false);
                     }
+                    //TODO: recharge from battery!
                 } else if (getFortronEnergy() < getFortronCapacity()) {
                     //CHeck slot 1 for batteries etc
-
-                    if (storage.getEnergyStored() > storage.getMaxExtract()) {
+                    //TODO: Discharge battery
+                    if (!MFFSConfig.ENABLE_ELECTRICITY && isItemValidForSlot(SLOT_FUEL, getStackInSlot(SLOT_FUEL))
+                            || storage.extractEnergy(storage.getMaxExtract(), true) >= storage.getMaxExtract()) {
                         provideFortron(getProductionRate(), true);
-                        storage.extractEnergy(storage.getMaxExtract(), true);
-                        if (processTime == 0 && isItemValidForSlot(2, getStackInSlot(2))) {
-                            decrStackSize(2, 1);
+                        storage.extractEnergy(storage.getMaxExtract(), false);
+                        if (processTime == 0 && isItemValidForSlot(SLOT_FUEL, getStackInSlot(SLOT_FUEL))) {
+                            decrStackSize(SLOT_FUEL, 1);
                             this.processTime = (200 * Math.max(getModuleCount(ModuleScale.class) / 20, 1));
                         }
                         if (processTime > 0) {
@@ -63,6 +66,7 @@ public final class EntityCoercionDeriver extends TileElectrical {
                         }
                     }
                 }
+                return;
             }//animation
             animation++;
         }
@@ -81,12 +85,12 @@ public final class EntityCoercionDeriver extends TileElectrical {
     }
 
     public float getWattage() {
-        return (5000000.0F + 5000000.0F * (getModuleCount(ModuleSpeed.class) / 8.0F));
+        return (DEFAULT_WATTAGE + DEFAULT_WATTAGE * (getModuleCount(ModuleSpeed.class) / 8.0F));
     }
 
     public int getProductionRate() {
         if (isActive()) {
-            int production = (int) (getWattage() / 20.0F * 0.001F);
+            int production = (int) (getWattage() / 20.0F * 0.001F * MFFSConfig.FORTRON_PRODUCTION_MULTIPLIER);
 
             if (this.processTime > 0) {
                 production *= 4;
@@ -116,27 +120,5 @@ public final class EntityCoercionDeriver extends TileElectrical {
 
         }
         return false;
-    }
-
-    /**
-     * Overriden in a sign to provide the text.
-     */
-    @Override
-    public Packet getDescriptionPacket() {
-        return super.getDescriptionPacket();
-    }
-
-    /**
-     * Called when you receive a TileEntityData packet for the location this
-     * TileEntity is currently in. On the client, the NetworkManager will always
-     * be the remote server. On the server, it will be whomever is responsible for
-     * sending the packet.
-     *
-     * @param net The NetworkManager the packet originated from
-     * @param pkt The data packet
-     */
-    @Override
-    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
-        super.onDataPacket(net, pkt);
     }
 }

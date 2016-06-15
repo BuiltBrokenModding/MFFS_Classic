@@ -14,7 +14,7 @@ public class ModuleAntiFriendly extends ItemMatrixModule {
 
     @Override
     public boolean onDefend(IInterdictionMatrix paramIInterdictionMatrix, EntityLivingBase paramEntityLivingBase) {
-        if(paramEntityLivingBase instanceof INpc || !(paramEntityLivingBase instanceof IMob)) {
+        if (paramEntityLivingBase instanceof INpc || !(paramEntityLivingBase instanceof IMob)) {
             paramEntityLivingBase.setHealth(1F);
             paramEntityLivingBase.attackEntityFrom(ModuleShock.SHOCK_SOURCE, 100F);
         }

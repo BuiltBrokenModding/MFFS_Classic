@@ -1,13 +1,8 @@
 package com.mffs.model.items;
 
-import codechicken.lib.vec.Vector3;
-import com.mffs.api.IFieldInteraction;
-import com.mffs.api.IProjector;
 import com.mffs.api.modules.IProjectorMode;
 import com.mffs.api.utils.Util;
 import cpw.mods.fml.common.registry.LanguageRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

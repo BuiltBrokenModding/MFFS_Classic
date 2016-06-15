@@ -15,7 +15,7 @@ import java.util.Set;
 /**
  * Created by pwaln on 6/9/2016.
  */
-public class ModeCustom extends ItemMode implements ICache{
+public class ModeCustom extends ItemMode implements ICache {
 
     private static final String NBT_ID = "id";
     private static final String NBT_MODE = "mode";

@@ -5,5 +5,5 @@ import com.mffs.model.items.modules.ItemModule;
 /**
  * @author Calclavia
  */
-public class ModuleGlow extends ItemModule{
+public class ModuleGlow extends ItemModule {
 }

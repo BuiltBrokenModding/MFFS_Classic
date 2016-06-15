@@ -6,7 +6,6 @@ import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.WorldServer;
 
 /**
  * Created by pwaln on 6/14/2016.
@@ -25,10 +24,10 @@ public class EntityToggle implements IMessage {
     /**
      * Default constructor needed for reflection instiation
      */
-    public EntityToggle(){}
+    public EntityToggle() {
+    }
 
     /**
-     *
      * @param entity
      */
     public EntityToggle(TileEntity entity) {
@@ -39,7 +38,6 @@ public class EntityToggle implements IMessage {
     }
 
     /**
-     *
      * @param entity
      */
     public EntityToggle(TileEntity entity, byte subOp) {
@@ -90,8 +88,8 @@ public class EntityToggle implements IMessage {
         @Override
         public IMessage onMessage(EntityToggle message, MessageContext ctx) {
             TileEntity entity = ctx.getServerHandler().playerEntity.worldObj.getTileEntity(message.x, message.y, message.z);
-            if(entity instanceof TileMFFS) {
-                return ((TileMFFS)entity).handleMessage(message);
+            if (entity instanceof TileMFFS) {
+                return ((TileMFFS) entity).handleMessage(message);
             }
             return null;
         }

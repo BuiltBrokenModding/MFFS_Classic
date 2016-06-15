@@ -56,8 +56,9 @@ public abstract class ItemModule extends Item implements IModule {
 
     /**
      * Calculates the projection field.
+     *
      * @param projector The projector interface.
-     * @param position A set of positions.
+     * @param position  A set of positions.
      */
     @Override
     public void onCalculate(IFieldInteraction projector, Set<Vector3> position) {
@@ -66,8 +67,9 @@ public abstract class ItemModule extends Item implements IModule {
 
     /**
      * Calls this on projection.
+     *
      * @param projector The projector interface.
-     * @param fields A set of fields that are projected.
+     * @param fields    A set of fields that are projected.
      * @return
      */
     @Override

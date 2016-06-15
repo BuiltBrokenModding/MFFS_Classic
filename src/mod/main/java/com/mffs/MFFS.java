@@ -1,6 +1,8 @@
 package com.mffs;
 
+import com.mffs.model.fluids.Fortron;
 import com.mffs.model.packet.EntityToggle;
+import com.mffs.model.packet.FortronSync;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.SidedProxy;
@@ -40,6 +42,7 @@ public class MFFS {
             e.printStackTrace();
         }
         MFFS.channel.registerMessage(EntityToggle.Handler.class, EntityToggle.class, 0, Side.SERVER);
+        channel.registerMessage(FortronSync.Handler.class, FortronSync.class, 1, Side.CLIENT);
         initialize.preInit(event);
     }
 

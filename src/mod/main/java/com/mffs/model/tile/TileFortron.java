@@ -1,9 +1,14 @@
 package com.mffs.model.tile;
 
+import com.mffs.MFFS;
+import com.mffs.MFFSConfig;
 import com.mffs.api.card.ICard;
 import com.mffs.api.fortron.FrequencyGrid;
 import com.mffs.api.fortron.IFortronFrequency;
 import com.mffs.model.fluids.Fortron;
+import com.mffs.model.packet.FortronSync;
+import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import mekanism.api.Pos3D;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -18,7 +23,8 @@ import java.util.Set;
 public abstract class TileFortron extends TileFrequency implements IFluidHandler, IFortronFrequency {
 
     /* Deteremines if we can export fortron */
-    public boolean sendFortron;
+    public boolean sendFortron = true;
+
     /* This will hold our fluids */
     protected FluidTank tank = new FluidTank(1_000);
 
@@ -26,9 +32,9 @@ public abstract class TileFortron extends TileFrequency implements IFluidHandler
     public void updateEntity() {
         super.updateEntity();
 
-        if (this.ticks % 60 == 0) {
+        if (this.ticks % MFFSConfig.FORTRON_SYNC_TICKS == 0) {
             //TODO: Send fortron
-
+            MFFS.channel.sendToAllAround(new FortronSync(this), new NetworkRegistry.TargetPoint(this.worldObj.provider.dimensionId, xCoord, yCoord, zCoord, 25));
         }
     }
 
@@ -38,12 +44,12 @@ public abstract class TileFortron extends TileFrequency implements IFluidHandler
             int totalFortron = 0, totalCapacity = 0;
             Set<IFortronFrequency> connections = FrequencyGrid.instance().getFortronTiles(this.worldObj, new Pos3D(this.xCoord, this.yCoord, this.zCoord), 100, getFrequency());
             for (IFortronFrequency machine : connections) {
-                if(machine != null) {
+                if (machine != null) {
                     totalCapacity += machine.getFortronCapacity();
                     totalFortron += machine.getFortronEnergy();
                 }
             }
-            if(totalCapacity <= 0 ||totalFortron <= 0) return;
+            if (totalCapacity <= 0 || totalFortron <= 0) return;
         }
         super.invalidate();
     }
@@ -187,4 +193,29 @@ public abstract class TileFortron extends TileFrequency implements IFluidHandler
         return null;
     }
 
+    /**
+     * Gets the tank associated.
+     *
+     * @return
+     */
+    public FluidTank getTank() {
+        return tank;
+    }
+
+    /**
+     * Handles the message given by the handler.
+     *
+     * @param imessage The message.
+     */
+    @Override
+    public IMessage handleMessage(IMessage imessage) {
+        if (imessage instanceof FortronSync) {
+            FortronSync sync = (FortronSync) imessage;
+            if (tank.getFluid() != null) {
+                tank.getFluid().amount = sync.amount;
+                //tank.setCapacity(sync.capacity);
+            }
+        }
+        return super.handleMessage(imessage);
+    }
 }

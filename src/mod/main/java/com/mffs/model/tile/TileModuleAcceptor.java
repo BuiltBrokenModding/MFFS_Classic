@@ -3,7 +3,6 @@ package com.mffs.model.tile;
 import com.mffs.api.modules.IModule;
 import com.mffs.api.modules.IModuleAcceptor;
 import com.mffs.model.items.modules.upgrades.ModuleCapacity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -25,20 +24,20 @@ public abstract class TileModuleAcceptor extends TileFortron implements IModuleA
     @Override
     public void start() {
         super.start();
-        this.tank.setCapacity(0);
+        this.tank.setCapacity((getModuleCount(ModuleCapacity.class) * this.capacityBoost + this.capacityBase) * 1_000);
     }
 
     @Override
     public ItemStack getModule(Class<? extends IModule> module) {
         ItemStack returnStack = null;
-            for(ItemStack stack : inventory) {
-                if (stack != null && module.isAssignableFrom(stack.getItem().getClass())) {
-                    if(returnStack == null) {//We can do this, or call module.newInstance()
-                        returnStack = new ItemStack(stack.getItem(), 0);
-                    }
-                    returnStack.stackSize += stack.stackSize;
+        for (ItemStack stack : inventory) {
+            if (stack != null && module.isAssignableFrom(stack.getItem().getClass())) {
+                if (returnStack == null) {//We can do this, or call module.newInstance()
+                    returnStack = new ItemStack(stack.getItem(), 0);
                 }
+                returnStack.stackSize += stack.stackSize;
             }
+        }
         return returnStack;
     }
 
