@@ -1,11 +1,11 @@
 package com.mffs.model.items.modules;
 
-import codechicken.lib.vec.Vector3;
 import com.mffs.api.IFieldInteraction;
 import com.mffs.api.IProjector;
 import com.mffs.api.modules.IModule;
 import com.mffs.api.utils.UnitDisplay;
 import com.mffs.api.utils.Util;
+import com.mffs.api.vector.Vector3D;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -48,7 +48,7 @@ public abstract class ItemModule extends Item implements IModule {
      * @return
      */
     @Override
-    public Set<Vector3> onPreCalculate(IFieldInteraction projector, Set<Vector3> position) {
+    public Set<Vector3D> onPreCalculate(IFieldInteraction projector, Set<Vector3D> position) {
 
         return position;
     }
@@ -61,7 +61,7 @@ public abstract class ItemModule extends Item implements IModule {
      * @param position  A set of positions.
      */
     @Override
-    public void onCalculate(IFieldInteraction projector, Set<Vector3> position) {
+    public void onCalculate(IFieldInteraction projector, Set<Vector3D> position) {
     }
 
 
@@ -73,13 +73,13 @@ public abstract class ItemModule extends Item implements IModule {
      * @return
      */
     @Override
-    public boolean onProject(IProjector projector, Set<Vector3> fields) {
+    public boolean onProject(IProjector projector, Set<Vector3D> fields) {
         return false;
     }
 
 
     @Override
-    public int onProject(IProjector projector, Vector3 position) {
+    public int onProject(IProjector projector, Vector3D position) {
         return 0;
     }
 
@@ -103,7 +103,7 @@ public abstract class ItemModule extends Item implements IModule {
     }
 
     @Override
-    public boolean onDestroy(IProjector projector, Set<Vector3> field) {
+    public boolean onDestroy(IProjector projector, Set<Vector3D> field) {
         return false;
     }
 

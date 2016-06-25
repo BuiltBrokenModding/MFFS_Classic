@@ -1,9 +1,9 @@
 package com.mffs.api;
 
-import codechicken.lib.vec.Vector3;
 import com.mffs.api.modules.IModule;
 import com.mffs.api.modules.IModuleAcceptor;
 import com.mffs.api.modules.IProjectorMode;
+import com.mffs.api.vector.Vector3D;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -22,21 +22,21 @@ public interface IFieldInteraction
 
     int[] getModuleSlots();
 
-    int getSidedModuleCount(IModule paramIModule, ForgeDirection... paramVarArgs);
+    int getSidedModuleCount(Class<? extends IModule> module, ForgeDirection... paramVarArgs);
 
-    Vector3 getTranslation();
+    Vector3D getTranslation();
 
-    Vector3 getPositiveScale();
+    Vector3D getPositiveScale();
 
-    Vector3 getNegativeScale();
+    Vector3D getNegativeScale();
 
     int getRotationYaw();
 
-    Vector3 getRotationPitch();
+    int getRotationPitch();
 
-    Set<Vector3> getCalculatedField();
+    Set<Vector3D> getCalculatedField();
 
-    Set<Vector3> getInteriorPoints();
+    Set<Vector3D> getInteriorPoints();
 
     void setCalculating(boolean paramBoolean);
 

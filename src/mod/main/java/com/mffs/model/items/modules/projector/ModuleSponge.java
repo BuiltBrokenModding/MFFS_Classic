@@ -1,7 +1,7 @@
 package com.mffs.model.items.modules.projector;
 
-import codechicken.lib.vec.Vector3;
 import com.mffs.api.IProjector;
+import com.mffs.api.vector.Vector3D;
 import com.mffs.model.items.modules.ItemModule;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
@@ -34,13 +34,13 @@ public class ModuleSponge extends ItemModule {
      * @return
      */
     @Override
-    public boolean onProject(IProjector projector, Set<Vector3> fields) {
+    public boolean onProject(IProjector projector, Set<Vector3D> fields) {
         World world;
         if (projector.getTicks() % 60L == 0L) {
             world = ((TileEntity) projector).getWorldObj();
 
             if (!world.isRemote) {
-                for (Vector3 point : projector.getInteriorPoints()) {
+                for (Vector3D point : projector.getInteriorPoints()) {
                     Block block = world.getBlock((int) Math.floor(point.x), (int) Math.floor(point.y), (int) Math.floor(point.z));
 
                     if (((block instanceof BlockLiquid)) || ((block instanceof BlockFluidBase))) {

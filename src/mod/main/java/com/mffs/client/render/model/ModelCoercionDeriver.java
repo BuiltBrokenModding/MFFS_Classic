@@ -4,6 +4,9 @@ import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import org.lwjgl.opengl.GL11;
 
+/**
+ * @author Calclavia
+ */
 public class ModelCoercionDeriver extends ModelBase {
 
     ModelRenderer corner1;

@@ -1,9 +1,9 @@
 package com.mffs.model.items.modules.projector.type;
 
-import codechicken.lib.vec.Vector3;
 import com.mffs.api.IFieldInteraction;
 import com.mffs.api.IProjector;
 import com.mffs.api.render.ModelPlane;
+import com.mffs.api.vector.Vector3D;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -18,25 +18,25 @@ import java.util.Set;
 public class ModeTube extends ModeCube {
 
     @Override
-    public Set<Vector3> getExteriorPoints(IFieldInteraction projector) {
-        Set<Vector3> fieldBlocks = new HashSet();
+    public Set<Vector3D> getExteriorPoints(IFieldInteraction projector) {
+        Set<Vector3D> fieldBlocks = new HashSet();
         ForgeDirection direction = projector.getDirection();
-        Vector3 posScale = projector.getPositiveScale();
-        Vector3 negScale = projector.getNegativeScale();
+        Vector3D posScale = projector.getPositiveScale();
+        Vector3D negScale = projector.getNegativeScale();
 
         for (double x = -negScale.x; x <= posScale.x; x += 0.5F) {
             for (double z = -negScale.z; z <= posScale.z; z += 0.5F) {
                 for (double y = -negScale.y; y <= posScale.y; y += 0.5F) {
                     if ((direction != ForgeDirection.UP) && (direction != ForgeDirection.DOWN) && (y == -(int) Math.floor(negScale.y) || (y == (int) Math.floor(posScale.y)))) {
-                        fieldBlocks.add(new Vector3(x, y, z));
+                        fieldBlocks.add(new Vector3D(x, y, z));
 
 
                     } else if ((direction != ForgeDirection.NORTH) && (direction != ForgeDirection.SOUTH) && ((z == -(int) Math.floor(negScale.z)) || (z == (int) Math.floor(posScale.z)))) {
-                        fieldBlocks.add(new Vector3(x, y, z));
+                        fieldBlocks.add(new Vector3D(x, y, z));
 
 
                     } else if ((direction != ForgeDirection.WEST) && (direction != ForgeDirection.EAST) && ((x == -(int) Math.floor(negScale.x)) || (x == (int) Math.floor(posScale.x)))) {
-                        fieldBlocks.add(new Vector3(x, y, z));
+                        fieldBlocks.add(new Vector3D(x, y, z));
                     }
                 }
             }

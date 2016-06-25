@@ -1,13 +1,14 @@
 package com.mffs.model;
 
 import com.mffs.api.IActivatable;
-import com.mffs.model.packet.EntityToggle;
+import com.mffs.model.net.packet.EntityToggle;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.util.ForgeDirection;
 
 /**
  * @author Calclavia
@@ -80,9 +81,15 @@ public abstract class TileMFFS extends TileEntity implements IActivatable {
                 this.isProvidingSignal = !this.isProvidingSignal;
                 this.isActivated = this.isProvidingSignal;
                 this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
+            } else if (tog.toggle_opcode == EntityToggle.TOGGLE_STATE) {
+                this.isActivated = !this.isActivated;
             }
         }
         return null;
+    }
+
+    public ForgeDirection getDirection() {
+        return ForgeDirection.getOrientation(getBlockMetadata());
     }
 
     /**

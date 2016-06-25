@@ -1,7 +1,7 @@
 package com.mffs.model.items.modules.projector;
 
-import codechicken.lib.vec.Vector3;
 import com.mffs.api.IFieldInteraction;
+import com.mffs.api.vector.Vector3D;
 import com.mffs.model.items.modules.ItemModule;
 import net.minecraft.tileentity.TileEntity;
 
@@ -28,13 +28,13 @@ public class ModuleDome extends ItemModule {
      * @param fieldBlocks A set of positions.
      */
     @Override
-    public void onCalculate(IFieldInteraction projector, Set<Vector3> fieldBlocks) {
-        Vector3 absoluteTranslation = Vector3.fromTileEntity((TileEntity) projector).add(projector.getTranslation());
+    public void onCalculate(IFieldInteraction projector, Set<Vector3D> fieldBlocks) {
+        Vector3D absoluteTranslation = new Vector3D((TileEntity) projector).add(projector.getTranslation());
 
-        Iterator<Vector3> it = fieldBlocks.iterator();
+        Iterator<Vector3D> it = fieldBlocks.iterator();
 
         while (it.hasNext()) {
-            Vector3 pos = it.next();
+            Vector3D pos = it.next();
 
             if (pos.y < absoluteTranslation.y) {
                 it.remove();

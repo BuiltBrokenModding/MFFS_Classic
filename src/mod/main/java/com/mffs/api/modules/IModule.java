@@ -1,8 +1,8 @@
 package com.mffs.api.modules;
 
-import codechicken.lib.vec.Vector3;
 import com.mffs.api.IFieldInteraction;
 import com.mffs.api.IProjector;
+import com.mffs.api.vector.Vector3D;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -17,21 +17,22 @@ public interface IModule
 
     /**
      * Calls this on projection.
+     *
      * @param paramIProjector The projector interface.
-     * @param paramSet A set of fields that are projected.
+     * @param paramSet        A set of fields that are projected.
      * @return
      */
-    boolean onProject(IProjector paramIProjector, Set<Vector3> paramSet);
+    boolean onProject(IProjector paramIProjector, Set<Vector3D> paramSet);
 
-    boolean onDestroy(IProjector paramIProjector, Set<Vector3> paramSet);
+    boolean onDestroy(IProjector paramIProjector, Set<Vector3D> paramSet);
 
-    int onProject(IProjector paramIProjector, Vector3 paramVector3);
+    int onProject(IProjector paramIProjector, Vector3D paramVector3);
 
     boolean onCollideWithForceField(World paramWorld, int paramInt1, int paramInt2, int paramInt3, Entity paramEntity, ItemStack paramItemStack);
 
-    Set<Vector3> onPreCalculate(IFieldInteraction paramIFieldInteraction, Set<Vector3> paramSet);
+    Set<Vector3D> onPreCalculate(IFieldInteraction paramIFieldInteraction, Set<Vector3D> paramSet);
 
-    void onCalculate(IFieldInteraction paramIFieldInteraction, Set<Vector3> paramSet);
+    void onCalculate(IFieldInteraction paramIFieldInteraction, Set<Vector3D> paramSet);
 
     boolean requireTicks(ItemStack paramItemStack);
 }

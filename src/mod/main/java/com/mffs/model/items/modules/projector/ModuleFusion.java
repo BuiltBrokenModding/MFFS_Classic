@@ -1,10 +1,10 @@
 package com.mffs.model.items.modules.projector;
 
-import codechicken.lib.vec.Vector3;
 import com.mffs.api.IBlockFrequency;
 import com.mffs.api.IProjector;
 import com.mffs.api.fortron.FrequencyGrid;
 import com.mffs.api.fortron.IFortronFrequency;
+import com.mffs.api.vector.Vector3D;
 import com.mffs.model.TileMFFS;
 import com.mffs.model.items.modules.ItemModule;
 import net.minecraft.tileentity.TileEntity;
@@ -34,17 +34,17 @@ public class ModuleFusion extends ItemModule {
      * @return
      */
     @Override
-    public boolean onProject(IProjector projector, Set<Vector3> fieldBlocks) {
+    public boolean onProject(IProjector projector, Set<Vector3D> fieldBlocks) {
         Set<IBlockFrequency> machines = FrequencyGrid.instance().get(((IFortronFrequency) projector).getFrequency());
 
         for (IBlockFrequency compareProjector : machines) {
             if (((compareProjector instanceof IProjector)) && (compareProjector != projector)) {
                 if (((TileEntity) compareProjector).getWorldObj() == ((TileEntity) projector).getWorldObj()) {
                     if ((((TileMFFS) compareProjector).isActive()) && (((IProjector) compareProjector).getMode() != null)) {
-                        Iterator<Vector3> it = fieldBlocks.iterator();
+                        Iterator<Vector3D> it = fieldBlocks.iterator();
 
                         while (it.hasNext()) {
-                            Vector3 position = it.next();
+                            Vector3D position = it.next();
 
                             if (((IProjector) compareProjector).getMode().isInField((IProjector) compareProjector, position)) {
                                 it.remove();

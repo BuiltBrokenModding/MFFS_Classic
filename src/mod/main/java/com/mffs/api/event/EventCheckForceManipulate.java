@@ -10,7 +10,6 @@ import net.minecraft.world.World;
 public class EventCheckForceManipulate extends EventForceManipulate {
 
     /**
-     *
      * @param world
      * @param beforeX
      * @param beforeY

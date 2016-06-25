@@ -1,8 +1,6 @@
 package com.mffs.api.utils;
 
 import codechicken.lib.vec.Vector3;
-import mekanism.api.Pos3D;
-import net.minecraft.tileentity.TileEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +47,7 @@ public class Util {
 
     /**
      * Gets the distance between 2 vectors.
+     *
      * @param vec1
      * @param vec2
      * @return

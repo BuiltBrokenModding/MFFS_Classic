@@ -1,10 +1,10 @@
 package com.mffs.model.items.modules.projector.type;
 
-import codechicken.lib.vec.Vector3;
 import com.mffs.api.IFieldInteraction;
 import com.mffs.api.IProjector;
 import com.mffs.api.render.ModelCube;
 import com.mffs.api.vector.Matrix2d;
+import com.mffs.api.vector.Vector3D;
 import com.mffs.model.items.ItemMode;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -20,16 +20,16 @@ import java.util.Set;
 public class ModeCube extends ItemMode {
 
     @Override
-    public Set<Vector3> getExteriorPoints(IFieldInteraction projector) {
-        Set<Vector3> fieldBlocks = new HashSet();
-        Vector3 posScale = projector.getPositiveScale();
-        Vector3 negScale = projector.getNegativeScale();
+    public Set<Vector3D> getExteriorPoints(IFieldInteraction projector) {
+        Set<Vector3D> fieldBlocks = new HashSet();
+        Vector3D posScale = projector.getPositiveScale();
+        Vector3D negScale = projector.getNegativeScale();
 
-        for (double x = -negScale.x; x <= posScale.x; x += 0.5F) {
-            for (double z = -negScale.z; z <= posScale.z; z += 0.5F) {
-                for (double y = -negScale.y; y <= posScale.y; y += 0.5F) {
-                    if ((y == -negScale.y) || (y == posScale.y) || (x == -negScale.x) || (x == posScale.x) || (z == -negScale.z) || (z == posScale.z)) {
-                        fieldBlocks.add(new Vector3(x, y, z));
+        for (int x = -negScale.intX(); x <= posScale.intX(); x += 0.5F) {
+            for (int z = -negScale.intZ(); z <= posScale.z; z += 0.5F) {
+                for (int y = -negScale.intY(); y <= posScale.intY(); y += 0.5F) {
+                    if ((y == -negScale.intY()) || (y == posScale.intY()) || (x == -negScale.intX()) || (x == posScale.intX()) || (z == -negScale.z) || (z == posScale.z)) {
+                        fieldBlocks.add(new Vector3D(x, y, z));
                     }
                 }
             }
@@ -38,21 +38,21 @@ public class ModeCube extends ItemMode {
     }
 
     @Override
-    public Set<Vector3> getInteriorPoints(IFieldInteraction projector) {
-        Set<Vector3> fieldBlocks = new HashSet();
+    public Set<Vector3D> getInteriorPoints(IFieldInteraction projector) {
+        Set<Vector3D> fieldBlocks = new HashSet();
 
-        Vector3 posScale = projector.getPositiveScale();
+        Vector3D posScale = projector.getPositiveScale();
 
-        Vector3 negScale = projector.getNegativeScale();
+        Vector3D negScale = projector.getNegativeScale();
 
 
-        for (int x = -(int) Math.floor(negScale.x); x <= (int) Math.floor(posScale.x); x++) {
+        for (int x = -(int) Math.floor(negScale.intX()); x <= (int) Math.floor(posScale.intX()); x++) {
 
             for (int z = -(int) Math.floor(negScale.z); x <= (int) Math.floor(posScale.z); z++) {
 
-                for (int y = -(int) Math.floor(negScale.y); x <= (int) Math.floor(posScale.y); y++) {
+                for (int y = -(int) Math.floor(negScale.intY()); x <= (int) Math.floor(posScale.intY()); y++) {
 
-                    fieldBlocks.add(new Vector3(x, y, z));
+                    fieldBlocks.add(new Vector3D(x, y, z));
 
                 }
 
@@ -71,12 +71,12 @@ public class ModeCube extends ItemMode {
     }
 
     @Override
-    public boolean isInField(IFieldInteraction projector, Vector3 position) {
-        Vector3 projectorPos = Vector3.fromTileEntity((TileEntity) projector);
+    public boolean isInField(IFieldInteraction projector, Vector3D position) {
+        Vector3D projectorPos = new Vector3D((TileEntity) projector);
         projectorPos.add(projector.getTranslation());
-        Vector3 relativePosition = position.copy().subtract(projectorPos);
+        Vector3D relativePosition = position.clone().subtract(projectorPos);
         relativePosition.rotate(-projector.getRotationYaw(), projector.getRotationPitch());
-        Matrix2d region = new Matrix2d(projector.getNegativeScale().copy().multiply(-1.0D), projector.getPositiveScale());
+        Matrix2d region = new Matrix2d(projector.getNegativeScale().clone().scale(-1.0D), projector.getPositiveScale());
         return region.isIn(relativePosition);
     }
 }

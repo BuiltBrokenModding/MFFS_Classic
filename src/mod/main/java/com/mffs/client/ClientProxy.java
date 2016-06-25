@@ -3,10 +3,9 @@ package com.mffs.client;
 import com.mffs.CommonProxy;
 import com.mffs.MFFS;
 import com.mffs.client.gui.GuiCoercionDeriver;
-import com.mffs.client.render.RenderBlockHandler;
-import com.mffs.client.render.RenderCoercionDeriver;
-import com.mffs.client.render.RenderIDCard;
+import com.mffs.client.render.*;
 import com.mffs.model.tile.type.EntityCoercionDeriver;
+import com.mffs.model.tile.type.EntityForceFieldProjector;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -39,8 +38,10 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void init(FMLInitializationEvent event) {
         RenderingRegistry.registerBlockHandler(new RenderBlockHandler());
+        RenderingRegistry.registerBlockHandler(new RenderForceFieldHandler());
         MinecraftForgeClient.registerItemRenderer((Item) Item.itemRegistry.getObject(MFFS.MODID + ":cardID"), new RenderIDCard());
         ClientRegistry.bindTileEntitySpecialRenderer(EntityCoercionDeriver.class, new RenderCoercionDeriver());
+        ClientRegistry.bindTileEntitySpecialRenderer(EntityForceFieldProjector.class, new RenderForceFieldProjector());
     }
 
     /**

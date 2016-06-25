@@ -12,7 +12,7 @@ import org.lwjgl.opengl.GL11;
 import javax.vecmath.Vector2d;
 
 /**
- * Created by pwaln on 6/2/2016.
+ * @author Calclavia
  */
 public class GuiPressableButton extends GuiButton {
 

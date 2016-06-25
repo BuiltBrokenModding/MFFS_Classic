@@ -138,9 +138,10 @@ public class FrequencyGrid {
 
     /**
      * Gets FortronFreqency entityes registered.
-     * @param world The world.
-     * @param position The position
-     * @param radius The radius to check.
+     *
+     * @param world     The world.
+     * @param position  The position
+     * @param radius    The radius to check.
      * @param frequency The frequency to check.
      * @return
      */

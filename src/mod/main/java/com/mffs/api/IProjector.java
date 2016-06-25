@@ -1,6 +1,6 @@
 package com.mffs.api;
 
-import codechicken.lib.vec.Vector3;
+import com.mffs.api.vector.Vector3D;
 import net.minecraft.inventory.IInventory;
 
 import java.util.Set;
@@ -18,5 +18,5 @@ public interface IProjector
 
     long getTicks();
 
-    Set<Vector3> getForceFields();
+    Set<Vector3D> getForceFields();
 }

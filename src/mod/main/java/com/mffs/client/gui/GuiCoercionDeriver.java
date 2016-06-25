@@ -4,7 +4,7 @@ import com.mffs.MFFS;
 import com.mffs.api.gui.GuiSlotType;
 import com.mffs.api.utils.UnitDisplay;
 import com.mffs.model.container.CoercionDeriverContainer;
-import com.mffs.model.packet.EntityToggle;
+import com.mffs.model.net.packet.EntityToggle;
 import com.mffs.model.tile.type.EntityCoercionDeriver;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import net.minecraft.client.gui.GuiButton;
@@ -15,7 +15,7 @@ import org.lwjgl.opengl.GL11;
 import javax.vecmath.Vector2d;
 
 /**
- * Created by pwaln on 6/2/2016.
+ * @author Calclavia
  */
 public class GuiCoercionDeriver extends MFFSGui {
 
@@ -31,6 +31,7 @@ public class GuiCoercionDeriver extends MFFSGui {
 
     /**
      * Gets the tile entity represented.
+     *
      * @return
      */
     private EntityCoercionDeriver getEntity() {
@@ -65,7 +66,7 @@ public class GuiCoercionDeriver extends MFFSGui {
         drawTextWithTooltip("progress", "%1: " + (entity.isActive() ? LanguageRegistry.instance().getStringLocalization("gui.deriver.running") : LanguageRegistry.instance().getStringLocalization("gui.deriver.idle")), 8, 70, x, y);
         drawTextWithTooltip("fortron", "%1: " + UnitDisplay.getDisplayShort(entity.getFortronEnergy(), UnitDisplay.Unit.LITER), 8, 105, x, y);
 
-        this.fontRendererObj.drawString((entity.isInversed ? EnumChatFormatting.RED+"-" : EnumChatFormatting.GREEN+"+") + UnitDisplay.getDisplayShort(entity.getProductionRate() * 20, UnitDisplay.Unit.LITER) + "/s", 118, 117, 4210752);
+        this.fontRendererObj.drawString((entity.isInversed ? EnumChatFormatting.RED + "-" : EnumChatFormatting.GREEN + "+") + UnitDisplay.getDisplayShort(entity.getProductionRate() * 20, UnitDisplay.Unit.LITER) + "/s", 118, 117, 4210752);
 
         super.drawGuiContainerForegroundLayer(x, y);
     }
@@ -91,7 +92,7 @@ public class GuiCoercionDeriver extends MFFSGui {
         drawBar(50, 84, 1.0F);
 
 
-        drawForce(8, 115, entity.getFortronEnergy() > 0 ? ((float)entity.getFortronEnergy()) / entity.getFortronCapacity() : 0);
+        drawForce(8, 115, entity.getFortronEnergy() > 0 ? ((float) entity.getFortronEnergy()) / entity.getFortronCapacity() : 0);
     }
 
 
@@ -99,7 +100,7 @@ public class GuiCoercionDeriver extends MFFSGui {
     protected void actionPerformed(GuiButton guibutton) {
         super.actionPerformed(guibutton);
         if (guibutton.id == 1) {
-            MFFS.channel.sendToServer(new EntityToggle(getEntity(), (byte) 0));
+            MFFS.channel.sendToServer(new EntityToggle(getEntity(), EntityToggle.TOGGLE_STATE));
         }
     }
 }

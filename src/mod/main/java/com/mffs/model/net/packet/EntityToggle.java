@@ -1,36 +1,42 @@
-package com.mffs.model.packet;
+package com.mffs.model.net.packet;
 
 import com.mffs.model.TileMFFS;
-import com.mffs.model.tile.TileFortron;
+import com.mffs.model.net.TileEntityMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.client.Minecraft;
 import net.minecraft.tileentity.TileEntity;
 
 /**
  * Created by pwaln on 6/14/2016.
  */
-public class FortronSync implements IMessage {
+public class EntityToggle extends TileEntityMessage {
 
-    /* Amount of fortron to be sent */
-    public int amount, capacity;
-    /* The entity coordinates */
-    private int x, y, z;
+    /* The Redstone activation button opcode */
+    public static final byte REDSTONE_TOGGLE = 0, TOGGLE_STATE = 1;
 
-    /**
-     * Default Constructor
-     */
-    public FortronSync() {
+    /* This is the opcode representing the field to toggle */
+    public byte toggle_opcode;
+
+    public EntityToggle() {
+        super();
     }
 
-    public FortronSync(TileFortron tile) {
-        x = tile.xCoord;
-        y = tile.yCoord;
-        z = tile.zCoord;
-        amount = tile.getTank().getFluidAmount();
-        capacity = tile.getTank().getCapacity();
+    /**
+     * @param entity
+     */
+    public EntityToggle(TileEntity entity) {
+        super(entity);
+        this.toggle_opcode = 0;
+    }
+
+    /**
+     * @param entity
+     */
+    public EntityToggle(TileEntity entity, byte subOp) {
+        super(entity);
+        this.toggle_opcode = subOp;
     }
 
     /**
@@ -40,11 +46,8 @@ public class FortronSync implements IMessage {
      */
     @Override
     public void fromBytes(ByteBuf buf) {
-        x = buf.readInt();
-        y = buf.readInt();
-        z = buf.readInt();
-        amount = buf.readInt();
-        capacity = buf.readInt();
+        super.fromBytes(buf);
+        this.toggle_opcode = (byte) buf.readUnsignedByte();
     }
 
     /**
@@ -54,17 +57,14 @@ public class FortronSync implements IMessage {
      */
     @Override
     public void toBytes(ByteBuf buf) {
-        buf.writeInt(x);
-        buf.writeInt(y);
-        buf.writeInt(z);
-        buf.writeInt(amount);
-        buf.writeInt(capacity);
+        super.toBytes(buf);
+        buf.writeByte(toggle_opcode);
     }
 
     /**
-     * FortronSync handler.
+     * Reads the message and handles it server side.
      */
-    public static class Handler implements IMessageHandler<FortronSync, IMessage> {
+    public static class ServerHandler implements IMessageHandler<EntityToggle, IMessage> {
         /**
          * Called when a message is received of the appropriate type. You can optionally return a reply message, or null if no reply
          * is needed.
@@ -74,8 +74,8 @@ public class FortronSync implements IMessage {
          * @return an optional return message
          */
         @Override
-        public IMessage onMessage(FortronSync message, MessageContext ctx) {
-            TileEntity entity = Minecraft.getMinecraft().thePlayer.worldObj.getTileEntity(message.x, message.y, message.z);
+        public IMessage onMessage(EntityToggle message, MessageContext ctx) {
+            TileEntity entity = ctx.getServerHandler().playerEntity.worldObj.getTileEntity(message.x, message.y, message.z);
             if (entity instanceof TileMFFS) {
                 return ((TileMFFS) entity).handleMessage(message);
             }

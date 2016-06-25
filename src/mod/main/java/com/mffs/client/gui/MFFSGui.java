@@ -6,7 +6,8 @@ import com.mffs.api.IBlockFrequency;
 import com.mffs.api.gui.GuiContainerBase;
 import com.mffs.client.buttons.GuiIcon;
 import com.mffs.model.TileMFFS;
-import com.mffs.model.packet.EntityToggle;
+import com.mffs.model.net.packet.ChangeFrequency;
+import com.mffs.model.net.packet.EntityToggle;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
@@ -19,7 +20,7 @@ import org.lwjgl.input.Keyboard;
 import javax.vecmath.Vector2d;
 
 /**
- * Created by pwaln on 6/2/2016.
+ * @author Calclavia
  */
 public class MFFSGui extends GuiContainerBase {
 
@@ -71,8 +72,9 @@ public class MFFSGui extends GuiContainerBase {
                 int newFrequency = Math.max(0, Integer.parseInt(this.textFieldFrequency.getText()));
                 this.frequencyTile.setFrequency(newFrequency);
                 this.textFieldFrequency.setText(this.frequencyTile.getFrequency() + "");
-                // PacketDispatcher.sendPacketToServer(ModularForceFieldSystem.PACKET_TILE.getPacket((TileEntity)this.frequencyTile, new Object[] { Integer.valueOf(TileMFFS.TilePacketType.FREQUENCY.ordinal()), Integer.valueOf(this.frequencyTile.getFrequency()) }));
+                MFFS.channel.sendToServer(new ChangeFrequency(((TileEntity) this.frequencyTile), newFrequency));
             } catch (NumberFormatException e) {
+                e.printStackTrace();
             }
         }
     }

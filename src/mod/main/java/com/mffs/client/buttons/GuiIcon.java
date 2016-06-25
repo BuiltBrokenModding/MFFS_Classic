@@ -5,14 +5,12 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
 
 /**
- * Created by pwaln on 6/2/2016.
+ * @author Calclavia
  */
 public class GuiIcon extends GuiButton {
 
@@ -69,7 +67,7 @@ public class GuiIcon extends GuiButton {
         GL11.glTranslatef(0.0F, 0.0F, 32.0F);
         this.zLevel = 500.0F;
         itemRenderer.zLevel = 500.0F;
-        if(itemStack != null) {
+        if (itemStack != null) {
             itemRenderer.renderItemAndEffectIntoGUI(fontRenderer, mc.renderEngine, itemStack, x, y);
             itemRenderer.renderItemOverlayIntoGUI(fontRenderer, mc.renderEngine, itemStack, x, y);
         }

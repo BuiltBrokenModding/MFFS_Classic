@@ -17,6 +17,9 @@ import org.lwjgl.opengl.GL11;
 
 import javax.vecmath.Vector2d;
 
+/**
+ * @author Calclavia
+ */
 @SideOnly(Side.CLIENT)
 public class RenderIDCard implements IItemRenderer {
     /**

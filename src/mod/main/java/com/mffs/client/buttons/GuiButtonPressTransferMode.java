@@ -1,7 +1,7 @@
 package com.mffs.client.buttons;
 
 /**
- * Created by pwaln on 6/2/2016.
+ * @author Calclavia
  */
 public class GuiButtonPressTransferMode {
 

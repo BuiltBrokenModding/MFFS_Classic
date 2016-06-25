@@ -5,6 +5,8 @@ import com.mffs.api.IBlockFrequency;
 import com.mffs.api.card.ICoordLink;
 import com.mffs.api.fortron.FrequencyGrid;
 import com.mffs.api.security.IBiometricIdentifier;
+import com.mffs.model.net.packet.ChangeFrequency;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import mekanism.api.Coord4D;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -90,6 +92,20 @@ public abstract class TileFrequency extends TileMFFSInventory implements IBlockF
     @Override
     public void setFrequency(int frequency) {
         this.frequency = frequency;
+    }
+
+    /**
+     * Handles the message given by the handler.
+     *
+     * @param imessage The message.
+     */
+    @Override
+    public IMessage handleMessage(IMessage imessage) {
+        if (imessage instanceof ChangeFrequency) {
+            this.frequency = ((ChangeFrequency) imessage).getFrequency();
+            return null;
+        }
+        return super.handleMessage(imessage);
     }
 
     @Override

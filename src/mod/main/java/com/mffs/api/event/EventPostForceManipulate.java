@@ -8,7 +8,6 @@ import net.minecraft.world.World;
 public class EventPostForceManipulate extends EventForceManipulate {
 
     /**
-     *
      * @param world
      * @param beforeX
      * @param beforeY

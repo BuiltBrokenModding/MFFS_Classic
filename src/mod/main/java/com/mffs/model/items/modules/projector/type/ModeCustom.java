@@ -1,9 +1,9 @@
 package com.mffs.model.items.modules.projector.type;
 
-import codechicken.lib.vec.Vector3;
 import com.mffs.api.ICache;
 import com.mffs.api.IFieldInteraction;
 import com.mffs.api.IProjector;
+import com.mffs.api.vector.Vector3D;
 import com.mffs.model.items.ItemMode;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -43,17 +43,17 @@ public class ModeCustom extends ItemMode implements ICache {
     }
 
     @Override
-    public Set<Vector3> getExteriorPoints(IFieldInteraction paramIFieldInteraction) {
+    public Set<Vector3D> getExteriorPoints(IFieldInteraction paramIFieldInteraction) {
         return null;
     }
 
     @Override
-    public Set<Vector3> getInteriorPoints(IFieldInteraction paramIFieldInteraction) {
+    public Set<Vector3D> getInteriorPoints(IFieldInteraction paramIFieldInteraction) {
         return null;
     }
 
     @Override
-    public boolean isInField(IFieldInteraction paramIFieldInteraction, Vector3 paramVector3) {
+    public boolean isInField(IFieldInteraction paramIFieldInteraction, Vector3D paramVector3D) {
         return false;
     }
 

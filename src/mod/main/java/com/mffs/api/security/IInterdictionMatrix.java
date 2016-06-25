@@ -5,6 +5,7 @@ import com.mffs.api.IBiometricIdentifierLink;
 import com.mffs.api.fortron.IFortronFrequency;
 import com.mffs.api.modules.IModuleAcceptor;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import java.util.Set;
@@ -20,7 +21,7 @@ public interface IInterdictionMatrix
 
     boolean mergeIntoInventory(ItemStack paramItemStack);
 
-    Set<ItemStack> getFilteredItems();
+    Set<Item> getFilteredItems();
 
     boolean getFilterMode();
 

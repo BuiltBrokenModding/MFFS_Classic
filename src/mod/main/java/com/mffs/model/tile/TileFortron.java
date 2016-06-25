@@ -6,7 +6,7 @@ import com.mffs.api.card.ICard;
 import com.mffs.api.fortron.FrequencyGrid;
 import com.mffs.api.fortron.IFortronFrequency;
 import com.mffs.model.fluids.Fortron;
-import com.mffs.model.packet.FortronSync;
+import com.mffs.model.net.packet.FortronSync;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import mekanism.api.Pos3D;
@@ -33,7 +33,7 @@ public abstract class TileFortron extends TileFrequency implements IFluidHandler
         super.updateEntity();
 
         if (this.ticks % MFFSConfig.FORTRON_SYNC_TICKS == 0) {
-            //TODO: Send fortron
+            //TODO: Send fortron only to people in the interface!
             MFFS.channel.sendToAllAround(new FortronSync(this), new NetworkRegistry.TargetPoint(this.worldObj.provider.dimensionId, xCoord, yCoord, zCoord, 25));
         }
     }
