@@ -16,6 +16,7 @@ import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import net.minecraft.block.*;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -146,11 +147,23 @@ public class EntityForceFieldProjector extends TileFieldInteraction implements I
                         if (vec.intY() != yCoord && vec.intZ() != zCoord && xCoord != vec.intX() && !(block instanceof BlockForceField)
                                 && worldObj.getChunkFromBlockCoords(vec.intX(), vec.intZ()).isChunkLoaded) {
                             constructCount++;
-                            //loops
+
+                            for (IModule module : getModules(getModuleSlots())) {
+                                int flag = module.onProject(this, vec);
+
+                                if (flag == 1)
+                                    break;
+                                if (flag == 2)
+                                    break restart;
+                            }
+
                             if (!worldObj.isRemote)
                                 worldObj.setBlock(vec.intX(), vec.intY(), vec.intZ(), BlockForceField.BLOCK_FORCE_FIELD, 0, 2);
                             this.blocks.add(vec);
 
+                            TileEntity entity = vec.getTileEntity(worldObj);
+                            if (entity instanceof EntityForceField)
+                                ((EntityForceField) entity).setProjector(vec);
 
                             requestFortron(1, true);
                             if (constructCount > constructSpeed)
@@ -173,7 +186,7 @@ public class EntityForceFieldProjector extends TileFieldInteraction implements I
                     }
                 }
 
-                for (Iterator<Vector3D> it$ = new HashSet<Vector3D>(this.calculatedFields).iterator(); it$.hasNext(); ) {
+                for (Iterator<Vector3D> it$ = new HashSet<>(this.calculatedFields).iterator(); it$.hasNext(); ) {
                     Vector3D vec = it$.next();
                     Block block = worldObj.getBlock(vec.intX(), vec.intY(), vec.intZ());
                     if (block instanceof BlockForceField) {
@@ -187,6 +200,16 @@ public class EntityForceFieldProjector extends TileFieldInteraction implements I
         this.isComplete = false;
         this.isCalc = false;
         this.requireTicks = false;
+    }
+
+    /**
+     * @return
+     */
+    public Set<ItemStack> getCards() {
+        Set<ItemStack> set = new HashSet<>();
+        set.add(super.getCard());
+        set.add(getStackInSlot(1));
+        return set;
     }
 
     /**

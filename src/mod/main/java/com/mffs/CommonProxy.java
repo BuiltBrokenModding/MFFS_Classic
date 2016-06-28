@@ -1,8 +1,10 @@
 package com.mffs;
 
 import com.mffs.model.container.CoercionDeriverContainer;
+import com.mffs.model.container.ForceFieldProjectorContainer;
 import com.mffs.model.fluids.Fortron;
 import com.mffs.model.tile.type.EntityCoercionDeriver;
+import com.mffs.model.tile.type.EntityForceFieldProjector;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -59,6 +61,8 @@ public class CommonProxy implements IGuiHandler {
         if (tileEntity != null) {
             if (tileEntity instanceof EntityCoercionDeriver) {
                 return new CoercionDeriverContainer(player, (EntityCoercionDeriver) tileEntity);
+            } else if (tileEntity instanceof EntityForceFieldProjector) {
+                return new ForceFieldProjectorContainer(player, (EntityForceFieldProjector) tileEntity);
             }
         }
         return null;

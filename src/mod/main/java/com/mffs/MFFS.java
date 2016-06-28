@@ -1,5 +1,6 @@
 package com.mffs;
 
+import com.mffs.model.net.packet.ChangeFrequency;
 import com.mffs.model.net.packet.EntityToggle;
 import com.mffs.model.net.packet.FortronSync;
 import cpw.mods.fml.common.Mod;
@@ -42,6 +43,7 @@ public class MFFS {
         }
         MFFS.channel.registerMessage(EntityToggle.ServerHandler.class, EntityToggle.class, 0, Side.SERVER);
         channel.registerMessage(FortronSync.ClientHandler.class, FortronSync.class, 1, Side.CLIENT);
+        MFFS.channel.registerMessage(ChangeFrequency.ServerHandler.class, ChangeFrequency.class, 2, Side.SERVER);
         initialize.preInit(event);
         MFFSConfig.load();
     }

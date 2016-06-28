@@ -4,6 +4,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 
+import javax.vecmath.Vector2d;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +19,11 @@ public class Matrix2d {
     public Matrix2d(Vector3D min, Vector3D max) {
         this.min = min;
         this.max = max;
+    }
+
+    public Matrix2d(Vector2d min, Vector2d max) {
+        this.min = new Vector3D(min.x, min.y, 0);
+        this.max = new Vector3D(max.x, max.y, 0);
     }
 
     public Matrix2d(AxisAlignedBB aabb) {

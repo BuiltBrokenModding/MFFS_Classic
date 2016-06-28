@@ -8,6 +8,7 @@ import com.mffs.api.vector.Vector3D;
 import com.mffs.model.items.modules.upgrades.ModuleInvert;
 import com.mffs.model.items.modules.upgrades.ModuleRotate;
 import com.mffs.model.items.modules.upgrades.ModuleTranslate;
+import com.mffs.model.net.packet.EntityToggle;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -283,6 +284,14 @@ public abstract class TileFieldInteraction extends TileModuleAcceptor implements
      */
     @Override
     public IMessage handleMessage(IMessage imessage) {
+        if(imessage instanceof EntityToggle) {
+            EntityToggle pkt = (EntityToggle) imessage;
+            if(pkt.toggle_opcode == EntityToggle.ABSOLUTE_TOGGLE) {
+                this.isAbs = !this.isAbs;
+                worldObj.markBlockForUpdate(xCoord, yCoord, zCoord); //we need to signal that this entity has been changed serverside!
+                return null;
+            }
+        }
         return super.handleMessage(imessage);
     }
 }

@@ -92,14 +92,14 @@ public abstract class TileMFFS extends TileEntity implements IActivatable {
         return ForgeDirection.getOrientation(getBlockMetadata());
     }
 
+
+
     /**
      * Overriden in a sign to provide the text.
      */
     @Override
     public Packet getDescriptionPacket() {
         NBTTagCompound tag = new NBTTagCompound();
-        //tag.setBoolean("redstone", isProvidingSignal);
-        //tag.setBoolean("active", isActivated);
         writeToNBT(tag);
         return new S35PacketUpdateTileEntity(this.xCoord, this.yCoord, this.zCoord, 0, tag);
     }

@@ -3,6 +3,7 @@ package com.mffs.client;
 import com.mffs.CommonProxy;
 import com.mffs.MFFS;
 import com.mffs.client.gui.GuiCoercionDeriver;
+import com.mffs.client.gui.GuiForceFieldProjector;
 import com.mffs.client.render.*;
 import com.mffs.model.tile.type.EntityCoercionDeriver;
 import com.mffs.model.tile.type.EntityForceFieldProjector;
@@ -72,6 +73,8 @@ public class ClientProxy extends CommonProxy {
         if (tileEntity != null) {
             if (tileEntity instanceof EntityCoercionDeriver) {
                 return new GuiCoercionDeriver(player, (EntityCoercionDeriver) tileEntity);
+            } else if (tileEntity instanceof EntityForceFieldProjector) {
+                return new GuiForceFieldProjector(player, (EntityForceFieldProjector) tileEntity);
             }
         }
         return null;

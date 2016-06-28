@@ -14,7 +14,7 @@ import net.minecraft.tileentity.TileEntity;
 public class EntityToggle extends TileEntityMessage {
 
     /* The Redstone activation button opcode */
-    public static final byte REDSTONE_TOGGLE = 0, TOGGLE_STATE = 1;
+    public static final byte REDSTONE_TOGGLE = 0, TOGGLE_STATE = 1, ABSOLUTE_TOGGLE = 2;
 
     /* This is the opcode representing the field to toggle */
     public byte toggle_opcode;

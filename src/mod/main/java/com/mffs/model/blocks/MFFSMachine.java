@@ -10,12 +10,16 @@ import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IIcon;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 
 /**
  * @author Calclavia
@@ -24,6 +28,33 @@ public abstract class MFFSMachine extends Block implements ITileEntityProvider {
 
     /* Textures mapped to certain sides */
     private IIcon[] side_textures;
+
+    @Override
+    public void onBlockPlacedBy(World w, int x, int y, int z, EntityLivingBase entity, ItemStack stack) {
+        w.setBlockMetadataWithNotify(x, y, z, determineOrientation(x, y, z, entity), 3);
+    }
+
+    private int determineOrientation(int x, int y, int z, EntityLivingBase entityLiving)
+    {
+        if ((MathHelper.abs((float)entityLiving.posX - x) < 2.0F) && (MathHelper.abs((float)entityLiving.posZ - z) < 2.0F))
+        {
+            double d0 = entityLiving.posY + 1.82D - entityLiving.yOffset;
+            if ((canRotate(1)) && (d0 - y > 2.0D)) {
+                return 1;
+            }
+            if ((canRotate(0)) && (y - d0 > 0.0D)) {
+                return 0;
+            }
+        }
+        int playerSide = MathHelper.floor_double(entityLiving.rotationYaw * 4.0F / 360.0F + 0.5D) & 0x3;
+        int returnSide = (playerSide == 3) && (canRotate(4)) ? 4 : (playerSide == 2) && (canRotate(3)) ? 3 : (playerSide == 1) && (canRotate(5)) ? 5 : (playerSide == 0) && (canRotate(2)) ? 2 : 0;
+        return returnSide;
+    }
+
+    public boolean canRotate(int ord)
+    {
+        return (0b111100 & 1 << ord) != 0;
+    }
 
     /**
      * Constructor.
