@@ -10,7 +10,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Created by pwaln on 6/2/2016.
+ * @author Calclavia
  */
 public abstract class TileModuleAcceptor extends TileFortron implements IModuleAcceptor {
 

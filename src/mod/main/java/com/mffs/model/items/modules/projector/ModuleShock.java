@@ -17,7 +17,7 @@ public class ModuleShock extends ItemModule {
     public static final DamageSource SHOCK_SOURCE = new DamageSource("fieldShock").setDamageBypassesArmor();
 
     @Override
-    public boolean onCollideWithForceField(World world, int x, int y, int z, Entity entity, ItemStack moduleStack) {
+    public boolean onCollideWithForcefield(World world, int x, int y, int z, Entity entity, ItemStack moduleStack) {
         entity.attackEntityFrom(SHOCK_SOURCE, moduleStack.stackSize);
         return false;
     }

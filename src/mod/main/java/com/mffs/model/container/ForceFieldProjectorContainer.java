@@ -2,7 +2,7 @@ package com.mffs.model.container;
 
 import com.mffs.api.slots.CardSlot;
 import com.mffs.api.slots.MachineSlot;
-import com.mffs.model.tile.type.EntityForceFieldProjector;
+import com.mffs.model.tile.type.TileForceFieldProjector;
 import net.minecraft.entity.player.EntityPlayer;
 
 /**
@@ -14,7 +14,7 @@ public class ForceFieldProjectorContainer extends PlayerContainer {
      * @param player
      * @param field
      */
-    public ForceFieldProjectorContainer(EntityPlayer player, EntityForceFieldProjector field) {
+    public ForceFieldProjectorContainer(EntityPlayer player, TileForceFieldProjector field) {
         super(player, field);
 
         addSlotToContainer(new CardSlot<>(field, 0, 10, 89));

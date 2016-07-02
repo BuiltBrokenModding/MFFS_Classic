@@ -4,9 +4,11 @@ import com.mffs.CommonProxy;
 import com.mffs.MFFS;
 import com.mffs.client.gui.GuiCoercionDeriver;
 import com.mffs.client.gui.GuiForceFieldProjector;
+import com.mffs.client.gui.GuiFortronCapacitor;
 import com.mffs.client.render.*;
-import com.mffs.model.tile.type.EntityCoercionDeriver;
-import com.mffs.model.tile.type.EntityForceFieldProjector;
+import com.mffs.model.tile.type.TileCoercionDeriver;
+import com.mffs.model.tile.type.TileForceFieldProjector;
+import com.mffs.model.tile.type.TileFortronCapacitor;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -41,8 +43,9 @@ public class ClientProxy extends CommonProxy {
         RenderingRegistry.registerBlockHandler(new RenderBlockHandler());
         RenderingRegistry.registerBlockHandler(new RenderForceFieldHandler());
         MinecraftForgeClient.registerItemRenderer((Item) Item.itemRegistry.getObject(MFFS.MODID + ":cardID"), new RenderIDCard());
-        ClientRegistry.bindTileEntitySpecialRenderer(EntityCoercionDeriver.class, new RenderCoercionDeriver());
-        ClientRegistry.bindTileEntitySpecialRenderer(EntityForceFieldProjector.class, new RenderForceFieldProjector());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileCoercionDeriver.class, new RenderCoercionDeriver());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileForceFieldProjector.class, new RenderForceFieldProjector());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileFortronCapacitor.class, new RenderFortronCapacitor());
     }
 
     /**
@@ -71,10 +74,12 @@ public class ClientProxy extends CommonProxy {
     public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
         TileEntity tileEntity = world.getTileEntity(x, y, z);
         if (tileEntity != null) {
-            if (tileEntity instanceof EntityCoercionDeriver) {
-                return new GuiCoercionDeriver(player, (EntityCoercionDeriver) tileEntity);
-            } else if (tileEntity instanceof EntityForceFieldProjector) {
-                return new GuiForceFieldProjector(player, (EntityForceFieldProjector) tileEntity);
+            if (tileEntity instanceof TileCoercionDeriver) {
+                return new GuiCoercionDeriver(player, (TileCoercionDeriver) tileEntity);
+            } else if (tileEntity instanceof TileForceFieldProjector) {
+                return new GuiForceFieldProjector(player, (TileForceFieldProjector) tileEntity);
+            } else if(tileEntity instanceof TileFortronCapacitor) {
+                return new GuiFortronCapacitor(player, (TileFortronCapacitor) tileEntity);
             }
         }
         return null;

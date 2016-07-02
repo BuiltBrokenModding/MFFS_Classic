@@ -28,7 +28,7 @@ public interface IModule
 
     int onProject(IProjector paramIProjector, Vector3D paramVector3);
 
-    boolean onCollideWithForceField(World paramWorld, int paramInt1, int paramInt2, int paramInt3, Entity paramEntity, ItemStack paramItemStack);
+    boolean onCollideWithForcefield(World paramWorld, int paramInt1, int paramInt2, int paramInt3, Entity paramEntity, ItemStack paramItemStack);
 
     Set<Vector3D> onPreCalculate(IFieldInteraction paramIFieldInteraction, Set<Vector3D> paramSet);
 

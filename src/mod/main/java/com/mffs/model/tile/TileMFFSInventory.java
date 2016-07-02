@@ -6,8 +6,11 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
- * Created by pwaln on 6/1/2016.
+ * @author Calclavia
  */
 public abstract class TileMFFSInventory extends TileMFFS implements IInventory {
 
@@ -174,5 +177,11 @@ public abstract class TileMFFSInventory extends TileMFFS implements IInventory {
                 this.inventory[byte0] = ItemStack.loadItemStackFromNBT(nbttagcompound1);
             }
         }*/
+    }
+
+    public Set<ItemStack> getCards() {
+        Set<ItemStack> cards = new HashSet<>();
+        cards.add(getStackInSlot(0));
+        return cards;
     }
 }

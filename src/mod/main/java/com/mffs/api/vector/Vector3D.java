@@ -70,6 +70,13 @@ public class Vector3D
         this(Math.cos(Math.toRadians(rotationYaw + 90.0F)), Math.sin(Math.toRadians(-rotationPitch)), Math.sin(Math.toRadians(rotationYaw + 90.0F)));
     }
 
+    public static double distance(TileEntity e, double x, double y, double z) {
+        x = e.xCoord - x;
+        y = e.yCoord - y;
+        z = e.zCoord - y;
+        return Math.sqrt((x * x) + (y * y) + (z * z));
+    }
+
     public static Vector3D fromCenter(Entity e) {
         return new Vector3D(e.posX, e.posY - e.yOffset + e.height / 2.0F, e.posZ);
     }

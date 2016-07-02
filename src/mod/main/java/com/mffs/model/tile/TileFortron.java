@@ -1,15 +1,19 @@
 package com.mffs.model.tile;
 
 import com.mffs.MFFS;
-import com.mffs.MFFSConfig;
+import com.mffs.ModConfiguration;
+import com.mffs.api.TransferMode;
 import com.mffs.api.card.ICard;
 import com.mffs.api.fortron.FrequencyGrid;
 import com.mffs.api.fortron.IFortronFrequency;
+import com.mffs.api.utils.FortronHelper;
+import com.mffs.api.vector.Vector3D;
 import com.mffs.model.fluids.Fortron;
 import com.mffs.model.net.packet.FortronSync;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import mekanism.api.Pos3D;
+import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -18,7 +22,7 @@ import net.minecraftforge.fluids.*;
 import java.util.Set;
 
 /**
- * Created by pwaln on 6/2/2016.
+ * @author Calclavia
  */
 public abstract class TileFortron extends TileFrequency implements IFluidHandler, IFortronFrequency {
 
@@ -32,7 +36,7 @@ public abstract class TileFortron extends TileFrequency implements IFluidHandler
     public void updateEntity() {
         super.updateEntity();
 
-        if (this.ticks % MFFSConfig.FORTRON_SYNC_TICKS == 0) {
+        if (this.ticks % ModConfiguration.FORTRON_SYNC_TICKS == 0 && !worldObj.isRemote) {//We do not need to send by client!
             //TODO: Send fortron only to people in the interface!
             MFFS.channel.sendToAllAround(new FortronSync(this), new NetworkRegistry.TargetPoint(this.worldObj.provider.dimensionId, xCoord, yCoord, zCoord, 25));
         }
@@ -40,17 +44,9 @@ public abstract class TileFortron extends TileFrequency implements IFluidHandler
 
     @Override
     public void invalidate() {
-        if (sendFortron) {
-            int totalFortron = 0, totalCapacity = 0;
-            Set<IFortronFrequency> connections = FrequencyGrid.instance().getFortronTiles(this.worldObj, new Pos3D(this.xCoord, this.yCoord, this.zCoord), 100, getFrequency());
-            for (IFortronFrequency machine : connections) {
-                if (machine != null) {
-                    totalCapacity += machine.getFortronCapacity();
-                    totalFortron += machine.getFortronEnergy();
-                }
-            }
-            if (totalCapacity <= 0 || totalFortron <= 0) return;
-        }
+        if (sendFortron)
+            FortronHelper.transfer(this, FrequencyGrid.instance().getFortronTiles(this.worldObj, new Vector3D(this), 100, getFrequency()), TransferMode.DRAIN, Integer.MAX_VALUE);
+
         super.invalidate();
     }
 
@@ -85,8 +81,8 @@ public abstract class TileFortron extends TileFrequency implements IFluidHandler
 
     @Override
     public int requestFortron(int paramInt, boolean paramBoolean) {
-        tank.drain(paramInt, paramBoolean);
-        return tank.getFluidAmount();
+        FluidStack stack = tank.drain(paramInt, paramBoolean);
+        return stack == null ? 0 : stack.amount;
     }
 
     @Override
@@ -211,9 +207,10 @@ public abstract class TileFortron extends TileFrequency implements IFluidHandler
     public IMessage handleMessage(IMessage imessage) {
         if (imessage instanceof FortronSync) {
             FortronSync sync = (FortronSync) imessage;
-            if (tank.getFluid() != null) {
+            if(tank.getFluid() != null) {
                 tank.getFluid().amount = sync.amount;
-                //tank.setCapacity(sync.capacity);
+            } else {
+                tank.setFluid(FluidRegistry.getFluidStack("fortron", sync.amount));
             }
         }
         return super.handleMessage(imessage);

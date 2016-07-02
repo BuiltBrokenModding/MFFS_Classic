@@ -1,6 +1,7 @@
 package com.mffs.api.fortron;
 
 import com.mffs.api.IBlockFrequency;
+import com.mffs.api.vector.Vector3D;
 import cpw.mods.fml.common.FMLCommonHandler;
 import mekanism.api.Pos3D;
 import net.minecraft.tileentity.TileEntity;
@@ -117,21 +118,19 @@ public class FrequencyGrid {
             }
         }
 
-        for (IBlockFrequency tile : tilesToRemove) {
-            this.unregister(tile);
-        }
+        tilesToRemove.forEach(tile -> FrequencyGrid.instance().unregister(tile));
     }
 
     public Set<IBlockFrequency> get(World world, Pos3D position, int radius, int frequency) {
         Set<IBlockFrequency> set = new HashSet<IBlockFrequency>();
 
-        for (IBlockFrequency tileEntity : this.get(frequency)) {
+        this.get(frequency).forEach(tileEntity -> {
             if (((TileEntity) tileEntity).getWorldObj() == world) {
                 if (new Pos3D((TileEntity) tileEntity).distance(position) <= radius) {
                     set.add(tileEntity);
                 }
             }
-        }
+        });
         return set;
 
     }
@@ -145,12 +144,13 @@ public class FrequencyGrid {
      * @param frequency The frequency to check.
      * @return
      */
-    public Set<IFortronFrequency> getFortronTiles(World world, Pos3D position, int radius, int frequency) {
+    public Set<IFortronFrequency> getFortronTiles(World world, Vector3D position, int radius, int frequency) {
         Set<IFortronFrequency> set = new HashSet<>();
 
         this.get(frequency).forEach(entity -> {
-            if (((TileEntity) entity).getWorldObj() == world && entity instanceof IFortronFrequency) {
-                if (new Pos3D((TileEntity) entity).distance(position) <= radius) {
+            TileEntity tile = (TileEntity) entity;
+            if (tile.getWorldObj() == world && entity instanceof IFortronFrequency) {
+                if (position.distance(tile.xCoord, tile.yCoord, tile.zCoord) <= radius) {
                     set.add((IFortronFrequency) entity);
                 }
             }

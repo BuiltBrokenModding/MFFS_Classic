@@ -2,7 +2,7 @@ package com.mffs.client.render;
 
 import com.mffs.MFFS;
 import com.mffs.client.render.model.ModelForceFieldProjector;
-import com.mffs.model.tile.type.EntityForceFieldProjector;
+import com.mffs.model.tile.type.TileForceFieldProjector;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -28,7 +28,7 @@ public class RenderForceFieldProjector extends TileEntitySpecialRenderer {
 
     @Override
     public void renderTileEntityAt(TileEntity t, double x, double y, double z, float f) {
-        EntityForceFieldProjector tileEntity = (EntityForceFieldProjector) t;
+        TileForceFieldProjector tileEntity = (TileForceFieldProjector) t;
 
 
         GL11.glPushMatrix();

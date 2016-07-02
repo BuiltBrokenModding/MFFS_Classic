@@ -7,9 +7,9 @@ import net.minecraftforge.common.config.Property;
 import java.io.File;
 
 /**
- * Created by pwaln on 6/15/2016.
+ * @author Calclavia
  */
-public class MFFSConfig {
+public class ModConfiguration {
 
     public static final Configuration CONFIGURATION = new Configuration(new File(Loader.instance().getConfigDir(), "MFFS.cfg"));
     public static final int MAX_FREQUENCY_DIGITS = 6;
@@ -24,9 +24,12 @@ public class MFFSConfig {
     public static int INTERDICTION_MURDER_ENERGY = 0;
     public static int INTERDICTION_MAX_RANGE = Integer.MAX_VALUE;
     public static boolean ENABLE_MANIPULATOR = true;
-    public static short FORTRON_SYNC_TICKS = 60; // 3 seconds
+    public static int FORTRON_SYNC_TICKS = 60; // 3 seconds
 
-    /* Deteremines if items will be collected upon death of personell */
+    /* This is the base power required for the coercion deriver */
+    public static int BASE_POWER_REQUIRED = 5_000_000;
+
+    /* Deteremines if items will be collected upon death of personel */
     public static boolean COLLECT_ON_PERSONELL_KILL = false;
 
     public static void load() {
@@ -38,9 +41,6 @@ public class MFFSConfig {
 
         Property propFieldScale = CONFIGURATION.get("general", "Max Force Field Scale", MAX_FORCE_FIELD_SCALE);
         MAX_FORCE_FIELD_SCALE = propFieldScale.getInt(MAX_FORCE_FIELD_SCALE);
-
-        Property propInterdiction = CONFIGURATION.get("general", "Interdiction Murder Fortron Consumption", INTERDICTION_MURDER_ENERGY);
-        INTERDICTION_MURDER_ENERGY = propInterdiction.getInt(INTERDICTION_MURDER_ENERGY);
 
         Property propCreative = CONFIGURATION.get("general", "Effect Creative Players", INTERACT_CREATIVE);
         propCreative.comment = "Should the interdiction matrix interact with creative players?.";
@@ -83,6 +83,10 @@ public class MFFSConfig {
         Property anti_personel = CONFIGURATION.get("modules", "Anti-Personell_collect", COLLECT_ON_PERSONELL_KILL);
         anti_personel.comment = "Set to true for interdiction matrix to collect items from killed players without confiscate module";
         COLLECT_ON_PERSONELL_KILL = anti_personel.getBoolean(COLLECT_ON_PERSONELL_KILL);
+
+        INTERDICTION_MURDER_ENERGY = CONFIGURATION.get("energy", "Interdiction Murder Fortron Consumption", INTERDICTION_MURDER_ENERGY).getInt(INTERDICTION_MURDER_ENERGY);
+        FORTRON_PRODUCTION_MULTIPLIER = (float) CONFIGURATION.get("energy", "Fortron Production Multiplier", FORTRON_PRODUCTION_MULTIPLIER).getDouble(FORTRON_PRODUCTION_MULTIPLIER);
+        BASE_POWER_REQUIRED = CONFIGURATION.get("energy", "Base Coercion Deriver Power Consumption", BASE_POWER_REQUIRED).getInt(BASE_POWER_REQUIRED);
 
         CONFIGURATION.save();
 

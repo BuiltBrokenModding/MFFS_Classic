@@ -284,9 +284,9 @@ public abstract class TileFieldInteraction extends TileModuleAcceptor implements
      */
     @Override
     public IMessage handleMessage(IMessage imessage) {
-        if(imessage instanceof EntityToggle) {
+        if (imessage instanceof EntityToggle) {
             EntityToggle pkt = (EntityToggle) imessage;
-            if(pkt.toggle_opcode == EntityToggle.ABSOLUTE_TOGGLE) {
+            if (pkt.toggle_opcode == EntityToggle.ABSOLUTE_TOGGLE) {
                 this.isAbs = !this.isAbs;
                 worldObj.markBlockForUpdate(xCoord, yCoord, zCoord); //we need to signal that this entity has been changed serverside!
                 return null;

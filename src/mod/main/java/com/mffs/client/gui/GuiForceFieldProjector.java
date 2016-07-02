@@ -7,13 +7,12 @@ import com.mffs.api.vector.Matrix2d;
 import com.mffs.client.buttons.GuiIcon;
 import com.mffs.model.container.ForceFieldProjectorContainer;
 import com.mffs.model.net.packet.EntityToggle;
-import com.mffs.model.tile.type.EntityForceFieldProjector;
+import com.mffs.model.tile.type.TileForceFieldProjector;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
 import org.lwjgl.opengl.GL11;
 
 import javax.vecmath.Vector2d;
@@ -21,13 +20,14 @@ import javax.vecmath.Vector2d;
 /**
  * @author Calclavia
  */
+//TODO: Add a seperate disintigration / camoflauge slot
 public class GuiForceFieldProjector extends MFFSGui {
 
     /**
      * @param player
      * @param entity
      */
-    public GuiForceFieldProjector(EntityPlayer player, EntityForceFieldProjector entity) {
+    public GuiForceFieldProjector(EntityPlayer player, TileForceFieldProjector entity) {
         super(new ForceFieldProjectorContainer(player, entity), entity);
     }
 
@@ -70,13 +70,13 @@ public class GuiForceFieldProjector extends MFFSGui {
         this.tooltips.put(new Matrix2d(new Vector2d(144, 53), new Vector2d(162, 71)), east);
     }
 
-    public EntityForceFieldProjector getProj() {
-        return (EntityForceFieldProjector) frequencyTile;
+    public TileForceFieldProjector getProj() {
+        return (TileForceFieldProjector) frequencyTile;
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int x, int y) {
-        EntityForceFieldProjector proj = getProj();
+        TileForceFieldProjector proj = getProj();
         this.fontRendererObj.drawString(proj.getInventoryName(), this.xSize / 2 - this.fontRendererObj.getStringWidth(proj.getInventoryName()) / 2, 6, 4210752);
 
         GL11.glPushMatrix();
@@ -95,7 +95,7 @@ public class GuiForceFieldProjector extends MFFSGui {
     @Override
     protected void drawGuiContainerBackgroundLayer(float var1, int x, int y) {
         super.drawGuiContainerBackgroundLayer(var1, x, y);
-        EntityForceFieldProjector entity = getProj();
+        TileForceFieldProjector entity = getProj();
         drawSlot(9, 88);
         drawSlot(27, 88);
 
@@ -128,8 +128,7 @@ public class GuiForceFieldProjector extends MFFSGui {
                 }
             }
         }
-     
- 
+
 
         for (int xSlot = 0; xSlot < 3; xSlot++) {
 
@@ -144,7 +143,7 @@ public class GuiForceFieldProjector extends MFFSGui {
     @Override
     protected void actionPerformed(GuiButton guiButton) {
         super.actionPerformed(guiButton);
-        if(guiButton.id == 1) {
+        if (guiButton.id == 1) {
             MFFS.channel.sendToServer(new EntityToggle(getProj(), EntityToggle.ABSOLUTE_TOGGLE));
         }
     }

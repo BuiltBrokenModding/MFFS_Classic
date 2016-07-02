@@ -2,6 +2,7 @@ package com.mffs.client.render;
 
 import com.mffs.model.blocks.BlockCoercionDeriver;
 import com.mffs.model.blocks.BlockForceFieldProjector;
+import com.mffs.model.blocks.BlockFortronCapacitor;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
@@ -37,6 +38,12 @@ public class RenderBlockHandler implements ISimpleBlockRenderingHandler {
                 GL11.glTranslated(0.5D, 1.5D, 0.5D);
                 GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
                 RenderForceFieldProjector.MODEL.render(0.0F, 0.0625F);
+            } else if (block instanceof BlockFortronCapacitor) {
+                FMLClientHandler.instance().getClient().renderEngine.bindTexture(RenderFortronCapacitor.TEXTURE_ON);
+                GL11.glTranslated(0.5D, 1.9D, 0.5D);
+                GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
+                GL11.glScalef(1.3F, 1.3F, 1.3F);
+                RenderFortronCapacitor.MODEL.render(0.0625F);
             }
             GL11.glPopMatrix();
             return;

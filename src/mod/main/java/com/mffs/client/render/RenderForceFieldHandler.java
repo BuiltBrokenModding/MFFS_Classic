@@ -1,6 +1,6 @@
 package com.mffs.client.render;
 
-import com.mffs.model.tile.type.EntityForceField;
+import com.mffs.model.tile.type.TileForceField;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -67,8 +67,8 @@ public class RenderForceFieldHandler implements ISimpleBlockRenderingHandler {
         Block camoBlock = null;
         TileEntity tileEntity = world.getTileEntity(x, y, z);
 
-        if ((tileEntity instanceof EntityForceField)) {
-            camoStack = ((EntityForceField) tileEntity).camo;
+        if ((tileEntity instanceof TileForceField)) {
+            camoStack = ((TileForceField) tileEntity).camo;
 
             if (camoStack != null) {
                 camoBlock = ((ItemBlock) camoStack.getItem()).field_150939_a;

@@ -17,7 +17,7 @@ public abstract class TileMFFS extends TileEntity implements IActivatable {
     public float animation;
 
     /* Ticks */
-    protected long ticks;
+    protected int ticks;
 
     /* If this machine is on */
     private boolean isActivated;
@@ -27,19 +27,16 @@ public abstract class TileMFFS extends TileEntity implements IActivatable {
 
     @Override
     public void updateEntity() {
-        if (ticks == 0) {
+        if (ticks++ == 0) {
             start();
-        } else if (ticks >= Long.MAX_VALUE) {
+        } else if (ticks >= Integer.MAX_VALUE) {
             ticks = 1;
         }
-        ticks++;
     }
 
     /* Starts the entity */
     public void start() {
     }
-
-    ;
 
     @Override
     public void writeToNBT(NBTTagCompound nbt) {
@@ -80,10 +77,10 @@ public abstract class TileMFFS extends TileEntity implements IActivatable {
             if (tog.toggle_opcode == EntityToggle.REDSTONE_TOGGLE) {
                 this.isProvidingSignal = !this.isProvidingSignal;
                 this.isActivated = this.isProvidingSignal;
-                this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
             } else if (tog.toggle_opcode == EntityToggle.TOGGLE_STATE) {
                 this.isActivated = !this.isActivated;
             }
+            this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
         }
         return null;
     }
@@ -91,8 +88,6 @@ public abstract class TileMFFS extends TileEntity implements IActivatable {
     public ForgeDirection getDirection() {
         return ForgeDirection.getOrientation(getBlockMetadata());
     }
-
-
 
     /**
      * Overriden in a sign to provide the text.

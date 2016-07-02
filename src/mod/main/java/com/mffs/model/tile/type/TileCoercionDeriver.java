@@ -1,34 +1,41 @@
 package com.mffs.model.tile.type;
 
-import com.mffs.MFFSConfig;
+import com.mffs.ModConfiguration;
 import com.mffs.api.modules.IModule;
 import com.mffs.model.items.card.CardFrequency;
 import com.mffs.model.items.modules.upgrades.ModuleScale;
 import com.mffs.model.items.modules.upgrades.ModuleSpeed;
 import com.mffs.model.tile.TileElectrical;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 
 /**
- * Created by pwaln on 6/1/2016.
+ * @author Calclavia
  */
-public final class EntityCoercionDeriver extends TileElectrical {
+public final class TileCoercionDeriver extends TileElectrical {
 
-    public static final int FUEL_PROCESS_TIME = 200;
-    public static final int MULTIPLE_PRODUCTION = 4;
-    public static final float UE_FORTRON_RATIO = 0.001F;
-    public static final int ENERGY_LOSS = 1;
     public static final int SLOT_FREQUENCY = 0;
     public static final int SLOT_BATTERY = 1;
     public static final int SLOT_FUEL = 2;
-    private static final int DEFAULT_WATTAGE = 5000000;
     public int processTime = 0;
     public boolean isInversed;
 
-    public EntityCoercionDeriver() {
+    public TileCoercionDeriver() {
         this.storage.setCapacity(30);
         this.module_index = 3;
         storage.setCapacity(Math.round(getWattage()));
         storage.setMaxTransfer(Math.round(getWattage() / 20L));
+    }
+
+    @Override
+    public void validate() {
+        super.validate();
+        start();
     }
 
     @Override
@@ -44,7 +51,7 @@ public final class EntityCoercionDeriver extends TileElectrical {
         if (!worldObj.isRemote) {
 
             if (isActive()) {
-                if (isInversed && MFFSConfig.ENABLE_ELECTRICITY) {
+                if (isInversed && ModConfiguration.ENABLE_ELECTRICITY) {
                     if (storage.getEnergyStored() < storage.getMaxEnergyStored()) {
                         int produce = (int) Math.floor(requestFortron(getProductionRate() / 20, true) / 0.001);
                         storage.receiveEnergy(produce, false);
@@ -53,7 +60,7 @@ public final class EntityCoercionDeriver extends TileElectrical {
                 } else if (getFortronEnergy() < getFortronCapacity()) {
                     //CHeck slot 1 for batteries etc
                     //TODO: Discharge battery
-                    if (!MFFSConfig.ENABLE_ELECTRICITY && isItemValidForSlot(SLOT_FUEL, getStackInSlot(SLOT_FUEL))
+                    if (!ModConfiguration.ENABLE_ELECTRICITY && isItemValidForSlot(SLOT_FUEL, getStackInSlot(SLOT_FUEL))
                             || storage.extractEnergy(storage.getMaxExtract(), true) >= storage.getMaxExtract()) {
                         provideFortron(getProductionRate(), true);
                         storage.extractEnergy(storage.getMaxExtract(), false);
@@ -66,10 +73,43 @@ public final class EntityCoercionDeriver extends TileElectrical {
                         }
                     }
                 }
-                return;
-            }//animation
+            }
+        } else if(isActive()) {
             animation++;
         }
+    }
+
+    /**
+     * Handles the message given by the handler.
+     *
+     * @param imessage The message.
+     */
+    @Override
+    public IMessage handleMessage(IMessage imessage) {
+        return super.handleMessage(imessage);
+    }
+
+    /**
+     * Overriden in a sign to provide the text.
+     */
+    @Override
+    public Packet getDescriptionPacket() {
+        //S35PacketUpdateTileEntity pkt = (S35PacketUpdateTileEntity) super.getDescriptionPacket();
+        return super.getDescriptionPacket();
+    }
+
+    /**
+     * Called when you receive a TileEntityData packet for the location this
+     * TileEntity is currently in. On the client, the NetworkManager will always
+     * be the remote server. On the server, it will be whomever is responsible for
+     * sending the packet.
+     *
+     * @param net The NetworkManager the packet originated from
+     * @param pkt The data packet
+     */
+    @Override
+    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
+        super.onDataPacket(net, pkt);
     }
 
     @Override
@@ -85,12 +125,12 @@ public final class EntityCoercionDeriver extends TileElectrical {
     }
 
     public float getWattage() {
-        return (DEFAULT_WATTAGE + DEFAULT_WATTAGE * (getModuleCount(ModuleSpeed.class) / 8.0F));
+        return (ModConfiguration.BASE_POWER_REQUIRED + ModConfiguration.BASE_POWER_REQUIRED * (getModuleCount(ModuleSpeed.class) / 8));
     }
 
     public int getProductionRate() {
         if (isActive()) {
-            int production = (int) (getWattage() / 20.0F * 0.001F * MFFSConfig.FORTRON_PRODUCTION_MULTIPLIER);
+            int production = (int) (getWattage() / 20.0F * 0.001F * ModConfiguration.FORTRON_PRODUCTION_MULTIPLIER);
 
             if (this.processTime > 0) {
                 production *= 4;
@@ -110,15 +150,29 @@ public final class EntityCoercionDeriver extends TileElectrical {
             }
 
             switch (slotID) {
-                case 0:
+                case SLOT_FREQUENCY:
                     return itemStack.getItem() instanceof CardFrequency;
-                case 1://battery
+                case SLOT_BATTERY://battery
                     return false;
-                //case 2:
-                //  return (itemStack.isItemEqual(new ItemStack(Item., 1, 4))) || (itemStack.isItemEqual(new ItemStack(Item.field_94583_ca)));
+                case SLOT_FUEL:
+                    return itemStack.getItem() == Items.dye && itemStack.getItemDamage() == 4 || itemStack.getItem() == Items.quartz;
             }
 
         }
         return false;
+    }
+
+    @Override
+    public void writeToNBT(NBTTagCompound nbt) {
+        super.writeToNBT(nbt);
+        nbt.setInteger("process", processTime);
+        nbt.setBoolean("inverse", isInversed);
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound nbt) {
+        super.readFromNBT(nbt);
+        processTime = nbt.getInteger("process");
+        isInversed =  nbt.getBoolean("inverse");
     }
 }

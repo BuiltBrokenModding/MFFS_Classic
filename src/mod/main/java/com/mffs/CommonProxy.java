@@ -2,9 +2,11 @@ package com.mffs;
 
 import com.mffs.model.container.CoercionDeriverContainer;
 import com.mffs.model.container.ForceFieldProjectorContainer;
+import com.mffs.model.container.FortronCapacitorContainer;
 import com.mffs.model.fluids.Fortron;
-import com.mffs.model.tile.type.EntityCoercionDeriver;
-import com.mffs.model.tile.type.EntityForceFieldProjector;
+import com.mffs.model.tile.type.TileCoercionDeriver;
+import com.mffs.model.tile.type.TileForceFieldProjector;
+import com.mffs.model.tile.type.TileFortronCapacitor;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -59,10 +61,12 @@ public class CommonProxy implements IGuiHandler {
     public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
         TileEntity tileEntity = world.getTileEntity(x, y, z);
         if (tileEntity != null) {
-            if (tileEntity instanceof EntityCoercionDeriver) {
-                return new CoercionDeriverContainer(player, (EntityCoercionDeriver) tileEntity);
-            } else if (tileEntity instanceof EntityForceFieldProjector) {
-                return new ForceFieldProjectorContainer(player, (EntityForceFieldProjector) tileEntity);
+            if (tileEntity instanceof TileCoercionDeriver) {
+                return new CoercionDeriverContainer(player, (TileCoercionDeriver) tileEntity);
+            } else if (tileEntity instanceof TileForceFieldProjector) {
+                return new ForceFieldProjectorContainer(player, (TileForceFieldProjector) tileEntity);
+            } else if(tileEntity instanceof TileFortronCapacitor) {
+                return new FortronCapacitorContainer(player, (TileFortronCapacitor) tileEntity);
             }
         }
         return null;

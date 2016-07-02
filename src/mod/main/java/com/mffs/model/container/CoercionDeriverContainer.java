@@ -2,7 +2,7 @@ package com.mffs.model.container;
 
 import com.mffs.api.slots.CardSlot;
 import com.mffs.api.slots.MachineSlot;
-import com.mffs.model.tile.type.EntityCoercionDeriver;
+import com.mffs.model.tile.type.TileCoercionDeriver;
 import net.minecraft.entity.player.EntityPlayer;
 
 /**
@@ -14,7 +14,7 @@ public class CoercionDeriverContainer extends PlayerContainer {
      * @param player
      * @param driver
      */
-    public CoercionDeriverContainer(EntityPlayer player, EntityCoercionDeriver driver) {
+    public CoercionDeriverContainer(EntityPlayer player, TileCoercionDeriver driver) {
         super(player, driver);
         //Add slots
         addSlotToContainer(new CardSlot<>(driver, 0, 9, 41));

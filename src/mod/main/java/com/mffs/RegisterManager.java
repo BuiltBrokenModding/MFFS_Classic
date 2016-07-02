@@ -104,7 +104,7 @@ public class RegisterManager {
             if (Modifier.isAbstract(rawClass.getModifiers())) { //This is a abstract class and we simply override it in others!
                 continue;
             }
-            name = name.replace("Entity", "");
+            name = name.replace("Tile", "");
             name = name.substring(0, 1).toLowerCase() + name.substring(1, name.length());
             GameRegistry.registerTileEntity(rawClass, name);
         }

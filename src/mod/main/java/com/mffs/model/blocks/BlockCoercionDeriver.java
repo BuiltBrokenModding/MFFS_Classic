@@ -2,7 +2,7 @@ package com.mffs.model.blocks;
 
 import com.mffs.MFFS;
 import com.mffs.client.render.RenderBlockHandler;
-import com.mffs.model.tile.type.EntityCoercionDeriver;
+import com.mffs.model.tile.type.TileCoercionDeriver;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
@@ -36,7 +36,7 @@ public final class BlockCoercionDeriver extends MFFSMachine {
      */
     @Override
     public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_) {
-        return new EntityCoercionDeriver();
+        return new TileCoercionDeriver();
     }
 
     @Override

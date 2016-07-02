@@ -1,7 +1,7 @@
 package com.mffs.model.tile.type;
 
 import com.mffs.MFFS;
-import com.mffs.MFFSConfig;
+import com.mffs.ModConfiguration;
 import com.mffs.api.IProjector;
 import com.mffs.api.modules.IModule;
 import com.mffs.api.modules.IProjectorMode;
@@ -25,7 +25,7 @@ import java.util.Set;
 /**
  * @author Calclavia
  */
-public class EntityForceFieldProjector extends TileFieldInteraction implements IProjector {
+public class TileForceFieldProjector extends TileFieldInteraction implements IProjector {
 
     /* Set of all forceFields by this entity */
     protected final Set<Vector3D> blocks = new HashSet<>();
@@ -35,7 +35,7 @@ public class EntityForceFieldProjector extends TileFieldInteraction implements I
 
     private boolean requireTicks, markFieldUpdate = true;
 
-    public EntityForceFieldProjector() {
+    public TileForceFieldProjector() {
         this.capacityBase = 50;
         this.module_index = 1;
     }
@@ -127,7 +127,7 @@ public class EntityForceFieldProjector extends TileFieldInteraction implements I
         if (this.isFinished && !this.isCalc && (!this.isComplete || this.markFieldUpdate || this.requireTicks)) {
             this.markFieldUpdate = false;
             int constructCount = 0;
-            int constructSpeed = Math.min(getProjectionSpeed(), MFFSConfig.MAX_FORCE_FIELDS_PER_TICK);
+            int constructSpeed = Math.min(getProjectionSpeed(), ModConfiguration.MAX_FORCE_FIELDS_PER_TICK);
             restart:
             synchronized (this.calculatedFields) {
                 Set<Vector3D> fieldToBeProjected = new HashSet(this.calculatedFields);
@@ -162,8 +162,8 @@ public class EntityForceFieldProjector extends TileFieldInteraction implements I
                             this.blocks.add(vec);
 
                             TileEntity entity = vec.getTileEntity(worldObj);
-                            if (entity instanceof EntityForceField)
-                                ((EntityForceField) entity).setProjector(vec);
+                            if (entity instanceof TileForceField)
+                                ((TileForceField) entity).setProjector(vec);
 
                             requestFortron(1, true);
                             if (constructCount > constructSpeed)
@@ -205,6 +205,7 @@ public class EntityForceFieldProjector extends TileFieldInteraction implements I
     /**
      * @return
      */
+    @Override
     public Set<ItemStack> getCards() {
         Set<ItemStack> set = new HashSet<>();
         set.add(super.getCard());

@@ -2,7 +2,7 @@
 {
   "modid": "mffs",
   "name": "MFFS",
-  "description": "Modular Forcefield System",
+  "description": "Modular Forcefield System is a add-on feature for mekanism. Popular with Voltz modpack.",
   "version": "0.0.0",
   "mcversion": "1.7.1",
   "url": "",
@@ -11,6 +11,6 @@
   "credits": "Thunderdark & Calclavia for making the original MFFS.",
   "logoFile": "",
   "screenshots": [],
-  "dependencies": []
+  "dependencies": ["Mekanism"]
 }
 ]

@@ -19,7 +19,6 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 
 /**
  * @author Calclavia
@@ -29,15 +28,23 @@ public abstract class MFFSMachine extends Block implements ITileEntityProvider {
     /* Textures mapped to certain sides */
     private IIcon[] side_textures;
 
+    /**
+     * Constructor.
+     */
+    public MFFSMachine() {
+        super(Material.iron);
+        this.isBlockContainer = true;
+        setHardness(Float.MAX_VALUE);
+        setResistance(100F); //why is it resistant to explosions
+    }
+
     @Override
     public void onBlockPlacedBy(World w, int x, int y, int z, EntityLivingBase entity, ItemStack stack) {
         w.setBlockMetadataWithNotify(x, y, z, determineOrientation(x, y, z, entity), 3);
     }
 
-    private int determineOrientation(int x, int y, int z, EntityLivingBase entityLiving)
-    {
-        if ((MathHelper.abs((float)entityLiving.posX - x) < 2.0F) && (MathHelper.abs((float)entityLiving.posZ - z) < 2.0F))
-        {
+    private int determineOrientation(int x, int y, int z, EntityLivingBase entityLiving) {
+        if ((MathHelper.abs((float) entityLiving.posX - x) < 2.0F) && (MathHelper.abs((float) entityLiving.posZ - z) < 2.0F)) {
             double d0 = entityLiving.posY + 1.82D - entityLiving.yOffset;
             if ((canRotate(1)) && (d0 - y > 2.0D)) {
                 return 1;
@@ -51,19 +58,8 @@ public abstract class MFFSMachine extends Block implements ITileEntityProvider {
         return returnSide;
     }
 
-    public boolean canRotate(int ord)
-    {
+    public boolean canRotate(int ord) {
         return (0b111100 & 1 << ord) != 0;
-    }
-
-    /**
-     * Constructor.
-     */
-    public MFFSMachine() {
-        super(Material.iron);
-        this.isBlockContainer = true;
-        setHardness(Float.MAX_VALUE);
-        setResistance(100F); //why is it resistant to explosions
     }
 
     @Override

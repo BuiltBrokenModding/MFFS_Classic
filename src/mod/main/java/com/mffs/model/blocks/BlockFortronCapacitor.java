@@ -2,7 +2,7 @@ package com.mffs.model.blocks;
 
 import com.mffs.MFFS;
 import com.mffs.client.render.RenderBlockHandler;
-import com.mffs.model.tile.type.TileForceFieldProjector;
+import com.mffs.model.tile.type.TileFortronCapacitor;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
@@ -13,14 +13,7 @@ import net.minecraft.world.World;
 /**
  * @author Calclavia
  */
-public class BlockForceFieldProjector extends MFFSMachine {
-
-    /**
-     * Force field block.
-     */
-    public BlockForceFieldProjector() {
-        setBlockBounds(0, 0, 0, 1, 0.8F, 1);
-    }
+public final class BlockFortronCapacitor extends MFFSMachine {
 
     /**
      * @param world  The current world.
@@ -44,12 +37,7 @@ public class BlockForceFieldProjector extends MFFSMachine {
      */
     @Override
     public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_) {
-        return new TileForceFieldProjector();
-    }
-
-    @Override
-    public int getRenderType() {
-        return RenderBlockHandler.RENDER_ID;
+        return new TileFortronCapacitor();
     }
 
     @Override
@@ -63,29 +51,12 @@ public class BlockForceFieldProjector extends MFFSMachine {
     }
 
     @Override
-    public boolean renderAsNormalBlock() {
-        return false;
+    public int getRenderType() {
+        return RenderBlockHandler.RENDER_ID;
     }
 
-    /**
-     * Get a light value for the block at the specified coordinates, normal ranges are between 0 and 15
-     *
-     * @param world The current world
-     * @param x     X Position
-     * @param y     Y position
-     * @param z     Z position
-     * @return The light value
-     */
     @Override
-    public int getLightValue(IBlockAccess world, int x, int y, int z) {
-        TileEntity tileEntity = world.getTileEntity(x, y, z);
-
-        if ((tileEntity instanceof TileForceFieldProjector)) {
-            if (((TileForceFieldProjector) tileEntity).getMode() != null) {
-                return 10;
-            }
-        }
-
-        return super.getLightValue(world, x, y, z);
+    public boolean renderAsNormalBlock() {
+        return false;
     }
 }

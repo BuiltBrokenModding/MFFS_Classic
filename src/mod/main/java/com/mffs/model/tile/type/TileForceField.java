@@ -2,7 +2,9 @@ package com.mffs.model.tile.type;
 
 import com.mffs.api.vector.Vector3D;
 import com.mffs.model.TileMFFS;
+import com.mffs.model.items.modules.upgrades.ModuleCamouflage;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -11,9 +13,9 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 
 /**
- * Created by pwaln on 6/24/2016.
+ * @author Calclavia
  */
-public class EntityForceField extends TileMFFS {
+public final class TileForceField extends TileMFFS {
 
     /* Represents the item that is this block */
     public ItemStack camo;
@@ -68,6 +70,7 @@ public class EntityForceField extends TileMFFS {
         } else {
             projector = new Vector3D(tag);
         }
+        worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
         super.onDataPacket(net, pkt);
     }
 
@@ -99,8 +102,8 @@ public class EntityForceField extends TileMFFS {
      *
      * @return
      */
-    public EntityForceFieldProjector getProj() {
-        EntityForceFieldProjector proj = findProj();
+    public TileForceFieldProjector getProj() {
+        TileForceFieldProjector proj = findProj();
         if (proj != null)
             return proj;
 
@@ -114,15 +117,15 @@ public class EntityForceField extends TileMFFS {
      *
      * @return
      */
-    private EntityForceFieldProjector findProj() {
+    private TileForceFieldProjector findProj() {
         if (this.projector != null) {
             TileEntity entity = projector.getTileEntity(getWorldObj());
-            if (entity != null && entity instanceof EntityForceFieldProjector) {
-                if (worldObj.isRemote || ((EntityForceFieldProjector) entity).getCalculatedField().contains(new Vector3D(this))) {
+            if (entity != null && entity instanceof TileForceFieldProjector) {
+                if (worldObj.isRemote || ((TileForceFieldProjector) entity).getCalculatedField().contains(new Vector3D(this))) {
                     if (!worldObj.isRemote)
                         worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 
-                    return (EntityForceFieldProjector) entity;
+                    return (TileForceFieldProjector) entity;
                 }
             }
         }
@@ -133,9 +136,22 @@ public class EntityForceField extends TileMFFS {
      * Refreshes all attributes of this entity.
      */
     private void refresh() {
-        EntityForceFieldProjector proj = getProj();
-        if (proj != null) {
+        if (this.worldObj.isRemote)
+            return;
 
+        TileForceFieldProjector proj = getProj();
+        if (proj != null) {
+            if (proj.getModuleCount(ModuleCamouflage.class) > 0) {
+                //TODO: CustomMode
+                for (int slot : proj.getModuleSlots()) {//TODO: Add exclusive slot for camoflauge / disintigration blocks
+                    ItemStack stack = proj.getStackInSlot(slot);
+                    if (stack != null && stack.getItem() instanceof ItemBlock) {
+                        this.camo = stack;
+                        return;
+                    }
+                }
+            }
         }
     }
+
 }

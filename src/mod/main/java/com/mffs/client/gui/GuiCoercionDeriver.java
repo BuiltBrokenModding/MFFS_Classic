@@ -5,7 +5,7 @@ import com.mffs.api.gui.GuiSlotType;
 import com.mffs.api.utils.UnitDisplay;
 import com.mffs.model.container.CoercionDeriverContainer;
 import com.mffs.model.net.packet.EntityToggle;
-import com.mffs.model.tile.type.EntityCoercionDeriver;
+import com.mffs.model.tile.type.TileCoercionDeriver;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
@@ -19,7 +19,7 @@ import javax.vecmath.Vector2d;
  */
 public class GuiCoercionDeriver extends MFFSGui {
 
-    public GuiCoercionDeriver(EntityPlayer player, EntityCoercionDeriver tileentity) {
+    public GuiCoercionDeriver(EntityPlayer player, TileCoercionDeriver tileentity) {
         super(new CoercionDeriverContainer(player, tileentity), tileentity);
     }
 
@@ -34,14 +34,14 @@ public class GuiCoercionDeriver extends MFFSGui {
      *
      * @return
      */
-    private EntityCoercionDeriver getEntity() {
-        return ((EntityCoercionDeriver) this.frequencyTile);
+    private TileCoercionDeriver getEntity() {
+        return ((TileCoercionDeriver) this.frequencyTile);
     }
 
 
     @Override
     protected void drawGuiContainerForegroundLayer(int x, int y) {
-        EntityCoercionDeriver entity = getEntity();
+        TileCoercionDeriver entity = getEntity();
         this.fontRendererObj.drawString(entity.getInventoryName(), this.xSize / 2 - this.fontRendererObj.getStringWidth(entity.getInventoryName()) / 2, 6, 4210752);
 
         drawTextWithTooltip("frequency", "%1:", 8, 30, x, y);
@@ -74,7 +74,7 @@ public class GuiCoercionDeriver extends MFFSGui {
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float f, int x, int y) {
-        EntityCoercionDeriver entity = getEntity();
+        TileCoercionDeriver entity = getEntity();
         super.drawGuiContainerBackgroundLayer(f, x, y);
 
 
