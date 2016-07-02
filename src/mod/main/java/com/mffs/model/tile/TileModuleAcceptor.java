@@ -1,10 +1,13 @@
 package com.mffs.model.tile;
 
+import com.mffs.ModConfiguration;
 import com.mffs.api.modules.IModule;
 import com.mffs.api.modules.IModuleAcceptor;
 import com.mffs.model.items.modules.upgrades.ModuleCapacity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -44,7 +47,7 @@ public abstract class TileModuleAcceptor extends TileFortron implements IModuleA
     @Override
     public int getModuleCount(Class<? extends IModule> paramIModule, int... paramVarArgs) {
         int count = 0;
-        if (paramVarArgs != null) {
+        if (paramVarArgs != null && paramVarArgs.length > 0) {
             for (int slot : paramVarArgs) {
                 ItemStack stack = getStackInSlot(slot);
                 if (stack != null && paramIModule.isAssignableFrom(stack.getItem().getClass())) {
@@ -64,7 +67,7 @@ public abstract class TileModuleAcceptor extends TileFortron implements IModuleA
     @Override
     public Set<ItemStack> getModuleStacks(int... paramVarArgs) {
         Set<ItemStack> stacks = new HashSet<>();
-        if (paramVarArgs != null) {
+        if (paramVarArgs != null && paramVarArgs.length > 0) {
             for (int slot : paramVarArgs) {
                 ItemStack stack = getStackInSlot(slot);
                 if (stack != null && stack.getItem() instanceof IModule) {
@@ -85,7 +88,7 @@ public abstract class TileModuleAcceptor extends TileFortron implements IModuleA
     @Override
     public Set<IModule> getModules(int... paramVarArgs) {
         Set<IModule> stacks = new HashSet<>();
-        if (paramVarArgs != null) {
+        if (paramVarArgs != null && paramVarArgs.length > 0) {
             for (int slot : paramVarArgs) {
                 ItemStack stack = getStackInSlot(slot);
                 if (stack != null && stack.getItem() instanceof IModule) {
@@ -105,13 +108,33 @@ public abstract class TileModuleAcceptor extends TileFortron implements IModuleA
 
     @Override
     public int getFortronCost() {
+        if(worldObj.isRemote)
+            return clientFortronCost;
+        return calculateFortronCost();
+    }
+
+    /**
+     *
+     * @return
+     */
+    public int calculateFortronCost() {
         float cost = 0.0F;
         for (ItemStack stack : getModuleStacks()) {
             if (stack != null) {
-                cost += ((IModule) stack.getItem()).getFortronCost(1.0F);
+                cost += stack.stackSize * ((IModule) stack.getItem()).getFortronCost(getAmplifier());
             }
         }
         return Math.round(cost);
+    }
+
+    /**
+     * Overriden in a sign to provide the text.
+     */
+    @Override
+    public Packet getDescriptionPacket() {
+        S35PacketUpdateTileEntity pkt = (S35PacketUpdateTileEntity) super.getDescriptionPacket();
+        pkt.func_148857_g().setInteger("fortronCost", getFortronCost());
+        return pkt;
     }
 
     @Override
@@ -130,5 +153,9 @@ public abstract class TileModuleAcceptor extends TileFortron implements IModuleA
     public void fireEvents(int... slots) {
         super.fireEvents(slots);
         this.tank.setCapacity(getModuleCount(ModuleCapacity.class) * capacityBoost + capacityBase * 1000);
+    }
+
+    public float getAmplifier() {
+        return 1.0F;
     }
 }

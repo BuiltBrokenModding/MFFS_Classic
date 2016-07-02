@@ -9,6 +9,7 @@ import com.mffs.api.vector.Vector3D;
 import com.mffs.model.blocks.BlockForceField;
 import com.mffs.model.items.card.CardBlank;
 import com.mffs.model.items.modules.projector.ModuleDisintegration;
+import com.mffs.model.items.modules.projector.type.ModeCustom;
 import com.mffs.model.items.modules.upgrades.ModuleSilence;
 import com.mffs.model.items.modules.upgrades.ModuleSpeed;
 import com.mffs.model.tile.TileFieldInteraction;
@@ -115,7 +116,28 @@ public class TileForceFieldProjector extends TileFieldInteraction implements IPr
 
     @Override
     public long getTicks() {
+        return this.ticks;
+    }
+
+    /**
+     * @return
+     */
+    @Override
+    public int calculateFortronCost() {
+        IProjectorMode mode = getMode();
+        if (mode != null) {
+            return Math.round(super.calculateFortronCost() + mode.getFortronCost(getAmplifier()));
+        }
         return 0;
+    }
+
+    @Override
+    public float getAmplifier() {
+        IProjectorMode mode = getMode();
+        if(mode instanceof ModeCustom) {
+            //TODO: Custom mode
+        }
+        return Math.max(Math.min(getCalculatedField().size() / 1000, 10), 1);
     }
 
     @Override

@@ -128,4 +128,7 @@ public class TileFortronCapacitor extends TileModuleAcceptor implements IFortron
     }
 
     public TransferMode getTransferMode() { return this.mode;}
+
+    @Override
+    public float getAmplifier() { return .001F;}
 }

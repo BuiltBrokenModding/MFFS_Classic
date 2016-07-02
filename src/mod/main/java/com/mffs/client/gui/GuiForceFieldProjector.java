@@ -13,6 +13,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
 import org.lwjgl.opengl.GL11;
 
 import javax.vecmath.Vector2d;
@@ -88,7 +89,8 @@ public class GuiForceFieldProjector extends MFFSGui {
         this.textFieldFrequency.drawTextBox();
 
         drawTextWithTooltip("fortron", "%1: " + UnitDisplay.getDisplayShort(proj.getFortronEnergy(), UnitDisplay.Unit.LITER) + "/" + UnitDisplay.getDisplay(proj.getFortronCapacity(), UnitDisplay.Unit.LITER, UnitDisplay.UnitPrefix.MILLI), 8, 110, x, y);
-        this.fontRendererObj.drawString(UnitDisplay.getDisplayShort(proj.getFortronCost() * 20, UnitDisplay.Unit.LITER) + "/s", 118, 121, 4210752);
+        int cost = proj.getFortronCost() * 20;
+        this.fontRendererObj.drawString(EnumChatFormatting.RED+ (cost > 0 ? "-" : "")+UnitDisplay.getDisplayShort(cost, UnitDisplay.Unit.LITER) + "/s", 118, 121, 4210752);
         super.drawGuiContainerForegroundLayer(x, y);
     }
 
