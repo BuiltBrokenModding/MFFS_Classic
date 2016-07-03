@@ -17,7 +17,6 @@ import java.util.Set;
  */
 public abstract class TileModuleAcceptor extends TileFortron implements IModuleAcceptor {
 
-    public int clientFortronCost = 0;
     protected int capacityBase = 500;
     protected int capacityBoost = 5;
 
@@ -108,9 +107,8 @@ public abstract class TileModuleAcceptor extends TileFortron implements IModuleA
 
     @Override
     public int getFortronCost() {
-        if(worldObj.isRemote)
-            return clientFortronCost;
-        return calculateFortronCost();
+        int cost = calculateFortronCost();
+        return cost;
     }
 
     /**
@@ -127,31 +125,18 @@ public abstract class TileModuleAcceptor extends TileFortron implements IModuleA
         return Math.round(cost);
     }
 
-    /**
-     * Overriden in a sign to provide the text.
-     */
-    @Override
-    public Packet getDescriptionPacket() {
-        S35PacketUpdateTileEntity pkt = (S35PacketUpdateTileEntity) super.getDescriptionPacket();
-        pkt.func_148857_g().setInteger("fortronCost", getFortronCost());
-        return pkt;
-    }
-
     @Override
     public void writeToNBT(NBTTagCompound nbt) {
         super.writeToNBT(nbt);
-        nbt.setInteger("fortronCost", clientFortronCost);
     }
 
     @Override
     public void readFromNBT(NBTTagCompound nbt) {
         super.readFromNBT(nbt);
-        this.clientFortronCost = nbt.getInteger("fortronCost");
     }
 
     @Override
     public void fireEvents(int... slots) {
-        super.fireEvents(slots);
         this.tank.setCapacity(getModuleCount(ModuleCapacity.class) * capacityBoost + capacityBase * 1000);
     }
 

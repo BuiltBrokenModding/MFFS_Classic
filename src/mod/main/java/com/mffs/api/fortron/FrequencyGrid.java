@@ -121,12 +121,13 @@ public class FrequencyGrid {
         tilesToRemove.forEach(tile -> FrequencyGrid.instance().unregister(tile));
     }
 
-    public Set<IBlockFrequency> get(World world, Pos3D position, int radius, int frequency) {
+    public Set<IBlockFrequency> get(World world, Vector3D position, int radius, int frequency) {
         Set<IBlockFrequency> set = new HashSet<IBlockFrequency>();
 
         this.get(frequency).forEach(tileEntity -> {
-            if (((TileEntity) tileEntity).getWorldObj() == world) {
-                if (new Pos3D((TileEntity) tileEntity).distance(position) <= radius) {
+            TileEntity tile = (TileEntity) tileEntity;
+            if (tile.getWorldObj() == world) {
+                if (position.distance(tile.xCoord, tile.yCoord, tile.zCoord) <= radius) {
                     set.add(tileEntity);
                 }
             }

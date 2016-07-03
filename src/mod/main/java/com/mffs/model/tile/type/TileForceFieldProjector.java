@@ -102,6 +102,7 @@ public class TileForceFieldProjector extends TileFieldInteraction implements IPr
     public void onCalculationCompletion() {
         //TODO: Send field to client
         //Check if repulsion
+
     }
 
     @Override

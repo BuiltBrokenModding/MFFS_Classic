@@ -26,7 +26,7 @@ public final class TileCoercionDeriver extends TileElectrical {
     public boolean isInversed;
 
     public TileCoercionDeriver() {
-        this.storage.setCapacity(30);
+        this.capacityBase = 30;
         this.module_index = 3;
         storage.setCapacity(Math.round(getWattage()));
         storage.setMaxTransfer(Math.round(getWattage() / 20L));

@@ -1,5 +1,6 @@
 package com.mffs.model.tile.type;
 
+import com.mffs.ModConfiguration;
 import com.mffs.api.TransferMode;
 import com.mffs.api.card.ICard;
 import com.mffs.api.card.ICardInfinite;

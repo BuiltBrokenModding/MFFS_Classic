@@ -24,7 +24,7 @@ public class ModConfiguration {
     public static int INTERDICTION_MURDER_ENERGY = 0;
     public static int INTERDICTION_MAX_RANGE = Integer.MAX_VALUE;
     public static boolean ENABLE_MANIPULATOR = true;
-    public static int FORTRON_SYNC_TICKS = 60; // 3 seconds
+    public static short FORTRON_SYNC_TICKS = 60; // 3 seconds
 
     /* This is the base power required for the coercion deriver */
     public static int BASE_POWER_REQUIRED = 5_000_000;

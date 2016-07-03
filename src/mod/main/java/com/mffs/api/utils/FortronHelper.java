@@ -43,13 +43,6 @@ public class FortronHelper {
 
         switch(mode) {
 
-           /* case EQUALIZE:
-                for(IFortronFrequency machine : tiles) {
-                    int transfer = ((machine.getFortronCapacity() / capacity) * fortron);
-                    transfer(freq, machine, transfer - machine.getFortronEnergy(), limit);
-                }
-                break;*/
-
             case DISTRIBUTE:
                 for(IFortronFrequency machine : tiles)
                     transfer(freq, machine, (fortron / tiles.size()) - machine.getFortronEnergy(), limit);
@@ -94,12 +87,18 @@ public class FortronHelper {
         World world = entity.getWorldObj();
         boolean camo = ( freq instanceof IModuleAcceptor && ((IModuleAcceptor)freq).getModuleCount(ModuleCamouflage.class) > 0);
 
+        if(joul < 0) { //we switch the frequencies! Means they have less than the receiver
+            IFortronFrequency dummy = freq;
+            freq = rec;
+            rec = dummy;
+        }
+
         joul = Math.min(joul < 0 ? Math.abs(joul) : joul, limit);
         int toBeInject = rec.provideFortron(freq.requestFortron(joul, false), false);
         toBeInject = freq.requestFortron(rec.provideFortron(toBeInject, true), true);
 
         if(world.isRemote && toBeInject > 0 && !camo) {
-            FMLClientHandler.instance().getClient().effectRenderer.addEffect(new FortronBeam(world, new Vector3D((TileEntity) rec).translate(.5), new Vector3D(entity).translate(.5), 0.6F, 0.6F, 1, 20));
+            FMLClientHandler.instance().getClient().effectRenderer.addEffect(new FortronBeam(world, new Vector3D((TileEntity) freq).translate(.5), new Vector3D((TileEntity)rec).translate(.5), 0.6F, 0.6F, 1, 20));
         }
     }
 }
