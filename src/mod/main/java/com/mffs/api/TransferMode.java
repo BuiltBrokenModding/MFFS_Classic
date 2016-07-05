@@ -6,6 +6,10 @@ package com.mffs.api;
 public enum TransferMode {
     EQUALIZE, DISTRIBUTE, DRAIN, FILL;
 
+    public static final String[] NAME_NORMALIZED = {
+            "Equalize", "Distribute", "Drain", "Fill"
+    };
+
     public TransferMode toggle() {
         int newOrdinal = ordinal() + 1;
 
@@ -14,8 +18,4 @@ public enum TransferMode {
         }
         return values()[newOrdinal];
     }
-
-    public static final String[] NAME_NORMALIZED = {
-        "Equalize", "Distribute", "Drain", "Fill"
-    };
 }

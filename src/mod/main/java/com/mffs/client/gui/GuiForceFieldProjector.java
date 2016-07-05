@@ -90,7 +90,7 @@ public class GuiForceFieldProjector extends MFFSGui {
 
         drawTextWithTooltip("fortron", "%1: " + UnitDisplay.getDisplayShort(proj.getFortronEnergy(), UnitDisplay.Unit.LITER) + "/" + UnitDisplay.getDisplay(proj.getFortronCapacity(), UnitDisplay.Unit.LITER, UnitDisplay.UnitPrefix.MILLI), 8, 110, x, y);
         int cost = proj.getFortronCost() * 20;
-        this.fontRendererObj.drawString(EnumChatFormatting.RED+ (cost > 0 ? "-" : "")+UnitDisplay.getDisplayShort(cost, UnitDisplay.Unit.LITER) + "/s", 118, 121, 4210752);
+        this.fontRendererObj.drawString(EnumChatFormatting.RED + (cost > 0 ? "-" : "") + UnitDisplay.getDisplayShort(cost, UnitDisplay.Unit.LITER) + "/s", 118, 121, 4210752);
         super.drawGuiContainerForegroundLayer(x, y);
     }
 

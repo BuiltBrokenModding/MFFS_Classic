@@ -1,13 +1,10 @@
 package com.mffs.model.tile;
 
-import com.mffs.ModConfiguration;
 import com.mffs.api.modules.IModule;
 import com.mffs.api.modules.IModuleAcceptor;
 import com.mffs.model.items.modules.upgrades.ModuleCapacity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -112,7 +109,6 @@ public abstract class TileModuleAcceptor extends TileFortron implements IModuleA
     }
 
     /**
-     *
      * @return
      */
     public int calculateFortronCost() {

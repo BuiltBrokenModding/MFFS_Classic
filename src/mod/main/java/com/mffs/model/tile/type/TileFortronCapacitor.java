@@ -1,6 +1,5 @@
 package com.mffs.model.tile.type;
 
-import com.mffs.ModConfiguration;
 import com.mffs.api.TransferMode;
 import com.mffs.api.card.ICard;
 import com.mffs.api.card.ICardInfinite;
@@ -8,7 +7,6 @@ import com.mffs.api.card.ICoordLink;
 import com.mffs.api.fortron.FrequencyGrid;
 import com.mffs.api.fortron.IFortronCapacitor;
 import com.mffs.api.fortron.IFortronFrequency;
-import com.mffs.api.fortron.IFortronStorage;
 import com.mffs.api.modules.IModule;
 import com.mffs.api.utils.FortronHelper;
 import com.mffs.api.vector.Vector3D;
@@ -50,22 +48,22 @@ public class TileFortronCapacitor extends TileModuleAcceptor implements IFortron
 
         if (isActive() && this.ticks % 10 == 0) {
             Set<IFortronFrequency> connected = new HashSet<>();
-            for(ItemStack stack : getCards()) {
-                if(stack == null)
+            for (ItemStack stack : getCards()) {
+                if (stack == null)
                     continue;
 
-                if(stack.getItem() instanceof ICardInfinite) {
+                if (stack.getItem() instanceof ICardInfinite) {
                     setFortronEnergy(getFortronCapacity());
-                } else if(stack.getItem() instanceof ICoordLink) {
+                } else if (stack.getItem() instanceof ICoordLink) {
                     Coord4D link = ((ICoordLink) stack.getItem()).getLink(stack);
                     TileEntity link_machine = link.getTileEntity(worldObj);
-                    if(link != null && link_machine instanceof IFortronFrequency) {
+                    if (link != null && link_machine instanceof IFortronFrequency) {
                         connected.add(this);
                         connected.add((IFortronFrequency) link_machine);
                     }
                 }
             }
-            if(connected.isEmpty())
+            if (connected.isEmpty())
                 getLinkedDevices(connected);
 
             FortronHelper.transfer(this, connected, mode, getTransmissionRate());
@@ -128,8 +126,12 @@ public class TileFortronCapacitor extends TileModuleAcceptor implements IFortron
         return 5;
     }
 
-    public TransferMode getTransferMode() { return this.mode;}
+    public TransferMode getTransferMode() {
+        return this.mode;
+    }
 
     @Override
-    public float getAmplifier() { return .001F;}
+    public float getAmplifier() {
+        return .001F;
+    }
 }

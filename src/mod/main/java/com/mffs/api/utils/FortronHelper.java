@@ -20,16 +20,17 @@ public class FortronHelper {
 
     /**
      * Transfers fortron from 1 FortronFreqency, to multiple others.
-     * @param freq The base frequency that is being looked for.
+     *
+     * @param freq  The base frequency that is being looked for.
      * @param tiles The other tiles to send frequencies to.
-     * @param mode The current mode to send.
+     * @param mode  The current mode to send.
      * @param limit The tick limit.
      */
     public static void transfer(IFortronFrequency freq, Set<IFortronFrequency> tiles, TransferMode mode, int limit) {
         int fortron = 0, capacity = 0;
-        for(Iterator<IFortronFrequency> it$ = tiles.iterator(); it$.hasNext();) {
+        for (Iterator<IFortronFrequency> it$ = tiles.iterator(); it$.hasNext(); ) {
             IFortronFrequency machine = it$.next();
-            if(machine == null) {//this should prevent nulls.
+            if (machine == null) {//this should prevent nulls.
                 it$.remove();
                 continue;
             }
@@ -38,13 +39,13 @@ public class FortronHelper {
             capacity += machine.getFortronCapacity();
         }
 
-        if(fortron <= 0 || capacity <= 0)
+        if (fortron <= 0 || capacity <= 0)
             return;
 
-        switch(mode) {
+        switch (mode) {
 
             case DISTRIBUTE:
-                for(IFortronFrequency machine : tiles)
+                for (IFortronFrequency machine : tiles)
                     transfer(freq, machine, (fortron / tiles.size()) - machine.getFortronEnergy(), limit);
                 return;
 
@@ -52,23 +53,23 @@ public class FortronHelper {
                 tiles.remove(freq);
             case EQUALIZE:
                 //tiles.remove(freq);
-                for(IFortronFrequency machine : tiles) {
-                    int transfer = (int)(((double) machine.getFortronCapacity() / capacity) * fortron) - machine.getFortronEnergy();
-                    if(mode == TransferMode.DRAIN && transfer <= 0)
+                for (IFortronFrequency machine : tiles) {
+                    int transfer = (int) (((double) machine.getFortronCapacity() / capacity) * fortron) - machine.getFortronEnergy();
+                    if (mode == TransferMode.DRAIN && transfer <= 0)
                         continue;
                     transfer(freq, machine, transfer, limit);
                 }
                 break;
 
             case FILL:
-                if(freq.getFortronEnergy() >= freq.getFortronCapacity())
+                if (freq.getFortronEnergy() >= freq.getFortronCapacity())
                     return;
                 tiles.remove(freq);
                 int transfer = freq.getFortronCapacity() - freq.getFortronEnergy();
-                for(IFortronFrequency machine : tiles) {
+                for (IFortronFrequency machine : tiles) {
                     int consume = Math.min(transfer, machine.getFortronEnergy());
                     transfer = -machine.getFortronEnergy() - consume;
-                    if(consume > 0)
+                    if (consume > 0)
                         transfer(freq, machine, transfer - machine.getFortronEnergy(), limit);
                 }
                 break;
@@ -77,17 +78,18 @@ public class FortronHelper {
 
     /**
      * Transfers fortron directly from 1 machine, to the receiving.
-     * @param freq The sending machine.
-     * @param rec The receiving machine.
-     * @param joul The jouls to be sent.
+     *
+     * @param freq  The sending machine.
+     * @param rec   The receiving machine.
+     * @param joul  The jouls to be sent.
      * @param limit The limit per tick.
      */
-    public static void transfer(IFortronFrequency freq, IFortronFrequency rec, int joul,int limit) {
+    public static void transfer(IFortronFrequency freq, IFortronFrequency rec, int joul, int limit) {
         TileEntity entity = (TileEntity) freq;
         World world = entity.getWorldObj();
-        boolean camo = ( freq instanceof IModuleAcceptor && ((IModuleAcceptor)freq).getModuleCount(ModuleCamouflage.class) > 0);
+        boolean camo = (freq instanceof IModuleAcceptor && ((IModuleAcceptor) freq).getModuleCount(ModuleCamouflage.class) > 0);
 
-        if(joul < 0) { //we switch the frequencies! Means they have less than the receiver
+        if (joul < 0) { //we switch the frequencies! Means they have less than the receiver
             IFortronFrequency dummy = freq;
             freq = rec;
             rec = dummy;
@@ -97,8 +99,8 @@ public class FortronHelper {
         int toBeInject = rec.provideFortron(freq.requestFortron(joul, false), false);
         toBeInject = freq.requestFortron(rec.provideFortron(toBeInject, true), true);
 
-        if(world.isRemote && toBeInject > 0 && !camo) {
-            FMLClientHandler.instance().getClient().effectRenderer.addEffect(new FortronBeam(world, new Vector3D((TileEntity) freq).translate(.5), new Vector3D((TileEntity)rec).translate(.5), 0.6F, 0.6F, 1, 20));
+        if (world.isRemote && toBeInject > 0 && !camo) {
+            FMLClientHandler.instance().getClient().effectRenderer.addEffect(new FortronBeam(world, new Vector3D((TileEntity) freq).translate(.5), new Vector3D((TileEntity) rec).translate(.5), 0.6F, 0.6F, 1, 20));
         }
     }
 }

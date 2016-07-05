@@ -238,7 +238,7 @@ public class BlockForceField extends Block implements ITileEntityProvider, IForc
         TileEntity tile = world.getTileEntity(x, y, z);
         if (tile instanceof TileForceField) {
             IProjector proj = ((TileForceField) tile).findProj();
-            if(proj != null)
+            if (proj != null)
                 return Math.min(proj.getModuleCount(ModuleGlow.class), 64) / 64 * 15;
         }
         return 0;

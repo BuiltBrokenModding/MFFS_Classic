@@ -1,6 +1,5 @@
 package com.mffs.api.card;
 
-import com.mffs.api.vector.Vector3D;
 import mekanism.api.Coord4D;
 import net.minecraft.item.ItemStack;
 

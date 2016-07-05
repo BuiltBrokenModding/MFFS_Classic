@@ -6,8 +6,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
 
 /**
-        * @author Calclavia
-        */
+ * @author Calclavia
+ */
 public abstract class TileElectrical extends TileModuleAcceptor implements IEnergyHandler {
 
     protected EnergyStorage storage = new EnergyStorage(32000);

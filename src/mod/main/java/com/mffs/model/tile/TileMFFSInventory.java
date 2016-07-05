@@ -5,6 +5,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraftforge.common.util.Constants;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -150,33 +152,33 @@ public abstract class TileMFFSInventory extends TileMFFS implements IInventory {
     @Override
     public void writeToNBT(NBTTagCompound nbt) {
         super.writeToNBT(nbt);
-        /*NBTTagList nbtTagList = new NBTTagList();
+        NBTTagList nbtTagList = new NBTTagList();
         for (int i = 0; i < this.inventory.length; i++) {
             if (this.inventory[i] != null) {
                 NBTTagCompound nbttagcompound1 = new NBTTagCompound();
-                nbttagcompound1.setByte("Slot", (byte) i);
+                nbttagcompound1.setByte("slot", (byte) i);
                 this.inventory[i].writeToNBT(nbttagcompound1);
                 nbtTagList.appendTag(nbttagcompound1);
             }
         }
 
-        nbt.setTag("Items", nbtTagList);*/
+        nbt.setTag("items", nbtTagList);
     }
 
     @Override
     public void readFromNBT(NBTTagCompound nbt) {
         super.readFromNBT(nbt);
-        /*NBTTagList nbtTagList = nbt.getTagList("Items", Constants.NBT.TAG_COMPOUND);
+        NBTTagList nbtTagList = nbt.getTagList("items", Constants.NBT.TAG_COMPOUND);
         this.inventory = new ItemStack[getSizeInventory()];
 
         for (int i = 0; i < nbtTagList.tagCount(); i++) {
-            NBTTagCompound nbttagcompound1 = (NBTTagCompound) nbtTagList.getCompoundTagAt(i);
+            NBTTagCompound nbttagcompound1 = nbtTagList.getCompoundTagAt(i);
 
-            byte byte0 = nbttagcompound1.getByte("Slot");
+            byte byte0 = nbttagcompound1.getByte("slot");
             if ((byte0 >= 0) && (byte0 < this.inventory.length)) {
                 this.inventory[byte0] = ItemStack.loadItemStackFromNBT(nbttagcompound1);
             }
-        }*/
+        }
     }
 
     public Set<ItemStack> getCards() {

@@ -4,7 +4,6 @@ import com.mffs.api.slots.CardSlot;
 import com.mffs.api.slots.MachineSlot;
 import com.mffs.model.tile.type.TileFortronCapacitor;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 
 /**
  * @author Calclavia
@@ -12,7 +11,6 @@ import net.minecraft.inventory.IInventory;
 public final class FortronCapacitorContainer extends PlayerContainer {
 
     /**
-     *
      * @param player
      * @param cap
      */

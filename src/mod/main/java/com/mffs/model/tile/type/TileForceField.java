@@ -3,7 +3,6 @@ package com.mffs.model.tile.type;
 import com.mffs.api.vector.Vector3D;
 import com.mffs.model.TileMFFS;
 import com.mffs.model.items.modules.upgrades.ModuleCamouflage;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -62,7 +61,7 @@ public final class TileForceField extends TileMFFS {
         if (pkt.func_148857_g().hasKey("camo")) {
             camo = ItemStack.loadItemStackFromNBT(pkt.func_148857_g().getCompoundTag("camo"));
         }
-        if(pkt.func_148857_g().hasKey("proj")) {
+        if (pkt.func_148857_g().hasKey("proj")) {
             NBTTagCompound tag = pkt.func_148857_g().getCompoundTag("proj");
             if (projector != null) {
                 projector.x = tag.getDouble("x");
@@ -79,7 +78,7 @@ public final class TileForceField extends TileMFFS {
     @Override
     public void writeToNBT(NBTTagCompound nbt) {
         super.writeToNBT(nbt);
-        if(getProj() != null)
+        if (getProj() != null)
             nbt.setTag("proj", projector.writeToNBT(new NBTTagCompound()));
     }
 

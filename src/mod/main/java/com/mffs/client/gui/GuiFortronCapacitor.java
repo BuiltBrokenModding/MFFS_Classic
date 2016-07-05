@@ -19,7 +19,6 @@ import java.util.Set;
 public class GuiFortronCapacitor extends MFFSGui {
 
     /**
-     *
      * @param player
      * @param cap
      */
@@ -27,7 +26,9 @@ public class GuiFortronCapacitor extends MFFSGui {
         super(new FortronCapacitorContainer(player, cap), cap);
     }
 
-    public TileFortronCapacitor getCapacitor() { return (TileFortronCapacitor) this.frequencyTile;}
+    public TileFortronCapacitor getCapacitor() {
+        return (TileFortronCapacitor) this.frequencyTile;
+    }
 
     @Override
     public void initGui() {
@@ -40,7 +41,8 @@ public class GuiFortronCapacitor extends MFFSGui {
     protected void actionPerformed(GuiButton guiButton) {
         super.actionPerformed(guiButton);
         //if(guiButton.id == 1)
-            //Send change toggle mode
+
+        //Send change toggle mode
     }
 
     @Override
@@ -54,9 +56,9 @@ public class GuiFortronCapacitor extends MFFSGui {
 
         Set<IFortronFrequency> freq = new HashSet<>();
         cap.getLinkedDevices(freq);
-        drawTextWithTooltip("linkedDevice", "%1: "+ freq.size(), 8, 28, mouseX, mouseY);
+        drawTextWithTooltip("linkedDevice", "%1: " + freq.size(), 8, 28, mouseX, mouseY);
 
-        drawTextWithTooltip("transmissionRate", "%1: "+ UnitDisplay.getDisplayShort(cap.getTransmissionRate() * 20, UnitDisplay.Unit.LITER) + "/s", 8, 40, mouseX, mouseY);
+        drawTextWithTooltip("transmissionRate", "%1: " + UnitDisplay.getDisplayShort(cap.getTransmissionRate() * 20, UnitDisplay.Unit.LITER) + "/s", 8, 40, mouseX, mouseY);
         drawTextWithTooltip("range", "%1: " + cap.getTransmissionRange(), 8, 52, mouseX, mouseY);
         drawTextWithTooltip("frequency", "%1:", 8, 63, mouseX, mouseY);
         this.textFieldFrequency.drawTextBox();

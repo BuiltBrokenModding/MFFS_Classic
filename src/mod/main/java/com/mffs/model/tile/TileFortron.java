@@ -12,14 +12,10 @@ import com.mffs.model.fluids.Fortron;
 import com.mffs.model.net.packet.FortronSync;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import mekanism.api.Pos3D;
-import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.*;
-
-import java.util.Set;
 
 /**
  * @author Calclavia
@@ -207,7 +203,7 @@ public abstract class TileFortron extends TileFrequency implements IFluidHandler
     public IMessage handleMessage(IMessage imessage) {
         if (imessage instanceof FortronSync) {
             FortronSync sync = (FortronSync) imessage;
-            if(tank.getFluid() != null) {
+            if (tank.getFluid() != null) {
                 tank.getFluid().amount = sync.amount;
             } else {
                 tank.setFluid(FluidRegistry.getFluidStack("fortron", sync.amount));

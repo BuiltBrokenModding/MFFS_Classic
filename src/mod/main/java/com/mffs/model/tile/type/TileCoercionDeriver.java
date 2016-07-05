@@ -74,7 +74,7 @@ public final class TileCoercionDeriver extends TileElectrical {
                     }
                 }
             }
-        } else if(isActive()) {
+        } else if (isActive()) {
             animation++;
         }
     }
@@ -173,6 +173,6 @@ public final class TileCoercionDeriver extends TileElectrical {
     public void readFromNBT(NBTTagCompound nbt) {
         super.readFromNBT(nbt);
         processTime = nbt.getInteger("process");
-        isInversed =  nbt.getBoolean("inverse");
+        isInversed = nbt.getBoolean("inverse");
     }
 }

@@ -47,7 +47,7 @@ public class ForcefieldCalculation extends TileEntityMessage {
         super.fromBytes(buf);
         blocks = new HashSet<>();
         int size = buf.readInt();
-        for(int i = 0; i < size; i++) {
+        for (int i = 0; i < size; i++) {
             Vector3D vec = new Vector3D(buf.readInt(), buf.readInt(), buf.readInt());
             blocks.add(vec);
         }
@@ -62,14 +62,16 @@ public class ForcefieldCalculation extends TileEntityMessage {
     public void toBytes(ByteBuf buf) {
         super.toBytes(buf);
         buf.writeInt(blocks.size());
-        for(Vector3D vec : blocks) {
+        for (Vector3D vec : blocks) {
             buf.writeInt(vec.intX());
             buf.writeInt(vec.intY());
             buf.writeInt(vec.intZ());
         }
     }
 
-    public Set<Vector3D> getBlocks() { return blocks;}
+    public Set<Vector3D> getBlocks() {
+        return blocks;
+    }
 
     /**
      * Sends a sync to the Client.

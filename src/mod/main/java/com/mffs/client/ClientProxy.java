@@ -78,7 +78,7 @@ public class ClientProxy extends CommonProxy {
                 return new GuiCoercionDeriver(player, (TileCoercionDeriver) tileEntity);
             } else if (tileEntity instanceof TileForceFieldProjector) {
                 return new GuiForceFieldProjector(player, (TileForceFieldProjector) tileEntity);
-            } else if(tileEntity instanceof TileFortronCapacitor) {
+            } else if (tileEntity instanceof TileFortronCapacitor) {
                 return new GuiFortronCapacitor(player, (TileFortronCapacitor) tileEntity);
             }
         }

@@ -14,10 +14,8 @@ import com.mffs.model.items.modules.upgrades.ModuleSilence;
 import com.mffs.model.items.modules.upgrades.ModuleSpeed;
 import com.mffs.model.net.packet.ForcefieldCalculation;
 import com.mffs.model.tile.TileFieldInteraction;
-import com.sun.xml.internal.ws.client.dispatch.PacketDispatch;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import net.minecraft.block.*;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 
@@ -138,7 +136,7 @@ public class TileForceFieldProjector extends TileFieldInteraction implements IPr
     @Override
     public float getAmplifier() {
         IProjectorMode mode = getMode();
-        if(mode instanceof ModeCustom) {
+        if (mode instanceof ModeCustom) {
             //TODO: Custom mode
         }
         return Math.max(Math.min(getCalculatedField().size() / 1000, 10), 1);
@@ -166,7 +164,8 @@ public class TileForceFieldProjector extends TileFieldInteraction implements IPr
                 for (Iterator<Vector3D> it$ = fieldToBeProjected.iterator(); it$.hasNext(); ) {
                     Vector3D vec = it$.next();
                     Block block = worldObj.getBlock(vec.intX(), vec.intY(), vec.intZ());
-;                    if (block == null || getModuleCount(ModuleDisintegration.class) >= 0 && block.getBlockHardness(worldObj, vec.intX(), vec.intY(), vec.intZ()) != -1.0
+                    ;
+                    if (block == null || getModuleCount(ModuleDisintegration.class) >= 0 && block.getBlockHardness(worldObj, vec.intX(), vec.intY(), vec.intZ()) != -1.0
                             || block.getMaterial().isLiquid() || block instanceof BlockSnow || block instanceof BlockVine || block instanceof BlockTallGrass || block instanceof BlockDeadBush
                             || block.isReplaceable(worldObj, vec.intX(), vec.intY(), vec.intZ())) {
                         if (vec != projector && !(block instanceof BlockForceField)) {
@@ -259,7 +258,7 @@ public class TileForceFieldProjector extends TileFieldInteraction implements IPr
      */
     @Override
     public IMessage handleMessage(IMessage imessage) {
-        if(imessage instanceof ForcefieldCalculation) {
+        if (imessage instanceof ForcefieldCalculation) {
             ForcefieldCalculation calc = (ForcefieldCalculation) imessage;
             getCalculatedField().clear();
             getCalculatedField().addAll(calc.getBlocks());

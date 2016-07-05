@@ -5,7 +5,6 @@ import com.mffs.api.IBlockFrequency;
 import com.mffs.api.card.ICoordLink;
 import com.mffs.api.fortron.FrequencyGrid;
 import com.mffs.api.security.IBiometricIdentifier;
-import com.mffs.api.vector.Vector3D;
 import com.mffs.model.net.packet.ChangeFrequency;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import mekanism.api.Coord4D;

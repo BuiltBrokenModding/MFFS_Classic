@@ -1,7 +1,6 @@
 package com.mffs.client.buttons;
 
 import com.mffs.api.TransferMode;
-import com.mffs.api.vector.Vector3D;
 import com.mffs.client.gui.MFFSGui;
 import com.mffs.model.tile.type.TileFortronCapacitor;
 import net.minecraft.client.Minecraft;
@@ -17,7 +16,6 @@ public class TransferModeButton extends GuiPressableButton {
     private TileFortronCapacitor mode;
 
     /**
-     *
      * @param id
      * @param x
      * @param y

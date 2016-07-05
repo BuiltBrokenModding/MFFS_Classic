@@ -22,7 +22,6 @@ public class FortronCostSync extends TileEntityMessage {
     }
 
     /**
-     *
      * @param module
      * @param cost
      */
