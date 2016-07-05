@@ -7,6 +7,7 @@ import com.mffs.api.modules.IProjectorMode;
 import com.mffs.api.vector.Vector3D;
 import com.mffs.model.items.modules.upgrades.ModuleInvert;
 import com.mffs.model.items.modules.upgrades.ModuleRotate;
+import com.mffs.model.items.modules.upgrades.ModuleScale;
 import com.mffs.model.items.modules.upgrades.ModuleTranslate;
 import com.mffs.model.net.packet.EntityToggle;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
@@ -72,14 +73,13 @@ public abstract class TileFieldInteraction extends TileModuleAcceptor implements
                         try {
                             IProjectorMode mode = entity.getMode();
                             if (mode != null) {
-                                Set<Vector3D> blocks = entity.getModuleCount(ModuleInvert.class) != 0 ? mode.getInteriorPoints(entity) : mode.getExteriorPoints(entity);
+                                Set<Vector3D> blocks = entity.getModuleCount(ModuleInvert.class) > 0 ? mode.getInteriorPoints(entity) : mode.getExteriorPoints(entity);
                                 Vector3D translation = entity.getTranslation();
                                 int rotationYaw = entity.getRotationYaw();
                                 int rotationPitch = entity.getRotationPitch();
 
-                                for (IModule module : entity.getModules(new int[0])) {
+                                for (IModule module : entity.getModules())
                                     blocks = module.onPreCalculate(entity, blocks);
-                                }
 
                                 for (Vector3D position : blocks) {
                                     if ((rotationYaw != 0) || (rotationPitch != 0)) {
@@ -104,7 +104,6 @@ public abstract class TileFieldInteraction extends TileModuleAcceptor implements
 
                         entity.setCalculating(false);
                         entity.setCalculated(true);
-
                         entity.onCalculationCompletion();
                     }).start();
                 }
@@ -181,11 +180,11 @@ public abstract class TileFieldInteraction extends TileModuleAcceptor implements
         if (direction == ForgeDirection.UP || direction == ForgeDirection.DOWN)
             direction = ForgeDirection.NORTH;
 
-        int zScalePos = getModuleCount(ModuleTranslate.class, getSlotsBasedOnDirection(isAbs ? ForgeDirection.SOUTH : getOrient(direction, ForgeDirection.SOUTH)));
-        int xScalePos = getModuleCount(ModuleTranslate.class, getSlotsBasedOnDirection(isAbs ? ForgeDirection.EAST : getOrient(direction, ForgeDirection.EAST)));
-        int yScalePos = getModuleCount(ModuleTranslate.class, getSlotsBasedOnDirection(ForgeDirection.UP));
+        int zScalePos = getModuleCount(ModuleScale.class, getSlotsBasedOnDirection(isAbs ? ForgeDirection.SOUTH : getOrient(direction, ForgeDirection.SOUTH)));
+        int xScalePos = getModuleCount(ModuleScale.class, getSlotsBasedOnDirection(isAbs ? ForgeDirection.EAST : getOrient(direction, ForgeDirection.EAST)));
+        int yScalePos = getModuleCount(ModuleScale.class, getSlotsBasedOnDirection(ForgeDirection.UP));
 
-        int omnidirectionalScale = getModuleCount(ModuleTranslate.class, getModuleSlots());
+        int omnidirectionalScale = getModuleCount(ModuleScale.class, getModuleSlots());
 
         Vector3D positiveScale = new Vector3D(xScalePos + omnidirectionalScale, yScalePos + omnidirectionalScale, zScalePos + omnidirectionalScale);
 
@@ -198,11 +197,11 @@ public abstract class TileFieldInteraction extends TileModuleAcceptor implements
         if (direction == ForgeDirection.UP || direction == ForgeDirection.DOWN)
             direction = ForgeDirection.NORTH;
 
-        int zNeg = getModuleCount(ModuleTranslate.class, getSlotsBasedOnDirection(isAbs ? ForgeDirection.NORTH : getOrient(direction, ForgeDirection.NORTH)));
-        int xNeg = getModuleCount(ModuleTranslate.class, getSlotsBasedOnDirection(isAbs ? ForgeDirection.WEST : getOrient(direction, ForgeDirection.WEST)));
-        int yNeg = getModuleCount(ModuleTranslate.class, getSlotsBasedOnDirection(ForgeDirection.DOWN));
+        int zNeg = getModuleCount(ModuleScale.class, getSlotsBasedOnDirection(isAbs ? ForgeDirection.NORTH : getOrient(direction, ForgeDirection.NORTH)));
+        int xNeg = getModuleCount(ModuleScale.class, getSlotsBasedOnDirection(isAbs ? ForgeDirection.WEST : getOrient(direction, ForgeDirection.WEST)));
+        int yNeg = getModuleCount(ModuleScale.class, getSlotsBasedOnDirection(ForgeDirection.DOWN));
 
-        int omnidirectionalScale = getModuleCount(ModuleTranslate.class, getModuleSlots());
+        int omnidirectionalScale = getModuleCount(ModuleScale.class, getModuleSlots());
 
         Vector3D negScale = new Vector3D(xNeg + omnidirectionalScale, yNeg + omnidirectionalScale, zNeg + omnidirectionalScale);
 

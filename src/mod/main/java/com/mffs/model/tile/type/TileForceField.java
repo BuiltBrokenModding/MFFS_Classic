@@ -62,22 +62,25 @@ public final class TileForceField extends TileMFFS {
         if (pkt.func_148857_g().hasKey("camo")) {
             camo = ItemStack.loadItemStackFromNBT(pkt.func_148857_g().getCompoundTag("camo"));
         }
-        NBTTagCompound tag = pkt.func_148857_g().getCompoundTag("proj");
-        if (projector != null) {
-            projector.x = tag.getDouble("x");
-            projector.y = tag.getDouble("y");
-            projector.z = tag.getDouble("z");
-        } else {
-            projector = new Vector3D(tag);
+        if(pkt.func_148857_g().hasKey("proj")) {
+            NBTTagCompound tag = pkt.func_148857_g().getCompoundTag("proj");
+            if (projector != null) {
+                projector.x = tag.getDouble("x");
+                projector.y = tag.getDouble("y");
+                projector.z = tag.getDouble("z");
+            } else {
+                setProjector(new Vector3D(tag));
+            }
+            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
         }
-        worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
         super.onDataPacket(net, pkt);
     }
 
     @Override
     public void writeToNBT(NBTTagCompound nbt) {
         super.writeToNBT(nbt);
-        nbt.setTag("proj", projector.writeToNBT(new NBTTagCompound()));
+        if(getProj() != null)
+            nbt.setTag("proj", projector.writeToNBT(new NBTTagCompound()));
     }
 
     @Override
@@ -108,7 +111,7 @@ public final class TileForceField extends TileMFFS {
             return proj;
 
         if (!worldObj.isRemote)
-            worldObj.setBlock(xCoord, yCoord, zCoord, Blocks.air);
+            worldObj.setBlockToAir(xCoord, yCoord, zCoord);
         return null;
     }
 
@@ -117,14 +120,11 @@ public final class TileForceField extends TileMFFS {
      *
      * @return
      */
-    private TileForceFieldProjector findProj() {
+    public TileForceFieldProjector findProj() {
         if (this.projector != null) {
             TileEntity entity = projector.getTileEntity(getWorldObj());
             if (entity != null && entity instanceof TileForceFieldProjector) {
                 if (worldObj.isRemote || ((TileForceFieldProjector) entity).getCalculatedField().contains(new Vector3D(this))) {
-                    if (!worldObj.isRemote)
-                        worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-
                     return (TileForceFieldProjector) entity;
                 }
             }
@@ -139,7 +139,7 @@ public final class TileForceField extends TileMFFS {
         if (this.worldObj.isRemote)
             return;
 
-        TileForceFieldProjector proj = getProj();
+        TileForceFieldProjector proj = findProj();
         if (proj != null) {
             if (proj.getModuleCount(ModuleCamouflage.class) > 0) {
                 //TODO: CustomMode

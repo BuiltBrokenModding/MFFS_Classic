@@ -1,8 +1,9 @@
 package com.mffs.model.net.packet;
 
+import com.mffs.api.vector.Vector3D;
 import com.mffs.model.TileMFFS;
 import com.mffs.model.net.TileEntityMessage;
-import com.mffs.model.tile.TileFortron;
+import com.mffs.model.tile.type.TileForceFieldProjector;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
@@ -10,25 +11,30 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.tileentity.TileEntity;
 
-/**
- * Created by pwaln on 6/14/2016.
- */
-public class FortronSync extends TileEntityMessage {
+import java.util.HashSet;
+import java.util.Set;
 
-    /* Amount of fortron to be sent */
-    public int amount, capacity;
+/**
+ * Created by pwaln on 7/3/2016.
+ */
+public class ForcefieldCalculation extends TileEntityMessage {
+
+    /* List of vectors to be assigned. */
+    private Set<Vector3D> blocks;
 
     /**
-     * Default Constructor
+     * Default constructor for class instance.
      */
-    public FortronSync() {
+    public ForcefieldCalculation() {
         super();
     }
 
-    public FortronSync(TileFortron tile) {
-        super(tile);
-        amount = tile.getTank().getFluidAmount();
-        capacity = tile.getTank().getCapacity();
+    /**
+     * @param proj
+     */
+    public ForcefieldCalculation(TileForceFieldProjector proj) {
+        super(proj);
+        this.blocks = proj.getCalculatedField();
     }
 
     /**
@@ -39,8 +45,12 @@ public class FortronSync extends TileEntityMessage {
     @Override
     public void fromBytes(ByteBuf buf) {
         super.fromBytes(buf);
-        amount = buf.readInt();
-        capacity = buf.readInt();
+        blocks = new HashSet<>();
+        int size = buf.readInt();
+        for(int i = 0; i < size; i++) {
+            Vector3D vec = new Vector3D(buf.readInt(), buf.readInt(), buf.readInt());
+            blocks.add(vec);
+        }
     }
 
     /**
@@ -51,14 +61,20 @@ public class FortronSync extends TileEntityMessage {
     @Override
     public void toBytes(ByteBuf buf) {
         super.toBytes(buf);
-        buf.writeInt(amount);
-        buf.writeInt(capacity);
+        buf.writeInt(blocks.size());
+        for(Vector3D vec : blocks) {
+            buf.writeInt(vec.intX());
+            buf.writeInt(vec.intY());
+            buf.writeInt(vec.intZ());
+        }
     }
 
+    public Set<Vector3D> getBlocks() { return blocks;}
+
     /**
-     * FortronSync handler.
+     * Sends a sync to the Client.
      */
-    public static class ClientHandler implements IMessageHandler<FortronSync, IMessage> {
+    public static class ClientHandler implements IMessageHandler<ForcefieldCalculation, IMessage> {
         /**
          * Called when a message is received of the appropriate type. You can optionally return a reply message, or null if no reply
          * is needed.
@@ -68,9 +84,9 @@ public class FortronSync extends TileEntityMessage {
          * @return an optional return message
          */
         @Override
-        public IMessage onMessage(FortronSync message, MessageContext ctx) {
+        public IMessage onMessage(ForcefieldCalculation message, MessageContext ctx) {
             TileEntity entity = Minecraft.getMinecraft().thePlayer.worldObj.getTileEntity(message.x, message.y, message.z);
-            if (entity instanceof TileFortron) {
+            if (entity instanceof TileForceFieldProjector) {
                 return ((TileMFFS) entity).handleMessage(message);
             }
             return null;

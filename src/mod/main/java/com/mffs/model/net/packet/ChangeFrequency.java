@@ -2,6 +2,7 @@ package com.mffs.model.net.packet;
 
 import com.mffs.model.TileMFFS;
 import com.mffs.model.net.TileEntityMessage;
+import com.mffs.model.tile.TileFrequency;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
@@ -75,7 +76,7 @@ public class ChangeFrequency extends TileEntityMessage {
         @Override
         public IMessage onMessage(ChangeFrequency message, MessageContext ctx) {
             TileEntity entity = ctx.getServerHandler().playerEntity.worldObj.getTileEntity(message.x, message.y, message.z);
-            if (entity instanceof TileMFFS) {
+            if (entity instanceof TileFrequency) {
                 return ((TileMFFS) entity).handleMessage(message);
             }
             return null;

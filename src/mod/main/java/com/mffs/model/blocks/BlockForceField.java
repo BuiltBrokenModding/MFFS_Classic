@@ -38,7 +38,10 @@ import java.util.Random;
  */
 public class BlockForceField extends Block implements ITileEntityProvider, IForceFieldBlock {
 
-    public static final BlockForceField BLOCK_FORCE_FIELD = (BlockForceField) Block.getBlockFromName(MFFS.MODID + ":forceField");
+    /**
+     * Force Field Block to reference!
+     */
+    public static BlockForceField BLOCK_FORCE_FIELD;
 
     /**
      * Default method.
@@ -176,7 +179,7 @@ public class BlockForceField extends Block implements ITileEntityProvider, IForc
 
         TileEntity tile = world.getTileEntity(x, y, z);
         if (tile instanceof TileForceField) {
-            IProjector proj = ((TileForceField) tile).getProj();
+            IProjector proj = getProjector(world, x, y, z);
             if (proj == null)
                 return;
 
@@ -217,6 +220,7 @@ public class BlockForceField extends Block implements ITileEntityProvider, IForc
      */
     @Override
     public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z) {
+        IProjector proj = getProjector(world, x, y, z);
         return super.getCollisionBoundingBoxFromPool(world, x, y, z);
     }
 
@@ -231,9 +235,12 @@ public class BlockForceField extends Block implements ITileEntityProvider, IForc
      */
     @Override
     public int getLightValue(IBlockAccess world, int x, int y, int z) {
-        IProjector proj = getProjector(world, x, y, z);
-        if (proj != null)
-            return Math.min(proj.getModuleCount(ModuleGlow.class), 64) / 64 * 15;
+        TileEntity tile = world.getTileEntity(x, y, z);
+        if (tile instanceof TileForceField) {
+            IProjector proj = ((TileForceField) tile).findProj();
+            if(proj != null)
+                return Math.min(proj.getModuleCount(ModuleGlow.class), 64) / 64 * 15;
+        }
         return 0;
     }
 

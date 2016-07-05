@@ -25,10 +25,10 @@ public class ModeCube extends ItemMode {
         Vector3D posScale = projector.getPositiveScale();
         Vector3D negScale = projector.getNegativeScale();
 
-        for (int x = -negScale.intX(); x <= posScale.intX(); x += 0.5F) {
-            for (int z = -negScale.intZ(); z <= posScale.z; z += 0.5F) {
-                for (int y = -negScale.intY(); y <= posScale.intY(); y += 0.5F) {
-                    if ((y == -negScale.intY()) || (y == posScale.intY()) || (x == -negScale.intX()) || (x == posScale.intX()) || (z == -negScale.z) || (z == posScale.z)) {
+        for (float x = -negScale.intX(); x <= posScale.intX(); x += 0.5F) {
+            for (float z = -negScale.intZ(); z <= posScale.intZ(); z += 0.5F) {
+                for (float y = -negScale.intY(); y <= posScale.intY(); y += 0.5F) {
+                    if ((y == -negScale.intY()) || (y == posScale.intY()) || (x == -negScale.intX()) || (x == posScale.intX()) || (z == -negScale.intZ()) || (z == posScale.intZ())) {
                         fieldBlocks.add(new Vector3D(x, y, z));
                     }
                 }
@@ -48,7 +48,7 @@ public class ModeCube extends ItemMode {
 
         for (int x = -(int) Math.floor(negScale.intX()); x <= (int) Math.floor(posScale.intX()); x++) {
 
-            for (int z = -(int) Math.floor(negScale.z); x <= (int) Math.floor(posScale.z); z++) {
+            for (int z = -(int) Math.floor(negScale.intZ()); x <= (int) Math.floor(posScale.intZ()); z++) {
 
                 for (int y = -(int) Math.floor(negScale.intY()); x <= (int) Math.floor(posScale.intY()); y++) {
 
@@ -76,7 +76,7 @@ public class ModeCube extends ItemMode {
         projectorPos.add(projector.getTranslation());
         Vector3D relativePosition = position.clone().subtract(projectorPos);
         relativePosition.rotate(-projector.getRotationYaw(), projector.getRotationPitch());
-        Matrix2d region = new Matrix2d(projector.getNegativeScale().clone().scale(-1.0D), projector.getPositiveScale());
+        Matrix2d region = new Matrix2d(projector.getNegativeScale().scale(-1.0D), projector.getPositiveScale());
         return region.isIn(relativePosition);
     }
 }
