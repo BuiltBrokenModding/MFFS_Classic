@@ -1,12 +1,21 @@
 package com.mffs.model.tile;
 
+import com.mffs.api.utils.Util;
+import com.mffs.api.vector.Vector3D;
 import com.mffs.model.TileMFFS;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityChest;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -138,6 +147,48 @@ public abstract class TileMFFSInventory extends TileMFFS implements IInventory {
     public void fireEvents(int... slots) {
     }
 
+    public boolean mergeIntoInventory(ItemStack stack) {
+        for(ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
+            stack = placeAdjInv(stack, dir);
+            if(stack == null)
+                return true;
+        }
+        return worldObj.spawnEntityInWorld(new EntityItem(worldObj, xCoord + .5, yCoord + 1, zCoord + .5, stack));
+    }
+
+    /**
+     *
+     * @param stack
+     * @param dir
+     * @return
+     */
+    public ItemStack placeAdjInv(ItemStack stack, ForgeDirection dir) {
+        TileEntity tileEntity = worldObj.getTileEntity(xCoord + dir.offsetX, yCoord + dir.offsetY, zCoord + dir.offsetZ);
+        //ForgeDirection o_dir = dir.getOpposite();
+        if(stack != null && tileEntity != null) {
+            if(tileEntity instanceof TileEntityChest) {
+                TileEntityChest chest1 = (TileEntityChest) tileEntity;
+                return Util.addToInv_first(chest1, stack);
+            }
+            else if(tileEntity instanceof ISidedInventory) {
+                ISidedInventory inv = (ISidedInventory) tileEntity;
+                int[] slot = inv.getAccessibleSlotsFromSide(dir.ordinal());
+                for(int s : slot) {
+                    if(inv.canInsertItem(s, stack, dir.ordinal())) {
+                        stack = Util.addToInv_slot(inv, stack, s);
+                        if(stack == null || stack.stackSize <= 0)
+                            return null;
+                    }
+                }
+            }
+            else if(tileEntity instanceof IInventory) {
+                IInventory inv = (IInventory) tileEntity;
+                return Util.addToInv_first(inv, stack);
+            }
+        }
+        return null;
+    }
+
     /**
      * Returns true if automation is allowed to insert the given stack (ignoring stack size) into the given slot.
      *
@@ -161,7 +212,6 @@ public abstract class TileMFFSInventory extends TileMFFS implements IInventory {
                 nbtTagList.appendTag(nbttagcompound1);
             }
         }
-
         nbt.setTag("items", nbtTagList);
     }
 

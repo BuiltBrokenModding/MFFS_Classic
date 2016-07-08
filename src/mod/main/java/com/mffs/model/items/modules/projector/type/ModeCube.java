@@ -28,7 +28,9 @@ public class ModeCube extends ItemMode {
         for (float x = -negScale.intX(); x <= posScale.intX(); x += 0.5F) {
             for (float z = -negScale.intZ(); z <= posScale.intZ(); z += 0.5F) {
                 for (float y = -negScale.intY(); y <= posScale.intY(); y += 0.5F) {
-                    if ((y == -negScale.intY()) || (y == posScale.intY()) || (x == -negScale.intX()) || (x == posScale.intX()) || (z == -negScale.intZ()) || (z == posScale.intZ())) {
+                    if (y == -negScale.intY() || y == posScale.intY()
+                            || x == -negScale.intX() || x == posScale.intX()
+                            || z == -negScale.intZ() || z == posScale.intZ()) {
                         fieldBlocks.add(new Vector3D(x, y, z));
                     }
                 }

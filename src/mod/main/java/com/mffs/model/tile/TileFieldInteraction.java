@@ -170,14 +170,17 @@ public abstract class TileFieldInteraction extends TileModuleAcceptor implements
         return new Vector3D(xPos - xNeg, yPos - yNeg, zPos - zNeg);
     }
 
+    /* Rotation matrix */
+    public static final int[][] RELATIVE_MATRIX = { { 3, 2, 1, 0, 5, 4 }, { 4, 5, 0, 1, 2, 3 }, { 0, 1, 3, 2, 4, 5 }, { 0, 1, 2, 3, 5, 4 }, { 0, 1, 5, 4, 3, 2 }, { 0, 1, 4, 5, 2, 3 } };
+
     protected ForgeDirection getOrient(ForgeDirection d1, ForgeDirection d2) {
-        return ForgeDirection.getOrientation(ForgeDirection.ROTATION_MATRIX[d1.ordinal()][d2.ordinal()]);
+        return ForgeDirection.getOrientation(RELATIVE_MATRIX[d1.ordinal()][d2.ordinal()]);
     }
 
     @Override
     public Vector3D getPositiveScale() {
         ForgeDirection direction = getDirection();
-        if (direction == ForgeDirection.UP || direction == ForgeDirection.DOWN)
+        if (!isAbs && (direction == ForgeDirection.UP || direction == ForgeDirection.DOWN))
             direction = ForgeDirection.NORTH;
 
         int zScalePos = getModuleCount(ModuleScale.class, getSlotsBasedOnDirection(isAbs ? ForgeDirection.SOUTH : getOrient(direction, ForgeDirection.SOUTH)));
@@ -211,7 +214,7 @@ public abstract class TileFieldInteraction extends TileModuleAcceptor implements
     @Override
     public int getRotationYaw() {
         ForgeDirection dir = getDirection();
-        int yawValue = 0;
+        int yawValue;
         yawValue = getModuleCount(ModuleRotate.class, getSlotsBasedOnDirection(isAbs ? ForgeDirection.EAST : getOrient(dir, ForgeDirection.EAST)));
         yawValue -= getModuleCount(ModuleRotate.class, getSlotsBasedOnDirection(isAbs ? ForgeDirection.WEST : getOrient(dir, ForgeDirection.WEST)));
         yawValue += getModuleCount(ModuleRotate.class, getSlotsBasedOnDirection(isAbs ? ForgeDirection.SOUTH : getOrient(dir, ForgeDirection.SOUTH)));
@@ -238,6 +241,7 @@ public abstract class TileFieldInteraction extends TileModuleAcceptor implements
         int rotationYaw = getRotationYaw();
         int rotationPitch = getRotationPitch();
 
+        Vector3D thisField = new Vector3D(this);
         for (Vector3D position : newField) {
             Vector3D newPosition = position.clone();
 
@@ -245,7 +249,7 @@ public abstract class TileFieldInteraction extends TileModuleAcceptor implements
                 newPosition.rotate(rotationYaw, rotationPitch);
             }
 
-            newPosition.translate(new Vector3D(this));
+            newPosition.translate(thisField);
             newPosition.translate(translation);
 
             returnField.add(newPosition);
@@ -292,5 +296,9 @@ public abstract class TileFieldInteraction extends TileModuleAcceptor implements
             }
         }
         return super.handleMessage(imessage);
+    }
+
+    public List<EventTimedTask> getEventsQueued() {
+        return eventsQueued;
     }
 }

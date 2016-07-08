@@ -26,7 +26,7 @@ public class GuiCoercionDeriver extends MFFSGui {
     public void initGui() {
         this.textFieldPos = new Vector2d(30.0D, 43.0D);
         super.initGui();
-        this.buttonList.add(new GuiButton(1, this.width / 2 - 10, this.height / 2 - 28, 58, 20, LanguageRegistry.instance().getStringLocalization("gui.deriver.derive")));
+        //this.buttonList.add(new GuiButton(1, this.width / 2 - 10, this.height / 2 - 28, 58, 20, LanguageRegistry.instance().getStringLocalization("gui.deriver.derive")));
     }
 
     /**
@@ -52,13 +52,13 @@ public class GuiCoercionDeriver extends MFFSGui {
         drawTextWithTooltip("upgrade", -95, 140, x, y);
         GL11.glPopMatrix();
 
-        if ((this.buttonList.get(1) instanceof GuiButton)) {
+        /*if ((this.buttonList.get(1) instanceof GuiButton)) {
             if (!entity.isInversed) {
                 ((GuiButton) this.buttonList.get(1)).displayString = LanguageRegistry.instance().getStringLocalization("gui.deriver.derive");
             } else {
                 ((GuiButton) this.buttonList.get(1)).displayString = LanguageRegistry.instance().getStringLocalization("gui.deriver.integrate");
             }
-        }
+        }*/
 
         renderUniversalDisplay(85, 30, entity.getWattage(), x, y, UnitDisplay.Unit.WATT);
         this.fontRendererObj.drawString(UnitDisplay.getDisplayShort(240L, UnitDisplay.Unit.VOLTAGE), 85, 40, 4210752);

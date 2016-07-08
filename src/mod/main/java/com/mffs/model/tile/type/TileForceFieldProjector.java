@@ -34,7 +34,7 @@ public class TileForceFieldProjector extends TileFieldInteraction implements IPr
     /* Flag indicating if this entity has finished */
     private boolean isComplete;
 
-    private boolean requireTicks, markFieldUpdate = true;
+    public boolean requireTicks, markFieldUpdate = true;
 
     public TileForceFieldProjector() {
         this.capacityBase = 50;
@@ -164,7 +164,7 @@ public class TileForceFieldProjector extends TileFieldInteraction implements IPr
                 for (Iterator<Vector3D> it$ = fieldToBeProjected.iterator(); it$.hasNext(); ) {
                     Vector3D vec = it$.next();
                     Block block = worldObj.getBlock(vec.intX(), vec.intY(), vec.intZ());
-                    ;
+
                     if (block == null || getModuleCount(ModuleDisintegration.class) >= 0 && block.getBlockHardness(worldObj, vec.intX(), vec.intY(), vec.intZ()) != -1.0
                             || block.getMaterial().isLiquid() || block instanceof BlockSnow || block instanceof BlockVine || block instanceof BlockTallGrass || block instanceof BlockDeadBush
                             || block.isReplaceable(worldObj, vec.intX(), vec.intY(), vec.intZ())) {

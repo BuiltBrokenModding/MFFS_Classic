@@ -11,6 +11,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.Modifier;
@@ -45,6 +46,7 @@ public class RegisterManager {
             if (entry.getName().contains(".class") && entry.getName().contains(directory + "/"))
                 files.add(entry.getName().replace(".class", ""));
         }
+        stream.close();
         return files;
     }
 

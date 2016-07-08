@@ -65,7 +65,6 @@ public class GuiPressableButton extends GuiButton {
                 String title = LanguageRegistry.instance().getStringLocalization("gui." + this.displayString + ".name");
 
                 this.mainGui.tooltip = LanguageRegistry.instance().getStringLocalization("gui." + this.displayString + ".tooltip");
-
                 if ((title != null) && (title.length() > 0)) {
                     this.mainGui.tooltip = (title + ": " + this.mainGui.tooltip);
                 }

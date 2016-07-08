@@ -2,40 +2,36 @@ package com.mffs.model.net.packet;
 
 import com.mffs.model.TileMFFS;
 import com.mffs.model.net.TileEntityMessage;
+import com.mffs.model.tile.type.TileForceFieldProjector;
+import com.mffs.model.tile.type.TileFortronCapacitor;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.client.Minecraft;
 import net.minecraft.tileentity.TileEntity;
 
 /**
- * Created by pwaln on 6/14/2016.
+ * Created by pwaln on 7/5/2016.
  */
-public class EntityToggle extends TileEntityMessage {
+public class ChangeTransferMode extends TileEntityMessage {
 
-    /* The Redstone activation button opcode */
-    public static final byte REDSTONE_TOGGLE = 0, TOGGLE_STATE = 1, ABSOLUTE_TOGGLE = 2, TRANSFER_TOGGLE = 3;
+    /* New value for the transfer mode */
+    private byte toggle;
 
-    /* This is the opcode representing the field to toggle */
-    public byte toggle_opcode = 0;
-
-    public EntityToggle() {
+    /**
+     * Default constructor for class instance.
+     */
+    public ChangeTransferMode() {
         super();
     }
 
     /**
      * @param entity
      */
-    public EntityToggle(TileEntity entity) {
+    public ChangeTransferMode(TileFortronCapacitor entity) {
         super(entity);
-    }
-
-    /**
-     * @param entity
-     */
-    public EntityToggle(TileEntity entity, byte subOp) {
-        super(entity);
-        this.toggle_opcode = subOp;
+        toggle = (byte) entity.getTransferMode().ordinal(); // 255
     }
 
     /**
@@ -46,7 +42,7 @@ public class EntityToggle extends TileEntityMessage {
     @Override
     public void fromBytes(ByteBuf buf) {
         super.fromBytes(buf);
-        this.toggle_opcode = (byte) buf.readUnsignedByte();
+        this.toggle = buf.readByte();
     }
 
     /**
@@ -57,13 +53,17 @@ public class EntityToggle extends TileEntityMessage {
     @Override
     public void toBytes(ByteBuf buf) {
         super.toBytes(buf);
-        buf.writeByte(toggle_opcode);
+        buf.writeByte(toggle);
+    }
+
+    public byte getToggle() {
+        return toggle;
     }
 
     /**
-     * Reads the message and handles it server side.
+     * Sends a sync to the Client.
      */
-    public static class ServerHandler implements IMessageHandler<EntityToggle, IMessage> {
+    public static class ClientHandler implements IMessageHandler<ChangeTransferMode, IMessage> {
         /**
          * Called when a message is received of the appropriate type. You can optionally return a reply message, or null if no reply
          * is needed.
@@ -73,9 +73,9 @@ public class EntityToggle extends TileEntityMessage {
          * @return an optional return message
          */
         @Override
-        public IMessage onMessage(EntityToggle message, MessageContext ctx) {
-            TileEntity entity = ctx.getServerHandler().playerEntity.worldObj.getTileEntity(message.x, message.y, message.z);
-            if (entity instanceof TileMFFS) {
+        public IMessage onMessage(ChangeTransferMode message, MessageContext ctx) {
+            TileEntity entity = Minecraft.getMinecraft().thePlayer.worldObj.getTileEntity(message.x, message.y, message.z);
+            if (entity instanceof TileFortronCapacitor) {
                 return ((TileMFFS) entity).handleMessage(message);
             }
             return null;

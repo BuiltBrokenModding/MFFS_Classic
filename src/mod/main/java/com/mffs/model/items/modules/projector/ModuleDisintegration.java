@@ -1,11 +1,22 @@
 package com.mffs.model.items.modules.projector;
 
+import com.mffs.MFFS;
 import com.mffs.api.Blacklist;
 import com.mffs.api.IProjector;
 import com.mffs.api.vector.Vector3D;
+import com.mffs.model.event.DelayedBlockDropEvent;
+import com.mffs.model.event.DelayedBlockInventoryEvent;
 import com.mffs.model.items.modules.ItemModule;
+import com.mffs.model.items.modules.upgrades.ModuleApproximation;
+import com.mffs.model.items.modules.upgrades.ModuleCamouflage;
+import com.mffs.model.items.modules.upgrades.ModuleCollection;
 import com.mffs.model.items.modules.upgrades.ModuleSpeed;
+import com.mffs.model.net.packet.BeamRequest;
+import com.mffs.model.tile.TileMFFSInventory;
+import com.mffs.model.tile.type.TileForceFieldProjector;
 import net.minecraft.block.Block;
+import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.BlockFluidBase;
 import net.minecraftforge.fluids.IFluidBlock;
@@ -44,18 +55,44 @@ public class ModuleDisintegration extends ItemModule {
     public int onProject(IProjector projector, Vector3D position) {
         if (projector.getTicks() % 40 == 0) {
             TileEntity entity = (TileEntity) projector;
-            Block block = entity.getWorldObj().getBlock((int) Math.floor(position.x), (int) Math.floor(position.y), (int) Math.floor(position.z));
-            if (block != null) {
-                int meta = entity.getWorldObj().getBlockMetadata((int) Math.floor(position.x), (int) Math.floor(position.y), (int) Math.floor(position.z));
-                return 1;
-            }
+            Block block = position.getBlock(entity.getWorldObj());
 
-            if (block instanceof IFluidBlock || Blacklist.disintegrationBlacklist.contains(block) || block instanceof BlockFluidBase) {
+            if (block != null) {
+                int meta = entity.getWorldObj().getBlockMetadata(position.intX(), position.intY(), position.intZ()); //destory specific blocks
+                boolean aprox = projector.getModuleCount(ModuleApproximation.class) > 0;
+                boolean blockMatch = false;
+                ItemStack search = new ItemStack(block, meta);
+                for(int slot : projector.getModuleSlots()) {
+                    ItemStack item = projector.getStackInSlot(slot);
+                    if(item != null && item.getItem() instanceof ItemBlock) {
+                        if(item == search || ((ItemBlock) item.getItem()).field_150939_a == block && aprox) {
+                            blockMatch = true;
+                            break;
+                        }
+                    }
+                }
+                //Filter???
+                if((projector.getModuleCount(ModuleCamouflage.class) > 0 ? 1 : 0) == (blockMatch ? 0 : 1)) {
+                    return 1;
+                }
+                if (block instanceof IFluidBlock || Blacklist.disintegrationBlacklist.contains(block) || block instanceof BlockFluidBase) {
+                    return 1;
+                }
+
+                if(!entity.getWorldObj().isRemote) {
+                    TileForceFieldProjector proj = (TileForceFieldProjector) projector;
+                    if (projector.getModuleCount(ModuleCollection.class) > 0) {
+                        proj.getEventsQueued().add(new DelayedBlockInventoryEvent(39, entity.getWorldObj(), position, proj));
+                    } else {
+                        proj.getEventsQueued().add(new DelayedBlockDropEvent(39, entity.getWorldObj(), position));
+                    }
+                }
+
+                //MFFS.channel.sendToAll(new BeamRequest(entity, position));
+                if (this.blockCount++ >= projector.getModuleCount(ModuleSpeed.class) / 3) {
+                    return 2;
+                }
                 return 1;
-            }
-            //PacketHandler.sendPacketToClients(ModularForceFieldSystem.PACKET_TILE.getPacket((TileEntity)projector, new Object[] { Integer.valueOf(TileMFFS.TilePacketType.FXS.ordinal()), Integer.valueOf(2), Integer.valueOf(position.intX()), Integer.valueOf(position.intY()), Integer.valueOf(position.intZ()) }), ((TileEntity)projector).field_70331_k);
-            if (this.blockCount++ >= projector.getModuleCount(ModuleSpeed.class) / 3) {
-                return 2;
             }
         }
         return 1;

@@ -29,7 +29,7 @@ public class TransferModeButton extends GuiPressableButton {
 
     @Override
     public void drawButton(Minecraft minecraft, int x, int y) {
-        this.displayString = TransferMode.NAME_NORMALIZED[mode.getTransferMode().ordinal()];
+        this.displayString = "transferMode"+ TransferMode.NAME_NORMALIZED[mode.getTransferMode().ordinal()];
         this.offset.y = (18 * mode.getTransferMode().ordinal());
         super.drawButton(minecraft, x, y);
     }

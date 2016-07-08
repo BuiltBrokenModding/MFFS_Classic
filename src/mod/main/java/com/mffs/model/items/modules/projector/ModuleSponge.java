@@ -44,7 +44,7 @@ public class ModuleSponge extends ItemModule {
                     Block block = world.getBlock((int) Math.floor(point.x), (int) Math.floor(point.y), (int) Math.floor(point.z));
 
                     if (((block instanceof BlockLiquid)) || ((block instanceof BlockFluidBase))) {
-                        world.setBlock((int) Math.floor(point.x), (int) Math.floor(point.y), (int) Math.floor(point.z), Blocks.air);
+                        point.setBlock(world, Blocks.air);
                     }
                 }
             }

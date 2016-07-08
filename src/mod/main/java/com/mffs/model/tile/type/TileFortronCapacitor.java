@@ -1,5 +1,6 @@
 package com.mffs.model.tile.type;
 
+import com.mffs.MFFS;
 import com.mffs.api.TransferMode;
 import com.mffs.api.card.ICard;
 import com.mffs.api.card.ICardInfinite;
@@ -12,7 +13,10 @@ import com.mffs.api.utils.FortronHelper;
 import com.mffs.api.vector.Vector3D;
 import com.mffs.model.items.modules.upgrades.ModuleScale;
 import com.mffs.model.items.modules.upgrades.ModuleSpeed;
+import com.mffs.model.net.packet.ChangeTransferMode;
+import com.mffs.model.net.packet.EntityToggle;
 import com.mffs.model.tile.TileModuleAcceptor;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import mekanism.api.Coord4D;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -133,5 +137,26 @@ public class TileFortronCapacitor extends TileModuleAcceptor implements IFortron
     @Override
     public float getAmplifier() {
         return .001F;
+    }
+
+    /**
+     * Handles the message given by the handler.
+     *
+     * @param imessage The message.
+     */
+    @Override
+    public IMessage handleMessage(IMessage imessage) {
+        if(imessage instanceof ChangeTransferMode) {
+            this.mode = TransferMode.values()[((ChangeTransferMode) imessage).getToggle()];
+            return null;
+        } else if(imessage instanceof EntityToggle) {
+            EntityToggle tog = (EntityToggle) imessage;
+            if(tog.toggle_opcode == EntityToggle.TRANSFER_TOGGLE) {
+                this.mode = this.mode.toggle();
+                MFFS.channel.sendToAll(new ChangeTransferMode(this));
+                return null;
+            }
+        }
+        return super.handleMessage(imessage);
     }
 }

@@ -3,7 +3,7 @@ package com.mffs.api.event;
 /**
  * Created by pwaln on 6/24/2016.
  */
-public final class EventTimedTask {
+public class EventTimedTask {
 
     /* The number of ticks until execution */
     private short ticks;
@@ -46,7 +46,7 @@ public final class EventTimedTask {
      */
     public boolean tick() {
         if (--ticks <= 0) {
-            action.run();
+            execute();
             runAmount--;
             return true;
         }
@@ -60,5 +60,14 @@ public final class EventTimedTask {
      */
     public boolean isActive() {
         return runAmount >= 1;
+    }
+
+    /**
+     * Execute the desired action.
+     */
+    public void execute() {
+        if(action != null) {
+            action.run();;
+        }
     }
 }
