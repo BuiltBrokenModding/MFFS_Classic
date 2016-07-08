@@ -12,9 +12,13 @@ import com.mffs.model.tile.type.TileForceFieldProjector;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.BlockAir;
+import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.event.world.ChunkDataEvent;
 
 /**
  * @author Calclavia
@@ -29,14 +33,16 @@ public class ModEventHandler {
     }
 
     @SubscribeEvent
-    public void chunkModify(ChunkModifiedEvent event) {
-        if(event.world.isRemote || event.block == null)
+    public void blockModify(BlockEvent.BreakEvent event) { //TODO: Think of better way for this to work.
+        if(event.world.isRemote || event.block == null || event.block instanceof BlockAir)
             return;
         for(IBlockFrequency freq : FrequencyGrid.instance().get()) {
             if(freq instanceof TileForceFieldProjector && ((TileEntity)freq).getWorldObj() == event.world) {
                 TileForceFieldProjector proj = (TileForceFieldProjector) freq;
-                if(proj.getCalculatedField() != null && proj.getCalculatedField().contains(new Vector3D(event.x, event.y, event.z)))
+                if(proj.getCalculatedField() != null && proj.getCalculatedField().contains(new Vector3D(event.x, event.y, event.z))) {
                     proj.markFieldUpdate = true;
+                    break;
+                }
             }
         }
     }

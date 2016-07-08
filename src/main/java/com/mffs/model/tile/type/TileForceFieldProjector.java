@@ -165,7 +165,7 @@ public class TileForceFieldProjector extends TileFieldInteraction implements IPr
                     Vector3D vec = it$.next();
                     Block block = worldObj.getBlock(vec.intX(), vec.intY(), vec.intZ());
 
-                    if (block == null || getModuleCount(ModuleDisintegration.class) >= 0 && block.getBlockHardness(worldObj, vec.intX(), vec.intY(), vec.intZ()) != -1.0
+                    if (block == null || getModuleCount(ModuleDisintegration.class) > 0 && block.getBlockHardness(worldObj, vec.intX(), vec.intY(), vec.intZ()) != -1.0
                             || block.getMaterial().isLiquid() || block instanceof BlockSnow || block instanceof BlockVine || block instanceof BlockTallGrass || block instanceof BlockDeadBush
                             || block.isReplaceable(worldObj, vec.intX(), vec.intY(), vec.intZ())) {
                         if (vec != projector && !(block instanceof BlockForceField)) {

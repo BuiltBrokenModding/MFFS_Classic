@@ -2,7 +2,7 @@
   <artifact type="jar" name="mffs-v1.0">
     <output-path>$PROJECT_DIR$/build/mods/</output-path>
     <root id="archive" name="mffs-v1.0.jar">
-      <element id="module-output" name="mod" />
+      <element id="module-output" name="main" />
     </root>
   </artifact>
 </component>
