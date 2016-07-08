@@ -1,7 +1,7 @@
 package com.mffs;
 
-import com.mffs.model.blocks.BlockForceField;
-import com.mffs.model.net.packet.*;
+import com.mffs.common.blocks.BlockForceField;
+import com.mffs.common.net.packet.*;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.SidedProxy;

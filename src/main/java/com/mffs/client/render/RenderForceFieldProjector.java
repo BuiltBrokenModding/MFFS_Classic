@@ -2,7 +2,7 @@ package com.mffs.client.render;
 
 import com.mffs.MFFS;
 import com.mffs.client.render.model.ModelForceFieldProjector;
-import com.mffs.model.tile.type.TileForceFieldProjector;
+import com.mffs.common.tile.type.TileForceFieldProjector;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

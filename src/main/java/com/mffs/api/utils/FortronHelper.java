@@ -5,7 +5,7 @@ import com.mffs.api.fortron.IFortronFrequency;
 import com.mffs.api.modules.IModuleAcceptor;
 import com.mffs.api.vector.Vector3D;
 import com.mffs.client.render.particles.FortronBeam;
-import com.mffs.model.items.modules.upgrades.ModuleCamouflage;
+import com.mffs.common.items.modules.upgrades.ModuleCamouflage;
 import cpw.mods.fml.client.FMLClientHandler;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;

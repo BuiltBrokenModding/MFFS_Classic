@@ -1,12 +1,12 @@
 package com.mffs;
 
-import com.mffs.model.container.CoercionDeriverContainer;
-import com.mffs.model.container.ForceFieldProjectorContainer;
-import com.mffs.model.container.FortronCapacitorContainer;
-import com.mffs.model.fluids.Fortron;
-import com.mffs.model.tile.type.TileCoercionDeriver;
-import com.mffs.model.tile.type.TileForceFieldProjector;
-import com.mffs.model.tile.type.TileFortronCapacitor;
+import com.mffs.common.container.CoercionDeriverContainer;
+import com.mffs.common.container.ForceFieldProjectorContainer;
+import com.mffs.common.container.FortronCapacitorContainer;
+import com.mffs.common.fluids.Fortron;
+import com.mffs.common.tile.type.TileCoercionDeriver;
+import com.mffs.common.tile.type.TileForceFieldProjector;
+import com.mffs.common.tile.type.TileFortronCapacitor;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;

@@ -1,24 +1,19 @@
 package com.mffs;
 
 import com.mffs.api.IBlockFrequency;
-import com.mffs.api.event.ChunkModifiedEvent;
 import com.mffs.api.fortron.FrequencyGrid;
-import com.mffs.api.fortron.IFortronFrequency;
 import com.mffs.api.vector.Vector3D;
-import com.mffs.model.blocks.BlockForceField;
-import com.mffs.model.fluids.Fortron;
-import com.mffs.model.tile.type.TileForceField;
-import com.mffs.model.tile.type.TileForceFieldProjector;
+import com.mffs.common.blocks.BlockForceField;
+import com.mffs.common.fluids.Fortron;
+import com.mffs.common.tile.type.TileForceFieldProjector;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.BlockAir;
-import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
-import net.minecraftforge.event.world.ChunkDataEvent;
 
 /**
  * @author Calclavia
