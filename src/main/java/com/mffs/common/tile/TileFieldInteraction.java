@@ -22,6 +22,8 @@ import java.util.*;
  */
 public abstract class TileFieldInteraction extends TileModuleAcceptor implements IFieldInteraction {
 
+    /* Rotation matrix */
+    public static final int[][] RELATIVE_MATRIX = {{3, 2, 1, 0, 5, 4}, {4, 5, 0, 1, 2, 3}, {0, 1, 3, 2, 4, 5}, {0, 1, 2, 3, 5, 4}, {0, 1, 5, 4, 3, 2}, {0, 1, 4, 5, 2, 3}};
     /* The start slot for the module */
     protected static final int MODULE_SLOT_ID = 2;
     /* SLot ids based on direction ordinal */
@@ -37,7 +39,6 @@ public abstract class TileFieldInteraction extends TileModuleAcceptor implements
     public static int[] MODULE_SLOTS = {15, 16, 17, 18, 19, 20};
     /* Holds information on positions that have been finished */
     protected final Set<Vector3D> calculatedFields = Collections.synchronizedSet(new HashSet<Vector3D>());
-
     /* Tasks that have been stored */
     private final List<EventTimedTask> delayedEvents = new LinkedList<>();
     private final List<EventTimedTask> eventsQueued = new LinkedList<>();
@@ -169,9 +170,6 @@ public abstract class TileFieldInteraction extends TileModuleAcceptor implements
         int yPos = getModuleCount(ModuleTranslate.class, getSlotsBasedOnDirection(isAbs ? ForgeDirection.DOWN : getOrient(dir, ForgeDirection.DOWN)));
         return new Vector3D(xPos - xNeg, yPos - yNeg, zPos - zNeg);
     }
-
-    /* Rotation matrix */
-    public static final int[][] RELATIVE_MATRIX = { { 3, 2, 1, 0, 5, 4 }, { 4, 5, 0, 1, 2, 3 }, { 0, 1, 3, 2, 4, 5 }, { 0, 1, 2, 3, 5, 4 }, { 0, 1, 5, 4, 3, 2 }, { 0, 1, 4, 5, 2, 3 } };
 
     protected ForgeDirection getOrient(ForgeDirection d1, ForgeDirection d2) {
         return ForgeDirection.getOrientation(RELATIVE_MATRIX[d1.ordinal()][d2.ordinal()]);

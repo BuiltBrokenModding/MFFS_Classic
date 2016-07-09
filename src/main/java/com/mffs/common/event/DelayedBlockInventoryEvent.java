@@ -41,11 +41,11 @@ public class DelayedBlockInventoryEvent extends EventTimedTask {
     @Override
     public void execute() {
         Block block = vec.getBlock(world);
-        if(block != null) {
+        if (block != null) {
             ArrayList<ItemStack> items = block.getDrops(world, vec.intX(), vec.intY(), vec.intZ(), vec.getBlockMetadata(world), 0);
-            for(ItemStack stack : items) {
-                if(!inventory.mergeIntoInventory(stack)) {
-                   //Logger wont let me use it WTF
+            for (ItemStack stack : items) {
+                if (!inventory.mergeIntoInventory(stack)) {
+                    //Logger wont let me use it WTF
                     return;
                 }
             }

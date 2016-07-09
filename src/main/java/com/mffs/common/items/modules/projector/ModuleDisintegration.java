@@ -62,10 +62,10 @@ public class ModuleDisintegration extends ItemModule {
                 boolean aprox = projector.getModuleCount(ModuleApproximation.class) > 0;
                 boolean blockMatch = false;
                 ItemStack search = new ItemStack(block, meta);
-                for(int slot : projector.getModuleSlots()) {
+                for (int slot : projector.getModuleSlots()) {
                     ItemStack item = projector.getStackInSlot(slot);
-                    if(item != null && item.getItem() instanceof ItemBlock) {
-                        if(item == search || ((ItemBlock) item.getItem()).field_150939_a == block && aprox) {
+                    if (item != null && item.getItem() instanceof ItemBlock) {
+                        if (item == search || ((ItemBlock) item.getItem()).field_150939_a == block && aprox) {
                             blockMatch = true;
                             break;
                         }
@@ -77,7 +77,7 @@ public class ModuleDisintegration extends ItemModule {
                     return 1;
                 }
 
-                if(!entity.getWorldObj().isRemote) {
+                if (!entity.getWorldObj().isRemote) {
                     TileForceFieldProjector proj = (TileForceFieldProjector) projector;
                     if (projector.getModuleCount(ModuleCollection.class) > 0) {
                         proj.getEventsQueued().add(new DelayedBlockInventoryEvent(39, entity.getWorldObj(), position, proj));

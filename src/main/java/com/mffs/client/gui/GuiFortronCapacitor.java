@@ -42,7 +42,7 @@ public class GuiFortronCapacitor extends MFFSGui {
     @Override
     protected void actionPerformed(GuiButton guiButton) {
         super.actionPerformed(guiButton);
-        if(guiButton.id == 1) {
+        if (guiButton.id == 1) {
             MFFS.channel.sendToServer(new EntityToggle(getCapacitor(), EntityToggle.TRANSFER_TOGGLE));
         }
 

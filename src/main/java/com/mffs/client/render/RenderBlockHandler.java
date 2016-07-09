@@ -23,34 +23,6 @@ public class RenderBlockHandler implements ISimpleBlockRenderingHandler {
     /* Creates a render ID */
     public static int RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
 
-    @Override
-    public void renderInventoryBlock(Block block, int metadata, int modelId, RenderBlocks renderer) {
-        if (modelId == RENDER_ID) {
-            GL11.glPushMatrix();
-            if (block instanceof BlockCoercionDeriver) {
-                FMLClientHandler.instance().getClient().renderEngine.bindTexture(RenderCoercionDeriver.TEXTURE_ON);
-                GL11.glTranslated(0.5D, 1.9D, 0.5D);
-                GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
-                GL11.glScalef(1.3F, 1.3F, 1.3F);
-                RenderCoercionDeriver.MODEL.render(0.0F, 0.0625F);
-            } else if (block instanceof BlockForceFieldProjector) {
-                FMLClientHandler.instance().getClient().renderEngine.bindTexture(RenderForceFieldProjector.TEXTURE_ON);
-                GL11.glTranslated(0.5D, 1.5D, 0.5D);
-                GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
-                RenderForceFieldProjector.MODEL.render(0.0F, 0.0625F);
-            } else if (block instanceof BlockFortronCapacitor) {
-                FMLClientHandler.instance().getClient().renderEngine.bindTexture(RenderFortronCapacitor.TEXTURE_ON);
-                GL11.glTranslated(0.5D, 1.9D, 0.5D);
-                GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
-                GL11.glScalef(1.3F, 1.3F, 1.3F);
-                RenderFortronCapacitor.MODEL.render(0.0625F);
-            }
-            GL11.glPopMatrix();
-            return;
-        }
-        renderNormal(renderer, block, metadata);
-    }
-
     public static void renderNormal(RenderBlocks renderer, Block block, int metadata) {
         Tessellator tessellator = Tessellator.instance;
 
@@ -85,6 +57,34 @@ public class RenderBlockHandler implements ISimpleBlockRenderingHandler {
         renderer.renderFaceXPos(block, 0.0D, 0.0D, 0.0D, renderer.getBlockIconFromSideAndMetadata(block, 5, metadata));
         tessellator.draw();
         GL11.glTranslatef(0.5F, 0.5F, 0.5F);
+    }
+
+    @Override
+    public void renderInventoryBlock(Block block, int metadata, int modelId, RenderBlocks renderer) {
+        if (modelId == RENDER_ID) {
+            GL11.glPushMatrix();
+            if (block instanceof BlockCoercionDeriver) {
+                FMLClientHandler.instance().getClient().renderEngine.bindTexture(RenderCoercionDeriver.TEXTURE_ON);
+                GL11.glTranslated(0.5D, 1.9D, 0.5D);
+                GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
+                GL11.glScalef(1.3F, 1.3F, 1.3F);
+                RenderCoercionDeriver.MODEL.render(0.0F, 0.0625F);
+            } else if (block instanceof BlockForceFieldProjector) {
+                FMLClientHandler.instance().getClient().renderEngine.bindTexture(RenderForceFieldProjector.TEXTURE_ON);
+                GL11.glTranslated(0.5D, 1.5D, 0.5D);
+                GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
+                RenderForceFieldProjector.MODEL.render(0.0F, 0.0625F);
+            } else if (block instanceof BlockFortronCapacitor) {
+                FMLClientHandler.instance().getClient().renderEngine.bindTexture(RenderFortronCapacitor.TEXTURE_ON);
+                GL11.glTranslated(0.5D, 1.9D, 0.5D);
+                GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
+                GL11.glScalef(1.3F, 1.3F, 1.3F);
+                RenderFortronCapacitor.MODEL.render(0.0625F);
+            }
+            GL11.glPopMatrix();
+            return;
+        }
+        renderNormal(renderer, block, metadata);
     }
 
     @Override

@@ -33,7 +33,7 @@ public final class DelayedBlockDropEvent extends EventTimedTask {
     @Override
     public void execute() {
         Block block = vec.getBlock(world);
-        if(block != null) {
+        if (block != null) {
             block.dropBlockAsItem(world, vec.intX(), vec.intY(), vec.intZ(), world.getBlockMetadata(vec.intX(), vec.intY(), vec.intZ()), 0);
         }
         world.setBlockToAir(vec.intX(), vec.intY(), vec.intZ());

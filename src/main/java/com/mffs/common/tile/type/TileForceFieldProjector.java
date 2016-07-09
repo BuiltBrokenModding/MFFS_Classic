@@ -34,11 +34,9 @@ public class TileForceFieldProjector extends TileFieldInteraction implements IPr
 
     /* Set of all forceFields by this entity */
     protected final Set<Vector3D> blocks = new HashSet<>();
-
+    public boolean requireTicks, markFieldUpdate = true;
     /* Flag indicating if this entity has finished */
     private boolean isComplete;
-
-    public boolean requireTicks, markFieldUpdate = true;
 
     public TileForceFieldProjector() {
         this.capacityBase = 50;
@@ -180,7 +178,7 @@ public class TileForceFieldProjector extends TileFieldInteraction implements IPr
                                 if (flag == 1)
                                     continue label5;
 
-                                if(flag == 2)
+                                if (flag == 2)
                                     break label5;
                             }
 
@@ -268,7 +266,7 @@ public class TileForceFieldProjector extends TileFieldInteraction implements IPr
             getCalculatedField().addAll(calc.getBlocks());
             this.isCalc = true;
             return null; //we are done!
-        } else if(imessage instanceof BeamRequest) {
+        } else if (imessage instanceof BeamRequest) {
             BeamRequest req = (BeamRequest) imessage;
             FMLClientHandler.instance().getClient().effectRenderer.addEffect(new FortronBeam(worldObj, req.destination.translate(.5), new Vector3D(this).translate(.5), 1, 0, 0, 40));
             FMLClientHandler.instance().getClient().effectRenderer.addEffect(new MovingDisintigrate(worldObj, req.destination, 1, 0, 0, 50));

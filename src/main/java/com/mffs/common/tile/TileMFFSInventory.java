@@ -145,16 +145,15 @@ public abstract class TileMFFSInventory extends TileMFFS implements IInventory {
     }
 
     public boolean mergeIntoInventory(ItemStack stack) {
-        for(ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
+        for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
             stack = placeAdjInv(stack, dir);
-            if(stack == null)
+            if (stack == null)
                 return true;
         }
         return worldObj.spawnEntityInWorld(new EntityItem(worldObj, xCoord + .5, yCoord + 1, zCoord + .5, stack));
     }
 
     /**
-     *
      * @param stack
      * @param dir
      * @return
@@ -162,23 +161,21 @@ public abstract class TileMFFSInventory extends TileMFFS implements IInventory {
     public ItemStack placeAdjInv(ItemStack stack, ForgeDirection dir) {
         TileEntity tileEntity = worldObj.getTileEntity(xCoord + dir.offsetX, yCoord + dir.offsetY, zCoord + dir.offsetZ);
         //ForgeDirection o_dir = dir.getOpposite();
-        if(stack != null && tileEntity != null) {
-            if(tileEntity instanceof TileEntityChest) {
+        if (stack != null && tileEntity != null) {
+            if (tileEntity instanceof TileEntityChest) {
                 TileEntityChest chest1 = (TileEntityChest) tileEntity;
                 return Util.addToInv_first(chest1, stack);
-            }
-            else if(tileEntity instanceof ISidedInventory) {
+            } else if (tileEntity instanceof ISidedInventory) {
                 ISidedInventory inv = (ISidedInventory) tileEntity;
                 int[] slot = inv.getAccessibleSlotsFromSide(dir.ordinal());
-                for(int s : slot) {
-                    if(inv.canInsertItem(s, stack, dir.ordinal())) {
+                for (int s : slot) {
+                    if (inv.canInsertItem(s, stack, dir.ordinal())) {
                         stack = Util.addToInv_slot(inv, stack, s);
-                        if(stack == null || stack.stackSize <= 0)
+                        if (stack == null || stack.stackSize <= 0)
                             return null;
                     }
                 }
-            }
-            else if(tileEntity instanceof IInventory) {
+            } else if (tileEntity instanceof IInventory) {
                 IInventory inv = (IInventory) tileEntity;
                 return Util.addToInv_first(inv, stack);
             }

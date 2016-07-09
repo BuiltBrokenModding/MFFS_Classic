@@ -19,7 +19,6 @@ public class ChunkModifiedEvent extends ChunkEvent {
     public final int meta;
 
     /**
-     *
      * @param chunk
      * @param cX
      * @param y

@@ -29,12 +29,12 @@ public class ModEventHandler {
 
     @SubscribeEvent
     public void blockModify(BlockEvent.BreakEvent event) { //TODO: Think of better way for this to work.
-        if(event.world.isRemote || event.block == null || event.block instanceof BlockAir)
+        if (event.world.isRemote || event.block == null || event.block instanceof BlockAir)
             return;
-        for(IBlockFrequency freq : FrequencyGrid.instance().get()) {
-            if(freq instanceof TileForceFieldProjector && ((TileEntity)freq).getWorldObj() == event.world) {
+        for (IBlockFrequency freq : FrequencyGrid.instance().get()) {
+            if (freq instanceof TileForceFieldProjector && ((TileEntity) freq).getWorldObj() == event.world) {
                 TileForceFieldProjector proj = (TileForceFieldProjector) freq;
-                if(proj.getCalculatedField() != null && proj.getCalculatedField().contains(new Vector3D(event.x, event.y, event.z))) {
+                if (proj.getCalculatedField() != null && proj.getCalculatedField().contains(new Vector3D(event.x, event.y, event.z))) {
                     proj.markFieldUpdate = true;
                     break;
                 }
@@ -44,15 +44,15 @@ public class ModEventHandler {
 
     @SubscribeEvent
     public void playerInteraction(PlayerInteractEvent event) {
-        if(event.action != PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK && event.action != PlayerInteractEvent.Action.LEFT_CLICK_BLOCK)
+        if (event.action != PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK && event.action != PlayerInteractEvent.Action.LEFT_CLICK_BLOCK)
             return;
 
-        if(event.action == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK && event.world.getBlock(event.x, event.y, event.z) instanceof BlockForceField) {
+        if (event.action == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK && event.world.getBlock(event.x, event.y, event.z) instanceof BlockForceField) {
             event.setCanceled(true);
             return;
         }
 
-        if(event.entityPlayer.capabilities.isCreativeMode)
+        if (event.entityPlayer.capabilities.isCreativeMode)
             return;
 
         //TODO: interdiction matrix.

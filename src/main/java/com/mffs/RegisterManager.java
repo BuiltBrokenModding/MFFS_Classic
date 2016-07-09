@@ -11,7 +11,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.Modifier;
@@ -37,7 +36,7 @@ public class RegisterManager {
 
     public static List<String> getClassNames(String directory) throws IOException {
         List<String> files = new ArrayList<>();
-        JarInputStream stream = new JarInputStream(new FileInputStream("./mods/"+MFFS.MODID+"-v"+MFFS.VERSION+".jar"));
+        JarInputStream stream = new JarInputStream(new FileInputStream("./mods/" + MFFS.MODID + "-v" + MFFS.VERSION + ".jar"));
         JarEntry entry;
         while (true) {
             entry = stream.getNextJarEntry();

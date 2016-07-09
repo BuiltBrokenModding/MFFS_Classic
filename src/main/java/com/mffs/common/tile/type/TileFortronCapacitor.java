@@ -146,12 +146,12 @@ public class TileFortronCapacitor extends TileModuleAcceptor implements IFortron
      */
     @Override
     public IMessage handleMessage(IMessage imessage) {
-        if(imessage instanceof ChangeTransferMode) {
+        if (imessage instanceof ChangeTransferMode) {
             this.mode = TransferMode.values()[((ChangeTransferMode) imessage).getToggle()];
             return null;
-        } else if(imessage instanceof EntityToggle) {
+        } else if (imessage instanceof EntityToggle) {
             EntityToggle tog = (EntityToggle) imessage;
-            if(tog.toggle_opcode == EntityToggle.TRANSFER_TOGGLE) {
+            if (tog.toggle_opcode == EntityToggle.TRANSFER_TOGGLE) {
                 this.mode = this.mode.toggle();
                 MFFS.channel.sendToAll(new ChangeTransferMode(this));
                 return null;

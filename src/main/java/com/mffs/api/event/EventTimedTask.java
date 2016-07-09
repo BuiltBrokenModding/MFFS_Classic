@@ -66,8 +66,9 @@ public class EventTimedTask {
      * Execute the desired action.
      */
     public void execute() {
-        if(action != null) {
-            action.run();;
+        if (action != null) {
+            action.run();
+            ;
         }
     }
 }

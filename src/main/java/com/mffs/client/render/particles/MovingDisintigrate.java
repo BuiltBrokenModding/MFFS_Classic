@@ -4,7 +4,6 @@ import com.mffs.api.vector.Vector3D;
 import com.mffs.client.render.RenderBlockHandler;
 import com.mffs.common.blocks.BlockForceField;
 import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderBlocks;
@@ -13,8 +12,7 @@ import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 
 public class MovingDisintigrate extends EntityFX {
-    public MovingDisintigrate(World par1World, Vector3D position, float red, float green, float blue, int age)
-/*    */ {
+    public MovingDisintigrate(World par1World, Vector3D position, float red, float green, float blue, int age) {
 
         super(par1World, position.x, position.y, position.z);
 
@@ -23,39 +21,33 @@ public class MovingDisintigrate extends EntityFX {
         this.particleMaxAge = age;
 
         this.noClip = true;
-/*    */
+
     }
 
-    /*    */
-/*    */
-/*    */
-    public void func_70071_h_()
-/*    */ {
+
+    @Override
+    public void onUpdate() {
 
         this.prevPosX = this.posX;
 
         this.prevPosY = this.posY;
 
         this.prevPosZ = this.posZ;
-/*    */
 
-        if (this.particleAge++ >= this.particleMaxAge)
-/*    */ {
+
+        if (this.particleAge++ >= this.particleMaxAge) {
 
             setDead();
-/*    */
+
         }
-/*    */
+
     }
 
-    /*    */
-/*    */
-/*    */
-    public void func_70539_a(Tessellator tessellator, float f, float f1, float f2, float f3, float f4, float f5)
-/*    */ {
+    @Override
+    public void renderParticle(Tessellator tessellator, float f, float f1, float f2, float f3, float f4, float f5) {
 
         tessellator.draw();
-/*    */
+
 
         GL11.glPushMatrix();
 
@@ -68,28 +60,24 @@ public class MovingDisintigrate extends EntityFX {
         GL11.glTranslated(xx, yy, zz);
 
         GL11.glScalef(1.01F, 1.01F, 1.01F);
-/*    */
+
 
         double completion = this.particleAge / this.particleMaxAge;
 
         GL11.glTranslated(0.0D, (completion - 1.0D) / 2.0D, 0.0D);
 
         GL11.glScaled(1.0D, completion, 1.0D);
-/*    */
 
         float op = 0.5F;
-/*    */
 
-        if (this.particleMaxAge - this.particleAge <= 4)
-/*    */ {
+        if (this.particleMaxAge - this.particleAge <= 4) {
 
             op = 0.5F - (5 - (this.particleMaxAge - this.particleAge)) * 0.1F;
-/*    */
+
         }
-/*    */
 
         GL11.glColor4d(this.particleRed, this.particleGreen, this.particleBlue, op * 2.0F);
-/*    */
+
 
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0F, 240.0F);
 
@@ -107,11 +95,10 @@ public class MovingDisintigrate extends EntityFX {
         GL11.glDisable(3042);
 
         GL11.glPopMatrix();
-/*    */
 
         tessellator.startDrawingQuads();
 
         FMLClientHandler.instance().getClient().renderEngine.bindTexture(FortronBeam.PARTICLE_RESOURCE);
-/*    */
+
     }
 }
