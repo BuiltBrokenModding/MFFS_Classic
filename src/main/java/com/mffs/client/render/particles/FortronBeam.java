@@ -19,9 +19,6 @@ public class FortronBeam extends EntityFX {
 
     public static final ResourceLocation PARTICLE_RESOURCE = new ResourceLocation("textures/particle/particles.png");
     private static final ResourceLocation TEXTURE = new ResourceLocation(MFFS.MODID, "textures/blocks/fortron.png");
-    double movX = 0.0D;
-    double movY = 0.0D;
-    double movZ = 0.0D;
     private float length = 0.0F;
     private float rotYaw = 0.0F;
     private float rotPitch = 0.0F;

@@ -6,14 +6,18 @@ import com.mffs.api.IProjector;
 import com.mffs.api.modules.IModule;
 import com.mffs.api.modules.IProjectorMode;
 import com.mffs.api.vector.Vector3D;
+import com.mffs.client.render.particles.FortronBeam;
+import com.mffs.client.render.particles.MovingDisintigrate;
 import com.mffs.common.blocks.BlockForceField;
 import com.mffs.common.items.card.CardBlank;
 import com.mffs.common.items.modules.projector.ModuleDisintegration;
 import com.mffs.common.items.modules.projector.type.ModeCustom;
 import com.mffs.common.items.modules.upgrades.ModuleSilence;
 import com.mffs.common.items.modules.upgrades.ModuleSpeed;
+import com.mffs.common.net.packet.BeamRequest;
 import com.mffs.common.net.packet.ForcefieldCalculation;
 import com.mffs.common.tile.TileFieldInteraction;
+import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import net.minecraft.block.*;
 import net.minecraft.item.ItemStack;
@@ -152,7 +156,6 @@ public class TileForceFieldProjector extends TileFieldInteraction implements IPr
             this.markFieldUpdate = false;
             int constructCount = 0;
             int constructSpeed = Math.min(getProjectionSpeed(), ModConfiguration.MAX_FORCE_FIELDS_PER_TICK);
-            restart:
             synchronized (this.calculatedFields) {
                 Set<Vector3D> fieldToBeProjected = new HashSet(this.calculatedFields);
                 for (IModule module : getModules(getModuleSlots())) {
@@ -161,6 +164,7 @@ public class TileForceFieldProjector extends TileFieldInteraction implements IPr
                     }
                 }
                 Vector3D projector = new Vector3D(this);
+                label5:
                 for (Iterator<Vector3D> it$ = fieldToBeProjected.iterator(); it$.hasNext(); ) {
                     Vector3D vec = it$.next();
                     Block block = worldObj.getBlock(vec.intX(), vec.intY(), vec.intZ());
@@ -174,14 +178,14 @@ public class TileForceFieldProjector extends TileFieldInteraction implements IPr
                                 int flag = module.onProject(this, vec);
 
                                 if (flag == 1)
-                                    break;
-                                if (flag == 2)
-                                    break restart;
+                                    continue label5;
+
+                                if(flag == 2)
+                                    break label5;
                             }
 
                             if (!worldObj.isRemote)
                                 worldObj.setBlock(vec.intX(), vec.intY(), vec.intZ(), BlockForceField.BLOCK_FORCE_FIELD, 0, 2);
-
                             this.blocks.add(vec);
 
                             TileEntity entity = vec.getTileEntity(worldObj);
@@ -264,6 +268,11 @@ public class TileForceFieldProjector extends TileFieldInteraction implements IPr
             getCalculatedField().addAll(calc.getBlocks());
             this.isCalc = true;
             return null; //we are done!
+        } else if(imessage instanceof BeamRequest) {
+            BeamRequest req = (BeamRequest) imessage;
+            FMLClientHandler.instance().getClient().effectRenderer.addEffect(new FortronBeam(worldObj, req.destination.translate(.5), new Vector3D(this).translate(.5), 1, 0, 0, 40));
+            FMLClientHandler.instance().getClient().effectRenderer.addEffect(new MovingDisintigrate(worldObj, req.destination, 1, 0, 0, 50));
+            return null;
         }
         return super.handleMessage(imessage);
     }

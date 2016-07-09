@@ -48,6 +48,10 @@ public class RenderBlockHandler implements ISimpleBlockRenderingHandler {
             GL11.glPopMatrix();
             return;
         }
+        renderNormal(renderer, block, metadata);
+    }
+
+    public static void renderNormal(RenderBlocks renderer, Block block, int metadata) {
         Tessellator tessellator = Tessellator.instance;
 
         block.setBlockBoundsForItemRender();

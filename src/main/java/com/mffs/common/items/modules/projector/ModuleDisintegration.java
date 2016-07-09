@@ -1,5 +1,6 @@
 package com.mffs.common.items.modules.projector;
 
+import com.mffs.MFFS;
 import com.mffs.api.Blacklist;
 import com.mffs.api.IProjector;
 import com.mffs.api.vector.Vector3D;
@@ -10,8 +11,10 @@ import com.mffs.common.items.modules.upgrades.ModuleApproximation;
 import com.mffs.common.items.modules.upgrades.ModuleCamouflage;
 import com.mffs.common.items.modules.upgrades.ModuleCollection;
 import com.mffs.common.items.modules.upgrades.ModuleSpeed;
+import com.mffs.common.net.packet.BeamRequest;
 import com.mffs.common.tile.type.TileForceFieldProjector;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockAir;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -54,7 +57,7 @@ public class ModuleDisintegration extends ItemModule {
             TileEntity entity = (TileEntity) projector;
             Block block = position.getBlock(entity.getWorldObj());
 
-            if (block != null) {
+            if (block != null && !(block instanceof BlockAir)) {
                 int meta = entity.getWorldObj().getBlockMetadata(position.intX(), position.intY(), position.intZ()); //destory specific blocks
                 boolean aprox = projector.getModuleCount(ModuleApproximation.class) > 0;
                 boolean blockMatch = false;
@@ -69,10 +72,8 @@ public class ModuleDisintegration extends ItemModule {
                     }
                 }
                 //Filter???
-                if((projector.getModuleCount(ModuleCamouflage.class) > 0 ? 1 : 0) == (blockMatch ? 0 : 1)) {
-                    return 1;
-                }
-                if (block instanceof IFluidBlock || Blacklist.disintegrationBlacklist.contains(block) || block instanceof BlockFluidBase) {
+                if (projector.getModuleCount(ModuleCamouflage.class) > 0 == !blockMatch || block instanceof IFluidBlock || Blacklist.disintegrationBlacklist.contains(block)
+                        || block instanceof BlockFluidBase) {
                     return 1;
                 }
 
@@ -85,12 +86,13 @@ public class ModuleDisintegration extends ItemModule {
                     }
                 }
 
-                //MFFS.channel.sendToAll(new BeamRequest(entity, position));
+                MFFS.channel.sendToAll(new BeamRequest(entity, position));
                 if (this.blockCount++ >= projector.getModuleCount(ModuleSpeed.class) / 3) {
                     return 2;
                 }
                 return 1;
             }
+            return 0;
         }
         return 1;
     }

@@ -49,6 +49,7 @@ public class MFFS {
         MFFS.channel.registerMessage(ChangeFrequency.ServerHandler.class, ChangeFrequency.class, 2, Side.SERVER);
         MFFS.channel.registerMessage(ForcefieldCalculation.ClientHandler.class, ForcefieldCalculation.class, 3, Side.CLIENT);
         MFFS.channel.registerMessage(ChangeTransferMode.ClientHandler.class, ChangeTransferMode.class, 4, Side.CLIENT);
+        MFFS.channel.registerMessage(BeamRequest.ClientHandler.class, BeamRequest.class, 5, Side.CLIENT);
         initialize.preInit(event);
         ModConfiguration.load();
     }

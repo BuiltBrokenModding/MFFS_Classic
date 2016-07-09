@@ -233,4 +233,6 @@ public abstract class TileMFFSInventory extends TileMFFS implements IInventory {
         cards.add(getStackInSlot(0));
         return cards;
     }
+
+
 }

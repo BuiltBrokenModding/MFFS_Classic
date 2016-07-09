@@ -11,14 +11,20 @@ import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+
+import java.util.List;
+import java.util.Random;
 
 /**
  * @author Calclavia
@@ -147,5 +153,46 @@ public abstract class MFFSMachine extends Block implements ITileEntityProvider {
     @Override
     public boolean isOpaqueCube() {
         return false;
+    }
+
+    @Override
+    public void breakBlock(World world, int x, int y, int z, Block block, int flag) {
+        TileEntity tile = world.getTileEntity(x, y, z);
+        if(tile instanceof IInventory) {
+            IInventory inv = (IInventory) tile;
+            for (int i = 0; i < inv.getSizeInventory(); i++)
+            {
+                ItemStack var7 = inv.getStackInSlot(i);
+                if (var7 != null)
+                {
+                    Random random = new Random();
+                    float var8 = random.nextFloat() * 0.8F + 0.1F;
+                    float var9 = random.nextFloat() * 0.8F + 0.1F;
+                    float var10 = random.nextFloat() * 0.8F + 0.1F;
+                    while (var7.stackSize > 0)
+                    {
+                        int var11 = random.nextInt(21) + 10;
+                        if (var11 > var7.stackSize) {
+                            var11 = var7.stackSize;
+                        }
+                        var7.stackSize -= var11;
+                        EntityItem var12 = new EntityItem(world, x + var8, y + var9, z + var10, new ItemStack(var7.getItem(), var11, var7.getItemDamage()));
+                        if (var7.hasTagCompound()) {
+                            var12.getEntityItem().setTagCompound((NBTTagCompound)var7.getTagCompound().copy());
+                        }
+                        float var13 = 0.05F;
+                        var12.motionX = ((float)random.nextGaussian() * var13);
+                        var12.motionY = ((float)random.nextGaussian() * var13 + 0.2F);
+                        var12.motionZ = ((float)random.nextGaussian() * var13);
+                        world.spawnEntityInWorld(var12);
+                        if (var7.stackSize <= 0) {
+                            inv.setInventorySlotContents(i, null);
+                        }
+                    }
+                }
+            }
+            inv.closeInventory();
+        }
+        super.breakBlock(world, x, y, z, block, flag);
     }
 }
