@@ -2,7 +2,7 @@ package com.mffs.common.net.packet;
 
 import com.mffs.api.vector.Vector3D;
 import com.mffs.common.TileMFFS;
-import com.mffs.common.net.TileEntityMessage;
+import com.mffs.common.net.PositionMessage;
 import com.mffs.common.tile.type.TileForceFieldProjector;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
@@ -17,7 +17,7 @@ import java.util.Set;
 /**
  * Created by pwaln on 7/3/2016.
  */
-public class ForcefieldCalculation extends TileEntityMessage {
+public class ForcefieldCalculation extends PositionMessage {
 
     /* List of vectors to be assigned. */
     private Set<Vector3D> blocks;

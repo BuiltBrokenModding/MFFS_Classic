@@ -1,7 +1,7 @@
 package com.mffs.common.net.packet;
 
 import com.mffs.common.TileMFFS;
-import com.mffs.common.net.TileEntityMessage;
+import com.mffs.common.net.PositionMessage;
 import com.mffs.common.tile.type.TileFortronCapacitor;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
@@ -13,7 +13,7 @@ import net.minecraft.tileentity.TileEntity;
 /**
  * Created by pwaln on 7/5/2016.
  */
-public class ChangeTransferMode extends TileEntityMessage {
+public class ChangeTransferMode extends PositionMessage {
 
     /* New value for the transfer mode */
     private byte toggle;
@@ -75,7 +75,7 @@ public class ChangeTransferMode extends TileEntityMessage {
         public IMessage onMessage(ChangeTransferMode message, MessageContext ctx) {
             TileEntity entity = Minecraft.getMinecraft().thePlayer.worldObj.getTileEntity(message.x, message.y, message.z);
             if (entity instanceof TileFortronCapacitor) {
-                return ((TileMFFS) entity).handleMessage(message);
+                return ((TileFortronCapacitor) entity).handleMessage(message);
             }
             return null;
         }

@@ -2,7 +2,8 @@ package com.mffs.common.net.packet;
 
 import com.mffs.api.vector.Vector3D;
 import com.mffs.common.TileMFFS;
-import com.mffs.common.net.TileEntityMessage;
+import com.mffs.common.net.PositionMessage;
+import com.mffs.common.tile.type.TileForceFieldProjector;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
@@ -13,7 +14,7 @@ import net.minecraft.tileentity.TileEntity;
 /**
  * Created by pwaln on 7/6/2016.
  */
-public class BeamRequest extends TileEntityMessage {
+public class BeamRequest extends PositionMessage {
 
     /* This is the position we want the beam to go to. */
     public Vector3D destination;
@@ -70,8 +71,8 @@ public class BeamRequest extends TileEntityMessage {
         @Override
         public IMessage onMessage(BeamRequest message, MessageContext ctx) {
             TileEntity entity = Minecraft.getMinecraft().thePlayer.worldObj.getTileEntity(message.x, message.y, message.z);
-            if (entity instanceof TileMFFS) {
-                return ((TileMFFS) entity).handleMessage(message);
+            if (entity instanceof TileForceFieldProjector) {
+                return ((TileForceFieldProjector) entity).handleMessage(message);
             }
             return null;
         }

@@ -11,8 +11,8 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 
-public class MovingDisintigrate extends EntityFX {
-    public MovingDisintigrate(World par1World, Vector3D position, float red, float green, float blue, int age) {
+public class MovingFortron extends EntityFX {
+    public MovingFortron(World par1World, Vector3D position, float red, float green, float blue, int age) {
 
         super(par1World, position.x, position.y, position.z);
 
@@ -62,7 +62,7 @@ public class MovingDisintigrate extends EntityFX {
         GL11.glScalef(1.01F, 1.01F, 1.01F);
 
 
-        double completion = this.particleAge / this.particleMaxAge;
+        double completion = (double) this.particleAge / this.particleMaxAge;
 
         GL11.glTranslated(0.0D, (completion - 1.0D) / 2.0D, 0.0D);
 

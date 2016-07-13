@@ -46,6 +46,7 @@ public class DelayedBlockInventoryEvent extends EventTimedTask {
             for (ItemStack stack : items) {
                 if (!inventory.mergeIntoInventory(stack)) {
                     //Logger wont let me use it WTF
+                    block.dropBlockAsItem(world, vec.intX(), vec.intY(), vec.intZ(), world.getBlockMetadata(vec.intX(), vec.intY(), vec.intZ()), 0);
                     return;
                 }
             }

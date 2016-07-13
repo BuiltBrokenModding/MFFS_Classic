@@ -1,7 +1,7 @@
 package com.mffs.common.net.packet;
 
 import com.mffs.common.TileMFFS;
-import com.mffs.common.net.TileEntityMessage;
+import com.mffs.common.net.PositionMessage;
 import com.mffs.common.tile.TileFortron;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
@@ -13,7 +13,7 @@ import net.minecraft.tileentity.TileEntity;
 /**
  * Created by pwaln on 6/14/2016.
  */
-public class FortronSync extends TileEntityMessage {
+public class FortronSync extends PositionMessage {
 
     /* Amount of fortron to be sent */
     public int amount, capacity;
@@ -71,7 +71,7 @@ public class FortronSync extends TileEntityMessage {
         public IMessage onMessage(FortronSync message, MessageContext ctx) {
             TileEntity entity = Minecraft.getMinecraft().thePlayer.worldObj.getTileEntity(message.x, message.y, message.z);
             if (entity instanceof TileFortron) {
-                return ((TileMFFS) entity).handleMessage(message);
+                return ((TileFortron) entity).handleMessage(message);
             }
             return null;
         }

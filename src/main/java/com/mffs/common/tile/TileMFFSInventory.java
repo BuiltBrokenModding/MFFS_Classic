@@ -147,7 +147,7 @@ public abstract class TileMFFSInventory extends TileMFFS implements IInventory {
     public boolean mergeIntoInventory(ItemStack stack) {
         for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
             stack = placeAdjInv(stack, dir);
-            if (stack == null)
+            if (stack == null || stack.stackSize <= 0)
                 return true;
         }
         return worldObj.spawnEntityInWorld(new EntityItem(worldObj, xCoord + .5, yCoord + 1, zCoord + .5, stack));
@@ -180,7 +180,7 @@ public abstract class TileMFFSInventory extends TileMFFS implements IInventory {
                 return Util.addToInv_first(inv, stack);
             }
         }
-        return null;
+        return stack;
     }
 
     /**

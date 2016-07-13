@@ -17,9 +17,8 @@ import net.minecraftforge.common.MinecraftForge;
 @Mod(modid = MFFS.MODID, name = MFFS.MOD_NAME, version = MFFS.VERSION, dependencies = "required-after:Mekanism")
 public class MFFS {
     public static final String MODID = "mffs";
-    public static final String VERSION = "1.0";
+    public static final String VERSION = "0.25";
     public static final String MOD_NAME = "Modular_Forcefields";
-    public static boolean DEV_MODE = true;
 
     @Mod.Instance
     public static MFFS mffs_mod;

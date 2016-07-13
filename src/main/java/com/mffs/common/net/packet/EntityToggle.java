@@ -1,7 +1,7 @@
 package com.mffs.common.net.packet;
 
 import com.mffs.common.TileMFFS;
-import com.mffs.common.net.TileEntityMessage;
+import com.mffs.common.net.PositionMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
@@ -11,7 +11,7 @@ import net.minecraft.tileentity.TileEntity;
 /**
  * Created by pwaln on 6/14/2016.
  */
-public class EntityToggle extends TileEntityMessage {
+public class EntityToggle extends PositionMessage {
 
     /* The Redstone activation button opcode */
     public static final byte REDSTONE_TOGGLE = 0, TOGGLE_STATE = 1, ABSOLUTE_TOGGLE = 2, TRANSFER_TOGGLE = 3;

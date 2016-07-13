@@ -1,7 +1,7 @@
 package com.mffs.common.net.packet;
 
 import com.mffs.common.TileMFFS;
-import com.mffs.common.net.TileEntityMessage;
+import com.mffs.common.net.PositionMessage;
 import com.mffs.common.tile.TileFrequency;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
@@ -12,7 +12,7 @@ import net.minecraft.tileentity.TileEntity;
 /**
  * Created by pwaln on 6/16/2016.
  */
-public class ChangeFrequency extends TileEntityMessage {
+public class ChangeFrequency extends PositionMessage {
 
     /**
      * The Frequency.
@@ -77,7 +77,7 @@ public class ChangeFrequency extends TileEntityMessage {
         public IMessage onMessage(ChangeFrequency message, MessageContext ctx) {
             TileEntity entity = ctx.getServerHandler().playerEntity.worldObj.getTileEntity(message.x, message.y, message.z);
             if (entity instanceof TileFrequency) {
-                return ((TileMFFS) entity).handleMessage(message);
+                return ((TileFrequency) entity).handleMessage(message);
             }
             return null;
         }

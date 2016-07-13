@@ -3,6 +3,8 @@ package com.mffs.common.tile.type;
 import com.mffs.api.vector.Vector3D;
 import com.mffs.common.TileMFFS;
 import com.mffs.common.items.modules.upgrades.ModuleCamouflage;
+import com.mffs.common.net.packet.RefreshCamo;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -131,13 +133,12 @@ public final class TileForceField extends TileMFFS {
         return null;
     }
 
+    public Vector3D getProjLoc() { return this.projector;}
+
     /**
      * Refreshes all attributes of this entity.
      */
     private void refresh() {
-        if (this.worldObj.isRemote)
-            return;
-
         TileForceFieldProjector proj = findProj();
         if (proj != null) {
             if (proj.getModuleCount(ModuleCamouflage.class) > 0) {
@@ -153,4 +154,19 @@ public final class TileForceField extends TileMFFS {
         }
     }
 
+    /**
+     * Handles the message given by the handler.
+     *
+     * @param imessage The message.
+     */
+    @Override
+    public IMessage handleMessage(IMessage imessage) {
+        if(imessage instanceof RefreshCamo) {
+            RefreshCamo refresh = (RefreshCamo) imessage;
+            setProjector(refresh.projector);
+            System.out.println("CHeck");
+            return null;
+        }
+        return super.handleMessage(imessage);
+    }
 }

@@ -1,7 +1,7 @@
 package com.mffs.common.net.packet;
 
 import com.mffs.common.TileMFFS;
-import com.mffs.common.net.TileEntityMessage;
+import com.mffs.common.net.PositionMessage;
 import com.mffs.common.tile.TileModuleAcceptor;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
@@ -13,7 +13,7 @@ import net.minecraft.tileentity.TileEntity;
 /**
  * Created by pwaln on 7/2/2016.
  */
-public class FortronCostSync extends TileEntityMessage {
+public class FortronCostSync extends PositionMessage {
     /* Fortron cost */
     private int cost;
 
