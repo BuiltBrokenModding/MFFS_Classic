@@ -1,9 +1,11 @@
 package com.mffs;
 
+import com.mffs.common.container.BiometricContainer;
 import com.mffs.common.container.CoercionDeriverContainer;
 import com.mffs.common.container.ForceFieldProjectorContainer;
 import com.mffs.common.container.FortronCapacitorContainer;
 import com.mffs.common.fluids.Fortron;
+import com.mffs.common.tile.type.TileBiometricIdentifier;
 import com.mffs.common.tile.type.TileCoercionDeriver;
 import com.mffs.common.tile.type.TileForceFieldProjector;
 import com.mffs.common.tile.type.TileFortronCapacitor;
@@ -67,6 +69,8 @@ public class CommonProxy implements IGuiHandler {
                 return new ForceFieldProjectorContainer(player, (TileForceFieldProjector) tileEntity);
             } else if (tileEntity instanceof TileFortronCapacitor) {
                 return new FortronCapacitorContainer(player, (TileFortronCapacitor) tileEntity);
+            } else if(tileEntity instanceof TileBiometricIdentifier) {
+                return new BiometricContainer(player, (TileBiometricIdentifier) tileEntity);
             }
         }
         return null;

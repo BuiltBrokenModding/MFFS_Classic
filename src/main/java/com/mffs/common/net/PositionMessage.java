@@ -2,7 +2,6 @@ package com.mffs.common.net;
 
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import io.netty.buffer.ByteBuf;
-import javafx.geometry.Pos;
 import net.minecraft.tileentity.TileEntity;
 
 /**
@@ -16,7 +15,8 @@ public abstract class PositionMessage implements IMessage {
     /**
      * Default constructor for class instance.
      */
-    public PositionMessage() {}
+    public PositionMessage() {
+    }
 
     /**
      * @param entity
@@ -28,7 +28,6 @@ public abstract class PositionMessage implements IMessage {
     }
 
     /**
-     *
      * @param x
      * @param y
      * @param z

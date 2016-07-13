@@ -41,6 +41,7 @@ public class MatrixHelper {
 
     /**
      * Check if access is granted given a permission and a matrix.
+     *
      * @param matrix
      * @param name
      * @param perm
@@ -48,14 +49,13 @@ public class MatrixHelper {
      */
     public static boolean checkPermission(IInterdictionMatrix matrix, String name, Permission perm) {
         IBiometricIdentifier bio = matrix.getBiometricIdentifier();
-        if(bio != null && matrix.isActive()) {
+        if (bio != null && matrix.isActive()) {
             return bio.isAccessGranted(name, perm);
         }
         return true;
     }
 
     /**
-     *
      * @param matrix
      * @param action
      * @param player
@@ -63,10 +63,10 @@ public class MatrixHelper {
      */
     public static boolean checkActionPermission(IInterdictionMatrix matrix, PlayerInteractEvent.Action action, EntityPlayer player) {
         boolean perm = true;
-        if(matrix.getModuleCount(ModuleBlockAccess.class) > 0 && action == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK)
+        if (matrix.getModuleCount(ModuleBlockAccess.class) > 0 && action == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK)
             perm = checkPermission(matrix, player.getGameProfile().getName(), Permission.BLOCK_ACCESS);
 
-        if(perm && matrix.getModuleCount(ModuleBlockAlter.class) > 0 && (action == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK || player.getCurrentEquippedItem() != null))
+        if (perm && matrix.getModuleCount(ModuleBlockAlter.class) > 0 && (action == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK || player.getCurrentEquippedItem() != null))
             perm = checkPermission(matrix, player.getGameProfile().getName(), Permission.BLOCK_PLACE_ACCESS);
 
         return perm;

@@ -1,7 +1,6 @@
 package com.mffs.common.net.packet;
 
 import com.mffs.api.vector.Vector3D;
-import com.mffs.common.TileMFFS;
 import com.mffs.common.net.PositionMessage;
 import com.mffs.common.tile.type.TileForceFieldProjector;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;

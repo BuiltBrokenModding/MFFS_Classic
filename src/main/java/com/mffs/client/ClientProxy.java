@@ -2,10 +2,12 @@ package com.mffs.client;
 
 import com.mffs.CommonProxy;
 import com.mffs.MFFS;
+import com.mffs.client.gui.GuiBiometricIdentifier;
 import com.mffs.client.gui.GuiCoercionDeriver;
 import com.mffs.client.gui.GuiForceFieldProjector;
 import com.mffs.client.gui.GuiFortronCapacitor;
 import com.mffs.client.render.*;
+import com.mffs.common.tile.type.TileBiometricIdentifier;
 import com.mffs.common.tile.type.TileCoercionDeriver;
 import com.mffs.common.tile.type.TileForceFieldProjector;
 import com.mffs.common.tile.type.TileFortronCapacitor;
@@ -80,6 +82,8 @@ public class ClientProxy extends CommonProxy {
                 return new GuiForceFieldProjector(player, (TileForceFieldProjector) tileEntity);
             } else if (tileEntity instanceof TileFortronCapacitor) {
                 return new GuiFortronCapacitor(player, (TileFortronCapacitor) tileEntity);
+            } else if(tileEntity instanceof TileBiometricIdentifier) {
+                return new GuiBiometricIdentifier(player, (TileBiometricIdentifier) tileEntity);
             }
         }
         return null;

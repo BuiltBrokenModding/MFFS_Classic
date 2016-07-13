@@ -12,4 +12,15 @@ public enum Permission {
     BYPASS_DEFENSE,
     BYPASS_CONFISCATION,
     REMOTE_CONTROL;
+
+    /**
+     *
+     * @param id
+     * @return
+     */
+    public static Permission getPerm(int id) {
+        if(id < Permission.values().length)
+            return Permission.values()[id];
+        return Permission.REMOTE_CONTROL;
+    }
 }

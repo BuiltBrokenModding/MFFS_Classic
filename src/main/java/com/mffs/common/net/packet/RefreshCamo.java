@@ -1,10 +1,7 @@
 package com.mffs.common.net.packet;
 
 import com.mffs.api.vector.Vector3D;
-import com.mffs.common.TileMFFS;
-import com.mffs.common.blocks.BlockForceField;
 import com.mffs.common.net.PositionMessage;
-import com.mffs.common.tile.TileFrequency;
 import com.mffs.common.tile.type.TileForceField;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
@@ -36,8 +33,8 @@ public final class RefreshCamo extends PositionMessage {
     public RefreshCamo(World world, int x, int y, int z) {
         super(x, y, z);
         TileEntity entity = world.getTileEntity(x, y, z);
-        if(entity instanceof TileForceField)
-            this.projector = ((TileForceField)entity).getProjLoc();
+        if (entity instanceof TileForceField)
+            this.projector = ((TileForceField) entity).getProjLoc();
         else
             this.projector = Vector3D.ZERO();
     }

@@ -202,6 +202,12 @@ public class TileForceFieldProjector extends TileFieldInteraction implements IPr
     }
 
     @Override
+    public void onSlotsChanged(int... slots)  {
+        super.onSlotsChanged(slots);
+        destroyField();
+    }
+
+    @Override
     public void destroyField() {
         if (!worldObj.isRemote && !this.isCalc && isFinished) {
             synchronized (this.calculatedFields) {

@@ -133,7 +133,9 @@ public final class TileForceField extends TileMFFS {
         return null;
     }
 
-    public Vector3D getProjLoc() { return this.projector;}
+    public Vector3D getProjLoc() {
+        return this.projector;
+    }
 
     /**
      * Refreshes all attributes of this entity.
@@ -161,7 +163,7 @@ public final class TileForceField extends TileMFFS {
      */
     @Override
     public IMessage handleMessage(IMessage imessage) {
-        if(imessage instanceof RefreshCamo) {
+        if (imessage instanceof RefreshCamo) {
             RefreshCamo refresh = (RefreshCamo) imessage;
             setProjector(refresh.projector);
             System.out.println("CHeck");

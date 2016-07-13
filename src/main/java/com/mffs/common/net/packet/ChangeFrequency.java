@@ -1,6 +1,5 @@
 package com.mffs.common.net.packet;
 
-import com.mffs.common.TileMFFS;
 import com.mffs.common.net.PositionMessage;
 import com.mffs.common.tile.TileFrequency;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;

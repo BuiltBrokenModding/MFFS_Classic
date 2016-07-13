@@ -39,6 +39,13 @@ public final class TileCoercionDeriver extends TileElectrical {
     }
 
     @Override
+    public void onSlotsChanged(int... slots)  {
+        super.onSlotsChanged(slots);
+        storage.setCapacity(Math.round(getWattage()));
+        storage.setMaxTransfer(Math.round(getWattage() / 20L));
+    }
+
+    @Override
     public void start() {
         super.start();
         storage.setCapacity(Math.round(getWattage()));
@@ -80,25 +87,6 @@ public final class TileCoercionDeriver extends TileElectrical {
     }
 
     /**
-     * Handles the message given by the handler.
-     *
-     * @param imessage The message.
-     */
-    @Override
-    public IMessage handleMessage(IMessage imessage) {
-        return super.handleMessage(imessage);
-    }
-
-    /**
-     * Overriden in a sign to provide the text.
-     */
-    @Override
-    public Packet getDescriptionPacket() {
-        //S35PacketUpdateTileEntity pkt = (S35PacketUpdateTileEntity) super.getDescriptionPacket();
-        return super.getDescriptionPacket();
-    }
-
-    /**
      * Called when you receive a TileEntityData packet for the location this
      * TileEntity is currently in. On the client, the NetworkManager will always
      * be the remote server. On the server, it will be whomever is responsible for
@@ -110,13 +98,6 @@ public final class TileCoercionDeriver extends TileElectrical {
     @Override
     public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
         super.onDataPacket(net, pkt);
-    }
-
-    @Override
-    public void fireEvents(int... slots) {
-        super.fireEvents(slots);
-        storage.setCapacity(Math.round(getWattage()));
-        storage.setMaxTransfer(Math.round(getWattage() / 20L));
     }
 
     @Override
@@ -135,10 +116,8 @@ public final class TileCoercionDeriver extends TileElectrical {
             if (this.processTime > 0) {
                 production *= 4;
             }
-
             return production;
         }
-
         return 0;
     }
 
@@ -148,7 +127,6 @@ public final class TileCoercionDeriver extends TileElectrical {
             if (slotID >= this.module_index) {
                 return itemStack.getItem() instanceof IModule;
             }
-
             switch (slotID) {
                 case SLOT_FREQUENCY:
                     return itemStack.getItem() instanceof CardFrequency;
@@ -157,7 +135,6 @@ public final class TileCoercionDeriver extends TileElectrical {
                 case SLOT_FUEL:
                     return itemStack.getItem() == Items.dye && itemStack.getItemDamage() == 4 || itemStack.getItem() == Items.quartz;
             }
-
         }
         return false;
     }

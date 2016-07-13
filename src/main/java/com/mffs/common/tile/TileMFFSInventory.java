@@ -56,14 +56,14 @@ public abstract class TileMFFSInventory extends TileMFFS implements IInventory {
             if (this.inventory[i].stackSize <= j) {
                 ItemStack itemstack = this.inventory[i];
                 this.inventory[i] = null;
-                fireEvents(i);
+                onSlotsChanged(i);
                 return itemstack;
             }
             ItemStack itemstack1 = this.inventory[i].splitStack(j);
             if (this.inventory[i].stackSize == 0) {
                 this.inventory[i] = null;
             }
-            fireEvents(i);
+            onSlotsChanged(i);
             return itemstack1;
         }
         return null;
@@ -92,7 +92,7 @@ public abstract class TileMFFSInventory extends TileMFFS implements IInventory {
         if ((item != null) && (item.stackSize > getInventoryStackLimit())) {
             item.stackSize = getInventoryStackLimit();
         }
-        fireEvents(slot);
+        onSlotsChanged(slot);
     }
 
     /**
@@ -141,7 +141,7 @@ public abstract class TileMFFSInventory extends TileMFFS implements IInventory {
     }
 
     /* Fires event when items have been changed */
-    public void fireEvents(int... slots) {
+    public void onSlotsChanged(int... slots) {
     }
 
     public boolean mergeIntoInventory(ItemStack stack) {

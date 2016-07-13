@@ -65,12 +65,12 @@ public class MFFSGui extends GuiContainerBase {
 
         if (this.textFieldFrequency != null) {
 
-            if (!Character.isDigit(par1))
+            if (!Character.isDigit(par1) && par1 != 8)
                 return;
             this.textFieldFrequency.textboxKeyTyped(par1, par2);
 
             try {
-                int newFrequency = Integer.parseInt(this.textFieldFrequency.getText());
+                int newFrequency = this.textFieldFrequency.getText().isEmpty() ? 0 : Integer.parseInt(this.textFieldFrequency.getText());
                 this.frequencyTile.setFrequency(newFrequency);
                 this.textFieldFrequency.setText(this.frequencyTile.getFrequency() + "");
                 MFFS.channel.sendToServer(new ChangeFrequency(((TileEntity) this.frequencyTile), newFrequency));
