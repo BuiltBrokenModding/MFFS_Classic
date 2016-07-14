@@ -14,12 +14,11 @@ public enum Permission {
     REMOTE_CONTROL;
 
     /**
-     *
      * @param id
      * @return
      */
     public static Permission getPerm(int id) {
-        if(id < Permission.values().length)
+        if (id < Permission.values().length)
             return Permission.values()[id];
         return Permission.REMOTE_CONTROL;
     }

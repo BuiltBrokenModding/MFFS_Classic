@@ -73,13 +73,13 @@ public class TileBiometricIdentifier extends TileFrequency implements IBiometric
     public boolean isItemValidForSlot(int slot, ItemStack stack) {
         if (slot == 0)
             return stack.getItem() instanceof CardFrequency;
-         else if(slot == SLOT_COPY && getManipulatingCard() == null)
-             return false;
+        else if (slot == SLOT_COPY && getManipulatingCard() == null)
+            return false;
         return stack.getItem() instanceof ICardIdentification;
     }
 
     @Override
-    public void onSlotsChanged(int... slots)  {
+    public void onSlotsChanged(int... slots) {
         super.onSlotsChanged(slots);
         ItemStack manipul = getManipulatingCard();
         ItemStack copy = getStackInSlot(SLOT_COPY);

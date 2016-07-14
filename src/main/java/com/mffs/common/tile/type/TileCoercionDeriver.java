@@ -6,12 +6,10 @@ import com.mffs.common.items.card.CardFrequency;
 import com.mffs.common.items.modules.upgrades.ModuleScale;
 import com.mffs.common.items.modules.upgrades.ModuleSpeed;
 import com.mffs.common.tile.TileElectrical;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 
 /**
@@ -39,7 +37,7 @@ public final class TileCoercionDeriver extends TileElectrical {
     }
 
     @Override
-    public void onSlotsChanged(int... slots)  {
+    public void onSlotsChanged(int... slots) {
         super.onSlotsChanged(slots);
         storage.setCapacity(Math.round(getWattage()));
         storage.setMaxTransfer(Math.round(getWattage() / 20L));

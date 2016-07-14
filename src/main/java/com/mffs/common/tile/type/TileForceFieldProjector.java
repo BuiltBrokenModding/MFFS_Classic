@@ -202,7 +202,7 @@ public class TileForceFieldProjector extends TileFieldInteraction implements IPr
     }
 
     @Override
-    public void onSlotsChanged(int... slots)  {
+    public void onSlotsChanged(int... slots) {
         super.onSlotsChanged(slots);
         destroyField();
     }

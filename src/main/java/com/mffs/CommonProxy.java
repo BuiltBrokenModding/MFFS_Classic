@@ -69,7 +69,7 @@ public class CommonProxy implements IGuiHandler {
                 return new ForceFieldProjectorContainer(player, (TileForceFieldProjector) tileEntity);
             } else if (tileEntity instanceof TileFortronCapacitor) {
                 return new FortronCapacitorContainer(player, (TileFortronCapacitor) tileEntity);
-            } else if(tileEntity instanceof TileBiometricIdentifier) {
+            } else if (tileEntity instanceof TileBiometricIdentifier) {
                 return new BiometricContainer(player, (TileBiometricIdentifier) tileEntity);
             }
         }

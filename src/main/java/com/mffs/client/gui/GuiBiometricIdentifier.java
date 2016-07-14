@@ -25,7 +25,7 @@ public class GuiBiometricIdentifier extends MFFSGui {
     public GuiBiometricIdentifier(EntityPlayer player, TileBiometricIdentifier bio) {
         super(new BiometricContainer(player, bio), bio);
     }
-    
+
     public TileBiometricIdentifier getEntity() {
         return (TileBiometricIdentifier) this.frequencyTile;
     }
@@ -211,7 +211,7 @@ public class GuiBiometricIdentifier extends MFFSGui {
 
         try {
 
-           // cpw.mods.fml.common.network.PacketDispatcher.sendPacketToServer(ModularForceFieldSystem.PACKET_TILE.getPacket(entity, new Object[]{Integer.valueOf(TileMFFS.TilePacketType.STRING.ordinal()), this.textFieldUsername.func_73781_b()}));
+            // cpw.mods.fml.common.network.PacketDispatcher.sendPacketToServer(ModularForceFieldSystem.PACKET_TILE.getPacket(entity, new Object[]{Integer.valueOf(TileMFFS.TilePacketType.STRING.ordinal()), this.textFieldUsername.func_73781_b()}));
 
         } catch (NumberFormatException e) {
         }
@@ -235,7 +235,7 @@ public class GuiBiometricIdentifier extends MFFSGui {
 
         if (guiButton.id > 0) {
 
-           // cpw.mods.fml.common.network.PacketDispatcher.sendPacketToServer(ModularForceFieldSystem.PACKET_TILE.getPacket(entity, new Object[]{Integer.valueOf(TileMFFS.TilePacketType.TOGGLE_MODE.ordinal()), Integer.valueOf(guiButton.field_73741_f - 1)}));
+            // cpw.mods.fml.common.network.PacketDispatcher.sendPacketToServer(ModularForceFieldSystem.PACKET_TILE.getPacket(entity, new Object[]{Integer.valueOf(TileMFFS.TilePacketType.TOGGLE_MODE.ordinal()), Integer.valueOf(guiButton.field_73741_f - 1)}));
 
         }
 
