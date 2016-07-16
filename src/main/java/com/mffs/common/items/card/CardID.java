@@ -48,14 +48,13 @@ public class CardID extends CardBlank implements ICardIdentification {
                 : LanguageRegistry.instance().getStringLocalization("info.cardIdentification.empty"));
 
         String tooltip = "";
-        for (Permission perm : Permission.values()) {
-            if (hasPermission(stack, perm)) {
-                tooltip = (tooltip.isEmpty() ? "" : ", ") + LanguageRegistry.instance().getStringLocalization("gui." + perm.name() + ".name");
-            }
-        }
-        if (tooltip != null && tooltip.length() > 0) {
-            list.add(Util.sepString(tooltip, 25));
-        }
+        for (Permission perm : Permission.values())
+            if (hasPermission(stack, perm))
+                tooltip += (tooltip.isEmpty() ? "" : ", ") + LanguageRegistry.instance().getStringLocalization("gui." + perm.name() + ".name");
+
+        if (tooltip != null && tooltip.length() > 0)
+            list.addAll(Util.sepString(tooltip, 25));
+
     }
 
     /**

@@ -24,7 +24,7 @@ import net.minecraftforge.fluids.IFluidBlock;
 import java.util.Set;
 
 /**
- * Created by pwaln on 6/21/2016.
+ * @author Calclavia
  */
 public class ModuleDisintegration extends ItemModule {
 

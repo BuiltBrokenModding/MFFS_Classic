@@ -14,7 +14,7 @@ import cpw.mods.fml.relauncher.Side;
 import net.minecraft.block.Block;
 import net.minecraftforge.common.MinecraftForge;
 
-@Mod(modid = MFFS.MODID, name = MFFS.MOD_NAME, version = MFFS.VERSION, dependencies = "required-after:Mekanism")
+@Mod(modid = MFFS.MODID, name = MFFS.MOD_NAME, version = MFFS.VERSION)
 public class MFFS {
     public static final String MODID = "mffs";
     public static final String VERSION = "0.25";
@@ -47,8 +47,9 @@ public class MFFS {
         channel.registerMessage(FortronSync.ClientHandler.class, FortronSync.class, 1, Side.CLIENT);
         MFFS.channel.registerMessage(ChangeFrequency.ServerHandler.class, ChangeFrequency.class, 2, Side.SERVER);
         MFFS.channel.registerMessage(ForcefieldCalculation.ClientHandler.class, ForcefieldCalculation.class, 3, Side.CLIENT);
-        MFFS.channel.registerMessage(ChangeTransferMode.ClientHandler.class, ChangeTransferMode.class, 4, Side.CLIENT);
+        MFFS.channel.registerMessage(ChangeMode.ServerHandler.class, ChangeMode.class, 4, Side.SERVER);
         MFFS.channel.registerMessage(BeamRequest.ClientHandler.class, BeamRequest.class, 5, Side.CLIENT);
+        MFFS.channel.registerMessage(StringModify.ServerHandler.class, StringModify.class, 6, Side.SERVER);
         initialize.preInit(event);
         ModConfiguration.load();
     }

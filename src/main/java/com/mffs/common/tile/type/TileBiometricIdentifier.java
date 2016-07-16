@@ -4,6 +4,8 @@ import com.mffs.api.card.ICardIdentification;
 import com.mffs.api.security.IBiometricIdentifier;
 import com.mffs.api.security.Permission;
 import com.mffs.common.items.card.CardFrequency;
+import com.mffs.common.net.packet.ChangeMode;
+import com.mffs.common.net.packet.StringModify;
 import com.mffs.common.tile.TileFrequency;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import net.minecraft.item.ItemStack;
@@ -102,6 +104,26 @@ public class TileBiometricIdentifier extends TileFrequency implements IBiometric
      */
     @Override
     public IMessage handleMessage(IMessage imessage) {
+        if(imessage instanceof ChangeMode) {
+            ChangeMode mode = (ChangeMode) imessage;
+            ItemStack card = getManipulatingCard();
+            if(card != null) {
+                Permission perm = Permission.getPerm(mode.getToggle());
+                ICardIdentification id = (ICardIdentification) card.getItem();
+                if(perm != null) {
+                    if(id.hasPermission(card, perm))
+                        id.removePermission(card, perm);
+                    else
+                        id.addPermission(card, perm);
+                }
+            }
+            return null;
+        } else if(imessage instanceof StringModify) {
+            StringModify modify = (StringModify) imessage;
+            ItemStack card = getManipulatingCard();
+            ((ICardIdentification)card.getItem()).setUsername(card, modify.username);
+            return null;
+        }
         return super.handleMessage(imessage);
     }
 

@@ -9,7 +9,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 /**
- * Created by pwaln on 6/12/2016.
+ * @author Calclavia
  */
 public class ModuleDome extends ItemModule {
 

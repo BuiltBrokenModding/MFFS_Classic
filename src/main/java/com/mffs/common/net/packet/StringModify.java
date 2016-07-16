@@ -1,35 +1,36 @@
 package com.mffs.common.net.packet;
 
+import com.mffs.common.TileMFFS;
 import com.mffs.common.net.PositionMessage;
-import com.mffs.common.tile.type.TileFortronCapacitor;
+import com.mffs.common.tile.TileFrequency;
+import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.client.Minecraft;
 import net.minecraft.tileentity.TileEntity;
 
 /**
- * Created by pwaln on 7/5/2016.
+ * Created by Poopsicle360 on 7/15/2016.
  */
-public class ChangeTransferMode extends PositionMessage {
+public final class StringModify extends PositionMessage {
 
-    /* New value for the transfer mode */
-    private byte toggle;
+    /* The username to be sent */
+    public String username;
 
     /**
      * Default constructor for class instance.
      */
-    public ChangeTransferMode() {
+    public StringModify() {
         super();
     }
 
     /**
      * @param entity
      */
-    public ChangeTransferMode(TileFortronCapacitor entity) {
+    public StringModify(TileEntity entity, String name) {
         super(entity);
-        toggle = (byte) entity.getTransferMode().ordinal(); // 255
+        this.username = name;
     }
 
     /**
@@ -40,7 +41,7 @@ public class ChangeTransferMode extends PositionMessage {
     @Override
     public void fromBytes(ByteBuf buf) {
         super.fromBytes(buf);
-        this.toggle = buf.readByte();
+        username = ByteBufUtils.readUTF8String(buf);
     }
 
     /**
@@ -51,17 +52,13 @@ public class ChangeTransferMode extends PositionMessage {
     @Override
     public void toBytes(ByteBuf buf) {
         super.toBytes(buf);
-        buf.writeByte(toggle);
-    }
-
-    public byte getToggle() {
-        return toggle;
+        ByteBufUtils.writeUTF8String(buf, username);
     }
 
     /**
-     * Sends a sync to the Client.
+     * Reads the message and handles it server side.
      */
-    public static class ClientHandler implements IMessageHandler<ChangeTransferMode, IMessage> {
+    public static class ServerHandler implements IMessageHandler<StringModify, IMessage> {
         /**
          * Called when a message is received of the appropriate type. You can optionally return a reply message, or null if no reply
          * is needed.
@@ -71,10 +68,10 @@ public class ChangeTransferMode extends PositionMessage {
          * @return an optional return message
          */
         @Override
-        public IMessage onMessage(ChangeTransferMode message, MessageContext ctx) {
-            TileEntity entity = Minecraft.getMinecraft().thePlayer.worldObj.getTileEntity(message.x, message.y, message.z);
-            if (entity instanceof TileFortronCapacitor) {
-                return ((TileFortronCapacitor) entity).handleMessage(message);
+        public IMessage onMessage(StringModify message, MessageContext ctx) {
+            TileEntity entity = ctx.getServerHandler().playerEntity.worldObj.getTileEntity(message.x, message.y, message.z);
+            if (entity instanceof TileMFFS) {
+                return ((TileMFFS) entity).handleMessage(message);
             }
             return null;
         }

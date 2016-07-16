@@ -1,9 +1,12 @@
 package com.mffs.client.gui;
 
+import com.mffs.MFFS;
 import com.mffs.api.card.ICardIdentification;
 import com.mffs.api.security.Permission;
 import com.mffs.client.buttons.GuiPressableButton;
 import com.mffs.common.container.BiometricContainer;
+import com.mffs.common.net.packet.ChangeMode;
+import com.mffs.common.net.packet.StringModify;
 import com.mffs.common.tile.type.TileBiometricIdentifier;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
@@ -198,24 +201,11 @@ public class GuiBiometricIdentifier extends MFFSGui {
 
     @Override
     protected void keyTyped(char par1, int par2) {
-
         if ((par1 != 'e') && (par1 != 'E')) {
-
             super.keyTyped(par1, par2);
-
         }
-
-
         this.textFieldUsername.textboxKeyTyped(par1, par2);
-
-
-        try {
-
-            // cpw.mods.fml.common.network.PacketDispatcher.sendPacketToServer(ModularForceFieldSystem.PACKET_TILE.getPacket(entity, new Object[]{Integer.valueOf(TileMFFS.TilePacketType.STRING.ordinal()), this.textFieldUsername.func_73781_b()}));
-
-        } catch (NumberFormatException e) {
-        }
-
+        MFFS.channel.sendToServer(new StringModify(getEntity(), textFieldUsername.getText()));
     }
 
     @Override
@@ -233,11 +223,8 @@ public class GuiBiometricIdentifier extends MFFSGui {
         super.actionPerformed(guiButton);
 
 
-        if (guiButton.id > 0) {
-
-            // cpw.mods.fml.common.network.PacketDispatcher.sendPacketToServer(ModularForceFieldSystem.PACKET_TILE.getPacket(entity, new Object[]{Integer.valueOf(TileMFFS.TilePacketType.TOGGLE_MODE.ordinal()), Integer.valueOf(guiButton.field_73741_f - 1)}));
-
-        }
+        if (guiButton.id > 0)
+            MFFS.channel.sendToServer(new ChangeMode(getEntity(), guiButton.id - 1));
 
     }
 
