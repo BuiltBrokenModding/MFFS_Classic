@@ -1,16 +1,10 @@
 package com.mffs.client.gui;
 
-import com.mffs.MFFS;
-import com.mffs.api.card.ICardIdentification;
-import com.mffs.api.security.Permission;
-import com.mffs.client.buttons.GuiPressableButton;
 import com.mffs.common.container.BiometricContainer;
-import com.mffs.common.net.packet.ChangeMode;
-import com.mffs.common.net.packet.StringModify;
 import com.mffs.common.tile.type.TileBiometricIdentifier;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.EnumChatFormatting;
 
 import javax.vecmath.Vector2d;
 
@@ -18,8 +12,6 @@ import javax.vecmath.Vector2d;
  * @author Calclavia
  */
 public class GuiBiometricIdentifier extends MFFSGui {
-
-    private GuiTextField textFieldUsername;
 
     /**
      * @param player
@@ -35,38 +27,8 @@ public class GuiBiometricIdentifier extends MFFSGui {
 
     @Override
     public void initGui() {
-
-        this.textFieldPos = new Vector2d(109.0D, 92.0D);
-
+        this.textFieldPos = new Vector2d(33, 118);
         super.initGui();
-
-
-        this.textFieldUsername = new GuiTextField(this.fontRendererObj, 52, 18, 90, 12);
-
-        this.textFieldUsername.setMaxStringLength(30);
-
-
-        int x = 0;
-
-        int y = 0;
-
-
-        for (int i = 0; i < Permission.values().length; i++) {
-
-            x++;
-
-            this.buttonList.add(new GuiPressableButton(i + 1, this.width / 2 - 50 + 20 * x, this.height / 2 - 75 + 20 * y, new Vector2d(18.0D, 18 * i), this, Permission.values()[i].name()));
-
-
-            if ((i % 3 == 0) && (i != 0)) {
-
-                x = 0;
-
-                y++;
-
-            }
-
-        }
 
     }
 
@@ -74,146 +36,24 @@ public class GuiBiometricIdentifier extends MFFSGui {
     protected void drawGuiContainerForegroundLayer(int x, int y) {
         TileBiometricIdentifier entity = getEntity();
         this.fontRendererObj.drawString(entity.getInventoryName(), this.xSize / 2 - this.fontRendererObj.getStringWidth(entity.getInventoryName()) / 2, 6, 4210752);
+        this.fontRendererObj.drawString("Frequency", 33, 108, 4210752);
+        this.fontRendererObj.drawString(EnumChatFormatting.AQUA + "id and Group Cards", 40, 25, 4210752);
 
-
-        drawTextWithTooltip("rights", "%1", 8, 32, x, y, 0);
-
-
-        try {
-
-            if (entity.getManipulatingCard() != null) {
-
-                ICardIdentification idCard = (ICardIdentification) entity.getManipulatingCard().getItem();
-
-
-                this.textFieldUsername.drawTextBox();
-
-
-                if (idCard.getUsername(entity.getManipulatingCard()) != null) {
-
-
-                    for (int i = 0; i < this.buttonList.size(); i++) {
-
-                        if ((this.buttonList.get(i) instanceof GuiPressableButton)) {
-
-                            GuiPressableButton button = (GuiPressableButton) this.buttonList.get(i);
-
-                            button.enabled = true;
-
-
-                            int permissionID = i - 1;
-
-
-                            if (Permission.getPerm(permissionID) != null) {
-
-                                if (idCard.hasPermission(entity.getManipulatingCard(), Permission.getPerm(permissionID))) {
-
-                                    button.stuck = true;
-
-                                } else {
-
-                                    button.stuck = false;
-
-                                }
-
-                            }
-
-                        }
-
-                    }
-
-                }
-
-            } else {
-                this.buttonList.forEach(button -> {
-                    if ((button instanceof GuiPressableButton)) {
-
-                        ((GuiPressableButton) button).enabled = false;
-
-                    }
-                });
-            }
-
-        } catch (Exception e) {
-
-            e.printStackTrace();
-
-        }
-
-
-        this.textFieldFrequency.drawTextBox();
-
-
-        drawTextWithTooltip("master", 28, 90 + this.fontRendererObj.FONT_HEIGHT / 2, x, y);
-
+        textFieldFrequency.drawTextBox();
         super.drawGuiContainerForegroundLayer(x, y);
-
-    }
-
-    @Override
-    public void updateScreen() {
-
-        super.updateScreen();
-        TileBiometricIdentifier entity = getEntity();
-
-        if (!this.textFieldUsername.isFocused()) {
-
-            if (entity.getManipulatingCard() != null) {
-
-                ICardIdentification idCard = (ICardIdentification) entity.getManipulatingCard().getItem();
-
-
-                if (idCard.getUsername(entity.getManipulatingCard()) != null) {
-
-                    this.textFieldUsername.setText(idCard.getUsername(entity.getManipulatingCard()));
-
-                }
-
-            }
-
-        }
-
     }
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float f, int x, int y) {
 
         super.drawGuiContainerBackgroundLayer(f, x, y);
+        drawSlot(7, 113);//Freqency grid
 
 
-        drawSlot(87, 90);
+        for (int var4 = 0; var4 < 9; var4++)
+            for(int y1 = 0; y1 < 4; y1++)
+                drawSlot(8 + var4 * 18, 35 + y1 * 18);
 
-
-        drawSlot(7, 45);
-
-        drawSlot(7, 65);
-
-        drawSlot(7, 90);
-
-
-        for (int var4 = 0; var4 < 9; var4++) {
-
-            drawSlot(8 + var4 * 18 - 1, 110);
-
-        }
-
-    }
-
-    @Override
-    protected void keyTyped(char par1, int par2) {
-        if ((par1 != 'e') && (par1 != 'E')) {
-            super.keyTyped(par1, par2);
-        }
-        this.textFieldUsername.textboxKeyTyped(par1, par2);
-        MFFS.channel.sendToServer(new StringModify(getEntity(), textFieldUsername.getText()));
-    }
-
-    @Override
-    public void mouseClicked(int x, int y, int par3) {
-
-        super.mouseClicked(x, y, par3);
-
-        this.textFieldUsername.mouseClicked(x - this.containerWidth, y - this.containerHeight, par3);
 
     }
 
@@ -221,10 +61,6 @@ public class GuiBiometricIdentifier extends MFFSGui {
     protected void actionPerformed(GuiButton guiButton) {
 
         super.actionPerformed(guiButton);
-
-
-        if (guiButton.id > 0)
-            MFFS.channel.sendToServer(new ChangeMode(getEntity(), guiButton.id - 1));
 
     }
 

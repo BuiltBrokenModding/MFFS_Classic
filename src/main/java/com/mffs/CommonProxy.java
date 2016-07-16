@@ -1,9 +1,6 @@
 package com.mffs;
 
-import com.mffs.common.container.BiometricContainer;
-import com.mffs.common.container.CoercionDeriverContainer;
-import com.mffs.common.container.ForceFieldProjectorContainer;
-import com.mffs.common.container.FortronCapacitorContainer;
+import com.mffs.common.container.*;
 import com.mffs.common.fluids.Fortron;
 import com.mffs.common.tile.type.TileBiometricIdentifier;
 import com.mffs.common.tile.type.TileCoercionDeriver;
@@ -61,17 +58,21 @@ public class CommonProxy implements IGuiHandler {
      */
     @Override
     public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
-        TileEntity tileEntity = world.getTileEntity(x, y, z);
-        if (tileEntity != null) {
-            if (tileEntity instanceof TileCoercionDeriver) {
-                return new CoercionDeriverContainer(player, (TileCoercionDeriver) tileEntity);
-            } else if (tileEntity instanceof TileForceFieldProjector) {
-                return new ForceFieldProjectorContainer(player, (TileForceFieldProjector) tileEntity);
-            } else if (tileEntity instanceof TileFortronCapacitor) {
-                return new FortronCapacitorContainer(player, (TileFortronCapacitor) tileEntity);
-            } else if (tileEntity instanceof TileBiometricIdentifier) {
-                return new BiometricContainer(player, (TileBiometricIdentifier) tileEntity);
+        if(ID == 0) {
+            TileEntity tileEntity = world.getTileEntity(x, y, z);
+            if (tileEntity != null) {
+                if (tileEntity instanceof TileCoercionDeriver) {
+                    return new CoercionDeriverContainer(player, (TileCoercionDeriver) tileEntity);
+                } else if (tileEntity instanceof TileForceFieldProjector) {
+                    return new ForceFieldProjectorContainer(player, (TileForceFieldProjector) tileEntity);
+                } else if (tileEntity instanceof TileFortronCapacitor) {
+                    return new FortronCapacitorContainer(player, (TileFortronCapacitor) tileEntity);
+                } else if (tileEntity instanceof TileBiometricIdentifier) {
+                    return new BiometricContainer(player, (TileBiometricIdentifier) tileEntity);
+                }
             }
+        } else if(ID == 1) {
+            return new HotBarContainer(player);
         }
         return null;
     }

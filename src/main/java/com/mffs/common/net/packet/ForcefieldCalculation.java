@@ -2,7 +2,7 @@ package com.mffs.common.net.packet;
 
 import com.mffs.api.vector.Vector3D;
 import com.mffs.common.TileMFFS;
-import com.mffs.common.net.PositionMessage;
+import com.mffs.common.net.TileEntityMessage;
 import com.mffs.common.tile.type.TileForceFieldProjector;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
@@ -17,7 +17,7 @@ import java.util.Set;
 /**
  * Created by pwaln on 7/3/2016.
  */
-public class ForcefieldCalculation extends PositionMessage {
+public class ForcefieldCalculation extends TileEntityMessage {
 
     /* List of vectors to be assigned. */
     private Set<Vector3D> blocks;
@@ -76,22 +76,5 @@ public class ForcefieldCalculation extends PositionMessage {
     /**
      * Sends a sync to the Client.
      */
-    public static class ClientHandler implements IMessageHandler<ForcefieldCalculation, IMessage> {
-        /**
-         * Called when a message is received of the appropriate type. You can optionally return a reply message, or null if no reply
-         * is needed.
-         *
-         * @param message The message
-         * @param ctx
-         * @return an optional return message
-         */
-        @Override
-        public IMessage onMessage(ForcefieldCalculation message, MessageContext ctx) {
-            TileEntity entity = Minecraft.getMinecraft().thePlayer.worldObj.getTileEntity(message.x, message.y, message.z);
-            if (entity instanceof TileForceFieldProjector) {
-                return ((TileMFFS) entity).handleMessage(message);
-            }
-            return null;
-        }
-    }
+    public static class ClientHandler extends TileEntityMessage.ClientHandler<ForcefieldCalculation> {}
 }

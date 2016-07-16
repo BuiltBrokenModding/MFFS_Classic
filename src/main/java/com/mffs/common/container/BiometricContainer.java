@@ -1,6 +1,7 @@
 package com.mffs.common.container;
 
 import com.mffs.api.slots.ActiveSlot;
+import com.mffs.api.slots.CardSlot;
 import com.mffs.api.slots.MachineSlot;
 import com.mffs.common.tile.type.TileBiometricIdentifier;
 import net.minecraft.entity.player.EntityPlayer;
@@ -17,15 +18,13 @@ public class BiometricContainer extends PlayerContainer {
     public BiometricContainer(EntityPlayer player, TileBiometricIdentifier bio) {
         super(player, bio);
 
-        addSlotToContainer(new ActiveSlot<>(bio, 0, 88, 91));
-        addSlotToContainer(new MachineSlot<>(bio, 1, 8, 46));
-        addSlotToContainer(new ActiveSlot<>(bio, 2, 8, 91));
+        addSlotToContainer(new CardSlot<>(bio, 0, 8, 114));
 
-        for (int slot = 0; slot < 9; slot++) {
-            addSlotToContainer(new ActiveSlot<>(bio, 3 + slot, 8 + slot * 18, 111));
-        }
 
-        addSlotToContainer(new MachineSlot<>(bio, 12, 8, 66));
+        for (int x = 0; x < 9; x++)
+            for(int y = 0; y < 4; y++)
+            addSlotToContainer(new CardSlot<>(bio, x + y * 9 + 1, 9 + x * 18, 36 + y * 18));
+
         addPlayerInventory(player);
     }
 }

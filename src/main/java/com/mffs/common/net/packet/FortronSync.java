@@ -1,6 +1,6 @@
 package com.mffs.common.net.packet;
 
-import com.mffs.common.net.PositionMessage;
+import com.mffs.common.net.TileEntityMessage;
 import com.mffs.common.tile.TileFortron;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
@@ -12,7 +12,7 @@ import net.minecraft.tileentity.TileEntity;
 /**
  * Created by pwaln on 6/14/2016.
  */
-public class FortronSync extends PositionMessage {
+public class FortronSync extends TileEntityMessage {
 
     /* Amount of fortron to be sent */
     public int amount, capacity;
@@ -57,22 +57,5 @@ public class FortronSync extends PositionMessage {
     /**
      * FortronSync handler.
      */
-    public static class ClientHandler implements IMessageHandler<FortronSync, IMessage> {
-        /**
-         * Called when a message is received of the appropriate type. You can optionally return a reply message, or null if no reply
-         * is needed.
-         *
-         * @param message The message
-         * @param ctx
-         * @return an optional return message
-         */
-        @Override
-        public IMessage onMessage(FortronSync message, MessageContext ctx) {
-            TileEntity entity = Minecraft.getMinecraft().thePlayer.worldObj.getTileEntity(message.x, message.y, message.z);
-            if (entity instanceof TileFortron) {
-                return ((TileFortron) entity).handleMessage(message);
-            }
-            return null;
-        }
-    }
+    public static class ClientHandler extends TileEntityMessage.ClientHandler<FortronSync> {}
 }

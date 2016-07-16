@@ -1,5 +1,6 @@
 package com.mffs.common.items.card;
 
+import com.mffs.MFFS;
 import com.mffs.RegisterManager;
 import com.mffs.api.card.ICardIdentification;
 import com.mffs.api.security.Permission;
@@ -66,7 +67,12 @@ public class CardID extends CardBlank implements ICardIdentification {
      */
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer usr) {
-        setUsername(stack, usr.getGameProfile().getName());
+        if(!world.isRemote) {
+            if(usr.isSneaking())
+                setUsername(stack, usr.getGameProfile().getName());
+            else
+                usr.openGui(MFFS.mffs_mod, 1, world, 0, 0, 0);
+        }
         return stack;
     }
 

@@ -1,42 +1,30 @@
 package com.mffs.common.net.packet;
 
+import com.mffs.common.net.IPacketReceiver;
+import com.mffs.common.net.ItemMessage;
 import com.mffs.common.net.TileEntityMessage;
-import com.mffs.common.tile.TileFrequency;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 
 /**
- * Created by pwaln on 6/16/2016.
+ * Created by pwaln on 7/5/2016.
  */
-public class ChangeFrequency extends TileEntityMessage {
+public class ItemByteToggle extends ItemMessage {
 
-    /**
-     * The Frequency.
-     */
-    private int frequency;
+    /* Toggleid */
+    private byte toggleId;
 
-    /**
-     * Default Constructor.
-     */
-    public ChangeFrequency() {
-        super();
+    public ItemByteToggle() {}
+
+    public ItemByteToggle(int perm) {
+        this.toggleId = (byte) perm;
     }
 
-    /**
-     * @param entity
-     * @param freq
-     */
-    public ChangeFrequency(TileEntity entity, int freq) {
-        super(entity);
-        this.frequency = freq;
-    }
-
-    public int getFrequency() {
-        return frequency;
-    }
 
     /**
      * Convert from the supplied buffer into your specific message type
@@ -46,7 +34,7 @@ public class ChangeFrequency extends TileEntityMessage {
     @Override
     public void fromBytes(ByteBuf buf) {
         super.fromBytes(buf);
-        frequency = buf.readInt();
+        toggleId = buf.readByte();
     }
 
     /**
@@ -57,11 +45,11 @@ public class ChangeFrequency extends TileEntityMessage {
     @Override
     public void toBytes(ByteBuf buf) {
         super.toBytes(buf);
-        buf.writeInt(frequency);
+        buf.writeByte(toggleId);
     }
 
     /**
-     * Reads the message and handles it server side.
+     * aa
      */
-    public static class ServerHandler extends TileEntityMessage.ServerHandler<ChangeFrequency> {}
+    public static class ServerHandler extends ItemMessage.ServerHandler<ItemByteToggle> {}
 }

@@ -7,8 +7,4 @@ import net.minecraft.item.ItemStack;
  */
 public interface IBiometricIdentifier {
     boolean isAccessGranted(String paramString, Permission paramPermission);
-
-    String getOwner();
-
-    ItemStack getManipulatingCard();
 }

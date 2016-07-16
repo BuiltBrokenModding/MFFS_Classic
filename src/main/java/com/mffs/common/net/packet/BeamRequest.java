@@ -1,7 +1,7 @@
 package com.mffs.common.net.packet;
 
 import com.mffs.api.vector.Vector3D;
-import com.mffs.common.net.PositionMessage;
+import com.mffs.common.net.TileEntityMessage;
 import com.mffs.common.tile.type.TileForceFieldProjector;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
@@ -13,7 +13,7 @@ import net.minecraft.tileentity.TileEntity;
 /**
  * Created by pwaln on 7/6/2016.
  */
-public class BeamRequest extends PositionMessage {
+public class BeamRequest extends TileEntityMessage {
 
     /* This is the position we want the beam to go to. */
     public Vector3D destination;
@@ -58,22 +58,5 @@ public class BeamRequest extends PositionMessage {
     /**
      * Sends a sync to the Client.
      */
-    public static class ClientHandler implements IMessageHandler<BeamRequest, IMessage> {
-        /**
-         * Called when a message is received of the appropriate type. You can optionally return a reply message, or null if no reply
-         * is needed.
-         *
-         * @param message The message
-         * @param ctx
-         * @return an optional return message
-         */
-        @Override
-        public IMessage onMessage(BeamRequest message, MessageContext ctx) {
-            TileEntity entity = Minecraft.getMinecraft().thePlayer.worldObj.getTileEntity(message.x, message.y, message.z);
-            if (entity instanceof TileForceFieldProjector) {
-                return ((TileForceFieldProjector) entity).handleMessage(message);
-            }
-            return null;
-        }
-    }
+    public static class ClientHandler extends TileEntityMessage.ClientHandler<BeamRequest> {}
 }

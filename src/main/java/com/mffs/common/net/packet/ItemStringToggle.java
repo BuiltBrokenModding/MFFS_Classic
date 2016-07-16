@@ -1,8 +1,7 @@
 package com.mffs.common.net.packet;
 
 import com.mffs.common.TileMFFS;
-import com.mffs.common.net.PositionMessage;
-import com.mffs.common.tile.TileFrequency;
+import com.mffs.common.net.TileEntityMessage;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
@@ -13,7 +12,7 @@ import net.minecraft.tileentity.TileEntity;
 /**
  * Created by Poopsicle360 on 7/15/2016.
  */
-public final class StringModify extends PositionMessage {
+public final class ItemStringToggle extends TileEntityMessage {
 
     /* The username to be sent */
     public String username;
@@ -21,14 +20,14 @@ public final class StringModify extends PositionMessage {
     /**
      * Default constructor for class instance.
      */
-    public StringModify() {
+    public ItemStringToggle() {
         super();
     }
 
     /**
      * @param entity
      */
-    public StringModify(TileEntity entity, String name) {
+    public ItemStringToggle(TileEntity entity, String name) {
         super(entity);
         this.username = name;
     }
@@ -58,7 +57,7 @@ public final class StringModify extends PositionMessage {
     /**
      * Reads the message and handles it server side.
      */
-    public static class ServerHandler implements IMessageHandler<StringModify, IMessage> {
+    public class ServerHandler implements IMessageHandler<ItemStringToggle, IMessage> {
         /**
          * Called when a message is received of the appropriate type. You can optionally return a reply message, or null if no reply
          * is needed.
@@ -68,7 +67,7 @@ public final class StringModify extends PositionMessage {
          * @return an optional return message
          */
         @Override
-        public IMessage onMessage(StringModify message, MessageContext ctx) {
+        public IMessage onMessage(ItemStringToggle message, MessageContext ctx) {
             TileEntity entity = ctx.getServerHandler().playerEntity.worldObj.getTileEntity(message.x, message.y, message.z);
             if (entity instanceof TileMFFS) {
                 return ((TileMFFS) entity).handleMessage(message);

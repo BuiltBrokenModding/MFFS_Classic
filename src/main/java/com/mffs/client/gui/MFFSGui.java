@@ -24,7 +24,6 @@ import javax.vecmath.Vector2d;
  */
 public class MFFSGui extends GuiContainerBase {
 
-    public int animation;
     protected GuiTextField textFieldFrequency;
     protected Vector2d textFieldPos = new Vector2d();
     protected IBlockFrequency frequencyTile;
@@ -50,7 +49,7 @@ public class MFFSGui extends GuiContainerBase {
     public void initGui() {
         super.initGui();
         buttonList.clear();
-        this.buttonList.add(new GuiIcon(0, this.width / 2 - 82, this.height / 2 - 104, new ItemStack(Blocks.redstone_torch), null));
+        this.buttonList.add(new GuiIcon(0, this.width / 2 - 82, this.height / 2 - 104, new ItemStack(Blocks.redstone_torch), new ItemStack(Blocks.torch)));
         Keyboard.enableRepeatEvents(true);
         if (this.frequencyTile != null) {
             this.textFieldFrequency = new GuiTextField(this.fontRendererObj, (int) this.textFieldPos.x, (int) this.textFieldPos.y, 50, 12);

@@ -1,6 +1,5 @@
 package com.mffs.common.tile.type;
 
-import com.mffs.MFFS;
 import com.mffs.api.TransferMode;
 import com.mffs.api.card.ICard;
 import com.mffs.api.card.ICardInfinite;
@@ -13,7 +12,6 @@ import com.mffs.api.utils.FortronHelper;
 import com.mffs.api.vector.Vector3D;
 import com.mffs.common.items.modules.upgrades.ModuleScale;
 import com.mffs.common.items.modules.upgrades.ModuleSpeed;
-import com.mffs.common.net.packet.ChangeMode;
 import com.mffs.common.net.packet.EntityToggle;
 import com.mffs.common.tile.TileModuleAcceptor;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
@@ -146,10 +144,7 @@ public class TileFortronCapacitor extends TileModuleAcceptor implements IFortron
      */
     @Override
     public IMessage handleMessage(IMessage imessage) {
-        if (imessage instanceof ChangeMode) {
-            this.mode = TransferMode.values()[((ChangeMode) imessage).getToggle()];
-            return null;
-        } else if (imessage instanceof EntityToggle) {
+        if (imessage instanceof EntityToggle) {
             EntityToggle tog = (EntityToggle) imessage;
             if (tog.toggle_opcode == EntityToggle.TRANSFER_TOGGLE) {
                 this.mode = this.mode.toggle();

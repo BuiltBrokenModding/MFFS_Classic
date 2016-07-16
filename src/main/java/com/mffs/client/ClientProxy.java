@@ -6,6 +6,7 @@ import com.mffs.client.gui.GuiBiometricIdentifier;
 import com.mffs.client.gui.GuiCoercionDeriver;
 import com.mffs.client.gui.GuiForceFieldProjector;
 import com.mffs.client.gui.GuiFortronCapacitor;
+import com.mffs.client.gui.GuiCardID;
 import com.mffs.client.render.*;
 import com.mffs.common.tile.type.TileBiometricIdentifier;
 import com.mffs.common.tile.type.TileCoercionDeriver;
@@ -74,17 +75,21 @@ public class ClientProxy extends CommonProxy {
      */
     @Override
     public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
-        TileEntity tileEntity = world.getTileEntity(x, y, z);
-        if (tileEntity != null) {
-            if (tileEntity instanceof TileCoercionDeriver) {
-                return new GuiCoercionDeriver(player, (TileCoercionDeriver) tileEntity);
-            } else if (tileEntity instanceof TileForceFieldProjector) {
-                return new GuiForceFieldProjector(player, (TileForceFieldProjector) tileEntity);
-            } else if (tileEntity instanceof TileFortronCapacitor) {
-                return new GuiFortronCapacitor(player, (TileFortronCapacitor) tileEntity);
-            } else if (tileEntity instanceof TileBiometricIdentifier) {
-                return new GuiBiometricIdentifier(player, (TileBiometricIdentifier) tileEntity);
+        if(ID == 0) {
+            TileEntity tileEntity = world.getTileEntity(x, y, z);
+            if (tileEntity != null) {
+                if (tileEntity instanceof TileCoercionDeriver) {
+                    return new GuiCoercionDeriver(player, (TileCoercionDeriver) tileEntity);
+                } else if (tileEntity instanceof TileForceFieldProjector) {
+                    return new GuiForceFieldProjector(player, (TileForceFieldProjector) tileEntity);
+                } else if (tileEntity instanceof TileFortronCapacitor) {
+                    return new GuiFortronCapacitor(player, (TileFortronCapacitor) tileEntity);
+                } else if (tileEntity instanceof TileBiometricIdentifier) {
+                    return new GuiBiometricIdentifier(player, (TileBiometricIdentifier) tileEntity);
+                }
             }
+        } else if(ID == 1) {
+            return new GuiCardID(player);
         }
         return null;
     }
