@@ -4,7 +4,6 @@ import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 
@@ -29,7 +28,7 @@ public abstract class ItemMessage implements IMessage {
      */
     @Override
     public void fromBytes(ByteBuf buf) {
-        buf.writeByte(slot);
+        slot = buf.readByte();
     }
 
     /**
@@ -39,14 +38,14 @@ public abstract class ItemMessage implements IMessage {
      */
     @Override
     public void toBytes(ByteBuf buf) {
-        slot = buf.readByte();
+        buf.writeByte(slot);
     }
 
     /**
      *
      * @param <PACKET>
      */
-    protected static class ServerHandler<PACKET extends ItemMessage> implements IMessageHandler<PACKET, IMessage> {
+    public static class ServerHandler<PACKET extends ItemMessage> implements IMessageHandler<PACKET, IMessage> {
 
         /**
          * Called when a message is received of the appropriate type. You can optionally return a reply message, or null if no reply
@@ -61,8 +60,8 @@ public abstract class ItemMessage implements IMessage {
             EntityPlayerMP mp = ctx.getServerHandler().playerEntity;
             if(mp != null) {
                 ItemStack item = (message.slot >= 0 ? mp.inventory.getStackInSlot(message.slot) : mp.getCurrentEquippedItem());
-                if(item != null && item.getItem() instanceof  IPacketReceiver) {
-                    return ((IPacketReceiver) item.getItem()).handleMessage(message);
+                if(item != null && item.getItem() instanceof IPacketReceiver_Item) {
+                    return ((IPacketReceiver_Item) item.getItem()).handleMessage(message, item);
                 }
             }
             return null;

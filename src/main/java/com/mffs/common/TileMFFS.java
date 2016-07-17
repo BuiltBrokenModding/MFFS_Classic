@@ -1,7 +1,7 @@
 package com.mffs.common;
 
 import com.mffs.api.IActivatable;
-import com.mffs.common.net.IPacketReceiver;
+import com.mffs.common.net.IPacketReceiver_Entity;
 import com.mffs.common.net.packet.EntityToggle;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import net.minecraft.nbt.NBTTagCompound;
@@ -14,7 +14,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 /**
  * @author Calclavia
  */
-public abstract class TileMFFS extends TileEntity implements IActivatable, IPacketReceiver {
+public abstract class TileMFFS extends TileEntity implements IActivatable, IPacketReceiver_Entity {
     public float animation;
 
     /* Ticks */

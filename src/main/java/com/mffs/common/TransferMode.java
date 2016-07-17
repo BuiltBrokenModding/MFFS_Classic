@@ -1,4 +1,4 @@
-package com.mffs.api;
+package com.mffs.common;
 
 /**
  * @author Calclavia

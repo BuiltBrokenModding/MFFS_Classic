@@ -1,7 +1,7 @@
 package com.mffs.common.net.packet;
 
 import com.mffs.common.TileMFFS;
-import com.mffs.common.net.TileEntityMessage;
+import com.mffs.common.net.ItemMessage;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
@@ -12,10 +12,10 @@ import net.minecraft.tileentity.TileEntity;
 /**
  * Created by Poopsicle360 on 7/15/2016.
  */
-public final class ItemStringToggle extends TileEntityMessage {
+public final class ItemStringToggle extends ItemMessage {
 
-    /* The username to be sent */
-    public String username;
+    /* The text to be sent */
+    public String text;
 
     /**
      * Default constructor for class instance.
@@ -24,12 +24,8 @@ public final class ItemStringToggle extends TileEntityMessage {
         super();
     }
 
-    /**
-     * @param entity
-     */
-    public ItemStringToggle(TileEntity entity, String name) {
-        super(entity);
-        this.username = name;
+    public ItemStringToggle(String text) {
+        this.text = text;
     }
 
     /**
@@ -40,7 +36,7 @@ public final class ItemStringToggle extends TileEntityMessage {
     @Override
     public void fromBytes(ByteBuf buf) {
         super.fromBytes(buf);
-        username = ByteBufUtils.readUTF8String(buf);
+        text = ByteBufUtils.readUTF8String(buf);
     }
 
     /**
@@ -51,28 +47,11 @@ public final class ItemStringToggle extends TileEntityMessage {
     @Override
     public void toBytes(ByteBuf buf) {
         super.toBytes(buf);
-        ByteBufUtils.writeUTF8String(buf, username);
+        ByteBufUtils.writeUTF8String(buf, text);
     }
 
     /**
      * Reads the message and handles it server side.
      */
-    public class ServerHandler implements IMessageHandler<ItemStringToggle, IMessage> {
-        /**
-         * Called when a message is received of the appropriate type. You can optionally return a reply message, or null if no reply
-         * is needed.
-         *
-         * @param message The message
-         * @param ctx
-         * @return an optional return message
-         */
-        @Override
-        public IMessage onMessage(ItemStringToggle message, MessageContext ctx) {
-            TileEntity entity = ctx.getServerHandler().playerEntity.worldObj.getTileEntity(message.x, message.y, message.z);
-            if (entity instanceof TileMFFS) {
-                return ((TileMFFS) entity).handleMessage(message);
-            }
-            return null;
-        }
-    }
+    public static class ServerHandler extends ItemMessage.ServerHandler<ItemStringToggle> {}
 }

@@ -57,11 +57,4 @@ public class GuiBiometricIdentifier extends MFFSGui {
 
     }
 
-    @Override
-    protected void actionPerformed(GuiButton guiButton) {
-
-        super.actionPerformed(guiButton);
-
-    }
-
 }

@@ -1,9 +1,5 @@
 package com.mffs.common.net;
 
-import com.mffs.common.TileMFFS;
-import com.mffs.common.net.packet.EntityToggle;
-import com.mffs.common.net.packet.FortronSync;
-import com.mffs.common.tile.TileFortron;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
@@ -84,8 +80,8 @@ public abstract class TileEntityMessage implements IMessage {
         @Override
         public IMessage onMessage(PACKET message, MessageContext ctx) {
             TileEntity entity = ctx.getServerHandler().playerEntity.worldObj.getTileEntity(message.x, message.y, message.z);
-            if (entity instanceof IPacketReceiver) {
-                return ((IPacketReceiver) entity).handleMessage(message);
+            if (entity instanceof IPacketReceiver_Entity) {
+                return ((IPacketReceiver_Entity) entity).handleMessage(message);
             }
             return null;
         }
@@ -94,7 +90,7 @@ public abstract class TileEntityMessage implements IMessage {
     /**
      * FortronSync handler.
      */
-    protected static class ClientHandler<PACKET extends TileEntityMessage> implements IMessageHandler<PACKET, IMessage> {
+    public static class ClientHandler<PACKET extends TileEntityMessage> implements IMessageHandler<PACKET, IMessage> {
         /**
          * Called when a message is received of the appropriate type. You can optionally return a reply message, or null if no reply
          * is needed.
@@ -106,8 +102,8 @@ public abstract class TileEntityMessage implements IMessage {
         @Override
         public IMessage onMessage(PACKET message, MessageContext ctx) {
             TileEntity entity = Minecraft.getMinecraft().thePlayer.worldObj.getTileEntity(message.x, message.y, message.z);
-            if (entity instanceof IPacketReceiver) {
-                return ((IPacketReceiver) entity).handleMessage(message);
+            if (entity instanceof IPacketReceiver_Entity) {
+                return ((IPacketReceiver_Entity) entity).handleMessage(message);
             }
             return null;
         }

@@ -2,7 +2,7 @@ package com.mffs.common.tile;
 
 import com.mffs.MFFS;
 import com.mffs.ModConfiguration;
-import com.mffs.api.TransferMode;
+import com.mffs.common.TransferMode;
 import com.mffs.api.card.ICard;
 import com.mffs.api.fortron.FrequencyGrid;
 import com.mffs.api.fortron.IFortronFrequency;

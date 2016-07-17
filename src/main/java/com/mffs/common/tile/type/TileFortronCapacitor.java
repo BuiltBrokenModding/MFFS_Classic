@@ -1,6 +1,6 @@
 package com.mffs.common.tile.type;
 
-import com.mffs.api.TransferMode;
+import com.mffs.common.TransferMode;
 import com.mffs.api.card.ICard;
 import com.mffs.api.card.ICardInfinite;
 import com.mffs.api.card.ICoordLink;

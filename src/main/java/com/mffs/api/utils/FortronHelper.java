@@ -1,6 +1,6 @@
 package com.mffs.api.utils;
 
-import com.mffs.api.TransferMode;
+import com.mffs.common.TransferMode;
 import com.mffs.api.fortron.IFortronFrequency;
 import com.mffs.api.modules.IModuleAcceptor;
 import com.mffs.api.vector.Vector3D;

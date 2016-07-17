@@ -5,10 +5,16 @@ import com.mffs.RegisterManager;
 import com.mffs.api.card.ICardIdentification;
 import com.mffs.api.security.Permission;
 import com.mffs.api.utils.Util;
+import com.mffs.common.net.IPacketReceiver_Entity;
+import com.mffs.common.net.IPacketReceiver_Item;
+import com.mffs.common.net.packet.ItemByteToggle;
+import com.mffs.common.net.packet.ItemStringToggle;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -16,7 +22,7 @@ import java.util.List;
 /**
  * @author Calclavia
  */
-public class CardID extends CardBlank implements ICardIdentification {
+public class CardID extends CardBlank implements ICardIdentification, IPacketReceiver_Item {
 
     /**
      * Current implementations of this method in child classes do not use the entry argument beside ev. They just raise
@@ -45,7 +51,7 @@ public class CardID extends CardBlank implements ICardIdentification {
     @Override
     public void addInformation(ItemStack stack, EntityPlayer usr, List list, boolean dummy) {
         String user = getUsername(stack);
-        list.add(user != null && !user.isEmpty() ? LanguageRegistry.instance().getStringLocalization("info.cardIdentification.username") + " " + user
+        list.add(user != null && !user.isEmpty() ? LanguageRegistry.instance().getStringLocalization("info.cardIdentification.text") + " " + user
                 : LanguageRegistry.instance().getStringLocalization("info.cardIdentification.empty"));
 
         String tooltip = "";
@@ -101,5 +107,23 @@ public class CardID extends CardBlank implements ICardIdentification {
     @Override
     public void setUsername(ItemStack paramItemStack, String paramString) {
         RegisterManager.getTag(paramItemStack).setString("mffs_name", paramString);
+    }
+
+    @Override
+    public IMessage handleMessage(IMessage message, ItemStack stack) {
+        if(message instanceof ItemByteToggle) {
+            ItemByteToggle tog = (ItemByteToggle) message;
+            Permission perm = Permission.getPerm(tog.toggleId);
+            if(perm != null) {
+                NBTTagCompound tag = RegisterManager.getTag(stack);
+                tag.setBoolean("mffs_permission_"+tog.toggleId, !tag.getBoolean("mffs_permission_"+tog.toggleId));
+                return null;
+            }
+        } else if(message instanceof ItemStringToggle) {
+            ItemStringToggle tog = (ItemStringToggle) message;
+            setUsername(stack, tog.text);
+            return null;
+        }
+        return null;
     }
 }
