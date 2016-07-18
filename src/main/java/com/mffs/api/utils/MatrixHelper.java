@@ -5,8 +5,8 @@ import com.mffs.api.security.IBiometricIdentifier;
 import com.mffs.api.security.IInterdictionMatrix;
 import com.mffs.api.security.Permission;
 import com.mffs.api.vector.Vector3D;
-import com.mffs.common.items.modules.upgrades.ModuleBlockAccess;
-import com.mffs.common.items.modules.upgrades.ModuleBlockAlter;
+import com.mffs.common.items.modules.upgrades.ItemModuleBlockAccess;
+import com.mffs.common.items.modules.upgrades.ItemModuleBlockAlter;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -63,10 +63,10 @@ public class MatrixHelper {
      */
     public static boolean checkActionPermission(IInterdictionMatrix matrix, PlayerInteractEvent.Action action, EntityPlayer player) {
         boolean perm = true;
-        if (matrix.getModuleCount(ModuleBlockAccess.class) > 0 && action == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK)
+        if (matrix.getModuleCount(ItemModuleBlockAccess.class) > 0 && action == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK)
             perm = checkPermission(matrix, player.getGameProfile().getName(), Permission.BLOCK_ACCESS);
 
-        if (perm && matrix.getModuleCount(ModuleBlockAlter.class) > 0 && (action == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK || player.getCurrentEquippedItem() != null))
+        if (perm && matrix.getModuleCount(ItemModuleBlockAlter.class) > 0 && (action == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK || player.getCurrentEquippedItem() != null))
             perm = checkPermission(matrix, player.getGameProfile().getName(), Permission.BLOCK_PLACE_ACCESS);
 
         return perm;

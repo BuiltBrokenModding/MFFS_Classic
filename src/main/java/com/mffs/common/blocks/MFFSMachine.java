@@ -4,7 +4,7 @@ import com.mffs.MFFS;
 import com.mffs.api.IBiometricIdentifierLink;
 import com.mffs.api.security.Permission;
 import com.mffs.common.TileMFFS;
-import com.mffs.common.items.card.CardLink;
+import com.mffs.common.items.card.ItemCardLink;
 import mekanism.api.IMekWrench;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
@@ -110,7 +110,7 @@ public abstract class MFFSMachine extends Block implements ITileEntityProvider {
                     }
                 }
                 return ((IMekWrench) player.getItemInUse().getItem()).canUseWrench(player, x, y, z) && wrenchMachine(world, x, y, z, player, side);
-            } else if (player.getItemInUse().getItem() instanceof CardLink) {
+            } else if (player.getItemInUse().getItem() instanceof ItemCardLink) {
                 return false;
             }
         }

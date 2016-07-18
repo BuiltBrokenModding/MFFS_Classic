@@ -42,7 +42,7 @@ public class MFFS {
             e.printStackTrace();
         }
         BlockForceField.BLOCK_FORCE_FIELD = (BlockForceField) Block.getBlockFromName(MFFS.MODID + ":forceField");
-        MinecraftForge.EVENT_BUS.register(new ModEventHandler());
+        MinecraftForge.EVENT_BUS.register(new ForgeSubscribeHandler());
         MFFS.channel.registerMessage(EntityToggle.ServerHandler.class, EntityToggle.class, 0, Side.SERVER);
         channel.registerMessage(FortronSync.ClientHandler.class, FortronSync.class, 1, Side.CLIENT);
         MFFS.channel.registerMessage(ChangeFrequency.ServerHandler.class, ChangeFrequency.class, 2, Side.SERVER);
@@ -51,7 +51,7 @@ public class MFFS {
         MFFS.channel.registerMessage(ItemByteToggle.ServerHandler.class, ItemByteToggle.class, 5, Side.SERVER);
         MFFS.channel.registerMessage(ItemStringToggle.ServerHandler.class, ItemStringToggle.class, 6, Side.SERVER);
         initialize.preInit(event);
-        ModConfiguration.load();
+        SettingConfiguration.load();
     }
 
     @EventHandler

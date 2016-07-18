@@ -53,7 +53,7 @@ public class RegisterManager {
      * Simply parses the item directory and registers them.
      */
     public static void parseItems() throws Exception {
-        List<String> names = getClassNames("items");
+        List<String> names = getClassNames("common/items");
         for (String name : names) {
             name = name.replace("/", ".");
             Class rawClass = (Class) Class.forName(name);
@@ -61,7 +61,7 @@ public class RegisterManager {
                 continue;
             }
             Item item = (Item) rawClass.newInstance();
-            name = rawClass.getSimpleName();
+            name = rawClass.getSimpleName().replace("Item", "");
             name = name.substring(0, 1).toLowerCase() + name.substring(1, name.length());
             item.setUnlocalizedName(name);
             item.setTextureName(MFFS.MODID + ":" + name);
@@ -74,7 +74,7 @@ public class RegisterManager {
      * Simply parses the item directory and registers them.
      */
     public static void parseBlocks() throws Exception {
-        List<String> names = getClassNames("blocks");
+        List<String> names = getClassNames("common/blocks");
         for (String name : names) {
             name = name.replace("/", ".");
             Class rawClass = (Class) Class.forName(name);
@@ -94,7 +94,7 @@ public class RegisterManager {
      * Simply parses the item directory and registers them.
      */
     public static void parseEntity() throws Exception {
-        List<String> names = getClassNames("tile");
+        List<String> names = getClassNames("common/tile");
         for (String name : names) {
             name = name.replace("/", ".");
             Class rawClass = (Class) Class.forName(name);
@@ -110,7 +110,7 @@ public class RegisterManager {
      * Simply parses the item directory and registers them.
      */
     public static void parseFluid() throws Exception {
-        List<String> names = getClassNames("fluids");
+        List<String> names = getClassNames("common/fluids");
         for (String name : names) {
             name = name.replace("/", ".");
             Class rawClass = (Class) Class.forName(name);

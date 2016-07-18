@@ -1,7 +1,7 @@
 package com.mffs.common.tile.type;
 
 import com.mffs.MFFS;
-import com.mffs.ModConfiguration;
+import com.mffs.SettingConfiguration;
 import com.mffs.api.IProjector;
 import com.mffs.api.modules.IModule;
 import com.mffs.api.modules.IProjectorMode;
@@ -9,14 +9,14 @@ import com.mffs.api.vector.Vector3D;
 import com.mffs.client.render.particles.FortronBeam;
 import com.mffs.client.render.particles.MovingFortron;
 import com.mffs.common.blocks.BlockForceField;
-import com.mffs.common.items.card.CardBlank;
-import com.mffs.common.items.modules.projector.ModuleDisintegration;
-import com.mffs.common.items.modules.projector.type.ModeCustom;
-import com.mffs.common.items.modules.upgrades.ModuleSilence;
-import com.mffs.common.items.modules.upgrades.ModuleSpeed;
+import com.mffs.common.items.card.ItemCardBlank;
+import com.mffs.common.items.modules.projector.ItemModuleDisintegration;
+import com.mffs.common.items.modules.projector.type.ItemModeCustom;
+import com.mffs.common.items.modules.upgrades.ItemModuleSilence;
+import com.mffs.common.items.modules.upgrades.ItemModuleSpeed;
 import com.mffs.common.net.packet.BeamRequest;
 import com.mffs.common.net.packet.ForcefieldCalculation;
-import com.mffs.common.tile.TileFieldInteraction;
+import com.mffs.common.tile.TileFieldMatrix;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import net.minecraft.block.*;
@@ -30,7 +30,7 @@ import java.util.Set;
 /**
  * @author Calclavia
  */
-public class TileForceFieldProjector extends TileFieldInteraction implements IProjector {
+public class TileForceFieldProjector extends TileFieldMatrix implements IProjector {
 
     /* Set of all forceFields by this entity */
     protected final Set<Vector3D> blocks = new HashSet<>();
@@ -69,7 +69,7 @@ public class TileForceFieldProjector extends TileFieldInteraction implements IPr
             if (isActive() && worldObj.isRemote)
                 this.animation += getFortronCost() / 10;
 
-            if (this.ticks % 40 == 0 && getModuleCount(ModuleSilence.class) <= 0)
+            if (this.ticks % 40 == 0 && getModuleCount(ItemModuleSilence.class) <= 0)
                 this.worldObj.playSoundEffect(this.xCoord + 0.5, this.yCoord + 0.5, this.zCoord + 0.5, MFFS.MODID + ":field", 0.6F, 1.0F - this.worldObj.rand.nextFloat() * 0.1F);
         } else if (!this.worldObj.isRemote) {
             destroyField();
@@ -115,7 +115,7 @@ public class TileForceFieldProjector extends TileFieldInteraction implements IPr
 
     @Override
     public int getProjectionSpeed() {
-        return 28 + 28 * getModuleCount(ModuleSpeed.class, getModuleSlots());
+        return 28 + 28 * getModuleCount(ItemModuleSpeed.class, getModuleSlots());
     }
 
     @Override
@@ -138,7 +138,7 @@ public class TileForceFieldProjector extends TileFieldInteraction implements IPr
     @Override
     public float getAmplifier() {
         IProjectorMode mode = getMode();
-        if (mode instanceof ModeCustom) {
+        if (mode instanceof ItemModeCustom) {
             //TODO: Custom mode
         }
         return Math.max(Math.min(getCalculatedField().size() / 1000, 10), 1);
@@ -153,7 +153,7 @@ public class TileForceFieldProjector extends TileFieldInteraction implements IPr
         if (this.isFinished && !this.isCalc && (!this.isComplete || this.markFieldUpdate || this.requireTicks)) {
             this.markFieldUpdate = false;
             int constructCount = 0;
-            int constructSpeed = Math.min(getProjectionSpeed(), ModConfiguration.MAX_FORCE_FIELDS_PER_TICK);
+            int constructSpeed = Math.min(getProjectionSpeed(), SettingConfiguration.MAX_FORCE_FIELDS_PER_TICK);
             synchronized (this.calculatedFields) {
                 Set<Vector3D> fieldToBeProjected = new HashSet(this.calculatedFields);
                 for (IModule module : getModules(getModuleSlots())) {
@@ -167,7 +167,7 @@ public class TileForceFieldProjector extends TileFieldInteraction implements IPr
                     Vector3D vec = it$.next();
                     Block block = worldObj.getBlock(vec.intX(), vec.intY(), vec.intZ());
 
-                    if (block == null || getModuleCount(ModuleDisintegration.class) > 0 && block.getBlockHardness(worldObj, vec.intX(), vec.intY(), vec.intZ()) != -1.0
+                    if (block == null || getModuleCount(ItemModuleDisintegration.class) > 0 && block.getBlockHardness(worldObj, vec.intX(), vec.intY(), vec.intZ()) != -1.0
                             || block.getMaterial().isLiquid() || block instanceof BlockSnow || block instanceof BlockVine || block instanceof BlockTallGrass || block instanceof BlockDeadBush
                             || block.isReplaceable(worldObj, vec.intX(), vec.intY(), vec.intZ())) {
                         if (vec != projector && !(block instanceof BlockForceField)) {
@@ -252,7 +252,7 @@ public class TileForceFieldProjector extends TileFieldInteraction implements IPr
     @Override
     public boolean isItemValidForSlot(int slot, ItemStack stack) {
         if (slot <= 1) {
-            return stack.getItem() instanceof CardBlank;
+            return stack.getItem() instanceof ItemCardBlank;
         } else if (slot == 2) {
             return stack.getItem() instanceof IProjectorMode;
         }

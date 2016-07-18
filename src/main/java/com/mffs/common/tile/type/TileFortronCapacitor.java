@@ -10,8 +10,8 @@ import com.mffs.api.fortron.IFortronFrequency;
 import com.mffs.api.modules.IModule;
 import com.mffs.api.utils.FortronHelper;
 import com.mffs.api.vector.Vector3D;
-import com.mffs.common.items.modules.upgrades.ModuleScale;
-import com.mffs.common.items.modules.upgrades.ModuleSpeed;
+import com.mffs.common.items.modules.upgrades.ItemModuleScale;
+import com.mffs.common.items.modules.upgrades.ItemModuleSpeed;
 import com.mffs.common.net.packet.EntityToggle;
 import com.mffs.common.tile.TileModuleAcceptor;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
@@ -103,12 +103,12 @@ public class TileFortronCapacitor extends TileModuleAcceptor implements IFortron
 
     @Override
     public int getTransmissionRange() {
-        return 15 + getModuleCount(ModuleScale.class);
+        return 15 + getModuleCount(ItemModuleScale.class);
     }
 
     @Override
     public int getTransmissionRate() {
-        return 250 + 50 * getModuleCount(ModuleSpeed.class);
+        return 250 + 50 * getModuleCount(ItemModuleSpeed.class);
     }
 
     @Override

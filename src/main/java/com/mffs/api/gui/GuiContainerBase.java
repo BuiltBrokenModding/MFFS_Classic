@@ -9,6 +9,7 @@ import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
@@ -19,6 +20,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -33,10 +35,8 @@ public class GuiContainerBase extends GuiContainer {
     public static final ResourceLocation baseTexture = new ResourceLocation(MFFS.MODID, "textures/gui/gui_base.png");
     ;
     public String tooltip = "";
-    protected int meterX = 54;
     protected int meterHeight = 49;
     protected int meterWidth = 14;
-    protected int meterEnd = this.meterX + this.meterWidth;
     protected int energyType = 0;
     protected HashMap<Matrix2d, String> tooltips = new HashMap();
     protected int containerWidth;
@@ -59,12 +59,12 @@ public class GuiContainerBase extends GuiContainer {
         while (it.hasNext()) {
             Map.Entry<Matrix2d, String> entry = (Map.Entry) it.next();
             if (entry.getKey().isIn(mouseX - this.guiLeft, mouseY - this.guiTop)) {
-                this.tooltip = (entry.getValue());
+                this.tooltip = entry.getValue();
                 break;
             }
         }
-        if ((this.tooltip != null) && (this.tooltip != "")) {
-            drawTooltip(mouseX - this.guiLeft, mouseY - this.guiTop, (String[]) Util.splitStringPerWord(this.tooltip, 5).toArray(new String[0]));
+        if (this.tooltip != null && !this.tooltip.isEmpty()) {
+            drawTooltip(mouseX - this.guiLeft, mouseY - this.guiTop, Util.splitStringPerWord(this.tooltip, 5));
         }
         this.tooltip = "";
     }
@@ -161,7 +161,18 @@ public class GuiContainerBase extends GuiContainer {
 
         drawTexturedModalRect(this.containerWidth + x, this.containerHeight + y, 54, 0, 107, 11);
         if (scale > 0.0F) {
-            drawTexturedModalRect(this.containerWidth + x, this.containerHeight + y, this.meterX, 11, (int) (scale * 107.0F), 11);
+            drawTexturedModalRect(this.containerWidth + x, this.containerHeight + y, 54, 11, (int) (scale * 107.0F), 11);
+        }
+    }
+
+    protected void drawForceVertical(int x, int y, float scale) {
+        this.mc.renderEngine.bindTexture(GUI_COMPONENTS);
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+
+        drawTexturedModalRect(this.containerWidth + x, this.containerHeight + y, 55, 38, 11, 107);
+        if (scale > 0.0F) {
+            int perc = (int) (scale * 107.0F);
+            drawTexturedModalRect(this.containerWidth + x, this.containerHeight + y + (107 - perc), 66, 38 + 107 - perc, 11, perc);
         }
     }
 

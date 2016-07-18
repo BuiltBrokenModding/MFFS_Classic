@@ -9,8 +9,8 @@ import com.mffs.api.security.IBiometricIdentifier;
 import com.mffs.api.security.Permission;
 import com.mffs.api.vector.Vector3D;
 import com.mffs.client.render.RenderForceFieldHandler;
-import com.mffs.common.items.modules.projector.ModuleShock;
-import com.mffs.common.items.modules.upgrades.ModuleGlow;
+import com.mffs.common.items.modules.projector.ItemModuleShock;
+import com.mffs.common.items.modules.upgrades.ItemModuleGlow;
 import com.mffs.common.tile.type.TileForceField;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -203,7 +203,7 @@ public class BlockForceField extends Block implements ITileEntityProvider, IForc
                         if (bio != null && bio.isAccessGranted(pl.getGameProfile().getName(), Permission.WARP))
                             return;
                     }
-                    entity.attackEntityFrom(ModuleShock.SHOCK_SOURCE, 100);
+                    entity.attackEntityFrom(ItemModuleShock.SHOCK_SOURCE, 100);
                 }
             }
         }
@@ -239,7 +239,7 @@ public class BlockForceField extends Block implements ITileEntityProvider, IForc
         if (tile instanceof TileForceField) {
             IProjector proj = ((TileForceField) tile).findProj();
             if (proj != null)
-                return Math.min(proj.getModuleCount(ModuleGlow.class), 64) / 64 * 15;
+                return Math.min(proj.getModuleCount(ItemModuleGlow.class), 64) / 64 * 15;
         }
         return 0;
     }

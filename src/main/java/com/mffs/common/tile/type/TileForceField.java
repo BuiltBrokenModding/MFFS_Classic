@@ -2,7 +2,7 @@ package com.mffs.common.tile.type;
 
 import com.mffs.api.vector.Vector3D;
 import com.mffs.common.TileMFFS;
-import com.mffs.common.items.modules.upgrades.ModuleCamouflage;
+import com.mffs.common.items.modules.upgrades.ItemModuleCamouflage;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -141,7 +141,7 @@ public final class TileForceField extends TileMFFS {
     private void refresh() {
         TileForceFieldProjector proj = findProj();
         if (proj != null) {
-            if (proj.getModuleCount(ModuleCamouflage.class) > 0) {
+            if (proj.getModuleCount(ItemModuleCamouflage.class) > 0) {
                 //TODO: CustomMode
                 for (int slot : proj.getModuleSlots()) {//TODO: Add exclusive slot for camoflauge / disintigration blocks
                     ItemStack stack = proj.getStackInSlot(slot);

@@ -11,7 +11,7 @@ import com.mffs.api.utils.MatrixHelper;
 import com.mffs.api.utils.UnitDisplay;
 import com.mffs.api.vector.Vector3D;
 import com.mffs.client.render.particles.FortronBeam;
-import com.mffs.common.items.card.CardFrequency;
+import com.mffs.common.items.card.ItemCardFrequency;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import mekanism.api.Coord4D;
@@ -34,7 +34,7 @@ import java.util.Set;
 /**
  * @author Calclavia
  */
-public class RemoteController extends CardFrequency implements ICoordLink {
+public class RemoteController extends ItemCardFrequency implements ICoordLink {
 
     /* This is the local version for caching */
     private Coord4D link;

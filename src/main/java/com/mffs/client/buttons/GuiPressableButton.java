@@ -1,7 +1,7 @@
 package com.mffs.client.buttons;
 
 import com.mffs.MFFS;
-import com.mffs.client.gui.MFFSGui;
+import com.mffs.client.gui.base.MFFSGui;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import net.minecraft.client.Minecraft;

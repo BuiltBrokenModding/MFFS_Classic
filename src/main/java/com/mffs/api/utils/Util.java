@@ -2,6 +2,7 @@ package com.mffs.api.utils;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import org.apache.commons.lang3.text.WordUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,19 +32,13 @@ public class Util {
     }
 
     /**
-     * @author Calclavia
+     * Takes a string and creates a new string out of a designated words per line.
+     * @param string
+     * @param wordsPerLine
+     * @return
      */
-    public static List<String> splitStringPerWord(String string, int wordsPerLine) {
-        String[] words = string.split(" ");
-        List<String> lines = new ArrayList();
-        for (int lineCount = 0; lineCount < Math.ceil(words.length / wordsPerLine); lineCount++) {
-            String stringInLine = "";
-            for (int i = lineCount * wordsPerLine; i < Math.min(wordsPerLine + lineCount * wordsPerLine, words.length); i++) {
-                stringInLine = stringInLine + words[i] + " ";
-            }
-            lines.add(stringInLine.trim());
-        }
-        return lines;
+    public static String[] splitStringPerWord(String string, int wordsPerLine) {
+        return WordUtils.wrap(string, wordsPerLine).split("\\r?\\n");
     }
 
     /**

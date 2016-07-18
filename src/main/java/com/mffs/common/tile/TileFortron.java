@@ -1,7 +1,7 @@
 package com.mffs.common.tile;
 
 import com.mffs.MFFS;
-import com.mffs.ModConfiguration;
+import com.mffs.SettingConfiguration;
 import com.mffs.common.TransferMode;
 import com.mffs.api.card.ICard;
 import com.mffs.api.fortron.FrequencyGrid;
@@ -32,7 +32,7 @@ public abstract class TileFortron extends TileFrequency implements IFluidHandler
     public void updateEntity() {
         super.updateEntity();
 
-        if (this.ticks % ModConfiguration.FORTRON_SYNC_TICKS == 0 && !worldObj.isRemote) {//We do not need to send by client!
+        if (this.ticks % SettingConfiguration.FORTRON_SYNC_TICKS == 0 && !worldObj.isRemote) {//We do not need to send by client!
             //TODO: Send fortron only to people in the interface!
             MFFS.channel.sendToAllAround(new FortronSync(this), new NetworkRegistry.TargetPoint(this.worldObj.provider.dimensionId, xCoord, yCoord, zCoord, 25));
         }

@@ -1,10 +1,10 @@
 package com.mffs.common.tile.type;
 
-import com.mffs.ModConfiguration;
+import com.mffs.SettingConfiguration;
 import com.mffs.api.modules.IModule;
-import com.mffs.common.items.card.CardFrequency;
-import com.mffs.common.items.modules.upgrades.ModuleScale;
-import com.mffs.common.items.modules.upgrades.ModuleSpeed;
+import com.mffs.common.items.card.ItemCardFrequency;
+import com.mffs.common.items.modules.upgrades.ItemModuleScale;
+import com.mffs.common.items.modules.upgrades.ItemModuleSpeed;
 import com.mffs.common.tile.TileElectrical;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -56,7 +56,7 @@ public final class TileCoercionDeriver extends TileElectrical {
         if (!worldObj.isRemote) {
 
             if (isActive()) {
-                if (isInversed && ModConfiguration.ENABLE_ELECTRICITY) {
+                if (isInversed && SettingConfiguration.ENABLE_ELECTRICITY) {
                     if (storage.getEnergyStored() < storage.getMaxEnergyStored()) {
                         int produce = (int) Math.floor(requestFortron(getProductionRate() / 20, true) / 0.001);
                         storage.receiveEnergy(produce, false);
@@ -65,13 +65,13 @@ public final class TileCoercionDeriver extends TileElectrical {
                 } else if (getFortronEnergy() < getFortronCapacity()) {
                     //CHeck slot 1 for batteries etc
                     //TODO: Discharge battery
-                    if (!ModConfiguration.ENABLE_ELECTRICITY && isItemValidForSlot(SLOT_FUEL, getStackInSlot(SLOT_FUEL))
+                    if (!SettingConfiguration.ENABLE_ELECTRICITY && isItemValidForSlot(SLOT_FUEL, getStackInSlot(SLOT_FUEL))
                             || storage.extractEnergy(storage.getMaxExtract(), true) >= storage.getMaxExtract()) {
                         provideFortron(getProductionRate(), true);
                         storage.extractEnergy(storage.getMaxExtract(), false);
                         if (processTime == 0 && isItemValidForSlot(SLOT_FUEL, getStackInSlot(SLOT_FUEL))) {
                             decrStackSize(SLOT_FUEL, 1);
-                            this.processTime = (200 * Math.max(getModuleCount(ModuleScale.class) / 20, 1));
+                            this.processTime = (200 * Math.max(getModuleCount(ItemModuleScale.class) / 20, 1));
                         }
                         if (processTime > 0) {
                             processTime--;
@@ -104,12 +104,12 @@ public final class TileCoercionDeriver extends TileElectrical {
     }
 
     public float getWattage() {
-        return (ModConfiguration.BASE_POWER_REQUIRED + ModConfiguration.BASE_POWER_REQUIRED * (getModuleCount(ModuleSpeed.class) / 8));
+        return (SettingConfiguration.BASE_POWER_REQUIRED + SettingConfiguration.BASE_POWER_REQUIRED * (getModuleCount(ItemModuleSpeed.class) / 8));
     }
 
     public int getProductionRate() {
         if (isActive()) {
-            int production = (int) (getWattage() / 20.0F * 0.001F * ModConfiguration.FORTRON_PRODUCTION_MULTIPLIER);
+            int production = (int) (getWattage() / 20.0F * 0.001F * SettingConfiguration.FORTRON_PRODUCTION_MULTIPLIER);
 
             if (this.processTime > 0) {
                 production *= 4;
@@ -127,7 +127,7 @@ public final class TileCoercionDeriver extends TileElectrical {
             }
             switch (slotID) {
                 case SLOT_FREQUENCY:
-                    return itemStack.getItem() instanceof CardFrequency;
+                    return itemStack.getItem() instanceof ItemCardFrequency;
                 case SLOT_BATTERY://battery
                     return false;
                 case SLOT_FUEL:

@@ -16,6 +16,16 @@ public class Matrix2d {
         this(new Vector3D(), new Vector3D());
     }
 
+    public Matrix2d(double minX, double minY, double size) {
+        this.min = new Vector3D(minX, minY, 0);
+        this.max = new Vector3D(minX + size, minY + size, 0);
+    }
+
+    public Matrix2d(Vector2d min, double radius) {
+        this.min = new Vector3D(min.x, min.y, 0);
+        this.max = new Vector3D(min.x + radius, min.y + radius, 0);
+    }
+
     public Matrix2d(Vector3D min, Vector3D max) {
         this.min = min;
         this.max = max;
@@ -44,8 +54,8 @@ public class Matrix2d {
     }
 
     public boolean isIn(double xP, double zP) {
-        return (xP >= this.min.x) && (zP <= this.max.z)
-                && xP <= this.max.x && zP >= min.z;
+        return (xP >= this.min.x) && (zP <= this.max.y)
+                && xP <= this.max.x && zP >= min.y;
     }
 
     public void expand(Vector3D difference) {

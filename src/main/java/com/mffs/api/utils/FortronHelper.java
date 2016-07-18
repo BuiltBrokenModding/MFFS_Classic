@@ -5,7 +5,7 @@ import com.mffs.api.fortron.IFortronFrequency;
 import com.mffs.api.modules.IModuleAcceptor;
 import com.mffs.api.vector.Vector3D;
 import com.mffs.client.render.particles.FortronBeam;
-import com.mffs.common.items.modules.upgrades.ModuleCamouflage;
+import com.mffs.common.items.modules.upgrades.ItemModuleCamouflage;
 import cpw.mods.fml.client.FMLClientHandler;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -87,7 +87,7 @@ public class FortronHelper {
     public static void transfer(IFortronFrequency freq, IFortronFrequency rec, int joul, int limit) {
         TileEntity entity = (TileEntity) freq;
         World world = entity.getWorldObj();
-        boolean camo = (freq instanceof IModuleAcceptor && ((IModuleAcceptor) freq).getModuleCount(ModuleCamouflage.class) > 0);
+        boolean camo = (freq instanceof IModuleAcceptor && ((IModuleAcceptor) freq).getModuleCount(ItemModuleCamouflage.class) > 0);
 
         if (joul < 0) { //we switch the frequencies! Means they have less than the receiver
             IFortronFrequency dummy = freq;

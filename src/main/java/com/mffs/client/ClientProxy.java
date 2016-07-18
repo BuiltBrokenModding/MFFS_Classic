@@ -6,7 +6,7 @@ import com.mffs.client.gui.GuiBiometricIdentifier;
 import com.mffs.client.gui.GuiCoercionDeriver;
 import com.mffs.client.gui.GuiForceFieldProjector;
 import com.mffs.client.gui.GuiFortronCapacitor;
-import com.mffs.client.gui.GuiCardID;
+import com.mffs.client.gui.items.GuiCardID;
 import com.mffs.client.render.*;
 import com.mffs.common.tile.type.TileBiometricIdentifier;
 import com.mffs.common.tile.type.TileCoercionDeriver;

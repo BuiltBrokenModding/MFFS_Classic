@@ -2,7 +2,7 @@ package com.mffs.common.tile;
 
 import com.mffs.api.modules.IModule;
 import com.mffs.api.modules.IModuleAcceptor;
-import com.mffs.common.items.modules.upgrades.ModuleCapacity;
+import com.mffs.common.items.modules.upgrades.ItemModuleCapacity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -23,7 +23,7 @@ public abstract class TileModuleAcceptor extends TileFortron implements IModuleA
     @Override
     public void start() {
         super.start();
-        this.tank.setCapacity((getModuleCount(ModuleCapacity.class) * this.capacityBoost + this.capacityBase) * 1_000);
+        this.tank.setCapacity((getModuleCount(ItemModuleCapacity.class) * this.capacityBoost + this.capacityBase) * 1_000);
     }
 
     @Override
@@ -134,7 +134,7 @@ public abstract class TileModuleAcceptor extends TileFortron implements IModuleA
     @Override
     public void onSlotsChanged(int... slots) {
         super.onSlotsChanged(slots);
-        this.tank.setCapacity(getModuleCount(ModuleCapacity.class) * capacityBoost + capacityBase * 1000);
+        this.tank.setCapacity(getModuleCount(ItemModuleCapacity.class) * capacityBoost + capacityBase * 1000);
     }
 
     public float getAmplifier() {
