@@ -4,7 +4,7 @@ import com.mffs.MFFS;
 import com.mffs.api.gui.GuiSlotType;
 import com.mffs.api.utils.UnitDisplay;
 import com.mffs.client.gui.base.MFFSGui;
-import com.mffs.common.container.CoercionDeriverContainer;
+import com.mffs.common.container.entity.CoercionDeriverContainer;
 import com.mffs.common.net.packet.EntityToggle;
 import com.mffs.common.tile.type.TileCoercionDeriver;
 import cpw.mods.fml.common.registry.LanguageRegistry;

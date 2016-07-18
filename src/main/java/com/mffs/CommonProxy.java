@@ -1,6 +1,10 @@
 package com.mffs;
 
 import com.mffs.common.container.*;
+import com.mffs.common.container.entity.BiometricContainer;
+import com.mffs.common.container.entity.CoercionDeriverContainer;
+import com.mffs.common.container.entity.ForceFieldProjectorContainer;
+import com.mffs.common.container.entity.FortronCapacitorContainer;
 import com.mffs.common.fluids.Fortron;
 import com.mffs.common.tile.type.TileBiometricIdentifier;
 import com.mffs.common.tile.type.TileCoercionDeriver;

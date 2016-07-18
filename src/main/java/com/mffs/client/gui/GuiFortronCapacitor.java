@@ -5,7 +5,7 @@ import com.mffs.api.fortron.IFortronFrequency;
 import com.mffs.api.utils.UnitDisplay;
 import com.mffs.client.buttons.TransferModeButton;
 import com.mffs.client.gui.base.MFFSGui;
-import com.mffs.common.container.FortronCapacitorContainer;
+import com.mffs.common.container.entity.FortronCapacitorContainer;
 import com.mffs.common.net.packet.EntityToggle;
 import com.mffs.common.tile.type.TileFortronCapacitor;
 import net.minecraft.client.gui.GuiButton;

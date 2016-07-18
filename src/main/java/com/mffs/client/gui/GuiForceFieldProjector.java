@@ -1,18 +1,13 @@
 package com.mffs.client.gui;
 
 import com.mffs.MFFS;
-import com.mffs.api.gui.GuiSlotType;
 import com.mffs.api.utils.UnitDisplay;
-import com.mffs.api.vector.Matrix2d;
-import com.mffs.api.vector.Vector3D;
 import com.mffs.client.buttons.GuiIcon;
 import com.mffs.client.gui.base.GuiMatrix;
-import com.mffs.client.gui.base.MFFSGui;
-import com.mffs.common.container.ForceFieldProjectorContainer;
+import com.mffs.common.container.entity.ForceFieldProjectorContainer;
 import com.mffs.common.net.packet.EntityToggle;
 import com.mffs.common.tile.TileFieldMatrix;
 import com.mffs.common.tile.type.TileForceFieldProjector;
-import cpw.mods.fml.common.registry.LanguageRegistry;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -36,9 +31,6 @@ public class GuiForceFieldProjector extends GuiMatrix {
         super(new ForceFieldProjectorContainer(player, entity), entity);
     }
 
-    /* Bounds of the force box */
-    public static final Matrix2d FORCE_BOUNDS = new Matrix2d(new Vector3D(175, 0, 0), new Vector3D(186, 107, 0));
-
     @Override
     public void initGui() {
         this.textFieldPos = new Vector2d(30, 115);
@@ -61,11 +53,6 @@ public class GuiForceFieldProjector extends GuiMatrix {
 
         int cost = proj.getFortronCost() * 20;
         this.fontRendererObj.drawString(EnumChatFormatting.RED + (cost > 0 ? "-" : "") + UnitDisplay.getDisplayShort(cost, UnitDisplay.Unit.LITER) + "/s", 120, 119, 4210752);
-
-        if(FORCE_BOUNDS.isIn(x - this.guiLeft, y - this.guiTop))
-            drawTooltip(x - this.guiLeft, y - this.guiTop, UnitDisplay.getDisplayShort(proj.getFortronEnergy(), UnitDisplay.Unit.LITER));
-
-        drawForceVertical(50, -10, proj.getFortronEnergy() > 0 ? ((float) proj.getFortronEnergy()) / proj.getFortronCapacity() : 0);
         super.drawGuiContainerForegroundLayer(x, y);
     }
 

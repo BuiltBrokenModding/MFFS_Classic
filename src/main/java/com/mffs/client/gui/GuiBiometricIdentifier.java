@@ -1,7 +1,7 @@
 package com.mffs.client.gui;
 
 import com.mffs.client.gui.base.MFFSGui;
-import com.mffs.common.container.BiometricContainer;
+import com.mffs.common.container.entity.BiometricContainer;
 import com.mffs.common.tile.type.TileBiometricIdentifier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumChatFormatting;

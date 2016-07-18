@@ -9,7 +9,9 @@ import com.mffs.api.vector.Vector3D;
 import com.mffs.client.render.particles.FortronBeam;
 import com.mffs.client.render.particles.MovingFortron;
 import com.mffs.common.blocks.BlockForceField;
+import com.mffs.common.items.ItemMode;
 import com.mffs.common.items.card.ItemCardBlank;
+import com.mffs.common.items.card.ItemCardFrequency;
 import com.mffs.common.items.modules.projector.ItemModuleDisintegration;
 import com.mffs.common.items.modules.projector.type.ItemModeCustom;
 import com.mffs.common.items.modules.upgrades.ItemModuleSilence;
@@ -20,12 +22,11 @@ import com.mffs.common.tile.TileFieldMatrix;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import net.minecraft.block.*;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Calclavia
@@ -233,6 +234,36 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
     }
 
     /**
+     * Gets the Filtered stacks based on Items.
+     * @return
+     */
+    public List<Item> getFilterItems() {
+        List<Item> stacks = new ArrayList<>();
+        for(int slot = 26; slot < 32; slot++) {
+            ItemStack stack = getStackInSlot(slot);
+            if(stack != null) {
+                stacks.add(stack.getItem());
+            }
+        }
+        return stacks;
+    }
+
+    /**
+     * Gets the stacks in the filter.
+     * @return
+     */
+    public List<ItemStack> getFilterStacks() {
+        List<ItemStack> stacks = new ArrayList<>();
+        for(int slot = 26; slot < 32; slot++) {
+            ItemStack stack = getStackInSlot(slot);
+            if(stack != null) {
+                stacks.add(stack);
+            }
+        }
+        return stacks;
+    }
+
+    /**
      * @return
      */
     @Override
@@ -251,12 +282,17 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
      */
     @Override
     public boolean isItemValidForSlot(int slot, ItemStack stack) {
-        if (slot <= 1) {
-            return stack.getItem() instanceof ItemCardBlank;
-        } else if (slot == 2) {
-            return stack.getItem() instanceof IProjectorMode;
+        switch(slot) {
+            case 0:
+                return stack.getItem() instanceof ItemCardFrequency;
+
+            case 1:
+                return stack.getItem() instanceof ItemMode;
         }
-        return slot >= 15 || stack.getItem() instanceof IModule;
+
+        if(slot < 26)
+            return stack.getItem() instanceof IModule;
+        return true;
     }
 
     /**

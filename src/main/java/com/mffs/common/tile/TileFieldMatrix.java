@@ -28,15 +28,15 @@ public abstract class TileFieldMatrix extends TileModuleAcceptor implements IFie
     protected static final int MODULE_SLOT_ID = 2;
     /* SLot ids based on direction ordinal */
     private static final int[][] SLOT_DIRECTIONS = {
-            {6, 14},
-            {3, 11},
-            {7, 9},
-            {8, 10},
+            {12, 13},
+            {10, 11},
             {4, 5},
-            {12, 13}
+            {2, 3},
+            {6, 7},
+            {8, 9}
     };
     /* The slots the modules occupy */
-    public static int[] MODULE_SLOTS = {15, 16, 17, 18, 19, 20};
+    public static int[] MODULE_SLOTS = {14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24};
     /* Holds information on positions that have been finished */
     protected final Set<Vector3D> calculatedFields = Collections.synchronizedSet(new HashSet<Vector3D>());
     /* Tasks that have been stored */

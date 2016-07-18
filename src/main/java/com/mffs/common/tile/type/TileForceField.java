@@ -143,8 +143,7 @@ public final class TileForceField extends TileMFFS {
         if (proj != null) {
             if (proj.getModuleCount(ItemModuleCamouflage.class) > 0) {
                 //TODO: CustomMode
-                for (int slot : proj.getModuleSlots()) {//TODO: Add exclusive slot for camoflauge / disintigration blocks
-                    ItemStack stack = proj.getStackInSlot(slot);
+                for (ItemStack stack : proj.getFilterStacks()) {
                     if (stack != null && stack.getItem() instanceof ItemBlock) {
                         this.camo = stack;
                         return;

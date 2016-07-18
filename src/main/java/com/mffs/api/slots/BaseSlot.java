@@ -7,7 +7,7 @@ import net.minecraft.item.ItemStack;
 /**
  * Created by pwaln on 6/3/2016.
  */
-public class MachineSlot<ENTITY extends IInventory> extends Slot {
+public class BaseSlot<ENTITY extends IInventory> extends Slot {
 
     /* The IInventory that will be assigned. */
     protected ENTITY inventoryTile;
@@ -20,7 +20,7 @@ public class MachineSlot<ENTITY extends IInventory> extends Slot {
      * @param xPos   The Xpossition of the slot.
      * @param yPos   The Y position of the slot.
      */
-    public MachineSlot(ENTITY entity, int slotId, int xPos, int yPos) {
+    public BaseSlot(ENTITY entity, int slotId, int xPos, int yPos) {
         super(entity, slotId, xPos, yPos);
         this.inventoryTile = entity;
     }

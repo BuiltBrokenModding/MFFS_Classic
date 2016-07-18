@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack;
 /**
  * Created by pwaln on 6/3/2016.
  */
-public class ActiveSlot<ENTITY extends IInventory> extends MachineSlot {
+public class ActiveSlot<ENTITY extends IInventory> extends BaseSlot {
 
     /**
      * Constructor.

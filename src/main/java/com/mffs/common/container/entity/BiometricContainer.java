@@ -1,8 +1,7 @@
-package com.mffs.common.container;
+package com.mffs.common.container.entity;
 
-import com.mffs.api.slots.ActiveSlot;
 import com.mffs.api.slots.CardSlot;
-import com.mffs.api.slots.MachineSlot;
+import com.mffs.common.container.PlayerContainer;
 import com.mffs.common.tile.type.TileBiometricIdentifier;
 import net.minecraft.entity.player.EntityPlayer;
 

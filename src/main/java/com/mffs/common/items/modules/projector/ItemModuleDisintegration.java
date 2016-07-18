@@ -54,7 +54,7 @@ public class ItemModuleDisintegration extends BaseModule {
     @Override
     public int onProject(IProjector projector, Vector3D position) {
         if (projector.getTicks() % 40 == 0) {
-            TileEntity entity = (TileEntity) projector;
+            TileForceFieldProjector entity = (TileForceFieldProjector) projector;
             Block block = position.getBlock(entity.getWorldObj());
 
             if (block != null && !(block instanceof BlockAir)) {
@@ -62,10 +62,9 @@ public class ItemModuleDisintegration extends BaseModule {
                 boolean aprox = projector.getModuleCount(ItemModuleApproximation.class) > 0;
                 boolean blockMatch = false;
                 ItemStack search = new ItemStack(block, meta);
-                for (int slot : projector.getModuleSlots()) {
-                    ItemStack item = projector.getStackInSlot(slot);
+                for (ItemStack item : entity.getFilterStacks()) {
                     if (item != null && item.getItem() instanceof ItemBlock) {
-                        if (item == search || ((ItemBlock) item.getItem()).field_150939_a == block && aprox) {
+                        if (item.equals(search) || ((ItemBlock) item.getItem()).field_150939_a == block && aprox) {
                             blockMatch = true;
                             break;
                         }
