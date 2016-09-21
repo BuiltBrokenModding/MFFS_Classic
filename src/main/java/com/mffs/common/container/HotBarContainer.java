@@ -9,7 +9,6 @@ import net.minecraft.item.ItemStack;
  * Created by Poopsicle360 on 7/16/2016.
  */
 public class HotBarContainer extends Container {
-
     /**
      *
      * @param player

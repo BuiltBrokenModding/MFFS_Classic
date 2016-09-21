@@ -61,15 +61,17 @@ public class GuiCardID extends GuiItemBase {
     public void updateScreen() {
         int index = (int) (scroll.getBar() * (buttonList.size() - 1));
         int maxIndex = Math.min(index + 3, Permission.values().length - 1);
+        final ItemStack stack = player.getCurrentEquippedItem();
+        if (stack == null || !(stack.getItem() instanceof ICardIdentification)) {
+            player.closeScreen();
+            return;
+        }
         buttonList.forEach(button -> {
             if(button instanceof GuiButton) {
                 GuiButton b = (GuiButton) button;
                 if(b.id >= index && b.id <= maxIndex) {
 
                     Permission perm = Permission.getPerm(b.id);
-                    ItemStack stack = player.getCurrentEquippedItem();
-                    if (!(stack.getItem() instanceof ICardIdentification))
-                        return;
                     ICardIdentification icard = (ICardIdentification) stack.getItem();
                     b.displayString = (stack != null && icard.hasPermission(stack, perm) ? ChatFormatting.GREEN : ChatFormatting.RED) + LanguageRegistry.instance().getStringLocalization("gui." + perm.name() + ".name");
                     b.xPosition = width / 2 - 80;

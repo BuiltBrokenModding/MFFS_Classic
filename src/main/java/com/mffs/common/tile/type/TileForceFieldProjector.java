@@ -111,7 +111,7 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
 
     @Override
     public int getSizeInventory() {
-        return 21;
+        return 32;
     }
 
     @Override

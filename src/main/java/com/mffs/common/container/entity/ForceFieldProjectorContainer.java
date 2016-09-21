@@ -18,7 +18,7 @@ public final class ForceFieldProjectorContainer extends MatrixContainer {
         super(player, field);
 
         for(int x = 0; x < 2; x++)
-            for(int y = 0; y < 2; y++)
+            for(int y = 0; y < 3; y++)
                 addSlotToContainer(new BaseSlot<>(field, x + y * 2 + (1 + 25), 21 + 18 * x, 31 + 18 * y));
         addPlayerInventory(player);
     }
