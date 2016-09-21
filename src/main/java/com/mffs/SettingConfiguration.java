@@ -32,6 +32,9 @@ public class SettingConfiguration {
     /* Deteremines if items will be collected upon death of personel */
     public static boolean COLLECT_ON_PERSONELL_KILL = false;
 
+    /* Enables debug mode */
+    public static boolean DEV_MODE = false;
+
     public static void load() {
         CONFIGURATION.load();
 
@@ -88,6 +91,7 @@ public class SettingConfiguration {
         FORTRON_PRODUCTION_MULTIPLIER = (float) CONFIGURATION.get("energy", "Fortron Production Multiplier", FORTRON_PRODUCTION_MULTIPLIER).getDouble(FORTRON_PRODUCTION_MULTIPLIER);
         BASE_POWER_REQUIRED = CONFIGURATION.get("energy", "Base Coercion Deriver Power Consumption", BASE_POWER_REQUIRED).getInt(BASE_POWER_REQUIRED);
 
+        DEV_MODE = CONFIGURATION.getBoolean("Debug Mode", "Configuration", DEV_MODE, "This is for developers!");
         CONFIGURATION.save();
 
     }

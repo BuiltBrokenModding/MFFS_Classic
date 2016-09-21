@@ -36,7 +36,7 @@ public class RegisterManager {
 
     public static List<String> getClassNames(String directory) throws IOException {
         List<String> files = new ArrayList<>();
-        JarInputStream stream = new JarInputStream(new FileInputStream("./libs/" + MFFS.MODID + "-" + MFFS.VERSION + ".jar"));
+        JarInputStream stream = new JarInputStream(new FileInputStream((!SettingConfiguration.DEV_MODE ? "./mods/" : "./libs/") + MFFS.MODID + "-" + MFFS.VERSION + ".jar"));
         JarEntry entry;
         while (true) {
             entry = stream.getNextJarEntry();

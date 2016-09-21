@@ -32,6 +32,7 @@ public class MFFS {
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         channel = new SimpleNetworkWrapper(MODID);
+        SettingConfiguration.load();
         try {
             RegisterManager.parseItems();
             RegisterManager.parseBlocks();
@@ -51,7 +52,6 @@ public class MFFS {
         MFFS.channel.registerMessage(ItemByteToggle.ServerHandler.class, ItemByteToggle.class, 5, Side.SERVER);
         MFFS.channel.registerMessage(ItemStringToggle.ServerHandler.class, ItemStringToggle.class, 6, Side.SERVER);
         initialize.preInit(event);
-        SettingConfiguration.load();
     }
 
     @EventHandler
