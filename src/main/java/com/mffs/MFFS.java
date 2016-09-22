@@ -24,7 +24,7 @@ public class MFFS {
     public static MFFS mffs_mod;
 
     @SidedProxy(clientSide = "com.mffs.client.ClientProxy", serverSide = "com.mffs.CommonProxy")
-    public static CommonProxy initialize;
+    public static CommonProxy proxy;
 
     /* This is the communication channel of the mod */
     public static SimpleNetworkWrapper channel;
@@ -38,7 +38,7 @@ public class MFFS {
             RegisterManager.parseBlocks();
             RegisterManager.parseEntity();
             RegisterManager.parseFluid();
-            NetworkRegistry.INSTANCE.registerGuiHandler(this, initialize);
+            NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -51,16 +51,16 @@ public class MFFS {
         MFFS.channel.registerMessage(BeamRequest.ClientHandler.class, BeamRequest.class, 4, Side.CLIENT);
         MFFS.channel.registerMessage(ItemByteToggle.ServerHandler.class, ItemByteToggle.class, 5, Side.SERVER);
         MFFS.channel.registerMessage(ItemStringToggle.ServerHandler.class, ItemStringToggle.class, 6, Side.SERVER);
-        initialize.preInit(event);
+        proxy.preInit(event);
     }
 
     @EventHandler
     public void init(FMLInitializationEvent event) {
-        initialize.init(event);
+        proxy.init(event);
     }
 
     @EventHandler
     public void postInit(FMLPostInitializationEvent event) {
-        initialize.postInit(event);
+        proxy.postInit(event);
     }
 }

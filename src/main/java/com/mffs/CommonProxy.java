@@ -1,5 +1,6 @@
 package com.mffs;
 
+import com.mffs.api.vector.Vector3D;
 import com.mffs.common.container.*;
 import com.mffs.common.container.entity.BiometricContainer;
 import com.mffs.common.container.entity.CoercionDeriverContainer;
@@ -81,6 +82,19 @@ public class CommonProxy implements IGuiHandler {
         return null;
     }
 
+    /**
+     * Registers a beam Effect. Client Side ONLY.
+     * @param world The world the beam occurs.
+     * @param origin The origin of the beam.
+     * @param dest The destination of the beam.
+     * @param r The red hue.
+     * @param g The green hue.
+     * @param b The blue hue.
+     * @param lifespan How long the particles should last.
+     */
+    public void registerBeamEffect(World world, Vector3D origin, Vector3D dest, float r, float g, float b, int lifespan){}
+
+    public void animateFortron(World world, Vector3D origin, float r, float g, float b, int life) {}
     /**
      * Returns a Container to be displayed to the user. On the client side, this
      * needs to return a instance of GuiScreen On the server side, this needs to

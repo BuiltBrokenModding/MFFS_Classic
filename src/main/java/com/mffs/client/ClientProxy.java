@@ -2,16 +2,20 @@ package com.mffs.client;
 
 import com.mffs.CommonProxy;
 import com.mffs.MFFS;
+import com.mffs.api.vector.Vector3D;
 import com.mffs.client.gui.GuiBiometricIdentifier;
 import com.mffs.client.gui.GuiCoercionDeriver;
 import com.mffs.client.gui.GuiForceFieldProjector;
 import com.mffs.client.gui.GuiFortronCapacitor;
 import com.mffs.client.gui.items.GuiCardID;
 import com.mffs.client.render.*;
+import com.mffs.client.render.particles.FortronBeam;
+import com.mffs.client.render.particles.MovingFortron;
 import com.mffs.common.tile.type.TileBiometricIdentifier;
 import com.mffs.common.tile.type.TileCoercionDeriver;
 import com.mffs.common.tile.type.TileForceFieldProjector;
 import com.mffs.common.tile.type.TileFortronCapacitor;
+import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -92,5 +96,15 @@ public class ClientProxy extends CommonProxy {
             return new GuiCardID(player);
         }
         return null;
+    }
+
+    @Override
+    public void registerBeamEffect(World world, Vector3D origin, Vector3D dest, float r, float g, float b, int lifespan) {
+        FMLClientHandler.instance().getClient().effectRenderer.addEffect(new FortronBeam(world, origin, dest, r, g, b, lifespan));
+    }
+
+    @Override
+    public void animateFortron(World world, Vector3D dest, float r, float g, float b, int life) {
+        FMLClientHandler.instance().getClient().effectRenderer.addEffect(new MovingFortron(world, dest, r, g, b, life));
     }
 }

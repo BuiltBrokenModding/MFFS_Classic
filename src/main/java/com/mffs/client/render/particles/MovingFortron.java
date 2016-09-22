@@ -4,6 +4,8 @@ import com.mffs.api.vector.Vector3D;
 import com.mffs.client.render.RenderBlockHandler;
 import com.mffs.common.blocks.BlockForceField;
 import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderBlocks;
@@ -11,6 +13,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 
+@SideOnly(Side.CLIENT)
 public class MovingFortron extends EntityFX {
     public MovingFortron(World par1World, Vector3D position, float red, float green, float blue, int age) {
 

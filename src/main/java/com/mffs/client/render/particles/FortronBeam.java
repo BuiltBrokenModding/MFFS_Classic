@@ -3,6 +3,8 @@ package com.mffs.client.render.particles;
 import com.mffs.MFFS;
 import com.mffs.api.vector.Vector3D;
 import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.renderer.Tessellator;
@@ -15,6 +17,7 @@ import org.lwjgl.opengl.GL11;
 /**
  * @author Calclavia
  */
+@SideOnly(Side.CLIENT)
 public class FortronBeam extends EntityFX {
 
     public static final ResourceLocation PARTICLE_RESOURCE = new ResourceLocation("textures/particle/particles.png");

@@ -6,11 +6,8 @@ import com.mffs.api.IProjector;
 import com.mffs.api.modules.IModule;
 import com.mffs.api.modules.IProjectorMode;
 import com.mffs.api.vector.Vector3D;
-import com.mffs.client.render.particles.FortronBeam;
-import com.mffs.client.render.particles.MovingFortron;
 import com.mffs.common.blocks.BlockForceField;
 import com.mffs.common.items.ItemMode;
-import com.mffs.common.items.card.ItemCardBlank;
 import com.mffs.common.items.card.ItemCardFrequency;
 import com.mffs.common.items.modules.projector.ItemModuleDisintegration;
 import com.mffs.common.items.modules.projector.type.ItemModeCustom;
@@ -19,7 +16,6 @@ import com.mffs.common.items.modules.upgrades.ItemModuleSpeed;
 import com.mffs.common.net.packet.BeamRequest;
 import com.mffs.common.net.packet.ForcefieldCalculation;
 import com.mffs.common.tile.TileFieldMatrix;
-import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import net.minecraft.block.*;
 import net.minecraft.item.Item;
@@ -310,8 +306,8 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
             return null; //we are done!
         } else if (imessage instanceof BeamRequest) {
             BeamRequest req = (BeamRequest) imessage;
-            FMLClientHandler.instance().getClient().effectRenderer.addEffect(new FortronBeam(worldObj, req.destination.translate(.5), new Vector3D(this).translate(.5), 1.0F, 0.0F, 0.0F, 40));
-            FMLClientHandler.instance().getClient().effectRenderer.addEffect(new MovingFortron(worldObj, req.destination, 1.0F, 0.0F, 0.0F, 60));
+            MFFS.proxy.registerBeamEffect(worldObj, req.destination.translate(.5), new Vector3D(this).translate(.5), 1.0F, 0.0F, 0.0F, 40);
+            MFFS.proxy.animateFortron(worldObj, req.destination, 1.0F, 0.0F, 0.0F, 60);
             return null;
         }
         return super.handleMessage(imessage);

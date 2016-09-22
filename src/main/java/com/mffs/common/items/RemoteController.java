@@ -1,5 +1,6 @@
 package com.mffs.common.items;
 
+import com.mffs.MFFS;
 import com.mffs.RegisterManager;
 import com.mffs.api.IBlockFrequency;
 import com.mffs.api.card.ICoordLink;
@@ -10,9 +11,7 @@ import com.mffs.api.security.Permission;
 import com.mffs.api.utils.MatrixHelper;
 import com.mffs.api.utils.UnitDisplay;
 import com.mffs.api.vector.Vector3D;
-import com.mffs.client.render.particles.FortronBeam;
 import com.mffs.common.items.card.ItemCardFrequency;
-import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import mekanism.api.Coord4D;
 import net.minecraft.block.Block;
@@ -147,9 +146,7 @@ public class RemoteController extends ItemCardFrequency implements ICoordLink {
                             int consumedEnergy = fortronTile.requestFortron((int) Math.ceil(requiredEnergy / freq.size()), true);
 
                             if (consumedEnergy > 0) {
-                                if (world.isRemote)
-                                    FMLClientHandler.instance().getClient().effectRenderer.addEffect(new FortronBeam(world, center, new Vector3D((TileEntity) fortronTile).add(0.5), 0.6F, 0.6F, 1.0F, 20));
-                                receivedEnergy += consumedEnergy;
+                                MFFS.proxy.registerBeamEffect(world, center, new Vector3D((TileEntity) fortronTile).add(0.5), 0.6F, 0.6F, 1.0F, 20);receivedEnergy += consumedEnergy;
                             }
 
                             if (receivedEnergy >= requiredEnergy) {
