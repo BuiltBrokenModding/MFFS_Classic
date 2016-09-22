@@ -94,6 +94,15 @@ public class CommonProxy implements IGuiHandler {
      */
     public void registerBeamEffect(World world, Vector3D origin, Vector3D dest, float r, float g, float b, int lifespan){}
 
+    /**
+     * Animates a portion of Fortron.
+     * @param world The world the beam occurs.
+     * @param origin The origin of the beam.
+     * @param r The red hue.
+     * @param g The green hue.
+     * @param b The blue hue.
+     * @param life How long the particles should last.
+     */
     public void animateFortron(World world, Vector3D origin, float r, float g, float b, int life) {}
     /**
      * Returns a Container to be displayed to the user. On the client side, this

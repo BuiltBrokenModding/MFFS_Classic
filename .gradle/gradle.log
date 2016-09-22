@@ -12,7 +12,7 @@
 :compileJavaNote: Some input files use unchecked or unsafe operations.
 Note: Recompile with -Xlint:unchecked for details.
 
-:processResources UP-TO-DATE
+:processResources
 :classes
 :jar
 :compileTestJava UP-TO-DATE
@@ -30,4 +30,4 @@ Note: Recompile with -Xlint:unchecked for details.
 
 BUILD SUCCESSFUL
 
-Total time: 40.136 secs
+Total time: 48.318 secs

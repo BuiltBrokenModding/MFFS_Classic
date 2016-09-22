@@ -1,5 +1,6 @@
 package com.mffs.api.utils;
 
+import com.mffs.MFFS;
 import com.mffs.common.TransferMode;
 import com.mffs.api.fortron.IFortronFrequency;
 import com.mffs.api.modules.IModuleAcceptor;
@@ -100,7 +101,7 @@ public class FortronHelper {
         toBeInject = freq.requestFortron(rec.provideFortron(toBeInject, true), true);
 
         if (world.isRemote && toBeInject > 0 && !camo) {
-            FMLClientHandler.instance().getClient().effectRenderer.addEffect(new FortronBeam(world, new Vector3D((TileEntity) freq).translate(.5), new Vector3D((TileEntity) rec).translate(.5), 0.6F, 0.6F, 1, 20));
+            MFFS.proxy.registerBeamEffect(world, new Vector3D((TileEntity) freq).translate(.5), new Vector3D((TileEntity) rec).translate(.5), 0.6F, 0.6F, 1, 20);
         }
     }
 }

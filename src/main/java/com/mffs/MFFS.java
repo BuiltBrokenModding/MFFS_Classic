@@ -17,7 +17,7 @@ import net.minecraftforge.common.MinecraftForge;
 @Mod(modid = MFFS.MODID, name = MFFS.MOD_NAME, version = MFFS.VERSION)
 public class MFFS {
     public static final String MODID = "mffs";
-    public static final String VERSION = "0.25";
+    public static final String VERSION = "0.26";
     public static final String MOD_NAME = "Modular_Forcefields";
 
     @Mod.Instance
