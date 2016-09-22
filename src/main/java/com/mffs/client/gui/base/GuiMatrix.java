@@ -100,11 +100,10 @@ public abstract class GuiMatrix extends MFFSGui {
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
         TileFieldMatrix proj = getMatrix();
         if(FORCE_BOUNDS.isIn(mouseX - this.guiLeft, mouseY - this.guiTop))
             drawTooltip(mouseX - this.guiLeft, mouseY - this.guiTop, UnitDisplay.getDisplayShort(proj.getFortronEnergy(), UnitDisplay.Unit.LITER));
-
-        drawForceVertical(50, -10, proj.getFortronEnergy() > 0 ? ((float) proj.getFortronEnergy()) / proj.getFortronCapacity() : 0);
-        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+        drawForceVertical(175, 0, proj.getFortronEnergy() > 0 ? ((float) proj.getFortronEnergy()) / proj.getFortronCapacity() : 0);
     }
 }

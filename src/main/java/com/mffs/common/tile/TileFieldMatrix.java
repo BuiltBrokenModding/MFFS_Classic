@@ -102,7 +102,7 @@ public abstract class TileFieldMatrix extends TileModuleAcceptor implements IFie
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-
+                        entity.getCalculatedField().remove(new Vector3D(entity)); //we do not want to overplace this
                         entity.setCalculating(false);
                         entity.setCalculated(true);
                         entity.onCalculationCompletion();

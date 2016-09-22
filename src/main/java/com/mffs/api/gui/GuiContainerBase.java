@@ -169,10 +169,10 @@ public class GuiContainerBase extends GuiContainer {
         this.mc.renderEngine.bindTexture(GUI_COMPONENTS);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
-        drawTexturedModalRect(this.containerWidth + x, this.containerHeight + y, 55, 38, 11, 107);
+        drawTexturedModalRect(x, y, 55, 38, 11, 107);
         if (scale > 0.0F) {
             int perc = (int) (scale * 107.0F);
-            drawTexturedModalRect(this.containerWidth + x, this.containerHeight + y + (107 - perc), 66, 38 + 107 - perc, 11, perc);
+            drawTexturedModalRect(x, y + (107 - perc), 66, 38 + 107 - perc, 11, perc);
         }
     }
 

@@ -57,6 +57,10 @@ public class ItemModuleDisintegration extends BaseModule {
             TileForceFieldProjector entity = (TileForceFieldProjector) projector;
             Block block = position.getBlock(entity.getWorldObj());
 
+            if(position.intX() == entity.xCoord && position.intY() == entity.yCoord
+                    && position.intZ() == entity.zCoord) //prevent destroying itself.
+                return 1;
+
             if (block != null && !(block instanceof BlockAir)) {
                 int meta = entity.getWorldObj().getBlockMetadata(position.intX(), position.intY(), position.intZ()); //destory specific blocks
                 boolean aprox = projector.getModuleCount(ItemModuleApproximation.class) > 0;
