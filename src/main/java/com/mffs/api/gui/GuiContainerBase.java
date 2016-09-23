@@ -1,6 +1,6 @@
 package com.mffs.api.gui;
 
-import com.mffs.MFFS;
+import com.mffs.ModularForcefieldSystem;
 import com.mffs.api.utils.CompatibilityType;
 import com.mffs.api.utils.UnitDisplay;
 import com.mffs.api.utils.Util;
@@ -9,7 +9,6 @@ import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
@@ -20,7 +19,6 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -30,9 +28,9 @@ import java.util.Map;
  */
 public class GuiContainerBase extends GuiContainer {
 
-    public static final ResourceLocation GUI_COMPONENTS = new ResourceLocation(MFFS.MODID, "textures/gui/gui_components.png");
+    public static final ResourceLocation GUI_COMPONENTS = new ResourceLocation(ModularForcefieldSystem.MODID, "textures/gui/gui_components.png");
 
-    public static final ResourceLocation baseTexture = new ResourceLocation(MFFS.MODID, "textures/gui/gui_base.png");
+    public static final ResourceLocation baseTexture = new ResourceLocation(ModularForcefieldSystem.MODID, "textures/gui/gui_base.png");
     ;
     public String tooltip = "";
     protected int meterHeight = 49;

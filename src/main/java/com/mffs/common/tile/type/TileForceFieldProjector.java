@@ -1,6 +1,6 @@
 package com.mffs.common.tile.type;
 
-import com.mffs.MFFS;
+import com.mffs.ModularForcefieldSystem;
 import com.mffs.SettingConfiguration;
 import com.mffs.api.IProjector;
 import com.mffs.api.modules.IModule;
@@ -67,7 +67,7 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
                 this.animation += getFortronCost() / 10;
 
             if (this.ticks % 40 == 0 && getModuleCount(ItemModuleSilence.class) <= 0)
-                this.worldObj.playSoundEffect(this.xCoord + 0.5, this.yCoord + 0.5, this.zCoord + 0.5, MFFS.MODID + ":field", 0.6F, 1.0F - this.worldObj.rand.nextFloat() * 0.1F);
+                this.worldObj.playSoundEffect(this.xCoord + 0.5, this.yCoord + 0.5, this.zCoord + 0.5, ModularForcefieldSystem.MODID + ":field", 0.6F, 1.0F - this.worldObj.rand.nextFloat() * 0.1F);
         } else if (!this.worldObj.isRemote) {
             destroyField();
         }
@@ -102,7 +102,7 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
         //TODO: Send field to client
         //Check if repulsion
         //if(getModuleCount())
-        //MFFS.channel.sendToAll(new ForcefieldCalculation(TileForceFieldProjector.this));
+        //ModularForcefieldSystem.channel.sendToAll(new ForcefieldCalculation(TileForceFieldProjector.this));
     }
 
     @Override
@@ -306,8 +306,8 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
             return null; //we are done!
         } else if (imessage instanceof BeamRequest) {
             BeamRequest req = (BeamRequest) imessage;
-            MFFS.proxy.registerBeamEffect(worldObj, req.destination.translate(.5), new Vector3D(this).translate(.5), 1.0F, 0.0F, 0.0F, 40);
-            MFFS.proxy.animateFortron(worldObj, req.destination, 1.0F, 0.0F, 0.0F, 60);
+            ModularForcefieldSystem.proxy.registerBeamEffect(worldObj, req.destination.translate(.5), new Vector3D(this).translate(.5), 1.0F, 0.0F, 0.0F, 40);
+            ModularForcefieldSystem.proxy.animateFortron(worldObj, req.destination, 1.0F, 0.0F, 0.0F, 60);
             return null;
         }
         return super.handleMessage(imessage);

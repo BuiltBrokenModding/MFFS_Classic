@@ -1,6 +1,6 @@
 package com.mffs.client.gui;
 
-import com.mffs.MFFS;
+import com.mffs.ModularForcefieldSystem;
 import com.mffs.api.gui.GuiSlotType;
 import com.mffs.api.utils.UnitDisplay;
 import com.mffs.client.gui.base.MFFSGui;
@@ -101,7 +101,7 @@ public class GuiCoercionDeriver extends MFFSGui {
     protected void actionPerformed(GuiButton guibutton) {
         super.actionPerformed(guibutton);
         if (guibutton.id == 1) {
-            MFFS.channel.sendToServer(new EntityToggle(getEntity(), EntityToggle.TOGGLE_STATE));
+            ModularForcefieldSystem.channel.sendToServer(new EntityToggle(getEntity(), EntityToggle.TOGGLE_STATE));
         }
     }
 }

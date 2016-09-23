@@ -1,6 +1,6 @@
 package com.mffs.client.gui;
 
-import com.mffs.MFFS;
+import com.mffs.ModularForcefieldSystem;
 import com.mffs.api.fortron.IFortronFrequency;
 import com.mffs.api.utils.UnitDisplay;
 import com.mffs.client.buttons.TransferModeButton;
@@ -44,7 +44,7 @@ public class GuiFortronCapacitor extends MFFSGui {
     protected void actionPerformed(GuiButton guiButton) {
         super.actionPerformed(guiButton);
         if (guiButton.id == 1) {
-            MFFS.channel.sendToServer(new EntityToggle(getCapacitor(), EntityToggle.TRANSFER_TOGGLE));
+            ModularForcefieldSystem.channel.sendToServer(new EntityToggle(getCapacitor(), EntityToggle.TRANSFER_TOGGLE));
         }
 
     }

@@ -23,20 +23,19 @@ import java.util.jar.JarInputStream;
  * Created by pwaln on 5/28/2016.
  */
 public class RegisterManager {
-
     /* This is the tab we shall store everything in */
-    public static CreativeTabs MFFS_TAB = new CreativeTabs(MFFS.MOD_NAME) {
+    public static CreativeTabs MFFS_TAB = new CreativeTabs(ModularForcefieldSystem.MODID) {
 
         @Override
         @SideOnly(Side.CLIENT)
         public Item getTabIconItem() {
-            return (Item) Item.itemRegistry.getObject(MFFS.MODID + ":cardBlank");
+            return (Item) Item.itemRegistry.getObject(ModularForcefieldSystem.MODID + ":cardBlank");
         }
     };
 
     public static List<String> getClassNames(String directory) throws IOException {
         List<String> files = new ArrayList<>();
-        JarInputStream stream = new JarInputStream(new FileInputStream((!SettingConfiguration.DEV_MODE ? "./mods/" : "./libs/") + MFFS.MODID + "-" + MFFS.VERSION + ".jar"));
+        JarInputStream stream = new JarInputStream(new FileInputStream((!SettingConfiguration.DEV_MODE ? "./mods/" : "./libs/") + ModularForcefieldSystem.MODID + "-" + ModularForcefieldSystem.VERSION + ".jar"));
         JarEntry entry;
         while (true) {
             entry = stream.getNextJarEntry();
@@ -64,7 +63,7 @@ public class RegisterManager {
             name = rawClass.getSimpleName().replace("Item", "");
             name = name.substring(0, 1).toLowerCase() + name.substring(1, name.length());
             item.setUnlocalizedName(name);
-            item.setTextureName(MFFS.MODID + ":" + name);
+            item.setTextureName(ModularForcefieldSystem.MODID + ":" + name);
             item.setCreativeTab(MFFS_TAB);
             GameRegistry.registerItem(item, name);
         }

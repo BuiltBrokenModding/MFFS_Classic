@@ -1,6 +1,6 @@
 package com.mffs.common.blocks;
 
-import com.mffs.MFFS;
+import com.mffs.ModularForcefieldSystem;
 import com.mffs.api.IBiometricIdentifierLink;
 import com.mffs.api.security.Permission;
 import com.mffs.common.TileMFFS;
@@ -85,11 +85,11 @@ public abstract class MFFSMachine extends Block implements ITileEntityProvider {
     @Override
     public void registerBlockIcons(IIconRegister reg) {
         String name = getUnlocalizedName().substring(5);
-        this.blockIcon = reg.registerIcon(MFFS.MODID + ":" + name);
+        this.blockIcon = reg.registerIcon(ModularForcefieldSystem.MODID + ":" + name);
         side_textures = new IIcon[]{
-                reg.registerIcon(MFFS.MODID + ":" + name + "_top"),
-                reg.registerIcon(MFFS.MODID + ":" + name + "_top_on"),
-                reg.registerIcon(MFFS.MODID + ":" + name + "_on")
+                reg.registerIcon(ModularForcefieldSystem.MODID + ":" + name + "_top"),
+                reg.registerIcon(ModularForcefieldSystem.MODID + ":" + name + "_top_on"),
+                reg.registerIcon(ModularForcefieldSystem.MODID + ":" + name + "_on")
         };
     }
 
@@ -114,7 +114,7 @@ public abstract class MFFSMachine extends Block implements ITileEntityProvider {
                 return false;
             }
         }
-        player.openGui(MFFS.mffs_mod, 0, world, x, y, z);
+        player.openGui(ModularForcefieldSystem.modularForcefieldSystem_mod, 0, world, x, y, z);
         return true;
     }
 

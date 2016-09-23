@@ -21,7 +21,7 @@ public class ForgeSubscribeHandler {
     @SideOnly(Side.CLIENT)
     public void preTextureHook(TextureStitchEvent event) {
         if (event.map.getTextureType() == 0)
-            Fortron.fluidIcon = event.map.registerIcon(MFFS.MODID + ":fortron");
+            Fortron.fluidIcon = event.map.registerIcon(ModularForcefieldSystem.MODID + ":fortron");
     }
 
     @SubscribeEvent

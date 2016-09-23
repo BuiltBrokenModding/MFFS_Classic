@@ -1,6 +1,6 @@
 package com.mffs.client.buttons;
 
-import com.mffs.MFFS;
+import com.mffs.ModularForcefieldSystem;
 import com.mffs.client.gui.base.MFFSGui;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.registry.LanguageRegistry;
@@ -16,7 +16,7 @@ import javax.vecmath.Vector2d;
  */
 public class GuiPressableButton extends GuiButton {
 
-    public static final ResourceLocation GUI_BUTTON = new ResourceLocation(MFFS.MODID, "textures/gui/gui_button.png");
+    public static final ResourceLocation GUI_BUTTON = new ResourceLocation(ModularForcefieldSystem.MODID, "textures/gui/gui_button.png");
 
     public boolean stuck = false;
     protected Vector2d offset = new Vector2d();

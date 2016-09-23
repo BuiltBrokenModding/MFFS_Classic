@@ -1,13 +1,11 @@
 package com.mffs.api.utils;
 
-import com.mffs.MFFS;
+import com.mffs.ModularForcefieldSystem;
 import com.mffs.common.TransferMode;
 import com.mffs.api.fortron.IFortronFrequency;
 import com.mffs.api.modules.IModuleAcceptor;
 import com.mffs.api.vector.Vector3D;
-import com.mffs.client.render.particles.FortronBeam;
 import com.mffs.common.items.modules.upgrades.ItemModuleCamouflage;
-import cpw.mods.fml.client.FMLClientHandler;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
@@ -101,7 +99,7 @@ public class FortronHelper {
         toBeInject = freq.requestFortron(rec.provideFortron(toBeInject, true), true);
 
         if (world.isRemote && toBeInject > 0 && !camo) {
-            MFFS.proxy.registerBeamEffect(world, new Vector3D((TileEntity) freq).translate(.5), new Vector3D((TileEntity) rec).translate(.5), 0.6F, 0.6F, 1, 20);
+            ModularForcefieldSystem.proxy.registerBeamEffect(world, new Vector3D((TileEntity) freq).translate(.5), new Vector3D((TileEntity) rec).translate(.5), 0.6F, 0.6F, 1, 20);
         }
     }
 }

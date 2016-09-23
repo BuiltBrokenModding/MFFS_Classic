@@ -1,7 +1,7 @@
 # Modular Force Field System Language Properties
 # @author Calclavia
 
-itemGroup.Modular_Forcefields=Modular Force Field System
+itemGroup.mffs=Modular Force Field System
 
 fluid.fortron=Fortron
 

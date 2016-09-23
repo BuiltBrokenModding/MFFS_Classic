@@ -1,6 +1,6 @@
 package com.mffs.client.gui;
 
-import com.mffs.MFFS;
+import com.mffs.ModularForcefieldSystem;
 import com.mffs.api.utils.UnitDisplay;
 import com.mffs.client.buttons.GuiIcon;
 import com.mffs.client.gui.base.GuiMatrix;
@@ -71,7 +71,7 @@ public class GuiForceFieldProjector extends GuiMatrix {
     protected void actionPerformed(GuiButton guiButton) {
         super.actionPerformed(guiButton);
         if (guiButton.id == 1) {
-            MFFS.channel.sendToServer(new EntityToggle(getMatrix(), EntityToggle.ABSOLUTE_TOGGLE));
+            ModularForcefieldSystem.channel.sendToServer(new EntityToggle(getMatrix(), EntityToggle.ABSOLUTE_TOGGLE));
         }
     }
 

@@ -1,6 +1,6 @@
 package com.mffs.client.gui.base;
 
-import com.mffs.MFFS;
+import com.mffs.ModularForcefieldSystem;
 import com.mffs.api.IBiometricIdentifierLink;
 import com.mffs.api.IBlockFrequency;
 import com.mffs.api.gui.GuiContainerBase;
@@ -49,7 +49,7 @@ public class MFFSGui extends GuiContainerBase {
     public void initGui() {
         super.initGui();
         buttonList.clear();
-        this.buttonList.add(new GuiIcon(0, this.width / 2 - 110, this.height / 2 - 104, new ItemStack(Blocks.redstone_torch), new ItemStack(Blocks.torch)));
+        this.buttonList.add(new GuiIcon(0, this.width / 2 - 110, this.height / 2 - 104, new ItemStack(Blocks.torch), new ItemStack(Blocks.redstone_torch)));
         Keyboard.enableRepeatEvents(true);
         if (this.frequencyTile != null) {
             this.textFieldFrequency = new GuiTextField(this.fontRendererObj, (int) this.textFieldPos.x, (int) this.textFieldPos.y, 50, 12);
@@ -72,7 +72,7 @@ public class MFFSGui extends GuiContainerBase {
                 int newFrequency = this.textFieldFrequency.getText().isEmpty() ? 0 : Integer.parseInt(this.textFieldFrequency.getText());
                 this.frequencyTile.setFrequency(newFrequency);
                 this.textFieldFrequency.setText(this.frequencyTile.getFrequency() + "");
-                MFFS.channel.sendToServer(new ChangeFrequency(((TileEntity) this.frequencyTile), newFrequency));
+                ModularForcefieldSystem.channel.sendToServer(new ChangeFrequency(((TileEntity) this.frequencyTile), newFrequency));
             } catch (NumberFormatException e) {
                 e.printStackTrace();
             }
@@ -85,7 +85,7 @@ public class MFFSGui extends GuiContainerBase {
         super.actionPerformed(guiButton);
 
         if ((this.frequencyTile != null) && (guiButton.id == 0)) {
-            MFFS.channel.sendToServer(new EntityToggle((TileEntity) frequencyTile, EntityToggle.REDSTONE_TOGGLE));
+            ModularForcefieldSystem.channel.sendToServer(new EntityToggle((TileEntity) frequencyTile, EntityToggle.REDSTONE_TOGGLE));
         }
     }
 
@@ -102,7 +102,7 @@ public class MFFSGui extends GuiContainerBase {
 
         if ((this.frequencyTile instanceof TileMFFS)) {
             if ((this.buttonList.size() > 0) && (this.buttonList.get(0) != null)) {
-                ((GuiIcon) this.buttonList.get(0)).setIndex(((TileMFFS) this.frequencyTile).isActive() ? 0 : 1);
+                ((GuiIcon) this.buttonList.get(0)).setIndex(((TileMFFS) this.frequencyTile).isActive() ? 1 : 0);
             }
         }
     }

@@ -1,6 +1,6 @@
 package com.mffs.common.items.card;
 
-import com.mffs.MFFS;
+import com.mffs.ModularForcefieldSystem;
 import com.mffs.RegisterManager;
 import com.mffs.api.card.ICardIdentification;
 import com.mffs.api.security.Permission;
@@ -76,7 +76,7 @@ public class ItemCardID extends ItemCardBlank implements ICardIdentification, IP
             if(usr.isSneaking())
                 setUsername(stack, usr.getGameProfile().getName());
             else
-                usr.openGui(MFFS.mffs_mod, 1, world, 0, 0, 0);
+                usr.openGui(ModularForcefieldSystem.modularForcefieldSystem_mod, 1, world, 0, 0, 0);
         }
         return stack;
     }

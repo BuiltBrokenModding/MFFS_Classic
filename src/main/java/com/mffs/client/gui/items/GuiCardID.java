@@ -1,8 +1,7 @@
 package com.mffs.client.gui.items;
 
-import com.mffs.MFFS;
+import com.mffs.ModularForcefieldSystem;
 import com.mffs.api.card.ICardIdentification;
-import com.mffs.api.gui.GuiContainerBase;
 import com.mffs.api.security.Permission;
 import com.mffs.client.gui.components.GuiScroll;
 import com.mffs.common.container.HotBarContainer;
@@ -11,7 +10,6 @@ import com.mffs.common.net.packet.ItemStringToggle;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
@@ -95,13 +93,13 @@ public class GuiCardID extends GuiItemBase {
         super.actionPerformed(button);
 
         if(button.id <= Permission.values().length)
-            MFFS.channel.sendToServer(new ItemByteToggle(button.id));
+            ModularForcefieldSystem.channel.sendToServer(new ItemByteToggle(button.id));
     }
 
     @Override
     public void keyTyped(char c, int p_73869_2_)
     {
         super.keyTyped(c, p_73869_2_);
-        MFFS.channel.sendToServer(new ItemStringToggle(textField.getText()));
+        ModularForcefieldSystem.channel.sendToServer(new ItemStringToggle(textField.getText()));
     }
 }

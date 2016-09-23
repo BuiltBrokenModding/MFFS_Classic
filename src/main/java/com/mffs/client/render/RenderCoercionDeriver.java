@@ -1,6 +1,6 @@
 package com.mffs.client.render;
 
-import com.mffs.MFFS;
+import com.mffs.ModularForcefieldSystem;
 import com.mffs.client.render.model.ModelCoercionDeriver;
 import com.mffs.common.TileMFFS;
 import cpw.mods.fml.client.FMLClientHandler;
@@ -17,8 +17,8 @@ import org.lwjgl.opengl.GL11;
 @SideOnly(Side.CLIENT)
 public class RenderCoercionDeriver extends TileEntitySpecialRenderer {
 
-    public static final ResourceLocation TEXTURE_ON = new ResourceLocation(MFFS.MODID, "textures/models/coercionDeriver_on.png");
-    public static final ResourceLocation TEXTURE_OFF = new ResourceLocation(MFFS.MODID, "textures/models/coercionDeriver_off.png");
+    public static final ResourceLocation TEXTURE_ON = new ResourceLocation(ModularForcefieldSystem.MODID, "textures/models/coercionDeriver_on.png");
+    public static final ResourceLocation TEXTURE_OFF = new ResourceLocation(ModularForcefieldSystem.MODID, "textures/models/coercionDeriver_off.png");
     public static final ModelCoercionDeriver MODEL = new ModelCoercionDeriver();
 
     @Override

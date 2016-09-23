@@ -1,5 +1,5 @@
 <component name="ArtifactManager">
-  <artifact type="jar" name="mffs-0.25:jar">
+  <artifact type="jar" name="mffs-0.26:jar">
     <output-path>$PROJECT_DIR$/build/mods</output-path>
     <root id="archive" name="mffs-0.25.jar">
       <element id="module-output" name="main" />

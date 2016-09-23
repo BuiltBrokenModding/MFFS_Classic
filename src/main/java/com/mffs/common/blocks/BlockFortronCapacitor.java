@@ -1,8 +1,10 @@
 package com.mffs.common.blocks;
 
-import com.mffs.MFFS;
+import com.mffs.ModularForcefieldSystem;
 import com.mffs.client.render.RenderBlockHandler;
 import com.mffs.common.tile.type.TileFortronCapacitor;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
@@ -42,7 +44,7 @@ public final class BlockFortronCapacitor extends MFFSMachine {
 
     @Override
     public void registerBlockIcons(IIconRegister reg) {
-        this.blockIcon = reg.registerIcon(MFFS.MODID + ":machine");
+        this.blockIcon = reg.registerIcon(ModularForcefieldSystem.MODID + ":machine");
     }
 
     @Override
@@ -51,6 +53,7 @@ public final class BlockFortronCapacitor extends MFFSMachine {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public int getRenderType() {
         return RenderBlockHandler.RENDER_ID;
     }

@@ -4,7 +4,7 @@ import com.mffs.api.security.Permission;
 import net.minecraft.item.ItemStack;
 
 /**
- * A grid MFFS uses to search for machines with frequencies that can be linked and spread Fortron
+ * A grid ModularForcefieldSystem uses to search for machines with frequencies that can be linked and spread Fortron
  * energy.
  *
  * @author Calclavia

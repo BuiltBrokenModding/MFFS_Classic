@@ -1,6 +1,6 @@
 package com.mffs.client.render.particles;
 
-import com.mffs.MFFS;
+import com.mffs.ModularForcefieldSystem;
 import com.mffs.api.vector.Vector3D;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -21,7 +21,7 @@ import org.lwjgl.opengl.GL11;
 public class FortronBeam extends EntityFX {
 
     public static final ResourceLocation PARTICLE_RESOURCE = new ResourceLocation("textures/particle/particles.png");
-    private static final ResourceLocation TEXTURE = new ResourceLocation(MFFS.MODID, "textures/blocks/fortron.png");
+    private static final ResourceLocation TEXTURE = new ResourceLocation(ModularForcefieldSystem.MODID, "textures/blocks/fortron.png");
     private float length = 0.0F;
     private float rotYaw = 0.0F;
     private float rotPitch = 0.0F;

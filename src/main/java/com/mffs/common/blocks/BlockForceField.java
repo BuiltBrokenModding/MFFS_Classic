@@ -1,6 +1,6 @@
 package com.mffs.common.blocks;
 
-import com.mffs.MFFS;
+import com.mffs.ModularForcefieldSystem;
 import com.mffs.api.IForceFieldBlock;
 import com.mffs.api.IProjector;
 import com.mffs.api.fortron.IFortronStorage;
@@ -220,7 +220,7 @@ public class BlockForceField extends Block implements ITileEntityProvider, IForc
      */
     @Override
     public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z) {
-        IProjector proj = getProjector(world, x, y, z);
+        //IProjector proj = getProjector(world, x, y, z);
         return super.getCollisionBoundingBoxFromPool(world, x, y, z);
     }
 
@@ -256,13 +256,14 @@ public class BlockForceField extends Block implements ITileEntityProvider, IForc
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public int getRenderType() {
         return RenderForceFieldHandler.RENDER_ID;
     }
 
     @Override
     public void registerBlockIcons(IIconRegister reg) {
-        this.blockIcon = reg.registerIcon(MFFS.MODID + ":forceField");
+        this.blockIcon = reg.registerIcon(ModularForcefieldSystem.MODID + ":forceField");
     }
 
     /**

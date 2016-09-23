@@ -11,7 +11,7 @@ import java.io.File;
  */
 public class SettingConfiguration {
 
-    public static final Configuration CONFIGURATION = new Configuration(new File(Loader.instance().getConfigDir(), "MFFS.cfg"));
+    public static final Configuration CONFIGURATION = new Configuration(new File(Loader.instance().getConfigDir(), "ModularForcefieldSystem.cfg"));
     public static final int MAX_FREQUENCY_DIGITS = 6;
     public static int MAX_FORCE_FIELDS_PER_TICK = 1000;
     public static int MAX_FORCE_FIELD_SCALE = 200;
@@ -50,11 +50,11 @@ public class SettingConfiguration {
         INTERACT_CREATIVE = propCreative.getBoolean(INTERACT_CREATIVE);
 
         Property propChunkLoading = CONFIGURATION.get("general", "Load Chunks", LOAD_CHUNKS);
-        propChunkLoading.comment = "Set this to false to turn off the MFFS Chunkloading capabilities.";
+        propChunkLoading.comment = "Set this to false to turn off the ModularForcefieldSystem Chunkloading capabilities.";
         LOAD_CHUNKS = propChunkLoading.getBoolean(LOAD_CHUNKS);
 
         Property propOpOverride = CONFIGURATION.get("general", "Op Override", OP_OVERRIDE);
-        propOpOverride.comment = "Allow the operator(s) to override security measures created by MFFS?";
+        propOpOverride.comment = "Allow the operator(s) to override security measures created by ModularForcefieldSystem?";
         OP_OVERRIDE = propOpOverride.getBoolean(OP_OVERRIDE);
 
 
@@ -67,7 +67,7 @@ public class SettingConfiguration {
         INTERDICTION_MAX_RANGE = interdictionRange.getInt(INTERDICTION_MAX_RANGE);
 
         Property useElectricity = CONFIGURATION.get("general", "Require Electricity?", ENABLE_ELECTRICITY);
-        useElectricity.comment = "Turning this to false will make MFFS run without electricity or energy systems required. Great for vanilla!";
+        useElectricity.comment = "Turning this to false will make ModularForcefieldSystem run without electricity or energy systems required. Great for vanilla!";
         ENABLE_ELECTRICITY = useElectricity.getBoolean(ENABLE_ELECTRICITY);
 
         Property forceManipulatorBlacklist = CONFIGURATION.get("modules", "Force Manipulator Blacklist", "");

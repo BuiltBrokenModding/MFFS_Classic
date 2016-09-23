@@ -1,7 +1,8 @@
 package com.mffs.client;
 
 import com.mffs.CommonProxy;
-import com.mffs.MFFS;
+import com.mffs.ModularForcefieldSystem;
+import com.mffs.RegisterManager;
 import com.mffs.api.vector.Vector3D;
 import com.mffs.client.gui.GuiBiometricIdentifier;
 import com.mffs.client.gui.GuiCoercionDeriver;
@@ -49,7 +50,7 @@ public class ClientProxy extends CommonProxy {
     public void init(FMLInitializationEvent event) {
         RenderingRegistry.registerBlockHandler(new RenderBlockHandler());
         RenderingRegistry.registerBlockHandler(new RenderForceFieldHandler());
-        MinecraftForgeClient.registerItemRenderer((Item) Item.itemRegistry.getObject(MFFS.MODID + ":cardID"), new RenderIDCard());
+        MinecraftForgeClient.registerItemRenderer((Item) Item.itemRegistry.getObject(ModularForcefieldSystem.MODID + ":cardID"), new RenderIDCard());
         ClientRegistry.bindTileEntitySpecialRenderer(TileCoercionDeriver.class, new RenderCoercionDeriver());
         ClientRegistry.bindTileEntitySpecialRenderer(TileForceFieldProjector.class, new RenderForceFieldProjector());
         ClientRegistry.bindTileEntitySpecialRenderer(TileFortronCapacitor.class, new RenderFortronCapacitor());

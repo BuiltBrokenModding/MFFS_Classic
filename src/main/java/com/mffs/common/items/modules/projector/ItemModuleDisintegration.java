@@ -1,6 +1,6 @@
 package com.mffs.common.items.modules.projector;
 
-import com.mffs.MFFS;
+import com.mffs.ModularForcefieldSystem;
 import com.mffs.api.Blacklist;
 import com.mffs.api.IProjector;
 import com.mffs.api.vector.Vector3D;
@@ -17,7 +17,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.BlockFluidBase;
 import net.minecraftforge.fluids.IFluidBlock;
 
@@ -89,7 +88,7 @@ public class ItemModuleDisintegration extends BaseModule {
                     }
                 }
 
-                MFFS.channel.sendToAll(new BeamRequest(entity, position));
+                ModularForcefieldSystem.channel.sendToAll(new BeamRequest(entity, position));
                 if (this.blockCount++ >= projector.getModuleCount(ItemModuleSpeed.class) / 3) {
                     return 2;
                 }

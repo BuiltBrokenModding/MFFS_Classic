@@ -1,6 +1,6 @@
 package com.mffs.common.items;
 
-import com.mffs.MFFS;
+import com.mffs.ModularForcefieldSystem;
 import com.mffs.RegisterManager;
 import com.mffs.api.IBlockFrequency;
 import com.mffs.api.card.ICoordLink;
@@ -146,7 +146,7 @@ public class RemoteController extends ItemCardFrequency implements ICoordLink {
                             int consumedEnergy = fortronTile.requestFortron((int) Math.ceil(requiredEnergy / freq.size()), true);
 
                             if (consumedEnergy > 0) {
-                                MFFS.proxy.registerBeamEffect(world, center, new Vector3D((TileEntity) fortronTile).add(0.5), 0.6F, 0.6F, 1.0F, 20);receivedEnergy += consumedEnergy;
+                                ModularForcefieldSystem.proxy.registerBeamEffect(world, center, new Vector3D((TileEntity) fortronTile).add(0.5), 0.6F, 0.6F, 1.0F, 20);receivedEnergy += consumedEnergy;
                             }
 
                             if (receivedEnergy >= requiredEnergy) {

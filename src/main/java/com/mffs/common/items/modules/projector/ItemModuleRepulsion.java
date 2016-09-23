@@ -1,6 +1,6 @@
 package com.mffs.common.items.modules.projector;
 
-import com.mffs.MFFS;
+import com.mffs.ModularForcefieldSystem;
 import com.mffs.api.IProjector;
 import com.mffs.api.security.IBiometricIdentifier;
 import com.mffs.api.security.Permission;
@@ -76,7 +76,7 @@ public final class ItemModuleRepulsion extends BaseModule {
 
     @Override
     public boolean onDestroy(IProjector projector, Set<Vector3D> field) {
-        MFFS.channel.sendToAll(new ForcefieldCalculation((TileForceFieldProjector) projector));
+        ModularForcefieldSystem.channel.sendToAll(new ForcefieldCalculation((TileForceFieldProjector) projector));
         return false;
     }
 
