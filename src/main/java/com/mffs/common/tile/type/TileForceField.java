@@ -37,14 +37,15 @@ public final class TileForceField extends TileMFFS {
      */
     @Override
     public Packet getDescriptionPacket() {
-        S35PacketUpdateTileEntity pkt = (S35PacketUpdateTileEntity) super.getDescriptionPacket();
+        NBTTagCompound tag = new NBTTagCompound();
+        writeToNBT(tag);
         if (getProj() != null) {
             if (this.camo != null) {
-                pkt.func_148857_g().setTag("camo", camo.writeToNBT(new NBTTagCompound()));
+                tag.setTag("camo", camo.writeToNBT(new NBTTagCompound()));
             }
-            pkt.func_148857_g().setTag("proj", projector.writeToNBT(new NBTTagCompound()));
+            tag.setTag("proj", projector.writeToNBT(new NBTTagCompound()));
         }
-        return pkt;
+        return new S35PacketUpdateTileEntity(this.xCoord, this.yCoord, this.zCoord, 0, tag);
     }
 
     /**
