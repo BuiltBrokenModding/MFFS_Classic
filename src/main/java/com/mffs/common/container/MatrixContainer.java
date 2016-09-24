@@ -5,7 +5,7 @@ import com.mffs.api.slots.BaseSlot;
 import com.mffs.common.tile.TileFieldMatrix;
 import net.minecraft.entity.player.EntityPlayer;
 
-import static com.mffs.client.gui.base.GuiMatrix.MATRIX_CENTER;
+import static com.mffs.common.tile.TileFieldMatrix.MATRIX_CENTER;
 
 /**
  * Created by Poopsicle360 on 7/18/2016.

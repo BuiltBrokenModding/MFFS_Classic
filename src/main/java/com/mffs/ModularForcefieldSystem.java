@@ -1,8 +1,5 @@
 package com.mffs;
 
-import com.builtbroken.mc.core.registry.ModManager;
-import com.builtbroken.mc.lib.mod.AbstractMod;
-import com.builtbroken.mc.lib.mod.AbstractProxy;
 import com.mffs.common.blocks.BlockForceField;
 import com.mffs.common.net.packet.*;
 import cpw.mods.fml.common.Mod;
@@ -20,7 +17,7 @@ import net.minecraftforge.common.MinecraftForge;
 @Mod(modid = ModularForcefieldSystem.MODID, name = ModularForcefieldSystem.MOD_NAME, version = ModularForcefieldSystem.VERSION)
 public class ModularForcefieldSystem /*extends AbstractMod*/ {
     public static final String MODID = "mffs";
-    public static final String VERSION = "0.26";
+    public static final String VERSION = "0.27";
     public static final String MOD_NAME = "Modular Forcefield System";
 
     /**

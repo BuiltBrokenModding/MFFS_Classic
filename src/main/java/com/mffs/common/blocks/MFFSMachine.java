@@ -3,6 +3,8 @@ package com.mffs.common.blocks;
 import com.mffs.ModularForcefieldSystem;
 import com.mffs.api.IBiometricIdentifierLink;
 import com.mffs.api.security.Permission;
+import com.mffs.api.vector.Matrix2d;
+import com.mffs.api.vector.Vector3D;
 import com.mffs.common.TileMFFS;
 import com.mffs.common.items.card.ItemCardLink;
 import mekanism.api.IMekWrench;
@@ -23,6 +25,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
+import javax.vecmath.Vector2d;
 import java.util.Random;
 
 /**
@@ -99,7 +102,7 @@ public abstract class MFFSMachine extends Block implements ITileEntityProvider {
      */
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
         if (world.isRemote) return true;
-        if (player.getItemInUse() != null) {
+        if (player.inventory.getCurrentItem() != null) {
             if (player.isSneaking() && player.getItemInUse().getItem() instanceof IMekWrench) //mekanism wrench support!
             {
                 TileEntity entity = world.getTileEntity(x, y, z);
@@ -110,7 +113,7 @@ public abstract class MFFSMachine extends Block implements ITileEntityProvider {
                     }
                 }
                 return ((IMekWrench) player.getItemInUse().getItem()).canUseWrench(player, x, y, z) && wrenchMachine(world, x, y, z, player, side);
-            } else if (player.getItemInUse().getItem() instanceof ItemCardLink) {
+            } else if (player.inventory.getCurrentItem().getItem() instanceof ItemCardLink) {
                 return false;
             }
         }

@@ -2,6 +2,7 @@ package com.mffs.common.tile;
 
 import com.mffs.ModularForcefieldSystem;
 import com.mffs.SettingConfiguration;
+import com.mffs.api.vector.Matrix2d;
 import com.mffs.common.TransferMode;
 import com.mffs.api.card.ICard;
 import com.mffs.api.fortron.FrequencyGrid;
@@ -22,6 +23,8 @@ import net.minecraftforge.fluids.*;
  */
 public abstract class TileFortron extends TileFrequency implements IFluidHandler, IFortronFrequency {
 
+    /* Bounds of the force box */
+    public static final Matrix2d FORCE_BOUNDS = new Matrix2d(new Vector3D(175, 0, 0), new Vector3D(186, 107, 0));
     /* Deteremines if we can export fortron */
     public boolean sendFortron = true;
 
