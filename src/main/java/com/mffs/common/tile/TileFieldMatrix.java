@@ -39,7 +39,12 @@ public abstract class TileFieldMatrix extends TileModuleAcceptor implements IFie
             {8, 9}
     };
     /* The slots the modules occupy */
-    public static int[] MODULE_SLOTS = {14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24};
+    public static int[] MODULE_SLOTS = {
+            /* Upgrade Module Slots */
+            //0, 1, 2, 3, 4, 5,
+            /* Scale Slots */
+            14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24
+    };
     /* Holds information on positions that have been finished */
     protected final Set<Vector3D> calculatedFields = Collections.synchronizedSet(new HashSet<Vector3D>());
     /* Tasks that have been stored */

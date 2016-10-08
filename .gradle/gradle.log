@@ -1,6 +1,6 @@
 Current Minecraft version = 1.7.10-10.13.4.1614-1.7.10Current Minecraft version = 1.7.10-10.13.4.1614-1.7.10
 
-version = 1.7.10-5.1.0b20161008155334version = 1.7.10-5.1.0b20161008155334
+version = 1.7.10-5.1.0b20161008174423version = 1.7.10-5.1.0b20161008174423
 
 Current Java version = 1.8.0_91 (Oracle Corporation 25.91-b14)Current Java version = 1.8.0_91 (Oracle Corporation 25.91-b14)
 
@@ -24,7 +24,7 @@ Note: Recompile with -Xlint:unchecked for details.
 
 :sourceMainScala
 :compileScala UP-TO-DATE
-:processResources UP-TO-DATE
+:processResources
 :classes
 :copyBuildXml UP-TO-DATE
 :printDeps
@@ -52,4 +52,4 @@ Note: Recompile with -Xlint:unchecked for details.
 
 BUILD SUCCESSFUL
 
-Total time: 21.587 secs
+Total time: 32.988 secs

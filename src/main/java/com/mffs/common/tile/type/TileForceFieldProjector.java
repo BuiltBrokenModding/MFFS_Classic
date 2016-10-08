@@ -23,6 +23,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Calclavia
@@ -146,55 +147,60 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
         return blocks;
     }
 
+    /**
+     *
+     * @param vec
+     * @return
+     */
+    private boolean canReplace(Vector3D vec) {
+        Block block = vec.getBlock(this.worldObj);
+        int dmod = getModuleCount(ItemModuleDisintegration.class);
+        if(block != null) {
+            return (dmod > 0 && block.getBlockHardness(worldObj, vec.intX(), vec.intY(), vec.intZ()) != -1.0 || block.isReplaceable(worldObj, vec.intX(), vec.intY(), vec.intZ())
+                    || block.getMaterial().isLiquid() || block instanceof BlockSnow || block instanceof BlockVine || block instanceof BlockTallGrass
+                    || block instanceof BlockDeadBush) && !(block instanceof BlockForceField);
+        }
+        return dmod == 0;
+    }
+
     public void projectField() {
         if (this.isFinished && !this.isCalc && (!this.isComplete || this.markFieldUpdate || this.requireTicks)) {
             this.markFieldUpdate = false;
-            int constructCount = 0;
             int constructSpeed = Math.min(getProjectionSpeed(), SettingConfiguration.MAX_FORCE_FIELDS_PER_TICK);
             synchronized (this.calculatedFields) {
-                Set<Vector3D> fieldToBeProjected = new HashSet(this.calculatedFields);
+                Set<Vector3D> fieldToBeProjected = this.calculatedFields;
                 for (IModule module : getModules(getModuleSlots())) {
                     if (module.onProject(this, fieldToBeProjected)) {
                         return;
                     }
                 }
                 Vector3D projector = new Vector3D(this);
-                label5:
-                for (Iterator<Vector3D> it$ = fieldToBeProjected.iterator(); it$.hasNext(); ) {
-                    Vector3D vec = it$.next();
-                    Block block = worldObj.getBlock(vec.intX(), vec.intY(), vec.intZ());
+                fieldToBeProjected = fieldToBeProjected.stream()
+                        .filter(x -> !x.equals(projector) && canReplace(x))
+                        .filter(w -> getWorldObj().getChunkFromBlockCoords(w.intX(), w.intZ()).isChunkLoaded)
+                        .limit(constructSpeed).collect(Collectors.toSet());
 
-                    if (block == null || getModuleCount(ItemModuleDisintegration.class) > 0 && block.getBlockHardness(worldObj, vec.intX(), vec.intY(), vec.intZ()) != -1.0
-                            || block.getMaterial().isLiquid() || block instanceof BlockSnow || block instanceof BlockVine || block instanceof BlockTallGrass || block instanceof BlockDeadBush
-                            || block.isReplaceable(worldObj, vec.intX(), vec.intY(), vec.intZ())) {
-                        if (vec != projector && !(block instanceof BlockForceField)) {
-                            constructCount++;
-                            for (IModule module : getModules(getModuleSlots())) {
-                                int flag = module.onProject(this, vec);
+                for(Vector3D vec : fieldToBeProjected) {
+                    int flag = 0;
+                    for(ItemStack stack : getModuleStacks(getModuleSlots()))
+                    {
+                        if(flag == 0 && stack != null && stack.getItem() instanceof IModule)
+                            flag = ((IModule) stack.getItem()).onProject(this, vec);
+                    }
 
-                                if (flag == 1)
-                                    continue label5;
+                    if (flag != 1 && flag != 2)
+                    {
+                        if (!worldObj.isRemote)
+                            worldObj.setBlock(vec.intX(), vec.intY(), vec.intZ(), BlockForceField.BLOCK_FORCE_FIELD, 0, 2);
+                        this.blocks.add(vec);
 
-                                if (flag == 2)
-                                    break label5;
-                            }
-
-                            if (!worldObj.isRemote)
-                                worldObj.setBlock(vec.intX(), vec.intY(), vec.intZ(), BlockForceField.BLOCK_FORCE_FIELD, 0, 2);
-                            this.blocks.add(vec);
-
-                            TileEntity entity = vec.getTileEntity(worldObj);
-                            if (entity instanceof TileForceField)
-                                ((TileForceField) entity).setProjector(projector);
-
-                            requestFortron(1, true);
-                            if (constructCount > constructSpeed)
-                                break;
-                        }
+                        TileEntity entity = vec.getTileEntity(worldObj);
+                        if (entity instanceof TileForceField)
+                            ((TileForceField) entity).setProjector(projector);
                     }
                 }
+                this.isComplete = (fieldToBeProjected.size() == 0);
             }
-            this.isComplete = (constructCount == 0);
         }
     }
 

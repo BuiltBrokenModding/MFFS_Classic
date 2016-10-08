@@ -79,6 +79,11 @@ public class ItemModuleDisintegration extends BaseModule {
                     return 1;
                 }
 
+                if (this.blockCount++ >= projector.getProjectionSpeed() / 3) {
+                    System.out.println("Limit hit!");
+                    return 2;
+                }
+
                 if (!entity.getWorldObj().isRemote) {
                     TileForceFieldProjector proj = (TileForceFieldProjector) projector;
                     if (projector.getModuleCount(ItemModuleCollection.class) > 0) {
@@ -89,12 +94,8 @@ public class ItemModuleDisintegration extends BaseModule {
                 }
 
                 ModularForcefieldSystem.channel.sendToAll(new BeamRequest(entity, position));
-                if (this.blockCount++ >= projector.getModuleCount(ItemModuleSpeed.class) / 3) {
-                    return 2;
-                }
                 return 1;
             }
-            //return 0;
         }
         return 1;
     }
