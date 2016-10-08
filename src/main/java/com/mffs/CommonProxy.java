@@ -1,5 +1,6 @@
 package com.mffs;
 
+import com.builtbroken.mc.lib.mod.AbstractProxy;
 import com.mffs.api.vector.Vector3D;
 import com.mffs.common.container.*;
 import com.mffs.common.container.entity.BiometricContainer;
@@ -23,30 +24,30 @@ import net.minecraftforge.fluids.FluidRegistry;
 /**
  * Created by pwaln on 5/22/2016.
  */
-public class CommonProxy implements IGuiHandler {
+public class CommonProxy extends AbstractProxy {
     /**
      * Called before the main INITIALIZE.
      *
-     * @param event Forge ModLoader event.
      */
-    public void preInit(FMLPreInitializationEvent event) {
+    @Override
+    public void preInit() {
         Fortron.FLUID_ID = FluidRegistry.getFluidID("fortron");
     }
 
     /**
      * Called along with the main Initialize.
      *
-     * @param event Forge ModLoader event.
      */
-    public void init(FMLInitializationEvent event) {
+    @Override
+    public void init() {
     }
 
     /**
      * Called after the main Init.
      *
-     * @param event Forge ModLoader event.
      */
-    public void postInit(FMLPostInitializationEvent event) {
+    @Override
+    public void postInit() {
 
     }
 

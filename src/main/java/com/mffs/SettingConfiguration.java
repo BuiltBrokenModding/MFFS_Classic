@@ -11,7 +11,6 @@ import java.io.File;
  */
 public class SettingConfiguration {
 
-    public static final Configuration CONFIGURATION = new Configuration(new File(Loader.instance().getConfigDir(), "ModularForcefieldSystem.cfg"));
     public static final int MAX_FREQUENCY_DIGITS = 6;
     public static int MAX_FORCE_FIELDS_PER_TICK = 1000;
     public static int MAX_FORCE_FIELD_SCALE = 200;
@@ -36,7 +35,7 @@ public class SettingConfiguration {
     public static boolean DEV_MODE = false;
 
     public static void load() {
-        CONFIGURATION.load();
+        Configuration CONFIGURATION = ModularForcefieldSystem.modularForcefieldSystem_mod.getConfig();
 
         ENABLE_MANIPULATOR = CONFIGURATION.get("general", "Enable Force Manipulator", ENABLE_MANIPULATOR).getBoolean(ENABLE_MANIPULATOR);
 
@@ -92,6 +91,7 @@ public class SettingConfiguration {
         BASE_POWER_REQUIRED = CONFIGURATION.get("energy", "Base Coercion Deriver Power Consumption", BASE_POWER_REQUIRED).getInt(BASE_POWER_REQUIRED);
 
         DEV_MODE = CONFIGURATION.getBoolean("Debug Mode", "Configuration", DEV_MODE, "This is for developers!");
+        System.out.println(DEV_MODE);
         CONFIGURATION.save();
 
     }

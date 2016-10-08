@@ -1,5 +1,8 @@
 package com.mffs;
 
+import com.builtbroken.mc.core.registry.ModManager;
+import com.builtbroken.mc.lib.mod.AbstractMod;
+import com.builtbroken.mc.lib.mod.AbstractProxy;
 import com.mffs.common.blocks.BlockForceField;
 import com.mffs.common.net.packet.*;
 import cpw.mods.fml.common.Mod;
@@ -14,8 +17,8 @@ import cpw.mods.fml.relauncher.Side;
 import net.minecraft.block.Block;
 import net.minecraftforge.common.MinecraftForge;
 
-@Mod(modid = ModularForcefieldSystem.MODID, name = ModularForcefieldSystem.MOD_NAME, version = ModularForcefieldSystem.VERSION)
-public class ModularForcefieldSystem /*extends AbstractMod*/ {
+@Mod(modid = ModularForcefieldSystem.MODID, name = ModularForcefieldSystem.MOD_NAME, version = ModularForcefieldSystem.VERSION, dependencies = "required-after:VoltzEngine")
+public class ModularForcefieldSystem extends AbstractMod {
     public static final String MODID = "mffs";
     public static final String VERSION = "0.27";
     public static final String MOD_NAME = "Modular Forcefield System";
@@ -24,7 +27,7 @@ public class ModularForcefieldSystem /*extends AbstractMod*/ {
      * Constructor.
      */
     public ModularForcefieldSystem() {
-        //super(MODID);
+        super(MODID, MODID+"/general_settings");
     }
 
     @Mod.Instance
@@ -35,49 +38,32 @@ public class ModularForcefieldSystem /*extends AbstractMod*/ {
 
     /* This is the communication channel of the mod */
     public static SimpleNetworkWrapper channel;
-/*
+
     @Override
     public AbstractProxy getProxy() {
         return proxy;
     }
 
     @Override
-    protected void loadBlocks(ModManager manager) {
-        try {
-            RegisterManager.parseBlocks();
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
-    }
+    protected void loadBlocks(ModManager manager) {}
 
     @Override
-    public void loadItems(ModManager manager) {
-        try {
-            RegisterManager.parseItems();
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
-    }
+    public void loadItems(ModManager manager) {}
 
     @Override
-    public void loadEntities(ModManager manager) {
-        try {
-            RegisterManager.parseEntity();
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
-    }*/
+    public void loadEntities(ModManager manager) {}
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
+        super.preInit(event);
         channel = new SimpleNetworkWrapper(MODID);
         SettingConfiguration.load();
         try {
+            //Cannot load these in methods as config isnt able to be loaded till after!
             RegisterManager.parseItems();
             RegisterManager.parseBlocks();
-            RegisterManager.parseEntity();
             RegisterManager.parseFluid();
-            NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
+            RegisterManager.parseEntity();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -90,16 +76,18 @@ public class ModularForcefieldSystem /*extends AbstractMod*/ {
         ModularForcefieldSystem.channel.registerMessage(BeamRequest.ClientHandler.class, BeamRequest.class, 4, Side.CLIENT);
         ModularForcefieldSystem.channel.registerMessage(ItemByteToggle.ServerHandler.class, ItemByteToggle.class, 5, Side.SERVER);
         ModularForcefieldSystem.channel.registerMessage(ItemStringToggle.ServerHandler.class, ItemStringToggle.class, 6, Side.SERVER);
-        proxy.preInit(event);
+        proxy.preInit();
     }
 
     @EventHandler
     public void init(FMLInitializationEvent event) {
-        proxy.init(event);
+        super.init(event);
+        proxy.init();
     }
 
     @EventHandler
     public void postInit(FMLPostInitializationEvent event) {
-        proxy.postInit(event);
+        super.postInit(event);
+        proxy.postInit();
     }
 }

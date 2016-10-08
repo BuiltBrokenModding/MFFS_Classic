@@ -15,7 +15,19 @@ buildscript {
     }
 }
 
-apply plugin: 'forge'
+plugins {
+  id 'com.matthewprenger.cursegradle' version '1.0.1'
+  id 'net.saliman.cobertura' version '2.2.5'
+  id 'com.github.kt3k.coveralls' version '2.0.1'
+  //id "com.github.johnrengelman.shadow" version "1.2.2"
+  id "net.franz-becker.gradle-lombok" version "1.3"
+  id 'com.jfrog.bintray' version '1.1'
+}
+
+apply from: 'https://raw.githubusercontent.com/BuiltBrokenModding/BuiltBrokenScripts/buildScripts/index/index.gradle'
+apply plugin: 'com.github.kt3k.coveralls'
+apply plugin: 'jacoco'
+apply from: 'https://raw.githubusercontent.com/BuiltBrokenModding/BuiltBrokenScripts/buildScripts/scripts/forge/deps.gradle'
 
 version = "0.27"
 group= "com.mffs" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
@@ -23,25 +35,14 @@ archivesBaseName = "mffs"
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-minecraft {
+minecraft {    
+    replace "required-after:VoltzEngine", "required-after:VoltzEngine@[$voltz_engine_version,)"
     version = "1.7.10-10.13.4.1558-1.7.10"
     runDir = "build"
 }
 
 dependencies {
-    // you may put jars on which you depend on in ./libs
-    // or you may define them like so..
-    //compile "some.group:artifact:version:classifier"
-    //compile "some.group:artifact:version"
-      
-    // real examples
-    //compile 'com.mod-buildcraft:buildcraft:6.0.8:dev'  // adds buildcraft to the dev env
-    //compile 'com.googlecode.efficient-java-matrix-library:ejml:0.24' // adds ejml to the dev env
-
-    // for more info...
-    // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
-    // http://www.gradle.org/docs/current/userguide/dependency_management.html
-
+compile "dev.builtbroken.voltzengine:VoltzEngine:1.7.10-$voltz_engine_version+:deobf-dev"
 }
 
 processResources

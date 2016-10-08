@@ -34,20 +34,16 @@ import net.minecraftforge.client.MinecraftForgeClient;
 public class ClientProxy extends CommonProxy {
     /**
      * Called before the main INITIALIZE.
-     *
-     * @param event Forge ModLoader event.
      */
     @Override
-    public void preInit(FMLPreInitializationEvent event) {
+    public void preInit() {
     }
 
     /**
      * Called along with the main Initialize.
-     *
-     * @param event Forge ModLoader event.
      */
     @Override
-    public void init(FMLInitializationEvent event) {
+    public void init() {
         RenderingRegistry.registerBlockHandler(new RenderBlockHandler());
         RenderingRegistry.registerBlockHandler(new RenderForceFieldHandler());
         MinecraftForgeClient.registerItemRenderer((Item) Item.itemRegistry.getObject(ModularForcefieldSystem.MODID + ":cardID"), new RenderIDCard());
@@ -58,11 +54,9 @@ public class ClientProxy extends CommonProxy {
 
     /**
      * Called after the main Init.
-     *
-     * @param event Forge ModLoader event.
      */
     @Override
-    public void postInit(FMLPostInitializationEvent event) {
+    public void postInit() {
     }
 
     /**
