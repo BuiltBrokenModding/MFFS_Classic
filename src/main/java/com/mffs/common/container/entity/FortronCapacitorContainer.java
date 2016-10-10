@@ -1,7 +1,7 @@
 package com.mffs.common.container.entity;
 
-import com.mffs.api.slots.CardSlot;
 import com.mffs.api.slots.BaseSlot;
+import com.mffs.api.slots.CardSlot;
 import com.mffs.common.container.PlayerContainer;
 import com.mffs.common.tile.type.TileFortronCapacitor;
 import net.minecraft.entity.player.EntityPlayer;

@@ -1,10 +1,10 @@
 package com.mffs.api.utils;
 
 import com.mffs.ModularForcefieldSystem;
-import com.mffs.common.TransferMode;
 import com.mffs.api.fortron.IFortronFrequency;
 import com.mffs.api.modules.IModuleAcceptor;
 import com.mffs.api.vector.Vector3D;
+import com.mffs.common.TransferMode;
 import com.mffs.common.items.modules.upgrades.ItemModuleCamouflage;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;

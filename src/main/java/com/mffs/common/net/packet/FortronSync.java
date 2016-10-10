@@ -2,12 +2,7 @@ package com.mffs.common.net.packet;
 
 import com.mffs.common.net.TileEntityMessage;
 import com.mffs.common.tile.TileFortron;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.client.Minecraft;
-import net.minecraft.tileentity.TileEntity;
 
 /**
  * Created by pwaln on 6/14/2016.

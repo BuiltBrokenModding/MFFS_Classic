@@ -1,7 +1,7 @@
 package com.mffs.client.buttons;
 
-import com.mffs.common.TransferMode;
 import com.mffs.client.gui.base.MFFSGui;
+import com.mffs.common.TransferMode;
 import com.mffs.common.tile.type.TileFortronCapacitor;
 import net.minecraft.client.Minecraft;
 

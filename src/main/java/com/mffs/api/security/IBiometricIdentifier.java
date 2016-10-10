@@ -1,7 +1,5 @@
 package com.mffs.api.security;
 
-import net.minecraft.item.ItemStack;
-
 /**
  * @author Calclavia
  */

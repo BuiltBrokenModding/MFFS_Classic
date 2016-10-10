@@ -2,7 +2,6 @@ package com.mffs.client;
 
 import com.mffs.CommonProxy;
 import com.mffs.ModularForcefieldSystem;
-import com.mffs.RegisterManager;
 import com.mffs.api.vector.Vector3D;
 import com.mffs.client.gui.GuiBiometricIdentifier;
 import com.mffs.client.gui.GuiCoercionDeriver;
@@ -19,9 +18,6 @@ import com.mffs.common.tile.type.TileFortronCapacitor;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;

@@ -2,13 +2,13 @@ package com.mffs.common.tile;
 
 import com.mffs.ModularForcefieldSystem;
 import com.mffs.SettingConfiguration;
-import com.mffs.api.vector.Matrix2d;
-import com.mffs.common.TransferMode;
 import com.mffs.api.card.ICard;
 import com.mffs.api.fortron.FrequencyGrid;
 import com.mffs.api.fortron.IFortronFrequency;
 import com.mffs.api.utils.FortronHelper;
+import com.mffs.api.vector.Matrix2d;
 import com.mffs.api.vector.Vector3D;
+import com.mffs.common.TransferMode;
 import com.mffs.common.fluids.Fortron;
 import com.mffs.common.net.packet.FortronSync;
 import cpw.mods.fml.common.network.NetworkRegistry;

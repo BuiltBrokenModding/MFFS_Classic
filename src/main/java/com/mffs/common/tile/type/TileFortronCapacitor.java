@@ -1,6 +1,5 @@
 package com.mffs.common.tile.type;
 
-import com.mffs.common.TransferMode;
 import com.mffs.api.card.ICard;
 import com.mffs.api.card.ICardInfinite;
 import com.mffs.api.card.ICoordLink;
@@ -10,6 +9,7 @@ import com.mffs.api.fortron.IFortronFrequency;
 import com.mffs.api.modules.IModule;
 import com.mffs.api.utils.FortronHelper;
 import com.mffs.api.vector.Vector3D;
+import com.mffs.common.TransferMode;
 import com.mffs.common.items.modules.upgrades.ItemModuleScale;
 import com.mffs.common.items.modules.upgrades.ItemModuleSpeed;
 import com.mffs.common.net.packet.EntityToggle;

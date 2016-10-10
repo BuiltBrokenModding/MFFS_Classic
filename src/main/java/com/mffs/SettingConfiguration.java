@@ -1,10 +1,7 @@
 package com.mffs;
 
-import cpw.mods.fml.common.Loader;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
-
-import java.io.File;
 
 /**
  * @author Calclavia

@@ -1,13 +1,8 @@
 package com.mffs.common.net.packet;
 
-import com.mffs.common.TileMFFS;
 import com.mffs.common.net.ItemMessage;
 import cpw.mods.fml.common.network.ByteBufUtils;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.tileentity.TileEntity;
 
 /**
  * Created by Poopsicle360 on 7/15/2016.

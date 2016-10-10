@@ -1,10 +1,9 @@
 package com.mffs.common.blocks;
 
+import com.builtbroken.mc.api.tile.IRemovable;
 import com.mffs.ModularForcefieldSystem;
 import com.mffs.api.IBiometricIdentifierLink;
 import com.mffs.api.security.Permission;
-import com.mffs.api.vector.Matrix2d;
-import com.mffs.api.vector.Vector3D;
 import com.mffs.common.TileMFFS;
 import com.mffs.common.items.card.ItemCardLink;
 import mekanism.api.IMekWrench;
@@ -25,7 +24,8 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-import javax.vecmath.Vector2d;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 /**

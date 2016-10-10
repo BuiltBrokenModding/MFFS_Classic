@@ -10,7 +10,6 @@ import com.mffs.common.items.modules.BaseModule;
 import com.mffs.common.items.modules.upgrades.ItemModuleApproximation;
 import com.mffs.common.items.modules.upgrades.ItemModuleCamouflage;
 import com.mffs.common.items.modules.upgrades.ItemModuleCollection;
-import com.mffs.common.items.modules.upgrades.ItemModuleSpeed;
 import com.mffs.common.net.packet.BeamRequest;
 import com.mffs.common.tile.type.TileForceFieldProjector;
 import net.minecraft.block.Block;
