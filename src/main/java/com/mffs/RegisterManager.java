@@ -108,6 +108,7 @@ public class RegisterManager {
     /**
      * Simply parses the item directory and registers them.
      */
+    @Deprecated
     public static void parseFluid() throws Exception {
         List<String> names = getClassNames("common/fluids");
         for (String name : names) {

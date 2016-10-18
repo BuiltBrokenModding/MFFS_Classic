@@ -4,6 +4,7 @@ import com.builtbroken.mc.core.registry.ModManager;
 import com.builtbroken.mc.lib.mod.AbstractMod;
 import com.builtbroken.mc.lib.mod.AbstractProxy;
 import com.mffs.common.blocks.BlockForceField;
+import com.mffs.common.fluids.Fortron;
 import com.mffs.common.net.packet.*;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -15,6 +16,7 @@ import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.relauncher.Side;
 import net.minecraft.block.Block;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fluids.FluidRegistry;
 
 @Mod(modid = ModularForcefieldSystem.MODID, name = ModularForcefieldSystem.MOD_NAME, version = ModularForcefieldSystem.VERSION, dependencies = "required-after:VoltzEngine")
 public class ModularForcefieldSystem extends AbstractMod {
@@ -61,11 +63,13 @@ public class ModularForcefieldSystem extends AbstractMod {
             //Cannot load these in methods as config isnt able to be loaded till after!
             RegisterManager.parseItems();
             RegisterManager.parseBlocks();
-            RegisterManager.parseFluid();
+            //RegisterManager.parseFluid();
             RegisterManager.parseEntity();
         } catch (Exception e) {
             e.printStackTrace();
         }
+        FluidRegistry.registerFluid(new Fortron());
+        Fortron.FLUID_ID = FluidRegistry.getFluidID("fortron");
         BlockForceField.BLOCK_FORCE_FIELD = (BlockForceField) Block.getBlockFromName(ModularForcefieldSystem.MODID + ":forceField");
         MinecraftForge.EVENT_BUS.register(new ForgeSubscribeHandler());
         ModularForcefieldSystem.channel.registerMessage(EntityToggle.ServerHandler.class, EntityToggle.class, 0, Side.SERVER);

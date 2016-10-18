@@ -27,7 +27,6 @@ public class CommonProxy extends AbstractProxy {
      */
     @Override
     public void preInit() {
-        Fortron.FLUID_ID = FluidRegistry.getFluidID("fortron");
     }
 
     /**
