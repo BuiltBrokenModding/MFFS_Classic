@@ -1,11 +1,13 @@
 package com.mffs;
 
+import akka.io.Tcp;
 import com.builtbroken.mc.core.registry.ModManager;
 import com.builtbroken.mc.lib.mod.AbstractMod;
 import com.builtbroken.mc.lib.mod.AbstractProxy;
-import com.mffs.common.blocks.BlockForceField;
+import com.mffs.common.blocks.*;
 import com.mffs.common.fluids.Fortron;
 import com.mffs.common.net.packet.*;
+import com.mffs.common.tile.type.*;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.SidedProxy;
@@ -13,6 +15,7 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import net.minecraft.block.Block;
 import net.minecraftforge.common.MinecraftForge;
@@ -46,13 +49,26 @@ public class ModularForcefieldSystem extends AbstractMod {
     }
 
     @Override
-    protected void loadBlocks(ModManager manager) {}
+    protected void loadBlocks(ModManager manager) {
+        //TODO: Change Block/Tile to VE 'Tile'
+        manager.newBlock(BlockBiometricIdentifier.class).setBlockName("biometricIdentifier").setCreativeTab(RegisterManager.MFFS_TAB);
+        manager.newBlock(BlockCoercionDeriver.class).setBlockName("coercionDeriver").setCreativeTab(RegisterManager.MFFS_TAB);
+        BlockForceField.BLOCK_FORCE_FIELD = (BlockForceField) manager.newBlock(BlockForceField.class).setBlockName("forceField");
+        manager.newBlock(BlockForceFieldProjector.class).setBlockName("forceFieldProjector").setCreativeTab(RegisterManager.MFFS_TAB);
+        manager.newBlock(BlockFortronCapacitor.class).setBlockName("fortronCapacitor").setCreativeTab(RegisterManager.MFFS_TAB);
+    }
 
     @Override
     public void loadItems(ModManager manager) {}
 
     @Override
-    public void loadEntities(ModManager manager) {}
+    public void loadEntities(ModManager manager) {
+        GameRegistry.registerTileEntity(TileBiometricIdentifier.class, "biometricIdentifier");
+        GameRegistry.registerTileEntity(TileCoercionDeriver.class, "coercionDeriver");
+        GameRegistry.registerTileEntity(TileForceField.class, "forceField");
+        GameRegistry.registerTileEntity(TileForceFieldProjector.class, "forceFieldProjector");
+        GameRegistry.registerTileEntity(TileFortronCapacitor.class, "fortronCapacitor");
+    }
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
@@ -62,15 +78,11 @@ public class ModularForcefieldSystem extends AbstractMod {
         try {
             //Cannot load these in methods as config isnt able to be loaded till after!
             RegisterManager.parseItems();
-            RegisterManager.parseBlocks();
-            //RegisterManager.parseFluid();
-            RegisterManager.parseEntity();
         } catch (Exception e) {
             e.printStackTrace();
         }
         FluidRegistry.registerFluid(new Fortron());
         Fortron.FLUID_ID = FluidRegistry.getFluidID("fortron");
-        BlockForceField.BLOCK_FORCE_FIELD = (BlockForceField) Block.getBlockFromName(ModularForcefieldSystem.MODID + ":forceField");
         MinecraftForge.EVENT_BUS.register(new ForgeSubscribeHandler());
         ModularForcefieldSystem.channel.registerMessage(EntityToggle.ServerHandler.class, EntityToggle.class, 0, Side.SERVER);
         channel.registerMessage(FortronSync.ClientHandler.class, FortronSync.class, 1, Side.CLIENT);

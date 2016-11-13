@@ -72,6 +72,7 @@ public class RegisterManager {
     /**
      * Simply parses the item directory and registers them.
      */
+    @Deprecated
     public static void parseBlocks() throws Exception {
         List<String> names = getClassNames("common/blocks");
         for (String name : names) {
@@ -92,8 +93,10 @@ public class RegisterManager {
     /**
      * Simply parses the item directory and registers them.
      */
+    @Deprecated
     public static void parseEntity() throws Exception {
         List<String> names = getClassNames("common/tile");
+
         for (String name : names) {
             name = name.replace("/", ".");
             Class rawClass = (Class) Class.forName(name);
