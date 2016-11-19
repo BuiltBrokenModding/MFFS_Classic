@@ -21,6 +21,7 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
@@ -48,7 +49,7 @@ public class BlockForceField extends Block implements ITileEntityProvider, IForc
      */
     public BlockForceField() {
         super(Material.glass);
-        setResistance(999);
+        setResistance(-1);
         setHardness(Float.MAX_VALUE);
         setCreativeTab(null);
     }

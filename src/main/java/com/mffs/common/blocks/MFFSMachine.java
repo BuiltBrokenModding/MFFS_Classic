@@ -43,7 +43,7 @@ public abstract class MFFSMachine extends Block implements ITileEntityProvider {
         super(Material.iron);
         this.isBlockContainer = true;
         setHardness(Float.MAX_VALUE);
-        setResistance(100F); //why is it resistant to explosions
+        setResistance(-1);
     }
 
     @Override
