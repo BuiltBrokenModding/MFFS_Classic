@@ -1,5 +1,6 @@
 package com.mffs.client.render;
 
+import com.builtbroken.mc.lib.transform.vector.Point;
 import com.mffs.api.card.ICardIdentification;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -14,8 +15,6 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.IItemRenderer;
 import org.lwjgl.opengl.GL11;
-
-import javax.vecmath.Vector2d;
 
 /**
  * @author Calclavia
@@ -116,19 +115,19 @@ public class RenderIDCard implements IItemRenderer {
 
     private void renderPlayerFace(ResourceLocation resourcelocation) {
         if (resourcelocation != null) {
-            Vector2d translation = new Vector2d(9.0D, 5.0D);
+            Point translation = new Point(9.0D, 5.0D);
             int xSize = 4;
             int ySize = 4;
 
-            int topLX = (int) translation.x;
-            int topRX = (int) translation.x + xSize;
-            int botLX = (int) translation.x;
-            int botRX = (int) translation.x + xSize;
+            int topLX = (int) translation.x();
+            int topRX = (int) translation.x() + xSize;
+            int botLX = (int) translation.x();
+            int botRX = (int) translation.x() + xSize;
 
-            int topLY = (int) translation.y;
-            int topRY = (int) translation.y;
-            int botLY = (int) translation.y + ySize;
-            int botRY = (int) translation.y + ySize;
+            int topLY = (int) translation.y();
+            int topRY = (int) translation.y();
+            int botLY = (int) translation.y() + ySize;
+            int botRY = (int) translation.y() + ySize;
 
             FMLClientHandler.instance().getClient().renderEngine.bindTexture(resourcelocation);
 

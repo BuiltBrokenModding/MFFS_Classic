@@ -1,5 +1,6 @@
 package com.mffs.client.buttons;
 
+import com.builtbroken.mc.lib.transform.vector.Point;
 import com.mffs.ModularForcefieldSystem;
 import com.mffs.client.gui.base.MFFSGui;
 import cpw.mods.fml.client.FMLClientHandler;
@@ -19,25 +20,25 @@ public class GuiPressableButton extends GuiButton {
     public static final ResourceLocation GUI_BUTTON = new ResourceLocation(ModularForcefieldSystem.MODID, "textures/gui/gui_button.png");
 
     public boolean stuck = false;
-    protected Vector2d offset = new Vector2d();
+    protected Point offset = new Point();
     private MFFSGui mainGui;
 
-    public GuiPressableButton(int id, int x, int y, Vector2d offset, MFFSGui mainGui, String name) {
+    public GuiPressableButton(int id, int x, int y, Point offset, MFFSGui mainGui, String name) {
         super(id, x, y, 18, 18, name);
         this.offset = offset;
         this.mainGui = mainGui;
     }
 
-    public GuiPressableButton(int id, int x, int y, Vector2d offset, MFFSGui mainGui) {
+    public GuiPressableButton(int id, int x, int y, Point offset, MFFSGui mainGui) {
         this(id, x, y, offset, mainGui, "");
     }
 
-    public GuiPressableButton(int id, int x, int y, Vector2d offset) {
+    public GuiPressableButton(int id, int x, int y, Point offset) {
         this(id, x, y, offset, null, "");
     }
 
     public GuiPressableButton(int id, int x, int y) {
-        this(id, x, y, new Vector2d());
+        this(id, x, y, new Point());
     }
 
 
@@ -53,7 +54,7 @@ public class GuiPressableButton extends GuiButton {
                 GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             }
 
-            drawTexturedModalRect(this.xPosition, this.yPosition, (int) this.offset.x, (int) this.offset.y, this.width, this.height);
+            drawTexturedModalRect(this.xPosition, this.yPosition, (int) this.offset.x(), (int) this.offset.y(), this.width, this.height);
             func_73739_b(minecraft, x, y);
         }
     }

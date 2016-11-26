@@ -1,5 +1,7 @@
 package com.mffs.client.gui.base;
 
+import com.builtbroken.mc.lib.transform.vector.Point;
+import com.builtbroken.mc.lib.transform.vector.Pos;
 import com.mffs.ModularForcefieldSystem;
 import com.mffs.api.IBiometricIdentifierLink;
 import com.mffs.api.IBlockFrequency;
@@ -25,7 +27,7 @@ import javax.vecmath.Vector2d;
 public class MFFSGui extends GuiContainerBase {
 
     protected GuiTextField textFieldFrequency;
-    protected Vector2d textFieldPos = new Vector2d();
+    protected Point textFieldPos;
     protected IBlockFrequency frequencyTile;
 
     /**
@@ -52,7 +54,7 @@ public class MFFSGui extends GuiContainerBase {
         this.buttonList.add(new GuiIcon(0, this.width / 2 - 110, this.height / 2 - 104, new ItemStack(Blocks.torch), new ItemStack(Blocks.redstone_torch)));
         Keyboard.enableRepeatEvents(true);
         if (this.frequencyTile != null) {
-            this.textFieldFrequency = new GuiTextField(this.fontRendererObj, (int) this.textFieldPos.x, (int) this.textFieldPos.y, 50, 12);
+            this.textFieldFrequency = new GuiTextField(this.fontRendererObj, (int) this.textFieldPos.x(), (int) this.textFieldPos.y(), 50, 12);
             this.textFieldFrequency.setMaxStringLength(6);
             this.textFieldFrequency.setText(this.frequencyTile.getFrequency() + "");
         }
@@ -123,7 +125,7 @@ public class MFFSGui extends GuiContainerBase {
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 
         if (this.textFieldFrequency != null) {
-            if (func_146978_c((int) this.textFieldPos.x, (int) this.textFieldPos.y, this.textFieldFrequency.getWidth(), 12, mouseX, mouseY)) {
+            if (func_146978_c((int) this.textFieldPos.x(), (int) this.textFieldPos.y(), this.textFieldFrequency.getWidth(), 12, mouseX, mouseY)) {
                 this.tooltip = LanguageRegistry.instance().getStringLocalization("gui.frequency.tooltip");
             }
         }

@@ -1,5 +1,6 @@
 package com.mffs.client.gui;
 
+import com.builtbroken.mc.lib.transform.vector.Point;
 import com.mffs.client.gui.base.MFFSGui;
 import com.mffs.common.container.entity.BiometricContainer;
 import com.mffs.common.tile.type.TileBiometricIdentifier;
@@ -27,9 +28,8 @@ public class GuiBiometricIdentifier extends MFFSGui {
 
     @Override
     public void initGui() {
-        this.textFieldPos = new Vector2d(33, 118);
+        this.textFieldPos = new Point(33, 118);
         super.initGui();
-
     }
 
     @Override

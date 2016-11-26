@@ -20,8 +20,8 @@ public abstract class MatrixContainer extends PlayerContainer {
     public MatrixContainer(EntityPlayer player, TileFieldMatrix matrix) {
         super(player, matrix);
 
-        int matrixX = (int) MATRIX_CENTER.x + 1;
-        int matrixY = (int) MATRIX_CENTER.y + 1;
+        int matrixX = (int) MATRIX_CENTER.x() + 1;
+        int matrixY = (int) MATRIX_CENTER.y() + 1;
 
         addSlotToContainer(new CardSlot<>(matrix, 0, 8, 114));
         addSlotToContainer(new BaseSlot<>(matrix, 1, matrixX, matrixY));

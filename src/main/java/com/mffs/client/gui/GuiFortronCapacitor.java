@@ -1,5 +1,6 @@
 package com.mffs.client.gui;
 
+import com.builtbroken.mc.lib.transform.vector.Point;
 import com.mffs.ModularForcefieldSystem;
 import com.mffs.api.fortron.IFortronFrequency;
 import com.mffs.api.utils.UnitDisplay;
@@ -35,7 +36,7 @@ public class GuiFortronCapacitor extends MFFSGui {
 
     @Override
     public void initGui() {
-        this.textFieldPos = new Vector2d(50, 76);
+        this.textFieldPos = new Point(50, 76);
         super.initGui();
         this.buttonList.add(new TransferModeButton(1, width / 2 + 15, height / 2 - 37, this, getCapacitor()));
     }

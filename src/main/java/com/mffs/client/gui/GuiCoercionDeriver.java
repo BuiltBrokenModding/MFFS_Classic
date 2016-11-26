@@ -1,5 +1,6 @@
 package com.mffs.client.gui;
 
+import com.builtbroken.mc.lib.transform.vector.Point;
 import com.mffs.ModularForcefieldSystem;
 import com.mffs.api.gui.GuiSlotType;
 import com.mffs.api.utils.UnitDisplay;
@@ -25,7 +26,7 @@ public class GuiCoercionDeriver extends MFFSGui {
     }
 
     public void initGui() {
-        this.textFieldPos = new Vector2d(30.0D, 43.0D);
+        this.textFieldPos = new Point(30.0D, 43.0D);
         super.initGui();
         //this.buttonList.add(new GuiButton(1, this.width / 2 - 10, this.height / 2 - 28, 58, 20, LanguageRegistry.instance().getStringLocalization("gui.deriver.derive")));
     }

@@ -1,5 +1,7 @@
 package com.mffs.client.gui;
 
+import com.builtbroken.mc.lib.transform.vector.Point;
+import com.builtbroken.mc.lib.transform.vector.Pos;
 import com.mffs.ModularForcefieldSystem;
 import com.mffs.api.utils.UnitDisplay;
 import com.mffs.client.buttons.GuiIcon;
@@ -33,7 +35,7 @@ public class GuiForceFieldProjector extends GuiMatrix {
 
     @Override
     public void initGui() {
-        this.textFieldPos = new Vector2d(30, 115);
+        this.textFieldPos = new Point(30, 115);
         super.initGui();
         this.buttonList.add(new GuiIcon(1, this.width / 2 - 110, this.height / 2 - 82, null, new ItemStack(Items.compass)));
     }

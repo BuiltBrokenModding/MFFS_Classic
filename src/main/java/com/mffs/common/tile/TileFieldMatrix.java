@@ -1,5 +1,6 @@
 package com.mffs.common.tile;
 
+import com.builtbroken.mc.lib.transform.vector.Point;
 import com.mffs.api.IFieldInteraction;
 import com.mffs.api.event.EventTimedTask;
 import com.mffs.api.modules.IModule;
@@ -26,7 +27,7 @@ public abstract class TileFieldMatrix extends TileModuleAcceptor implements IFie
     /* Rotation matrix */
     public static final int[][] RELATIVE_MATRIX = {{3, 2, 1, 0, 5, 4}, {4, 5, 0, 1, 2, 3}, {0, 1, 3, 2, 4, 5}, {0, 1, 2, 3, 5, 4}, {0, 1, 5, 4, 3, 2}, {0, 1, 4, 5, 2, 3}};
     /* Center of the matrix */
-    public static final Vector2d MATRIX_CENTER = new Vector2d(110, 55);
+    public static final Point MATRIX_CENTER = new Point(110, 55);
     /* The start slot for the module */
     protected static final int MODULE_SLOT_ID = 1;
     /* SLot ids based on direction ordinal */
