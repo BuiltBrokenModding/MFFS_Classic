@@ -2,10 +2,12 @@ package com.mffs;
 
 import akka.io.Tcp;
 import com.builtbroken.mc.core.registry.ModManager;
+import com.builtbroken.mc.lib.helper.recipe.OreNames;
 import com.builtbroken.mc.lib.mod.AbstractMod;
 import com.builtbroken.mc.lib.mod.AbstractProxy;
 import com.mffs.common.blocks.*;
 import com.mffs.common.fluids.Fortron;
+import com.mffs.common.items.card.ItemCardBlank;
 import com.mffs.common.net.packet.*;
 import com.mffs.common.tile.type.*;
 import cpw.mods.fml.common.Mod;
@@ -17,7 +19,11 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
+import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.FluidRegistry;
 
@@ -32,6 +38,14 @@ public class ModularForcefieldSystem extends AbstractMod {
      */
     public ModularForcefieldSystem() {
         super(MODID, MODID+"/general_settings");
+        manager.defaultTab = new CreativeTabs(ModularForcefieldSystem.MODID) {
+
+            @Override
+            @SideOnly(Side.CLIENT)
+            public Item getTabIconItem() {
+                return (Item) Item.itemRegistry.getObject(ModularForcefieldSystem.MODID + ":cardBlank");
+            }
+        };
     }
 
     @Mod.Instance
@@ -51,11 +65,11 @@ public class ModularForcefieldSystem extends AbstractMod {
     @Override
     protected void loadBlocks(ModManager manager) {
         //TODO: Change Block/Tile to VE 'Tile'
-        manager.newBlock(BlockBiometricIdentifier.class).setBlockName("biometricIdentifier").setCreativeTab(RegisterManager.MFFS_TAB);
-        manager.newBlock(BlockCoercionDeriver.class).setBlockName("coercionDeriver").setCreativeTab(RegisterManager.MFFS_TAB);
+        manager.newBlock(BlockBiometricIdentifier.class).setBlockName("biometricIdentifier").setCreativeTab(manager.defaultTab);
+        manager.newBlock(BlockCoercionDeriver.class).setBlockName("coercionDeriver").setCreativeTab(manager.defaultTab);
         BlockForceField.BLOCK_FORCE_FIELD = (BlockForceField) manager.newBlock(BlockForceField.class).setBlockName("forceField");
-        manager.newBlock(BlockForceFieldProjector.class).setBlockName("forceFieldProjector").setCreativeTab(RegisterManager.MFFS_TAB);
-        manager.newBlock(BlockFortronCapacitor.class).setBlockName("fortronCapacitor").setCreativeTab(RegisterManager.MFFS_TAB);
+        manager.newBlock(BlockForceFieldProjector.class).setBlockName("forceFieldProjector").setCreativeTab(manager.defaultTab);
+        manager.newBlock(BlockFortronCapacitor.class).setBlockName("fortronCapacitor").setCreativeTab(manager.defaultTab);
     }
 
     @Override
@@ -75,6 +89,7 @@ public class ModularForcefieldSystem extends AbstractMod {
         super.preInit(event);
         channel = new SimpleNetworkWrapper(MODID);
         SettingConfiguration.load();
+        //Item load = manager.newItem("cardBlank", ItemCardBlank.class).setCreativeTab(manager.defaultTab);
         try {
             //Cannot load these in methods as config isnt able to be loaded till after!
             RegisterManager.parseItems();

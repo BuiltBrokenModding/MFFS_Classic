@@ -11,6 +11,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.Modifier;
@@ -23,19 +24,25 @@ import java.util.jar.JarInputStream;
  * Created by pwaln on 5/28/2016.
  */
 public class RegisterManager {
-    /* This is the tab we shall store everything in */
-    public static CreativeTabs MFFS_TAB = new CreativeTabs(ModularForcefieldSystem.MODID) {
 
-        @Override
-        @SideOnly(Side.CLIENT)
-        public Item getTabIconItem() {
-            return (Item) Item.itemRegistry.getObject(ModularForcefieldSystem.MODID + ":cardBlank");
-        }
-    };
+    private static final String REGEX_MATCH = "^["+ModularForcefieldSystem.MODID +"].+";
 
     public static List<String> getClassNames(String directory) throws IOException {
         List<String> files = new ArrayList<>();
-        JarInputStream stream = new JarInputStream(new FileInputStream((!SettingConfiguration.DEV_MODE ? "./mods/" : "./libs/") + ModularForcefieldSystem.MODID + "-" + ModularForcefieldSystem.VERSION + ".jar"));
+        //TODO: Remove all this shit.
+        //Use regex to match the .jar name
+        File dir = new File((!SettingConfiguration.DEV_MODE ? "./mods/" : "./libs/"));
+        String file = null;
+        if(dir != null && dir.isDirectory()) {
+            String[] fNames = dir.list();
+            for(String f : fNames) {
+                if(f.matches(REGEX_MATCH)) {
+                    file = f;
+                    break;
+                }
+            }
+        }
+        JarInputStream stream = new JarInputStream(new FileInputStream((!SettingConfiguration.DEV_MODE ? "./mods/" : "./libs/")+file));
         JarEntry entry;
         while (true) {
             entry = stream.getNextJarEntry();
@@ -64,7 +71,7 @@ public class RegisterManager {
             name = name.substring(0, 1).toLowerCase() + name.substring(1, name.length());
             item.setUnlocalizedName(name);
             item.setTextureName(ModularForcefieldSystem.MODID + ":" + name);
-            item.setCreativeTab(MFFS_TAB);
+            item.setCreativeTab(ModularForcefieldSystem.modularForcefieldSystem_mod.getManager().defaultTab);
             GameRegistry.registerItem(item, name);
         }
     }
@@ -84,7 +91,7 @@ public class RegisterManager {
             name = rawClass.getSimpleName().replace("Block", "");
             name = name.substring(0, 1).toLowerCase() + name.substring(1, name.length());
             Block block = (Block) rawClass.newInstance();
-            block.setCreativeTab(MFFS_TAB);
+            block.setCreativeTab(ModularForcefieldSystem.modularForcefieldSystem_mod.getManager().defaultTab);
             block.setBlockName(name);
             GameRegistry.registerBlock(block, name);
         }
