@@ -1,5 +1,9 @@
 package com.mffs.common.items;
 
+import com.builtbroken.mc.core.registry.implement.IPostInit;
+import com.builtbroken.mc.core.registry.implement.IRecipeContainer;
+import com.builtbroken.mc.lib.helper.recipe.OreNames;
+import com.builtbroken.mc.lib.helper.recipe.UniversalRecipe;
 import com.mffs.ModularForcefieldSystem;
 import com.mffs.RegisterManager;
 import com.mffs.api.IBlockFrequency;
@@ -12,11 +16,16 @@ import com.mffs.api.utils.MatrixHelper;
 import com.mffs.api.utils.UnitDisplay;
 import com.mffs.api.vector.Vector3D;
 import com.mffs.common.items.card.ItemCardFrequency;
+import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
+import jdk.nashorn.internal.ir.annotations.Ignore;
 import mekanism.api.Coord4D;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
@@ -25,6 +34,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.Iterator;
 import java.util.List;
@@ -55,6 +65,14 @@ public class RemoteController extends ItemCardFrequency implements ICoordLink {
             super.addInformation(stack, usr, list, dummy);
             list.add(EnumChatFormatting.RED + LanguageRegistry.instance().getStringLocalization("info.item.notLinked"));
         }
+    }
+
+    @Override
+    public void genRecipes(List<IRecipe> list) {
+        list.add(newShapedRecipe(this, "WWW", "SBS", "SBS",
+                'W', UniversalRecipe.WIRE.get(),
+                'S', UniversalRecipe.PRIMARY_METAL.get(),
+                'B', UniversalRecipe.BATTERY.get()));
     }
 
     @Override

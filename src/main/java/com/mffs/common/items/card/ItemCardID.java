@@ -1,5 +1,7 @@
 package com.mffs.common.items.card;
 
+import com.builtbroken.mc.lib.helper.recipe.OreNames;
+import com.builtbroken.mc.lib.helper.recipe.UniversalRecipe;
 import com.mffs.ModularForcefieldSystem;
 import com.mffs.RegisterManager;
 import com.mffs.api.card.ICardIdentification;
@@ -12,7 +14,9 @@ import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
@@ -124,5 +128,10 @@ public class ItemCardID extends ItemCardBlank implements ICardIdentification, IP
             return null;
         }
         return null;
+    }
+
+    @Override
+    public void genRecipes(List<IRecipe> list) {
+        list.add(newShapedRecipe(this, "WCW", 'W', UniversalRecipe.WIRE.get(), 'C', Item.itemRegistry.getObject("mffs:cardBlank")));
     }
 }

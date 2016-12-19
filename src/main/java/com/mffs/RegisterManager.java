@@ -3,6 +3,7 @@ package com.mffs;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import jdk.nashorn.internal.ir.annotations.Ignore;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -14,6 +15,7 @@ import net.minecraftforge.fluids.FluidRegistry;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,17 +64,13 @@ public class RegisterManager {
         List<String> names = getClassNames("common/items");
         for (String name : names) {
             name = name.replace("/", ".");
-            Class rawClass = (Class) Class.forName(name);
+            Class rawClass = Class.forName(name);
             if (Modifier.isAbstract(rawClass.getModifiers())) { //This is a abstract class and we simply override it in others!
                 continue;
             }
-            Item item = (Item) rawClass.newInstance();
             name = rawClass.getSimpleName().replace("Item", "");
             name = name.substring(0, 1).toLowerCase() + name.substring(1, name.length());
-            item.setUnlocalizedName(name);
-            item.setTextureName(ModularForcefieldSystem.MODID + ":" + name);
-            item.setCreativeTab(ModularForcefieldSystem.modularForcefieldSystem_mod.getManager().defaultTab);
-            GameRegistry.registerItem(item, name);
+            ModularForcefieldSystem.modularForcefieldSystem_mod.getManager().newItem(name, rawClass);
         }
     }
 

@@ -1,21 +1,26 @@
 package com.mffs.common.blocks;
 
+import com.builtbroken.mc.core.registry.implement.IPostInit;
+import com.builtbroken.mc.lib.helper.recipe.UniversalRecipe;
 import com.mffs.ModularForcefieldSystem;
 import com.mffs.client.render.RenderBlockHandler;
 import com.mffs.common.tile.type.TileCoercionDeriver;
+import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.oredict.ShapedOreRecipe;
 
 /**
  * @author Calclavia
  */
-public final class BlockCoercionDeriver extends MFFSMachine {
+public final class BlockCoercionDeriver extends MFFSMachine implements IPostInit {
     /**
      * @param world  The current world.
      * @param x      X position of block.
@@ -60,5 +65,14 @@ public final class BlockCoercionDeriver extends MFFSMachine {
     @Override
     public boolean renderAsNormalBlock() {
         return false;
+    }
+
+    @Override
+    public void onPostInit() {
+        ShapedOreRecipe recipe = new ShapedOreRecipe(this, "S S", "SFS", "SBS",
+                'F', Item.itemRegistry.getObject("mffs:focusMatrix"),
+                'S', UniversalRecipe.PRIMARY_METAL.get(),
+                'B', UniversalRecipe.BATTERY.get());
+        GameRegistry.addRecipe(recipe);
     }
 }

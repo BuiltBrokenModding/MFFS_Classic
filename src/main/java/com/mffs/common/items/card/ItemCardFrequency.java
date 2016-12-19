@@ -1,11 +1,15 @@
 package com.mffs.common.items.card;
 
+import com.builtbroken.mc.lib.helper.recipe.OreNames;
+import com.builtbroken.mc.lib.helper.recipe.UniversalRecipe;
 import com.mffs.RegisterManager;
 import com.mffs.api.IBlockFrequency;
 import com.mffs.api.IItemFrequency;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
@@ -96,5 +100,10 @@ public class ItemCardFrequency extends ItemCardBlank implements IItemFrequency {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void genRecipes(List<IRecipe> list) {
+        list.add(newShapedRecipe(this, "WCW", 'W', UniversalRecipe.WIRE.get(), 'C', Item.itemRegistry.getObject("mffs:cardBlank")));
     }
 }

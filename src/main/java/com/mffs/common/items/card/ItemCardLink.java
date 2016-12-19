@@ -1,12 +1,16 @@
 package com.mffs.common.items.card;
 
+import com.builtbroken.mc.lib.helper.recipe.OreNames;
+import com.builtbroken.mc.lib.helper.recipe.UniversalRecipe;
 import com.mffs.RegisterManager;
 import com.mffs.api.card.ICoordLink;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import mekanism.api.Coord4D;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
@@ -93,5 +97,10 @@ public class ItemCardLink extends ItemCardBlank implements ICoordLink {
             }
         }
         return true;
+    }
+
+    @Override
+    public void genRecipes(List<IRecipe> list) {
+        list.add(newShapedRecipe(this, "CWC", 'W', UniversalRecipe.WIRE.get(), 'C', Item.itemRegistry.getObject("mffs:cardBlank")));
     }
 }
