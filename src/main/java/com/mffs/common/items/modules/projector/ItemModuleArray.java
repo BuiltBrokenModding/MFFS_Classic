@@ -1,18 +1,31 @@
 package com.mffs.common.items.modules.projector;
 
+import com.builtbroken.mc.core.registry.implement.IRecipeContainer;
 import com.mffs.api.IFieldInteraction;
 import com.mffs.api.vector.Vector3D;
 import com.mffs.common.items.modules.BaseModule;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
  * @author Calclavia
  */
-public class ItemModuleArray extends BaseModule {
+public class ItemModuleArray extends BaseModule implements IRecipeContainer {
+
+    @Override
+    public void genRecipes(List<IRecipe> list) {
+        list.add(newShapedRecipe(this,
+                " F ", "DFD", " F ",
+                'F', Item.itemRegistry.getObject("mffs:focusMatrix"),
+                'D', Items.diamond));
+    }
 
     public ItemModuleArray() {
         setCost(3F);

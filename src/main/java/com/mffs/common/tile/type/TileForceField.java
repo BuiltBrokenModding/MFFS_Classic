@@ -2,7 +2,7 @@ package com.mffs.common.tile.type;
 
 import com.mffs.api.vector.Vector3D;
 import com.mffs.common.TileMFFS;
-import com.mffs.common.items.modules.upgrades.ItemModuleCamouflage;
+import com.mffs.common.items.modules.projector.ItemModuleCamouflage;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;

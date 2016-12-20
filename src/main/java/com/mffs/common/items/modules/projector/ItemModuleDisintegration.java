@@ -1,5 +1,7 @@
 package com.mffs.common.items.modules.projector;
 
+import com.builtbroken.mc.core.registry.implement.IRecipeContainer;
+import com.builtbroken.mc.lib.helper.recipe.UniversalRecipe;
 import com.mffs.ModularForcefieldSystem;
 import com.mffs.api.Blacklist;
 import com.mffs.api.IProjector;
@@ -8,23 +10,33 @@ import com.mffs.common.event.DelayedBlockDropEvent;
 import com.mffs.common.event.DelayedBlockInventoryEvent;
 import com.mffs.common.items.modules.BaseModule;
 import com.mffs.common.items.modules.upgrades.ItemModuleApproximation;
-import com.mffs.common.items.modules.upgrades.ItemModuleCamouflage;
-import com.mffs.common.items.modules.upgrades.ItemModuleCollection;
 import com.mffs.common.net.packet.BeamRequest;
 import com.mffs.common.tile.type.TileForceFieldProjector;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraftforge.fluids.BlockFluidBase;
 import net.minecraftforge.fluids.IFluidBlock;
 
+import java.util.List;
 import java.util.Set;
 
 /**
  * @author Calclavia
  */
-public class ItemModuleDisintegration extends BaseModule {
+public class ItemModuleDisintegration extends BaseModule implements IRecipeContainer {
+
+    @Override
+    public void genRecipes(List<IRecipe> list) {
+        list.add(newShapedRecipe(this,
+                " W ", "FBF", " W ",
+                'F', Item.itemRegistry.getObject("mffs:focusMatrix"),
+                'W', UniversalRecipe.WIRE.get(),
+                'B', UniversalRecipe.BATTERY.get()));
+    }
 
     private int blockCount;
 

@@ -1,5 +1,6 @@
 package com.mffs.common.items.modules.projector.type;
 
+import com.builtbroken.mc.core.registry.implement.IRecipeContainer;
 import com.mffs.api.IFieldInteraction;
 import com.mffs.api.IProjector;
 import com.mffs.api.render.ModelCube;
@@ -8,16 +9,27 @@ import com.mffs.api.vector.Vector3D;
 import com.mffs.common.items.ItemMode;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.tileentity.TileEntity;
 import org.lwjgl.opengl.GL11;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
  * @author Calclavia
  */
-public class ItemModeCube extends ItemMode {
+public class ItemModeCube extends ItemMode implements IRecipeContainer {
+
+    @Override
+    public void genRecipes(List<IRecipe> list) {
+        list.add(newShapedRecipe(this,
+                "FFF", "FFF", "FFF",
+                'F', Item.itemRegistry.getObject("mffs:focusMatrix")));
+    }
 
     @Override
     public Set<Vector3D> getExteriorPoints(IFieldInteraction projector) {

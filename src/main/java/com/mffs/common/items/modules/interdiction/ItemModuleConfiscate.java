@@ -1,5 +1,6 @@
 package com.mffs.common.items.modules.interdiction;
 
+import com.builtbroken.mc.core.registry.implement.IRecipeContainer;
 import com.mffs.api.security.IBiometricIdentifier;
 import com.mffs.api.security.IInterdictionMatrix;
 import com.mffs.api.security.Permission;
@@ -7,17 +8,30 @@ import com.mffs.common.items.modules.MatrixModule;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ChatComponentText;
 
+import java.util.List;
 import java.util.Set;
 
 /**
  * @author Calclavia
  */
-public class ItemModuleConfiscate extends MatrixModule {
+public class ItemModuleConfiscate extends MatrixModule implements IRecipeContainer {
+
+    @Override
+    public void genRecipes(List<IRecipe> list) {
+        list.add(newShapedRecipe(this,
+                "PEP", "EFE", "PEP",
+                'P', Items.ender_pearl,
+                'E', Items.ender_eye,
+                'F', Item.itemRegistry.getObject("mffs:focusMatrix")));
+    }
 
     @Override
     public boolean onDefend(IInterdictionMatrix matrix, EntityLivingBase entity) {

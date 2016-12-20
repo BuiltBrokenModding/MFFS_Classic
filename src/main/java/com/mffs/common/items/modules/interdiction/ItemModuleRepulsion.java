@@ -1,4 +1,4 @@
-package com.mffs.common.items.modules.projector;
+package com.mffs.common.items.modules.interdiction;
 
 import com.mffs.ModularForcefieldSystem;
 import com.mffs.api.IProjector;

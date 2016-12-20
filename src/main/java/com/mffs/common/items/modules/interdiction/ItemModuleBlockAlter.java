@@ -1,7 +1,9 @@
-package com.mffs.common.items.modules.upgrades;
+package com.mffs.common.items.modules.interdiction;
 
 import com.builtbroken.mc.core.registry.implement.IRecipeContainer;
 import com.mffs.common.items.modules.BaseModule;
+import com.mffs.common.items.modules.MatrixModule;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipe;
@@ -11,21 +13,21 @@ import java.util.List;
 /**
  * @author Calclavia
  */
-public class ItemModuleApproximation extends BaseModule implements IRecipeContainer {
+public class ItemModuleBlockAlter extends MatrixModule implements IRecipeContainer {
 
     @Override
     public void genRecipes(List<IRecipe> list) {
         list.add(newShapedRecipe(this,
-                " A ", "AFA", " A ",
-                'F', Item.itemRegistry.getObject("mffs:focusMatrix"),
-                'A', Items.golden_axe));
+                " G ", "GFG", " G ",
+                'G', Blocks.gold_block,
+                'F', Item.itemRegistry.getObject("mffs:moduleBlockAccess")));
     }
 
     /**
      * Constructor.
      */
-    public ItemModuleApproximation() {
+    public ItemModuleBlockAlter() {
         setMaxStackSize(1);
-        setCost(1F);
+        setCost(15F);
     }
 }

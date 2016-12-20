@@ -1,23 +1,39 @@
 package com.mffs.common.items.modules.projector;
 
+import com.builtbroken.mc.core.registry.implement.IRecipeContainer;
 import com.mffs.api.IProjector;
 import com.mffs.api.event.EventStabilize;
 import com.mffs.api.vector.Vector3D;
 import com.mffs.common.items.modules.BaseModule;
 import com.mffs.common.items.modules.upgrades.ItemModuleSpeed;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import java.util.List;
 import java.util.Set;
 
 /**
  * Created by pwaln on 6/17/2016.
  */
-public class ItemModuleStabilize extends BaseModule {
+public class ItemModuleStabilize extends BaseModule implements IRecipeContainer {
+
+    @Override
+    public void genRecipes(List<IRecipe> list) {
+        list.add(newShapedRecipe(this,
+                "FDF", "PSA", "FDF",
+                'F', Item.itemRegistry.getObject("mffs:focusMatrix"),
+                'D', Items.diamond,
+                'P', Items.diamond_pickaxe,
+                'S', Items.diamond_shovel,
+                'A', Items.diamond_axe));
+    }
 
     /* Keeps track of how many blocks duh */
     private short blockCount;

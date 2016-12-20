@@ -1,5 +1,6 @@
 package com.mffs.common.items.modules.interdiction;
 
+import com.builtbroken.mc.core.registry.implement.IRecipeContainer;
 import com.mffs.SettingConfiguration;
 import com.mffs.api.security.IBiometricIdentifier;
 import com.mffs.api.security.IInterdictionMatrix;
@@ -9,16 +10,29 @@ import com.mffs.common.items.modules.projector.ItemModuleShock;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ChatComponentText;
 
+import java.util.List;
 import java.util.Set;
 
 /**
  * @author Calclavia
  */
-public class ItemModuleAntiPersonnel extends MatrixModule {
+public class ItemModuleAntiPersonnel extends MatrixModule implements IRecipeContainer {
+
+    @Override
+    public void genRecipes(List<IRecipe> list) {
+        list.add(newShapedRecipe(this,
+                "HFI",
+                'H', Item.itemRegistry.getObject("mffs:moduleAntiHostile"),
+                'F', Item.itemRegistry.getObject("mffs:focusMatrix"),
+                'I', Item.itemRegistry.getObject("mffs:moduleAntiFriendly")));
+    }
 
     @Override
     public boolean onDefend(IInterdictionMatrix matri, EntityLivingBase paramEntityLivingBase) {

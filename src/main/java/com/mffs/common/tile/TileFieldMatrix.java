@@ -6,17 +6,16 @@ import com.mffs.api.event.EventTimedTask;
 import com.mffs.api.modules.IModule;
 import com.mffs.api.modules.IProjectorMode;
 import com.mffs.api.vector.Vector3D;
-import com.mffs.common.items.modules.upgrades.ItemModuleInvert;
+import com.mffs.common.items.modules.projector.ItemModuleInvert;
 import com.mffs.common.items.modules.upgrades.ItemModuleRotate;
 import com.mffs.common.items.modules.upgrades.ItemModuleScale;
-import com.mffs.common.items.modules.upgrades.ItemModuleTranslate;
+import com.mffs.common.items.modules.projector.ItemModuleTranslate;
 import com.mffs.common.net.packet.EntityToggle;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import javax.vecmath.Vector2d;
 import java.util.*;
 
 /**

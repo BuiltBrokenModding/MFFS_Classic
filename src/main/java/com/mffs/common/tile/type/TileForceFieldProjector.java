@@ -11,7 +11,7 @@ import com.mffs.common.items.ItemMode;
 import com.mffs.common.items.card.ItemCardFrequency;
 import com.mffs.common.items.modules.projector.ItemModuleDisintegration;
 import com.mffs.common.items.modules.projector.type.ItemModeCustom;
-import com.mffs.common.items.modules.upgrades.ItemModuleSilence;
+import com.mffs.common.items.modules.projector.ItemModuleSilence;
 import com.mffs.common.items.modules.upgrades.ItemModuleSpeed;
 import com.mffs.common.net.packet.BeamRequest;
 import com.mffs.common.net.packet.ForcefieldCalculation;
