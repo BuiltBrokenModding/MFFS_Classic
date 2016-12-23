@@ -18,6 +18,7 @@ import com.mffs.common.net.packet.ForcefieldCalculation;
 import com.mffs.common.tile.TileFieldMatrix;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import net.minecraft.block.*;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -127,9 +128,9 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
     @Override
     public int calculateFortronCost() {
         IProjectorMode mode = getMode();
-        if (mode != null) {
+        if (mode != null)
             return Math.round(super.calculateFortronCost() + mode.getFortronCost(getAmplifier()));
-        }
+
         return 0;
     }
 
@@ -155,10 +156,10 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
     private boolean canReplace(Vector3D vec) {
         Block block = vec.getBlock(this.worldObj);
         int dmod = getModuleCount(ItemModuleDisintegration.class);
-        if(block != null) {
-            return (dmod > 0 && block.getBlockHardness(worldObj, vec.intX(), vec.intY(), vec.intZ()) != -1.0 || block.isReplaceable(worldObj, vec.intX(), vec.intY(), vec.intZ())
-                    || block.getMaterial().isLiquid() || block instanceof BlockSnow || block instanceof BlockVine || block instanceof BlockTallGrass
-                    || block instanceof BlockDeadBush) && !(block instanceof BlockForceField);
+        if(block != null && !(block instanceof BlockAir) && !block.getMaterial().isLiquid()) {
+            return (dmod > 0 && block.getBlockHardness(worldObj, vec.intX(), vec.intY(), vec.intZ()) != -1.0
+                    || block instanceof BlockSnow || block instanceof BlockVine || block instanceof BlockBush || block instanceof BlockGrass
+                    || block.isReplaceable(worldObj, vec.intX(), vec.intY(), vec.intZ())) && !(block instanceof BlockForceField);
         }
         return dmod == 0;
     }
@@ -167,6 +168,7 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
         if (this.isFinished && !this.isCalc && (!this.isComplete || this.markFieldUpdate || this.requireTicks)) {
             this.markFieldUpdate = false;
             int constructSpeed = Math.min(getProjectionSpeed(), SettingConfiguration.MAX_FORCE_FIELDS_PER_TICK);
+            rebuild:
             synchronized (this.calculatedFields) {
                 Set<Vector3D> fieldToBeProjected = this.calculatedFields;
                 for (IModule module : getModules(getModuleSlots())) {
@@ -174,6 +176,7 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
                         return;
                     }
                 }
+
                 Vector3D projector = new Vector3D(this);
                 fieldToBeProjected = fieldToBeProjected.stream()
                         .filter(x -> !x.equals(projector) && canReplace(x))
@@ -184,8 +187,11 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
                     int flag = 0;
                     for(ItemStack stack : getModuleStacks(getModuleSlots()))
                     {
-                        if(flag == 0 && stack != null && stack.getItem() instanceof IModule)
+                        if(flag == 0 && stack != null && stack.getItem() instanceof IModule) {
                             flag = ((IModule) stack.getItem()).onProject(this, vec);
+                            if(flag != 0)
+                                break;
+                        }
                     }
 
                     if (flag != 1 && flag != 2)

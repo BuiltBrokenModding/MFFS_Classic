@@ -50,7 +50,7 @@ public class BlockForceField extends Block implements ITileEntityProvider, IForc
     public BlockForceField() {
         super(Material.glass);
         setResistance(-1);
-        setHardness(Float.MAX_VALUE);
+        this.setBlockUnbreakable();
         setCreativeTab(null);
     }
 
@@ -248,10 +248,10 @@ public class BlockForceField extends Block implements ITileEntityProvider, IForc
     @Override
     @SideOnly(Side.CLIENT)
     public boolean shouldSideBeRendered(IBlockAccess world, int x, int y, int z, int p_149646_5_) {
-        //TODO: Is this really nessiary!? Its a client side thing. Maybe always return true?
         TileEntity tile = world.getTileEntity(x, y, z);
         if (tile instanceof TileForceField) {
-            return true;
+            ItemStack stack = ((TileForceField)tile).camo;
+            return stack != null && ((ItemBlock)stack.getItem()).field_150939_a.shouldSideBeRendered(world, x, y, z, p_149646_5_);
         }
         return super.shouldSideBeRendered(world, x, y, z, p_149646_5_);
     }

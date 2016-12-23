@@ -107,28 +107,7 @@ public class RenderForceFieldHandler implements ISimpleBlockRenderingHandler {
                     case 17:
                         renderer.renderPistonExtension(block, x, y, z, true);
                         break;
-                    case 2:
-                    case 3:
-                    case 9:
-                    case 10:
-                    case 11:
-                    case 15:
-                    case 18:
-                    case 19:
-                    case 21:
-                    case 22:
-                    case 24:
-                    case 25:
-                    case 26:
-                    case 27:
-                    case 28:
-                    case 32:
-                    case 33:
-                    case 34:
-                    case 35:
-                    case 36:
-                    case 37:
-                    case 38:
+
                     default:
                         renderer.renderStandardBlock(block, x, y, z);
                 }
@@ -146,7 +125,7 @@ public class RenderForceFieldHandler implements ISimpleBlockRenderingHandler {
 
     @Override
     public boolean shouldRender3DInInventory(int modelId) {
-        return true;
+        return false;
     }
 
     @Override

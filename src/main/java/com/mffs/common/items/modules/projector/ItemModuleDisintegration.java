@@ -14,6 +14,7 @@ import com.mffs.common.net.packet.BeamRequest;
 import com.mffs.common.tile.type.TileForceFieldProjector;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -71,7 +72,7 @@ public class ItemModuleDisintegration extends BaseModule implements IRecipeConta
                     && position.intZ() == entity.zCoord) //prevent destroying itself.
                 return 1;
 
-            if (block != null && !(block instanceof BlockAir)) {
+            if (block != null) {
                 int meta = entity.getWorldObj().getBlockMetadata(position.intX(), position.intY(), position.intZ()); //destory specific blocks
                 boolean aprox = projector.getModuleCount(ItemModuleApproximation.class) > 0;
                 boolean blockMatch = false;
@@ -90,11 +91,6 @@ public class ItemModuleDisintegration extends BaseModule implements IRecipeConta
                     return 1;
                 }
 
-                if (this.blockCount++ >= projector.getProjectionSpeed() / 3) {
-                    System.out.println("Limit hit!");
-                    return 2;
-                }
-
                 if (!entity.getWorldObj().isRemote) {
                     TileForceFieldProjector proj = (TileForceFieldProjector) projector;
                     if (projector.getModuleCount(ItemModuleCollection.class) > 0) {
@@ -102,6 +98,10 @@ public class ItemModuleDisintegration extends BaseModule implements IRecipeConta
                     } else {
                         proj.getEventsQueued().add(new DelayedBlockDropEvent(39, entity.getWorldObj(), position));
                     }
+                }
+
+                if (++this.blockCount >= projector.getProjectionSpeed() / 3) {
+                    return 2;
                 }
 
                 ModularForcefieldSystem.channel.sendToAll(new BeamRequest(entity, position));

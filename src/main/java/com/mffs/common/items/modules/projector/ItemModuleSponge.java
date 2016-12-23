@@ -4,6 +4,7 @@ import com.builtbroken.mc.core.registry.implement.IRecipeContainer;
 import com.mffs.api.IProjector;
 import com.mffs.api.vector.Vector3D;
 import com.mffs.common.items.modules.BaseModule;
+import jdk.nashorn.internal.ir.annotations.Ignore;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.init.Blocks;
@@ -21,7 +22,8 @@ import java.util.Set;
 /**
  * @author Calclavia
  */
-public class ItemModuleSponge extends BaseModule implements IRecipeContainer {
+@Ignore //TODO: This module causes severe lag! Needs to be rethought!
+public abstract class ItemModuleSponge extends BaseModule implements IRecipeContainer {
 
     @Override
     public void genRecipes(List<IRecipe> list) {
@@ -48,13 +50,12 @@ public class ItemModuleSponge extends BaseModule implements IRecipeContainer {
      */
     @Override
     public boolean onProject(IProjector projector, Set<Vector3D> fields) {
-        World world;
         if (projector.getTicks() % 60L == 0L) {
-            world = ((TileEntity) projector).getWorldObj();
+            World world = ((TileEntity) projector).getWorldObj();
 
             if (!world.isRemote) {
                 for (Vector3D point : projector.getInteriorPoints()) {
-                    Block block = world.getBlock((int) Math.floor(point.x), (int) Math.floor(point.y), (int) Math.floor(point.z));
+                    Block block = point.getBlock(world);
 
                     if (((block instanceof BlockLiquid)) || ((block instanceof BlockFluidBase))) {
                         point.setBlock(world, Blocks.air);
