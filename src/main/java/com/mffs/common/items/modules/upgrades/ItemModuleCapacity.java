@@ -25,7 +25,7 @@ public class ItemModuleCapacity extends BaseModule implements IRecipeContainer {
      * Constructor.
      */
     public ItemModuleCapacity() {
-        setMaxStackSize(1);
+        //setMaxStackSize(1);
         setCost(1F);
     }
 }

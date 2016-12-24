@@ -70,6 +70,11 @@ item.mffs:moduleCapacity.tooltip=Increases the capacity of a device.
 item.mffs:moduleSpeed.name=Speed Module
 item.mffs:moduleSpeed.tooltip=Increases the speed of a device.
 
+# Module Types
+module.type.upgrade=Upgrade
+module.type.proj=Projector
+module.type.matrix=Interdiction Matrix
+
 ## Force Field Projector Modules
 item.mffs:moduleShock.name=Shock Module
 item.mffs:moduleSponge.name=Sponge Module

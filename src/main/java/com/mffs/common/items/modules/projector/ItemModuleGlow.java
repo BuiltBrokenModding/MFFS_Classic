@@ -1,4 +1,4 @@
-package com.mffs.common.items.modules.upgrades;
+package com.mffs.common.items.modules.projector;
 
 import com.builtbroken.mc.core.registry.implement.IRecipeContainer;
 import com.mffs.common.items.modules.BaseModule;

@@ -11,6 +11,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -34,7 +35,7 @@ public abstract class BaseModule extends Item implements IModule {
      */
     @Override
     public void addInformation(ItemStack stack, EntityPlayer usr, List list, boolean dummy) {
-        list.add(LanguageRegistry.instance().getStringLocalization("info.item.fortron") + " " + UnitDisplay.getDisplay(getFortronCost(1.0F) * 20.0F, UnitDisplay.Unit.LITER) + "/s");
+        list.add(EnumChatFormatting.BLUE+LanguageRegistry.instance().getStringLocalization("info.item.fortron") + " " + UnitDisplay.getDisplay(getFortronCost(1.0F) * 20.0F, UnitDisplay.Unit.LITER) + "/s");
 
         String tooltip = LanguageRegistry.instance().getStringLocalization(getUnlocalizedName() + ".tooltip");
         if (tooltip != null && tooltip.length() > 0) {
