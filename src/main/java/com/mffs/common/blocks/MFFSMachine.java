@@ -6,7 +6,6 @@ import com.mffs.api.IBiometricIdentifierLink;
 import com.mffs.api.security.Permission;
 import com.mffs.common.TileMFFS;
 import com.mffs.common.items.card.ItemCardLink;
-import mekanism.api.IMekWrench;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -101,7 +100,7 @@ public abstract class MFFSMachine extends Block implements ITileEntityProvider {
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
         if (world.isRemote) return true;
         if (player.inventory.getCurrentItem() != null) {
-            if (player.isSneaking() && player.getItemInUse().getItem() instanceof IMekWrench) //mekanism wrench support!
+            if (player.isSneaking() && WrenchUtility.isUsableWrench(player, x, y, z))
             {
                 TileEntity entity = world.getTileEntity(x, y, z);
                 if (entity instanceof IBiometricIdentifierLink && ((IBiometricIdentifierLink) entity).getBiometricIdentifier() != null) {
@@ -111,7 +110,7 @@ public abstract class MFFSMachine extends Block implements ITileEntityProvider {
                     }
                 }
                 //TODO move this code to wrench method
-                return WrenchUtility.isUsableWrench(player, x, y, z) && wrenchMachine(world, x, y, z, player, side);
+                return wrenchMachine(world, x, y, z, player, side);
             } else if (player.inventory.getCurrentItem().getItem() instanceof ItemCardLink) {
                 return false;
             }

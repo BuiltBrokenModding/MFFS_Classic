@@ -6,6 +6,7 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
 
 import java.util.List;
 
@@ -24,7 +25,7 @@ public abstract class MatrixModule extends BaseModule implements IInterdictionMo
      */
     @Override
     public void addInformation(ItemStack stack, EntityPlayer usr, List list, boolean dummy) {
-        list.add("ยง4" + LanguageRegistry.instance().getStringLocalization("tile.mffs:interdictionMatrix.name"));
+        list.add(EnumChatFormatting.RED + LanguageRegistry.instance().getStringLocalization("tile.interdictionMatrix.name"));
         super.addInformation(stack, usr, list, dummy);
     }
 
