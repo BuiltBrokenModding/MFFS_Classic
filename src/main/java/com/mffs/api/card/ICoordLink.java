@@ -1,6 +1,6 @@
 package com.mffs.api.card;
 
-import mekanism.api.Coord4D;
+import com.builtbroken.mc.lib.transform.vector.Location;
 import net.minecraft.item.ItemStack;
 
 /**
@@ -9,8 +9,9 @@ import net.minecraft.item.ItemStack;
  *
  * @author Calclavia
  */
+//TODO depricate and move to VE interface
 public interface ICoordLink {
-    void setLink(ItemStack paramItemStack, Coord4D paramVectorWorld);
+    void setLink(ItemStack paramItemStack, Location paramVectorWorld);
 
-    Coord4D getLink(ItemStack paramItemStack);
+    Location getLink(ItemStack paramItemStack);
 }

@@ -1,6 +1,6 @@
 package com.mffs.common.blocks;
 
-import com.builtbroken.mc.api.tile.IRemovable;
+import com.builtbroken.mc.lib.helper.WrenchUtility;
 import com.mffs.ModularForcefieldSystem;
 import com.mffs.api.IBiometricIdentifierLink;
 import com.mffs.api.security.Permission;
@@ -24,8 +24,6 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 /**
@@ -112,7 +110,8 @@ public abstract class MFFSMachine extends Block implements ITileEntityProvider {
                         return true;
                     }
                 }
-                return ((IMekWrench) player.getItemInUse().getItem()).canUseWrench(player, x, y, z) && wrenchMachine(world, x, y, z, player, side);
+                //TODO move this code to wrench method
+                return WrenchUtility.isUsableWrench(player, x, y, z) && wrenchMachine(world, x, y, z, player, side);
             } else if (player.inventory.getCurrentItem().getItem() instanceof ItemCardLink) {
                 return false;
             }

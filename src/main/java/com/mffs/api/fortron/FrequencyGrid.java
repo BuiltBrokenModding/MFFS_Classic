@@ -1,9 +1,9 @@
 package com.mffs.api.fortron;
 
+import com.builtbroken.mc.lib.transform.vector.Pos;
 import com.mffs.api.IBlockFrequency;
 import com.mffs.api.vector.Vector3D;
 import cpw.mods.fml.common.FMLCommonHandler;
-import mekanism.api.Pos3D;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
@@ -52,7 +52,7 @@ public class FrequencyGrid {
                         continue;
                     }
 
-                    if (new Pos3D((TileEntity) frequency).equals(new Pos3D((TileEntity) tileEntity))) {
+                    if (new Pos((TileEntity) frequency).equals(new Pos((TileEntity) tileEntity))) {
                         it.remove();
                         continue;
                     }

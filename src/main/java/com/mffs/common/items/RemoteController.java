@@ -1,9 +1,7 @@
 package com.mffs.common.items;
 
-import com.builtbroken.mc.core.registry.implement.IPostInit;
-import com.builtbroken.mc.core.registry.implement.IRecipeContainer;
-import com.builtbroken.mc.lib.helper.recipe.OreNames;
 import com.builtbroken.mc.lib.helper.recipe.UniversalRecipe;
+import com.builtbroken.mc.lib.transform.vector.Location;
 import com.mffs.ModularForcefieldSystem;
 import com.mffs.RegisterManager;
 import com.mffs.api.IBlockFrequency;
@@ -16,25 +14,18 @@ import com.mffs.api.utils.MatrixHelper;
 import com.mffs.api.utils.UnitDisplay;
 import com.mffs.api.vector.Vector3D;
 import com.mffs.common.items.card.ItemCardFrequency;
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
-import jdk.nashorn.internal.ir.annotations.Ignore;
-import mekanism.api.Coord4D;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.Iterator;
 import java.util.List;
@@ -46,20 +37,20 @@ import java.util.Set;
 public class RemoteController extends ItemCardFrequency implements ICoordLink {
 
     /* This is the local version for caching */
-    private Coord4D link;
+    private Location link;
 
     @Override
     public void addInformation(ItemStack stack, EntityPlayer usr, List list, boolean dummy) {
         super.addInformation(stack, usr, list, dummy);
 
-        Coord4D link = getLink(stack);
+        Location link = getLink(stack);
         if (link != null) {
-            World world = DimensionManager.getWorld(link.dimensionId);
+            World world = link.getWorld();
             Block block = link.getBlock(world);
             if (block != null)
                 list.add(LanguageRegistry.instance().getStringLocalization("info.item.linkedWith") + " " + block.getLocalizedName());
 
-            list.add(link.xCoord + ", " + link.yCoord + ", " + link.zCoord);
+            list.add(link.xi() + ", " + link.yi() + ", " + link.zi());
             list.add(LanguageRegistry.instance().getStringLocalization("info.item.dimension") + " " + world.getWorldInfo().getWorldName());
         } else {
             super.addInformation(stack, usr, list, dummy);
@@ -76,20 +67,29 @@ public class RemoteController extends ItemCardFrequency implements ICoordLink {
     }
 
     @Override
-    public void setLink(ItemStack paramItemStack, Coord4D paramVectorWorld) {
+    public void setLink(ItemStack paramItemStack, Location paramVectorWorld) {
         NBTTagCompound tag = RegisterManager.getTag(paramItemStack);
         this.link = paramVectorWorld;
-        tag.setTag("mffs_link", paramVectorWorld.write(tag.getCompoundTag("mffs_link")));
+        tag.setTag("mffs_link", paramVectorWorld.toNBT());
     }
 
 
     @Override
-    public Coord4D getLink(ItemStack paramItemStack) {
+    public Location getLink(ItemStack paramItemStack) {
         NBTTagCompound tag = RegisterManager.getTag(paramItemStack);
         if (!tag.hasKey("mffs_link"))
+        {
             return null;
+        }
         if (link == null)
-            return link = Coord4D.read(tag.getCompoundTag("mffs_link"));
+        {
+            if(tag.hasKey("id"))
+            {
+                tag.setInteger("dimension", tag.getInteger("id"));
+                tag.removeTag("id");
+            }
+            return link = new Location(tag.getCompoundTag("mffs_link"));
+        }
         return link;
     }
 
@@ -111,10 +111,10 @@ public class RemoteController extends ItemCardFrequency implements ICoordLink {
     @Override
     public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
         if (!world.isRemote) {
-            Coord4D coord = new Coord4D(x, y, z, world.provider.dimensionId);
+           Location coord = new Location(world, x, y, z);
             setLink(stack, coord);
 
-            Block block = coord.getBlock(world);
+            Block block = coord.getBlock();
             if (block != null) {
                 if (!world.isRemote)
                     player.addChatMessage(new ChatComponentText(String.format(LanguageRegistry.instance().getStringLocalization("message.remoteController.linked")
@@ -134,18 +134,18 @@ public class RemoteController extends ItemCardFrequency implements ICoordLink {
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer usr) {
         if (!usr.isSneaking()) {
-            Coord4D position = getLink(stack);
+            Location position = getLink(stack);
 
             if (position != null) {
                 Block block = position.getBlock(world);
 
                 if (block != null) {
-                    Chunk chunk = world.getChunkFromBlockCoords(position.xCoord, position.zCoord);
+                    Chunk chunk = world.getChunkFromBlockCoords(position.xi(), position.zi());
                     Set<IBlockFrequency> freq = FrequencyGrid.instance().get();
                     Vector3D usrLoc = new Vector3D(usr);
                     IInterdictionMatrix matrix = MatrixHelper.findMatrix(world, usrLoc, freq);
                     if (chunk != null && chunk.isChunkLoaded && (matrix == null || MatrixHelper.checkActionPermission(matrix, PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK, usr) || MatrixHelper.checkPermission(matrix, usr.getGameProfile().getName(), Permission.REMOTE_CONTROL))) {
-                        float requiredEnergy = (float) usrLoc.distance(position.xCoord, position.yCoord, position.zCoord) * 10.0F;
+                        float requiredEnergy = (float) usrLoc.distance(position.xi(), position.yi(), position.zi()) * 10.0F;
                         int receivedEnergy = 0;
 
                         int freq_ = getFrequency(stack);
@@ -169,7 +169,7 @@ public class RemoteController extends ItemCardFrequency implements ICoordLink {
 
                             if (receivedEnergy >= requiredEnergy) {
                                 try {
-                                    block.onBlockActivated(world, position.xCoord, position.yCoord, position.zCoord, usr, 0, 0.0F, 0.0F, 0.0F);
+                                    block.onBlockActivated(world, position.xi(), position.yi(), position.zi(), usr, 0, 0.0F, 0.0F, 0.0F);
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -187,19 +187,19 @@ public class RemoteController extends ItemCardFrequency implements ICoordLink {
     }
 
     /*private final Set<ItemStack> temporaryRemoteBlacklist = new HashSet();
-       
+
    @SubscribeEvent
    public void preMove(EventPreForceManipulate evt)
    {
      this.temporaryRemoteBlacklist.clear();
    }
-       
- 
- 
- 
- 
- 
- 
+
+
+
+
+
+
+
    @SubscribeEvent
    public void onMove(EventPostForceManipulate evt)
    {
@@ -207,7 +207,7 @@ public class RemoteController extends ItemCardFrequency implements ICoordLink {
      {
          if ((!this.temporaryRemoteBlacklist.contains(evt.)) && (new Vector3D(evt.beforeX, evt.beforeY, evt.beforeZ).equals(getLink(itemStack))))
          {
- 
+
            setLink(itemStack, new VectorWorld(evt.world, evt.afterX, evt.afterY, evt.afterZ));
            this.temporaryRemoteBlacklist.add(itemStack);
        }

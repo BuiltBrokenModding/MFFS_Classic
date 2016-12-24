@@ -1,5 +1,6 @@
 package com.mffs.common.tile.type;
 
+import com.builtbroken.mc.lib.transform.vector.Location;
 import com.mffs.api.card.ICard;
 import com.mffs.api.card.ICardInfinite;
 import com.mffs.api.card.ICoordLink;
@@ -15,7 +16,6 @@ import com.mffs.common.items.modules.upgrades.ItemModuleSpeed;
 import com.mffs.common.net.packet.EntityToggle;
 import com.mffs.common.tile.TileModuleAcceptor;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import mekanism.api.Coord4D;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -57,7 +57,7 @@ public class TileFortronCapacitor extends TileModuleAcceptor implements IFortron
                 if (stack.getItem() instanceof ICardInfinite) {
                     setFortronEnergy(getFortronCapacity());
                 } else if (stack.getItem() instanceof ICoordLink) {
-                    Coord4D link = ((ICoordLink) stack.getItem()).getLink(stack);
+                    Location link = ((ICoordLink) stack.getItem()).getLink(stack);
                     TileEntity link_machine = link.getTileEntity(worldObj);
                     if (link != null && link_machine instanceof IFortronFrequency) {
                         connected.add(this);

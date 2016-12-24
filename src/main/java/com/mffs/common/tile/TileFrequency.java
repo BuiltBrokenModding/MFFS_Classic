@@ -1,5 +1,6 @@
 package com.mffs.common.tile;
 
+import com.builtbroken.mc.lib.transform.vector.Location;
 import com.mffs.api.IBiometricIdentifierLink;
 import com.mffs.api.IBlockFrequency;
 import com.mffs.api.card.ICoordLink;
@@ -7,7 +8,6 @@ import com.mffs.api.fortron.FrequencyGrid;
 import com.mffs.api.security.IBiometricIdentifier;
 import com.mffs.common.net.packet.ChangeFrequency;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import mekanism.api.Coord4D;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -56,7 +56,7 @@ public abstract class TileFrequency extends TileMFFSInventory implements IBlockF
 
         ItemStack itemStack = getStackInSlot(0);
         if (itemStack != null && itemStack.getItem() instanceof ICoordLink) {
-            Coord4D linkedPosition = ((ICoordLink) itemStack.getItem()).getLink(itemStack);
+            Location linkedPosition = ((ICoordLink) itemStack.getItem()).getLink(itemStack);
 
             if (linkedPosition != null) {
                 TileEntity tileEntity = linkedPosition.getTileEntity(this.worldObj);
