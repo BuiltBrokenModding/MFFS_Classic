@@ -1,4 +1,4 @@
-package com.mffs.common.items.modules.projector.type;
+package com.mffs.common.items.modules.projector.mode;
 
 import com.builtbroken.mc.core.registry.implement.IRecipeContainer;
 import com.mffs.api.IFieldInteraction;
@@ -9,7 +9,6 @@ import com.mffs.api.vector.Vector3D;
 import com.mffs.common.items.ItemMode;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.tileentity.TileEntity;
@@ -60,11 +59,11 @@ public class ItemModeCube extends ItemMode implements IRecipeContainer {
         Vector3D negScale = projector.getNegativeScale();
 
 
-        for (int x = -(int) Math.floor(negScale.intX()); x <= (int) Math.floor(posScale.intX()); x++) {
+        for (int x = -negScale.intX(); x <= posScale.intX(); x++) {
 
-            for (int z = -(int) Math.floor(negScale.intZ()); x <= (int) Math.floor(posScale.intZ()); z++) {
+            for (int z = -negScale.intZ(); z <= posScale.intZ(); z++) {
 
-                for (int y = -(int) Math.floor(negScale.intY()); x <= (int) Math.floor(posScale.intY()); y++) {
+                for (int y = -negScale.intY(); y <= posScale.intY(); y++) {
 
                     fieldBlocks.add(new Vector3D(x, y, z));
 

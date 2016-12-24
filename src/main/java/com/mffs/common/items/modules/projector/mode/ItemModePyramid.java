@@ -1,4 +1,4 @@
-package com.mffs.common.items.modules.projector.type;
+package com.mffs.common.items.modules.projector.mode;
 
 import com.builtbroken.mc.core.registry.implement.IRecipeContainer;
 import com.mffs.api.IFieldInteraction;
@@ -35,10 +35,10 @@ public class ItemModePyramid extends ItemMode implements IRecipeContainer {
         Vector3D posScale = projector.getPositiveScale();
         Vector3D negScale = projector.getNegativeScale();
 
-        int xStretch = (int) Math.floor(posScale.x) + (int) Math.floor(negScale.x);
-        int yStretch = (int) Math.floor(posScale.y) + (int) Math.floor(negScale.y);
-        int zStretch = (int) Math.floor(posScale.z) + (int) Math.floor(negScale.z);
-        Vector3D translation = new Vector3D(0.0D, -(int) Math.floor(negScale.y), 0.0D);
+        int xStretch = posScale.intX() + negScale.intX();
+        int yStretch = posScale.intY() + negScale.intY();
+        int zStretch = posScale.intZ() + negScale.intZ();
+        Vector3D translation = new Vector3D(0.0D, -negScale.intY(), 0.0D);
 
         int inverseThickness = (int) Math.max((yStretch + zStretch) / 4.0F, 1.0F);
 
@@ -79,9 +79,9 @@ public class ItemModePyramid extends ItemMode implements IRecipeContainer {
         Vector3D posScale = projector.getPositiveScale();
         Vector3D negScale = projector.getNegativeScale();
 
-        int xStretch = (int) Math.floor(posScale.x) + (int) Math.floor(negScale.x);
-        int yStretch = (int) Math.floor(posScale.y) + (int) Math.floor(negScale.y);
-        int zStretch = (int) Math.floor(posScale.z) + (int) Math.floor(negScale.z);
+        int xStretch = posScale.intX() + negScale.intX();
+        int yStretch = posScale.intY() + negScale.intY();
+        int zStretch = posScale.intZ() + negScale.intZ();
         Vector3D translation = new Vector3D(0.0D, -0.4D, 0.0D);
 
         for (float x = -xStretch; x <= xStretch; x += 1.0F) {
@@ -104,13 +104,13 @@ public class ItemModePyramid extends ItemMode implements IRecipeContainer {
         Vector3D posScale = projector.getPositiveScale().clone();
         Vector3D negScale = projector.getNegativeScale().clone();
 
-        int xStretch = (int) Math.floor(posScale.x) + (int) Math.floor(negScale.x);
-        int yStretch = (int) Math.floor(posScale.y) + (int) Math.floor(negScale.y);
-        int zStretch = (int) Math.floor(posScale.z) + (int) Math.floor(negScale.z);
+        int xStretch = posScale.intX() + negScale.intX();
+        int yStretch = posScale.intY() + negScale.intY();
+        int zStretch = posScale.intZ() + negScale.intZ();
 
         Vector3D projectorPos = new Vector3D((TileEntity) projector);
         projectorPos.add(projector.getTranslation());
-        projectorPos.add(new Vector3D(0.0D, -(int) Math.floor(negScale.y) + 1, 0.0D));
+        projectorPos.add(new Vector3D(0.0D, -negScale.intY() + 1, 0.0D));
 
         Vector3D relativePosition = position.clone().subtract(projectorPos);
         relativePosition.rotate(-projector.getRotationYaw(), projector.getRotationPitch());

@@ -1,4 +1,4 @@
-package com.mffs.common.items.modules.projector.type;
+package com.mffs.common.items.modules.projector.mode;
 
 import com.mffs.api.ICache;
 import com.mffs.api.IFieldInteraction;

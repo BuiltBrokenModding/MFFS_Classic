@@ -82,7 +82,9 @@ public abstract class TileFieldMatrix extends TileModuleAcceptor implements IFie
                         try {
                             IProjectorMode mode = entity.getMode();
                             if (mode != null) {
+                                System.out.println("Attempting to get blocks!");
                                 Set<Vector3D> blocks = entity.getModuleCount(ItemModuleInvert.class) > 0 ? mode.getInteriorPoints(entity) : mode.getExteriorPoints(entity);
+                                System.out.println("Blocks Obtained: "+blocks);
                                 Vector3D translation = entity.getTranslation();
                                 int rotationYaw = entity.getRotationYaw();
                                 int rotationPitch = entity.getRotationPitch();

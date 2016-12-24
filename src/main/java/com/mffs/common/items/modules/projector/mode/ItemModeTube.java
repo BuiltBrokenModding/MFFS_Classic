@@ -1,4 +1,4 @@
-package com.mffs.common.items.modules.projector.type;
+package com.mffs.common.items.modules.projector.mode;
 
 import com.builtbroken.mc.core.registry.implement.IRecipeContainer;
 import com.mffs.api.IFieldInteraction;

@@ -1,4 +1,4 @@
-package com.mffs.common.items.modules.projector.type;
+package com.mffs.common.items.modules.projector.mode;
 
 import com.builtbroken.mc.core.registry.implement.IRecipeContainer;
 import com.mffs.api.IFieldInteraction;
@@ -19,7 +19,7 @@ import java.util.Set;
 /**
  * @author Calclavia
  */
-public class ModeSphere extends ItemMode implements IRecipeContainer {
+public class ItemModeSphere extends ItemMode implements IRecipeContainer {
 
     @Override
     public void genRecipes(List<IRecipe> list) {

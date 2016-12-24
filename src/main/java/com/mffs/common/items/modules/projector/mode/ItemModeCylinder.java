@@ -1,4 +1,4 @@
-package com.mffs.common.items.modules.projector.type;
+package com.mffs.common.items.modules.projector.mode;
 
 import com.builtbroken.mc.core.registry.implement.IRecipeContainer;
 import com.mffs.api.IFieldInteraction;
@@ -34,8 +34,8 @@ public class ItemModeCylinder extends ItemMode implements IRecipeContainer {
         Vector3D posScale = projector.getPositiveScale();
         Vector3D negScale = projector.getNegativeScale();
 
-        int radius = (int) (Math.floor(posScale.x) + Math.floor(negScale.x) + Math.floor(posScale.z) + Math.floor(negScale.z) / 2);
-        int height = (int) (Math.floor(posScale.y) + Math.floor(negScale.y));
+        int radius = (posScale.intX() + negScale.intX() + posScale.intZ() + negScale.intZ()) / 2;
+        int height = posScale.intY() + negScale.intY();
 
         for (float x = -radius; x <= radius; x += 1.0F) {
             for (float z = -radius; z <= radius; z += 1.0F) {
@@ -62,8 +62,8 @@ public class ItemModeCylinder extends ItemMode implements IRecipeContainer {
         Vector3D posScale = projector.getPositiveScale();
         Vector3D negScale = projector.getNegativeScale();
 
-        int radius = (int) (Math.floor(posScale.x) + Math.floor(negScale.x) + Math.floor(posScale.z) + Math.floor(negScale.z)) / 2;
-        int height = (int) (Math.floor(posScale.y) + Math.floor(negScale.y));
+        int radius = (posScale.intX() + negScale.intX() + posScale.intZ() + negScale.intZ()) / 2;
+        int height = posScale.intY() + negScale.intY();
 
         for (int x = -radius; x <= radius; x++) {
             for (int z = -radius; z <= radius; z++) {
@@ -85,7 +85,7 @@ public class ItemModeCylinder extends ItemMode implements IRecipeContainer {
         Vector3D posScale = projector.getPositiveScale();
         Vector3D negScale = projector.getNegativeScale();
 
-        int radius = (int) (Math.floor(posScale.x) + Math.floor(negScale.x) + Math.floor(posScale.z) + Math.floor(negScale.z)) / 2;
+        int radius = (posScale.intX() + negScale.intX() + posScale.intZ() + negScale.intZ()) / 2;
 
         Vector3D projectorPos = new Vector3D((TileEntity) projector);
         projectorPos.add(projector.getTranslation());
