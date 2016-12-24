@@ -60,7 +60,7 @@ public class ItemModeSphere extends ItemMode implements IRecipeContainer {
                 for (int y = -radius; y <= radius; y++) {
                     Vector3D position = new Vector3D(x, y, z);
 
-                    if (!isInField(projector, position.add(new Vector3D((TileEntity) projector)).add(translation))) {
+                    if (!isInField(projector, Vector3D.translate(position, new Vector3D((TileEntity) projector)).add(translation))) {
                         continue;
                     }
                     fieldBlocks.add(position);
