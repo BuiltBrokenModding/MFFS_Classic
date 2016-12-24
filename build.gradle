@@ -29,7 +29,7 @@ apply plugin: 'com.github.kt3k.coveralls'
 apply plugin: 'jacoco'
 apply from: 'https://raw.githubusercontent.com/BuiltBrokenModding/BuiltBrokenScripts/buildScripts/scripts/forge/deps.gradle'
 
-version = "0.28"
+version = "0.30"
 group= "com.mffs" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "mffs"
 sourceCompatibility = 1.8

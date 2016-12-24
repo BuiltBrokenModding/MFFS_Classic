@@ -12,6 +12,7 @@ import com.mffs.common.items.modules.upgrades.ItemModuleScale;
 import com.mffs.common.items.modules.projector.ItemModuleTranslate;
 import com.mffs.common.net.packet.EntityToggle;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -51,7 +52,7 @@ public abstract class TileFieldMatrix extends TileModuleAcceptor implements IFie
     private final List<EventTimedTask> delayedEvents = new LinkedList<>();
     private final List<EventTimedTask> eventsQueued = new LinkedList<>();
     /* Deteremines if the machine is absolute */
-    public boolean isAbs;
+    public boolean isAbs = true;
     /* Holds the state of this machine */
     protected boolean isCalc, isFinished;
 
@@ -82,10 +83,10 @@ public abstract class TileFieldMatrix extends TileModuleAcceptor implements IFie
                         try {
                             IProjectorMode mode = entity.getMode();
                             if (mode != null) {
-                                System.out.println("Attempting to get blocks!");
+
                                 Set<Vector3D> blocks = entity.getModuleCount(ItemModuleInvert.class) > 0 ? mode.getInteriorPoints(entity) : mode.getExteriorPoints(entity);
-                                System.out.println("Blocks Obtained: "+blocks);
                                 Vector3D translation = entity.getTranslation();
+
                                 int rotationYaw = entity.getRotationYaw();
                                 int rotationPitch = entity.getRotationPitch();
 
@@ -176,8 +177,8 @@ public abstract class TileFieldMatrix extends TileModuleAcceptor implements IFie
         int zPos = getModuleCount(ItemModuleTranslate.class, getSlotsBasedOnDirection(isAbs ? ForgeDirection.SOUTH : getOrient(dir, ForgeDirection.SOUTH)));
         int xNeg = getModuleCount(ItemModuleTranslate.class, getSlotsBasedOnDirection(isAbs ? ForgeDirection.WEST : getOrient(dir, ForgeDirection.WEST)));
         int xPos = getModuleCount(ItemModuleTranslate.class, getSlotsBasedOnDirection(isAbs ? ForgeDirection.EAST : getOrient(dir, ForgeDirection.EAST)));
-        int yNeg = getModuleCount(ItemModuleTranslate.class, getSlotsBasedOnDirection(isAbs ? ForgeDirection.UP : getOrient(dir, ForgeDirection.UP)));
-        int yPos = getModuleCount(ItemModuleTranslate.class, getSlotsBasedOnDirection(isAbs ? ForgeDirection.DOWN : getOrient(dir, ForgeDirection.DOWN)));
+        int yNeg = getModuleCount(ItemModuleTranslate.class, getSlotsBasedOnDirection(ForgeDirection.UP));
+        int yPos = getModuleCount(ItemModuleTranslate.class, getSlotsBasedOnDirection(ForgeDirection.DOWN));
         return new Vector3D(xPos - xNeg, yPos - yNeg, zPos - zNeg);
     }
 

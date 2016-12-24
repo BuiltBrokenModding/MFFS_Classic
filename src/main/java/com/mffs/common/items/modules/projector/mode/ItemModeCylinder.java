@@ -70,7 +70,7 @@ public class ItemModeCylinder extends ItemMode implements IRecipeContainer {
                 for (int y = 0; y < height; y++) {
                     Vector3D position = new Vector3D(x, y, z);
 
-                    if (isInField(projector, position.add(new Vector3D((TileEntity) projector)).add(translation))) {
+                    if (isInField(projector, Vector3D.translate(position, new Vector3D((TileEntity) projector)).add(translation))) {
                         fieldBlocks.add(position);
                     }
                 }
@@ -91,9 +91,9 @@ public class ItemModeCylinder extends ItemMode implements IRecipeContainer {
         projectorPos.add(projector.getTranslation());
 
         Vector3D relativePosition = position.clone().subtract(projectorPos);
-        relativePosition.rotate(-projector.getRotationYaw(), projector.getRotationPitch());
+        relativePosition.rotate(-projector.getRotationYaw(), -projector.getRotationPitch());
 
-        if (relativePosition.x * relativePosition.x + relativePosition.z * relativePosition.z + 0.0D <= radius * radius) {
+        if (relativePosition.x * relativePosition.x + relativePosition.z * relativePosition.z <= radius * radius) {
             return true;
         }
         return false;

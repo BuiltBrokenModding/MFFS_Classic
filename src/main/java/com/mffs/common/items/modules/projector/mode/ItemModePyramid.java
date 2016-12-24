@@ -89,7 +89,7 @@ public class ItemModePyramid extends ItemMode implements IRecipeContainer {
                 for (float y = 0.0F; y <= yStretch; y += 1.0F) {
                     Vector3D position = new Vector3D(x, y, z).add(translation);
 
-                    if (isInField(projector, position.add(new Vector3D((TileEntity) projector)))) {
+                    if (isInField(projector, Vector3D.translate(position, new Vector3D((TileEntity) projector)))) {
                         fieldBlocks.add(position);
                     }
                 }
@@ -113,7 +113,7 @@ public class ItemModePyramid extends ItemMode implements IRecipeContainer {
         projectorPos.add(new Vector3D(0.0D, -negScale.intY() + 1, 0.0D));
 
         Vector3D relativePosition = position.clone().subtract(projectorPos);
-        relativePosition.rotate(-projector.getRotationYaw(), projector.getRotationPitch());
+        relativePosition.rotate(-projector.getRotationYaw(), -projector.getRotationPitch());
 
         Matrix2d region = new Matrix2d(negScale.scale(-1.0D), posScale);
 
