@@ -1,12 +1,8 @@
 package com.mffs;
 
+import com.builtbroken.mc.core.registry.ModManager;
 import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import jdk.nashorn.internal.ir.annotations.Ignore;
 import net.minecraft.block.Block;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.Fluid;
@@ -15,7 +11,6 @@ import net.minecraftforge.fluids.FluidRegistry;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +55,7 @@ public class RegisterManager {
     /**
      * Simply parses the item directory and registers them.
      */
-    public static void parseItems() throws Exception {
+    public static void parseItems(ModManager manager) throws Exception {
         List<String> names = getClassNames("common/items");
         for (String name : names) {
             name = name.replace("/", ".");
@@ -70,7 +65,8 @@ public class RegisterManager {
             }
             name = rawClass.getSimpleName().replace("Item", "");
             name = name.substring(0, 1).toLowerCase() + name.substring(1, name.length());
-            ModularForcefieldSystem.modularForcefieldSystem_mod.getManager().newItem(name, rawClass);
+            System.out.println("manager.newItem(" + name + ", " + rawClass + ");");
+            manager.newItem(name, rawClass);
         }
     }
 
