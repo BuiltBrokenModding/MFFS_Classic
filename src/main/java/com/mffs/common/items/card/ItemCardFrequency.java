@@ -1,10 +1,9 @@
 package com.mffs.common.items.card;
 
-import com.builtbroken.mc.lib.helper.recipe.OreNames;
 import com.builtbroken.mc.lib.helper.recipe.UniversalRecipe;
-import com.mffs.RegisterManager;
 import com.mffs.api.IBlockFrequency;
 import com.mffs.api.IItemFrequency;
+import com.mffs.api.utils.Util;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -28,7 +27,7 @@ public class ItemCardFrequency extends ItemCardBlank implements IItemFrequency {
     @Override
     public int getFrequency(ItemStack itemStack) {
         if (itemStack != null) {
-            return RegisterManager.getTag(itemStack).getInteger("mffs_freq");
+            return Util.getTag(itemStack).getInteger("mffs_freq");
         }
         return 0;
     }
@@ -42,7 +41,7 @@ public class ItemCardFrequency extends ItemCardBlank implements IItemFrequency {
     @Override
     public void setFrequency(int frequency, ItemStack itemStack) {
         if (itemStack != null) {
-            RegisterManager.getTag(itemStack).setInteger("mffs_freq", frequency);
+            Util.getTag(itemStack).setInteger("mffs_freq", frequency);
         }
     }
 

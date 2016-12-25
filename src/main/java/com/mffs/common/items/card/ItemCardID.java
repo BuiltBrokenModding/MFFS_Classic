@@ -1,9 +1,7 @@
 package com.mffs.common.items.card;
 
-import com.builtbroken.mc.lib.helper.recipe.OreNames;
 import com.builtbroken.mc.lib.helper.recipe.UniversalRecipe;
 import com.mffs.ModularForcefieldSystem;
-import com.mffs.RegisterManager;
 import com.mffs.api.card.ICardIdentification;
 import com.mffs.api.security.Permission;
 import com.mffs.api.utils.Util;
@@ -87,29 +85,29 @@ public class ItemCardID extends ItemCardBlank implements ICardIdentification, IP
 
     @Override
     public boolean hasPermission(ItemStack paramItemStack, Permission paramPermission) {
-        return RegisterManager.getTag(paramItemStack).getBoolean("mffs_permission_" + paramPermission.ordinal());
+        return Util.getTag(paramItemStack).getBoolean("mffs_permission_" + paramPermission.ordinal());
     }
 
     @Override
     public boolean addPermission(ItemStack paramItemStack, Permission paramPermission) {
-        RegisterManager.getTag(paramItemStack).setBoolean("mffs_permission_" + paramPermission.ordinal(), true);
+        Util.getTag(paramItemStack).setBoolean("mffs_permission_" + paramPermission.ordinal(), true);
         return false;
     }
 
     @Override
     public boolean removePermission(ItemStack paramItemStack, Permission paramPermission) {
-        RegisterManager.getTag(paramItemStack).setBoolean("mffs_permission_" + paramPermission.ordinal(), false);
+        Util.getTag(paramItemStack).setBoolean("mffs_permission_" + paramPermission.ordinal(), false);
         return false;
     }
 
     @Override
     public String getUsername(ItemStack paramItemStack) {
-        return RegisterManager.getTag(paramItemStack).getString("mffs_name");
+        return Util.getTag(paramItemStack).getString("mffs_name");
     }
 
     @Override
     public void setUsername(ItemStack paramItemStack, String paramString) {
-        RegisterManager.getTag(paramItemStack).setString("mffs_name", paramString);
+        Util.getTag(paramItemStack).setString("mffs_name", paramString);
     }
 
     @Override
@@ -118,7 +116,7 @@ public class ItemCardID extends ItemCardBlank implements ICardIdentification, IP
             ItemByteToggle tog = (ItemByteToggle) message;
             Permission perm = Permission.getPerm(tog.toggleId);
             if(perm != null) {
-                NBTTagCompound tag = RegisterManager.getTag(stack);
+                NBTTagCompound tag = Util.getTag(stack);
                 tag.setBoolean("mffs_permission_"+tog.toggleId, !tag.getBoolean("mffs_permission_"+tog.toggleId));
                 return null;
             }

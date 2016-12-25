@@ -3,7 +3,6 @@ package com.mffs.common.items;
 import com.builtbroken.mc.lib.helper.recipe.UniversalRecipe;
 import com.builtbroken.mc.lib.transform.vector.Location;
 import com.mffs.ModularForcefieldSystem;
-import com.mffs.RegisterManager;
 import com.mffs.api.IBlockFrequency;
 import com.mffs.api.card.ICoordLink;
 import com.mffs.api.fortron.FrequencyGrid;
@@ -12,6 +11,7 @@ import com.mffs.api.security.IInterdictionMatrix;
 import com.mffs.api.security.Permission;
 import com.mffs.api.utils.MatrixHelper;
 import com.mffs.api.utils.UnitDisplay;
+import com.mffs.api.utils.Util;
 import com.mffs.api.vector.Vector3D;
 import com.mffs.common.items.card.ItemCardFrequency;
 import cpw.mods.fml.common.registry.LanguageRegistry;
@@ -68,7 +68,7 @@ public class RemoteController extends ItemCardFrequency implements ICoordLink {
 
     @Override
     public void setLink(ItemStack paramItemStack, Location paramVectorWorld) {
-        NBTTagCompound tag = RegisterManager.getTag(paramItemStack);
+        NBTTagCompound tag = Util.getTag(paramItemStack);
         this.link = paramVectorWorld;
         tag.setTag("mffs_link", paramVectorWorld.toNBT());
     }
@@ -76,7 +76,7 @@ public class RemoteController extends ItemCardFrequency implements ICoordLink {
 
     @Override
     public Location getLink(ItemStack paramItemStack) {
-        NBTTagCompound tag = RegisterManager.getTag(paramItemStack);
+        NBTTagCompound tag = Util.getTag(paramItemStack);
         if (!tag.hasKey("mffs_link"))
         {
             return null;

@@ -5,6 +5,13 @@ import com.builtbroken.mc.lib.mod.AbstractMod;
 import com.builtbroken.mc.lib.mod.AbstractProxy;
 import com.mffs.common.blocks.*;
 import com.mffs.common.fluids.Fortron;
+import com.mffs.common.items.ItemFocusMatrix;
+import com.mffs.common.items.RemoteController;
+import com.mffs.common.items.card.*;
+import com.mffs.common.items.modules.interdiction.*;
+import com.mffs.common.items.modules.projector.*;
+import com.mffs.common.items.modules.projector.mode.*;
+import com.mffs.common.items.modules.upgrades.*;
 import com.mffs.common.net.packet.*;
 import com.mffs.common.tile.type.*;
 import cpw.mods.fml.common.Mod;
@@ -70,18 +77,45 @@ public class ModularForcefieldSystem extends AbstractMod {
     @Override
     public void loadItems(ModManager manager)
     {
-          /*manager.newItem("remoteController", RemoteController.class);
         manager.newItem("cardBlank", ItemCardBlank.class);
         manager.newItem("cardFrequency", ItemCardFrequency.class);
         manager.newItem("cardID", ItemCardID.class);
+        manager.newItem("cardInfinite", ItemCardInfinite.class);
         manager.newItem("cardLink", ItemCardLink.class);
-        manager.newItem("cardInfinite", ItemCardInfinite.class);*/
-        try {
-            //Cannot load these in methods as config isnt able to be loaded till after!
-            RegisterManager.parseItems(manager);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        manager.newItem("focusMatrix", ItemFocusMatrix.class);
+        manager.newItem("moduleAntiFriendly", ItemModuleAntiFriendly.class);
+        manager.newItem("moduleAntiHostile", ItemModuleAntiHostile.class);
+        manager.newItem("moduleAntiPersonnel", ItemModuleAntiPersonnel.class);
+        manager.newItem("moduleAntiSpawn", ItemModuleAntiSpawn.class);
+        manager.newItem("moduleBlockAccess", ItemModuleBlockAccess.class);
+        manager.newItem("moduleBlockAlter", ItemModuleBlockAlter.class);
+        manager.newItem("moduleConfiscate", ItemModuleConfiscate.class);
+        manager.newItem("moduleRepulsion", ItemModuleRepulsion.class);
+        manager.newItem("moduleWarn", ItemModuleWarn.class);
+        manager.newItem("moduleApproximation", ItemModuleApproximation.class);
+        manager.newItem("moduleArray", ItemModuleArray.class);
+        manager.newItem("moduleCamouflage", ItemModuleCamouflage.class);
+        manager.newItem("moduleCollection", ItemModuleCollection.class);
+        manager.newItem("moduleDisintegration", ItemModuleDisintegration.class);
+        manager.newItem("moduleDome", ItemModuleDome.class);
+        manager.newItem("moduleFusion", ItemModuleFusion.class);
+        manager.newItem("moduleGlow", ItemModuleGlow.class);
+        manager.newItem("moduleInvert", ItemModuleInvert.class);
+        manager.newItem("moduleShock", ItemModuleShock.class);
+        manager.newItem("moduleSilence", ItemModuleSilence.class);
+        manager.newItem("moduleStabilize", ItemModuleStabilize.class);
+        manager.newItem("modeCube", ItemModeCube.class);
+        manager.newItem("modeCustom", ItemModeCustom.class);
+        manager.newItem("modeCylinder", ItemModeCylinder.class);
+        manager.newItem("modePyramid", ItemModePyramid.class);
+        manager.newItem("modeSphere", ItemModeSphere.class);
+        manager.newItem("modeTube", ItemModeTube.class);
+        manager.newItem("moduleCapacity", ItemModuleCapacity.class);
+        manager.newItem("moduleRotate", ItemModuleRotate.class);
+        manager.newItem("moduleScale", ItemModuleScale.class);
+        manager.newItem("moduleSpeed", ItemModuleSpeed.class);
+        manager.newItem("moduleTranslate", ItemModuleTranslate.class);
+        manager.newItem("remoteController", RemoteController.class);
     }
 
     @Override
@@ -98,7 +132,6 @@ public class ModularForcefieldSystem extends AbstractMod {
         super.preInit(event);
         channel = new SimpleNetworkWrapper(MODID);
         SettingConfiguration.load();
-
         FluidRegistry.registerFluid(new Fortron());
         Fortron.FLUID_ID = FluidRegistry.getFluidID("fortron");
         MinecraftForge.EVENT_BUS.register(new ForgeSubscribeHandler());

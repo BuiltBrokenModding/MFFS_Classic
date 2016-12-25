@@ -2,6 +2,7 @@ package com.mffs.api.utils;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import org.apache.commons.lang3.text.WordUtils;
 
 import java.util.ArrayList;
@@ -117,5 +118,19 @@ public class Util {
             return true;
         }
         return false;
+    }
+
+
+    /**
+     * Extracts a NBT tag from a item. Creates and attaches one if it does not exist.
+     *
+     * @param stack
+     * @return
+     */
+    public static NBTTagCompound getTag(ItemStack stack) {
+        if (stack.getTagCompound() == null) {
+            stack.setTagCompound(new NBTTagCompound());
+        }
+        return stack.getTagCompound();
     }
 }

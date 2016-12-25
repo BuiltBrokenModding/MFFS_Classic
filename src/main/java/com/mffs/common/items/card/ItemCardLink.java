@@ -2,8 +2,8 @@ package com.mffs.common.items.card;
 
 import com.builtbroken.mc.lib.helper.recipe.UniversalRecipe;
 import com.builtbroken.mc.lib.transform.vector.Location;
-import com.mffs.RegisterManager;
 import com.mffs.api.card.ICoordLink;
+import com.mffs.api.utils.Util;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -27,7 +27,7 @@ public class ItemCardLink extends ItemCardBlank implements ICoordLink {
 
     @Override
     public void addInformation(ItemStack stack, EntityPlayer usr, List list, boolean dummy) {
-        NBTTagCompound tag = RegisterManager.getTag(stack);
+        NBTTagCompound tag = Util.getTag(stack);
         Location link = getLink(stack);
         if (link != null) {
             World world = link.getWorld();
@@ -45,14 +45,14 @@ public class ItemCardLink extends ItemCardBlank implements ICoordLink {
 
     @Override
     public void setLink(ItemStack paramItemStack, Location paramVectorWorld) {
-        NBTTagCompound tag = RegisterManager.getTag(paramItemStack);
+        NBTTagCompound tag = Util.getTag(paramItemStack);
         tag.setTag("mffs_link", paramVectorWorld.toNBT());
         this.link = paramVectorWorld;
     }
 
     @Override
     public Location getLink(ItemStack paramItemStack) {
-        NBTTagCompound tag = RegisterManager.getTag(paramItemStack);
+        NBTTagCompound tag = Util.getTag(paramItemStack);
         if (!tag.hasKey("mffs_link")) {
             return null;
         }
