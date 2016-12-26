@@ -10,8 +10,6 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
-import javax.vecmath.Vector2d;
-
 /**
  * @author Calclavia
  */

@@ -1,7 +1,6 @@
 package com.mffs.client.gui;
 
 import com.builtbroken.mc.lib.transform.vector.Point;
-import com.builtbroken.mc.lib.transform.vector.Pos;
 import com.mffs.ModularForcefieldSystem;
 import com.mffs.api.utils.UnitDisplay;
 import com.mffs.client.buttons.GuiIcon;
@@ -16,8 +15,6 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import org.lwjgl.opengl.GL11;
-
-import javax.vecmath.Vector2d;
 
 /**
  * @author Calclavia

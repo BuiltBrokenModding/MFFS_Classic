@@ -7,8 +7,6 @@ import com.mffs.common.tile.type.TileBiometricIdentifier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumChatFormatting;
 
-import javax.vecmath.Vector2d;
-
 /**
  * @author Calclavia
  */

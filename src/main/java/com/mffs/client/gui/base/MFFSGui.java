@@ -1,7 +1,6 @@
 package com.mffs.client.gui.base;
 
 import com.builtbroken.mc.lib.transform.vector.Point;
-import com.builtbroken.mc.lib.transform.vector.Pos;
 import com.mffs.ModularForcefieldSystem;
 import com.mffs.api.IBiometricIdentifierLink;
 import com.mffs.api.IBlockFrequency;
@@ -18,8 +17,6 @@ import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import org.lwjgl.input.Keyboard;
-
-import javax.vecmath.Vector2d;
 
 /**
  * @author Calclavia

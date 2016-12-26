@@ -6,8 +6,6 @@ import com.mffs.common.TransferMode;
 import com.mffs.common.tile.type.TileFortronCapacitor;
 import net.minecraft.client.Minecraft;
 
-import javax.vecmath.Vector2d;
-
 /**
  * @author Calclavia
  */

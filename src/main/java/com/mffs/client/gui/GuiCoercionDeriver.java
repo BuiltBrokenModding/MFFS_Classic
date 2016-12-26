@@ -14,8 +14,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumChatFormatting;
 import org.lwjgl.opengl.GL11;
 
-import javax.vecmath.Vector2d;
-
 /**
  * @author Calclavia
  */

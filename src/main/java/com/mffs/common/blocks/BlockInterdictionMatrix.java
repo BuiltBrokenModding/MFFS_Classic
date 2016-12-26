@@ -1,10 +1,8 @@
 package com.mffs.common.blocks;
 
 import com.builtbroken.mc.core.registry.implement.IPostInit;
-import com.builtbroken.mc.lib.helper.recipe.UniversalRecipe;
 import com.mffs.ModularForcefieldSystem;
 import com.mffs.client.render.RenderBlockHandler;
-import com.mffs.common.tile.type.TileCoercionDeriver;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

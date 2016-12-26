@@ -13,7 +13,6 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
 import org.lwjgl.opengl.GL11;
 
-import javax.vecmath.Vector2d;
 import java.util.HashSet;
 import java.util.Set;
 

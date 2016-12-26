@@ -1,6 +1,5 @@
 package com.mffs.common.items.modules.projector.mode;
 
-import com.mffs.api.ICache;
 import com.mffs.api.IFieldInteraction;
 import com.mffs.api.IProjector;
 import com.mffs.api.vector.Vector3D;
@@ -15,7 +14,7 @@ import java.util.Set;
 /**
  * Created by pwaln on 6/9/2016.
  */
-public class ItemModeCustom extends ItemMode implements ICache {
+public class ItemModeCustom extends ItemMode {
 
     private static final String NBT_ID = "id";
     private static final String NBT_MODE = "mode";
@@ -60,20 +59,5 @@ public class ItemModeCustom extends ItemMode implements ICache {
     @Override
     public void render(IProjector paramIProjector, double paramDouble1, double paramDouble2, double paramDouble3, float paramFloat, long paramLong) {
 
-    }
-
-    @Override
-    public Object getCache(String paramString) {
-        return this.cache.get(paramString);
-    }
-
-    @Override
-    public void clearCache(String paramString) {
-        this.cache.remove(paramString);
-    }
-
-    @Override
-    public void clearCache() {
-        this.cache.clear();
     }
 }

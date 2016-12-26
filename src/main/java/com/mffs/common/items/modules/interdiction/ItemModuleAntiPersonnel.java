@@ -10,8 +10,6 @@ import com.mffs.common.items.modules.projector.ItemModuleShock;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;

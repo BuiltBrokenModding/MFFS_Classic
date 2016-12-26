@@ -115,6 +115,7 @@ public class ModularForcefieldSystem extends AbstractMod {
         manager.newItem("moduleScale", ItemModuleScale.class);
         manager.newItem("moduleSpeed", ItemModuleSpeed.class);
         manager.newItem("moduleTranslate", ItemModuleTranslate.class);
+        manager.newItem("moduleSponge", ItemModuleSponge.class);
         manager.newItem("remoteController", RemoteController.class);
     }
 

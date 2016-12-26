@@ -1,7 +1,6 @@
 package com.mffs.common.container.entity;
 
 import com.builtbroken.mc.prefab.gui.slot.SlotSpecific;
-import com.mffs.api.slots.BaseSlot;
 import com.mffs.common.container.MatrixContainer;
 import com.mffs.common.tile.type.TileForceFieldProjector;
 import net.minecraft.entity.player.EntityPlayer;

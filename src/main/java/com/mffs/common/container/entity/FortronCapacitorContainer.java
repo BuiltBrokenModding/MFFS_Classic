@@ -2,9 +2,9 @@ package com.mffs.common.container.entity;
 
 import com.builtbroken.mc.prefab.gui.slot.SlotSpecific;
 import com.mffs.api.slots.BaseSlot;
-import com.mffs.api.slots.CardSlot;
 import com.mffs.common.container.PlayerContainer;
 import com.mffs.common.items.card.ItemCardFrequency;
+import com.mffs.common.items.card.ItemCardInfinite;
 import com.mffs.common.tile.type.TileFortronCapacitor;
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -20,7 +20,7 @@ public final class FortronCapacitorContainer extends PlayerContainer {
     public FortronCapacitorContainer(EntityPlayer player, TileFortronCapacitor cap) {
         super(player, cap);
 
-        addSlotToContainer(new SlotSpecific(cap, 0, 9, 74, ItemCardFrequency.class));
+        addSlotToContainer(new SlotSpecific(cap, 0, 9, 74, ItemCardInfinite.class));
         addSlotToContainer(new SlotSpecific(cap, 1, 27, 74, ItemCardFrequency.class));
 
         addSlotToContainer(new BaseSlot(cap, 2, 154, 47));

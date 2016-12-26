@@ -7,7 +7,6 @@ import com.mffs.common.container.entity.BiometricContainer;
 import com.mffs.common.container.entity.CoercionDeriverContainer;
 import com.mffs.common.container.entity.ForceFieldProjectorContainer;
 import com.mffs.common.container.entity.FortronCapacitorContainer;
-import com.mffs.common.fluids.Fortron;
 import com.mffs.common.tile.type.TileBiometricIdentifier;
 import com.mffs.common.tile.type.TileCoercionDeriver;
 import com.mffs.common.tile.type.TileForceFieldProjector;
@@ -15,7 +14,6 @@ import com.mffs.common.tile.type.TileFortronCapacitor;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.FluidRegistry;
 
 /**
  * Created by pwaln on 5/22/2016.

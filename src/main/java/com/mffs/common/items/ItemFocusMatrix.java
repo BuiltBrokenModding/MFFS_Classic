@@ -6,7 +6,6 @@ import com.builtbroken.mc.lib.helper.recipe.UniversalRecipe;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.List;
 

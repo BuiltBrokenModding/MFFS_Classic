@@ -1,10 +1,7 @@
 package com.mffs.common.items.modules.interdiction;
 
 import com.builtbroken.mc.core.registry.implement.IRecipeContainer;
-import com.mffs.common.items.modules.BaseModule;
 import com.mffs.common.items.modules.MatrixModule;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipe;
 

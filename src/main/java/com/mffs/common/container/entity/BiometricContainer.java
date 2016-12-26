@@ -1,7 +1,6 @@
 package com.mffs.common.container.entity;
 
 import com.builtbroken.mc.prefab.gui.slot.SlotSpecific;
-import com.mffs.api.slots.CardSlot;
 import com.mffs.common.container.PlayerContainer;
 import com.mffs.common.items.card.ItemCardFrequency;
 import com.mffs.common.items.card.ItemCardID;

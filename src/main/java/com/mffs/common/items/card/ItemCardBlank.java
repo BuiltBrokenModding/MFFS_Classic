@@ -1,18 +1,15 @@
 package com.mffs.common.items.card;
 
 import com.builtbroken.mc.core.registry.implement.IRecipeContainer;
-import com.builtbroken.mc.lib.helper.recipe.OreNames;
 import com.builtbroken.mc.lib.helper.recipe.UniversalRecipe;
 import com.mffs.api.card.ICard;
 import com.mffs.api.utils.Util;
 import cpw.mods.fml.common.registry.LanguageRegistry;
-import jdk.nashorn.internal.ir.annotations.Ignore;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.List;
 
