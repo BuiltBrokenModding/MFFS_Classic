@@ -9,6 +9,8 @@ import com.mffs.client.gui.base.MFFSGui;
 import com.mffs.common.container.entity.FortronCapacitorContainer;
 import com.mffs.common.net.packet.EntityToggle;
 import com.mffs.common.tile.type.TileFortronCapacitor;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
 import org.lwjgl.opengl.GL11;
@@ -19,6 +21,7 @@ import java.util.Set;
 /**
  * @author Calclavia
  */
+@SideOnly(Side.CLIENT)
 public class GuiFortronCapacitor extends MFFSGui {
 
     /**

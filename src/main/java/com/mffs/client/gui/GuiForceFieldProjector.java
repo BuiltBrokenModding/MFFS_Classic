@@ -9,6 +9,8 @@ import com.mffs.common.container.entity.ForceFieldProjectorContainer;
 import com.mffs.common.net.packet.EntityToggle;
 import com.mffs.common.tile.TileFieldMatrix;
 import com.mffs.common.tile.type.TileForceFieldProjector;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -20,6 +22,7 @@ import org.lwjgl.opengl.GL11;
  * @author Calclavia
  */
 //TODO: Add a seperate disintigration / camoflauge slot
+@SideOnly(Side.CLIENT)
 public class GuiForceFieldProjector extends GuiMatrix {
 
     /**

@@ -1,10 +1,8 @@
 package com.mffs.common.items.modules.projector;
 
-import com.builtbroken.mc.core.registry.implement.IRecipeContainer;
 import com.mffs.api.IProjector;
 import com.mffs.api.vector.Vector3D;
 import com.mffs.common.items.modules.BaseModule;
-import jdk.nashorn.internal.ir.annotations.Ignore;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.init.Blocks;
@@ -22,8 +20,8 @@ import java.util.Set;
 /**
  * @author Calclavia
  */
-@Ignore //TODO: This module causes severe lag! Needs to be rethought!
-public abstract class ItemModuleSponge extends BaseModule implements IRecipeContainer {
+//TODO: Way this is done needs to be reWritten!
+public class ItemModuleSponge extends BaseModule {
 
     @Override
     public void genRecipes(List<IRecipe> list) {

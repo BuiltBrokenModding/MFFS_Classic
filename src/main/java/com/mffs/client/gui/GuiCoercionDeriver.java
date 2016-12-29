@@ -9,6 +9,8 @@ import com.mffs.common.container.entity.CoercionDeriverContainer;
 import com.mffs.common.net.packet.EntityToggle;
 import com.mffs.common.tile.type.TileCoercionDeriver;
 import cpw.mods.fml.common.registry.LanguageRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumChatFormatting;
@@ -17,6 +19,7 @@ import org.lwjgl.opengl.GL11;
 /**
  * @author Calclavia
  */
+@SideOnly(Side.CLIENT)
 public class GuiCoercionDeriver extends MFFSGui {
 
     public GuiCoercionDeriver(EntityPlayer player, TileCoercionDeriver tileentity) {

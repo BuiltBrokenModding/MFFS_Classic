@@ -1,6 +1,5 @@
 package com.mffs.common.items.modules.upgrades;
 
-import com.builtbroken.mc.core.registry.implement.IRecipeContainer;
 import com.mffs.common.items.modules.BaseModule;
 import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipe;
@@ -10,7 +9,7 @@ import java.util.List;
 /**
  * @author Calclavia
  */
-public class ItemModuleRotate extends BaseModule implements IRecipeContainer {
+public class ItemModuleRotate extends BaseModule {
 
     @Override
     public void genRecipes(List<IRecipe> list) {

@@ -4,12 +4,15 @@ import com.builtbroken.mc.lib.transform.vector.Point;
 import com.mffs.client.gui.base.MFFSGui;
 import com.mffs.common.container.entity.BiometricContainer;
 import com.mffs.common.tile.type.TileBiometricIdentifier;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumChatFormatting;
 
 /**
  * @author Calclavia
  */
+@SideOnly(Side.CLIENT)
 public class GuiBiometricIdentifier extends MFFSGui {
 
     /**

@@ -1,5 +1,6 @@
 package com.mffs.common.items.modules;
 
+import com.builtbroken.mc.core.registry.implement.IRecipeContainer;
 import com.mffs.api.IFieldInteraction;
 import com.mffs.api.IProjector;
 import com.mffs.api.modules.IModule;
@@ -20,7 +21,7 @@ import java.util.Set;
 /**
  * @author Calclavia
  */
-public abstract class BaseModule extends Item implements IModule {
+public abstract class BaseModule extends Item implements IModule, IRecipeContainer {
 
     /* Current fortronCost */
     private float fortronCost = 0.5F;

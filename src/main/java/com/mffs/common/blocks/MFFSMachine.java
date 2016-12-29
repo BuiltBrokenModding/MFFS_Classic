@@ -91,6 +91,8 @@ public abstract class MFFSMachine extends Block implements ITileEntityProvider {
                 reg.registerIcon(ModularForcefieldSystem.MODID + ":" + name + "_top_on"),
                 reg.registerIcon(ModularForcefieldSystem.MODID + ":" + name + "_on")
         };
+        for(IIcon con : side_textures)
+            System.out.println(con.getIconName());
     }
 
     @Override

@@ -1,10 +1,13 @@
 package com.mffs.client.gui.components;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import org.lwjgl.input.Mouse;
 
 /**
  * Created by Poopsicle360 on 7/16/2016.
  */
+@SideOnly(Side.CLIENT)
 public class GuiScroll {
 
     /* Bar expansion */

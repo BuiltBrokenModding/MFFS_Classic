@@ -1,6 +1,5 @@
 package com.mffs.common.items.modules.interdiction;
 
-import com.builtbroken.mc.core.registry.implement.IRecipeContainer;
 import com.mffs.common.items.modules.MatrixModule;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
@@ -11,7 +10,7 @@ import java.util.List;
 /**
  * @author Calclavia
  */
-public class ItemModuleBlockAlter extends MatrixModule implements IRecipeContainer {
+public class ItemModuleBlockAlter extends MatrixModule {
 
     @Override
     public void genRecipes(List<IRecipe> list) {

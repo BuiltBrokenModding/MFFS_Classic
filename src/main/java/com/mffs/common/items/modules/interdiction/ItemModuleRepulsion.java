@@ -11,6 +11,7 @@ import com.mffs.common.tile.type.TileForceFieldProjector;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 
@@ -27,6 +28,11 @@ public final class ItemModuleRepulsion extends BaseModule {
      */
     public ItemModuleRepulsion() {
         setCost(8);
+    }
+
+    @Override
+    public void genRecipes(List<IRecipe> list) {
+
     }
 
     /**

@@ -1,7 +1,6 @@
 package com.mffs.common.tile.type;
 
 import com.builtbroken.mc.lib.transform.vector.Location;
-import com.mffs.api.card.ICard;
 import com.mffs.api.card.ICardInfinite;
 import com.mffs.api.card.ICoordLink;
 import com.mffs.api.fortron.FrequencyGrid;
@@ -11,6 +10,7 @@ import com.mffs.api.modules.IModule;
 import com.mffs.api.utils.FortronHelper;
 import com.mffs.api.vector.Vector3D;
 import com.mffs.common.TransferMode;
+import com.mffs.common.items.card.ItemCardFrequency;
 import com.mffs.common.items.modules.upgrades.ItemModuleScale;
 import com.mffs.common.items.modules.upgrades.ItemModuleSpeed;
 import com.mffs.common.net.packet.EntityToggle;
@@ -80,8 +80,10 @@ public class TileFortronCapacitor extends TileModuleAcceptor implements IFortron
      */
     @Override
     public boolean isItemValidForSlot(int slot, ItemStack stack) {
-        if (slot <= 1)
-            return stack.getItem() instanceof ICard;
+        if(slot == 0)
+            return stack.getItem() instanceof ICardInfinite;
+        else if(slot == 1)
+            return stack.getItem() instanceof ItemCardFrequency;
         return stack.getItem() instanceof IModule;
     }
 

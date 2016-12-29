@@ -1,6 +1,5 @@
 package com.mffs.common.items.modules.interdiction;
 
-import com.builtbroken.mc.core.registry.implement.IRecipeContainer;
 import com.mffs.api.security.IBiometricIdentifier;
 import com.mffs.api.security.IInterdictionMatrix;
 import com.mffs.api.security.Permission;
@@ -21,7 +20,7 @@ import java.util.Set;
 /**
  * @author Calclavia
  */
-public class ItemModuleConfiscate extends MatrixModule implements IRecipeContainer {
+public class ItemModuleConfiscate extends MatrixModule {
 
     @Override
     public void genRecipes(List<IRecipe> list) {
@@ -49,10 +48,10 @@ public class ItemModuleConfiscate extends MatrixModule implements IRecipeContain
 
         if (inventory != null) {
             int conf_count = 0;
-            Set<Item> safe_items = matrix.getFilteredItems();
+            Set<ItemStack> safe_items = matrix.getFilteredItems();
             for (int slot = 0; slot < inventory.getSizeInventory(); slot++) {
                 ItemStack stack = inventory.getStackInSlot(slot);
-                if (stack == null || safe_items.contains(stack.getItem())) {
+                if (stack == null || safe_items.contains(stack)) {
                     continue;
                 }
                 matrix.mergeIntoInventory(stack);

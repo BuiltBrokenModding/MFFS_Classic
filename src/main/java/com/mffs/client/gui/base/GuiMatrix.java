@@ -6,11 +6,14 @@ import com.mffs.api.vector.Matrix2d;
 import com.mffs.common.tile.TileFieldMatrix;
 import com.mffs.common.tile.TileFortron;
 import cpw.mods.fml.common.registry.LanguageRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.inventory.Container;
 
 /**
  * Created by Poopsicle360 on 7/17/2016.
  */
+@SideOnly(Side.CLIENT)
 public abstract class GuiMatrix extends MFFSGui {
 
     /**

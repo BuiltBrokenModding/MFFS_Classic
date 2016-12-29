@@ -3,14 +3,8 @@ package com.mffs;
 import com.builtbroken.mc.lib.mod.AbstractProxy;
 import com.mffs.api.vector.Vector3D;
 import com.mffs.common.container.HotBarContainer;
-import com.mffs.common.container.entity.BiometricContainer;
-import com.mffs.common.container.entity.CoercionDeriverContainer;
-import com.mffs.common.container.entity.ForceFieldProjectorContainer;
-import com.mffs.common.container.entity.FortronCapacitorContainer;
-import com.mffs.common.tile.type.TileBiometricIdentifier;
-import com.mffs.common.tile.type.TileCoercionDeriver;
-import com.mffs.common.tile.type.TileForceFieldProjector;
-import com.mffs.common.tile.type.TileFortronCapacitor;
+import com.mffs.common.container.entity.*;
+import com.mffs.common.tile.type.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -68,6 +62,8 @@ public class CommonProxy extends AbstractProxy {
                     return new FortronCapacitorContainer(player, (TileFortronCapacitor) tileEntity);
                 } else if (tileEntity instanceof TileBiometricIdentifier) {
                     return new BiometricContainer(player, (TileBiometricIdentifier) tileEntity);
+                } else if(tileEntity instanceof TileInterdictionMatrix) {
+                    return new InterdictionContainer(player, (TileInterdictionMatrix) tileEntity);
                 }
             }
         } else if(ID == 1) {

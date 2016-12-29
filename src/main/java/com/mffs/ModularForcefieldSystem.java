@@ -32,7 +32,7 @@ import net.minecraftforge.fluids.FluidRegistry;
 @Mod(modid = ModularForcefieldSystem.MODID, name = ModularForcefieldSystem.MOD_NAME, version = ModularForcefieldSystem.VERSION, dependencies = "required-after:VoltzEngine")
 public class ModularForcefieldSystem extends AbstractMod {
     public static final String MODID = "mffs";
-    public static final String VERSION = "0.31";
+    public static final String VERSION = "0.37";
     public static final String MOD_NAME = "Modular Forcefield System";
 
     /**
@@ -72,6 +72,7 @@ public class ModularForcefieldSystem extends AbstractMod {
         BlockForceField.BLOCK_FORCE_FIELD = (BlockForceField) manager.newBlock(BlockForceField.class).setBlockName("forceField").setCreativeTab(null);
         manager.newBlock(BlockForceFieldProjector.class).setBlockName("forceFieldProjector");
         manager.newBlock(BlockFortronCapacitor.class).setBlockName("fortronCapacitor");
+        manager.newBlock(BlockInterdictionMatrix.class).setBlockName("interdictionMatrix");
     }
 
     @Override
@@ -126,6 +127,7 @@ public class ModularForcefieldSystem extends AbstractMod {
         GameRegistry.registerTileEntity(TileForceField.class, "forceField");
         GameRegistry.registerTileEntity(TileForceFieldProjector.class, "forceFieldProjector");
         GameRegistry.registerTileEntity(TileFortronCapacitor.class, "fortronCapacitor");
+        GameRegistry.registerTileEntity(TileInterdictionMatrix.class, "interdictionMatrix");
     }
 
     @EventHandler

@@ -1,6 +1,5 @@
 package com.mffs.common.items.modules.interdiction;
 
-import com.builtbroken.mc.core.registry.implement.IRecipeContainer;
 import com.mffs.api.security.IBiometricIdentifier;
 import com.mffs.api.security.IInterdictionMatrix;
 import com.mffs.api.security.Permission;
@@ -18,7 +17,7 @@ import java.util.List;
 /**
  * @author Calclavia
  */
-public class ItemModuleWarn extends MatrixModule implements IRecipeContainer {
+public class ItemModuleWarn extends MatrixModule {
 
     @Override
     public void genRecipes(List<IRecipe> list) {

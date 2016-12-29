@@ -10,6 +10,8 @@ import com.mffs.common.TileMFFS;
 import com.mffs.common.net.packet.ChangeFrequency;
 import com.mffs.common.net.packet.EntityToggle;
 import cpw.mods.fml.common.registry.LanguageRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.init.Blocks;
@@ -21,6 +23,7 @@ import org.lwjgl.input.Keyboard;
 /**
  * @author Calclavia
  */
+@SideOnly(Side.CLIENT)
 public class MFFSGui extends GuiContainerBase {
 
     protected GuiTextField textFieldFrequency;

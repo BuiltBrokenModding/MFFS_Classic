@@ -1,6 +1,5 @@
 package com.mffs.common.items.modules.upgrades;
 
-import com.builtbroken.mc.core.registry.implement.IRecipeContainer;
 import com.builtbroken.mc.lib.helper.recipe.UniversalRecipe;
 import com.mffs.common.items.modules.BaseModule;
 import net.minecraft.item.Item;
@@ -11,7 +10,7 @@ import java.util.List;
 /**
  * @author Calclavia
  */
-public class ItemModuleCapacity extends BaseModule implements IRecipeContainer {
+public class ItemModuleCapacity extends BaseModule {
 
     @Override
     public void genRecipes(List<IRecipe> list) {

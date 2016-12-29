@@ -7,6 +7,8 @@ import com.mffs.api.utils.Util;
 import com.mffs.api.vector.Matrix2d;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.registry.LanguageRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
@@ -26,12 +28,15 @@ import java.util.Map;
 /**
  * @author Calclavia
  */
+@SideOnly(Side.CLIENT)
 public class GuiContainerBase extends GuiContainer {
 
+    @SideOnly(Side.CLIENT)
     public static final ResourceLocation GUI_COMPONENTS = new ResourceLocation(ModularForcefieldSystem.MODID, "textures/gui/gui_components.png");
 
+    @SideOnly(Side.CLIENT)
     public static final ResourceLocation baseTexture = new ResourceLocation(ModularForcefieldSystem.MODID, "textures/gui/gui_base.png");
-    ;
+
     public String tooltip = "";
     protected int meterHeight = 49;
     protected int meterWidth = 14;

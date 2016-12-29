@@ -3,18 +3,12 @@ package com.mffs.client;
 import com.mffs.CommonProxy;
 import com.mffs.ModularForcefieldSystem;
 import com.mffs.api.vector.Vector3D;
-import com.mffs.client.gui.GuiBiometricIdentifier;
-import com.mffs.client.gui.GuiCoercionDeriver;
-import com.mffs.client.gui.GuiForceFieldProjector;
-import com.mffs.client.gui.GuiFortronCapacitor;
+import com.mffs.client.gui.*;
 import com.mffs.client.gui.items.GuiCardID;
 import com.mffs.client.render.*;
 import com.mffs.client.render.particles.FortronBeam;
 import com.mffs.client.render.particles.MovingFortron;
-import com.mffs.common.tile.type.TileBiometricIdentifier;
-import com.mffs.common.tile.type.TileCoercionDeriver;
-import com.mffs.common.tile.type.TileForceFieldProjector;
-import com.mffs.common.tile.type.TileFortronCapacitor;
+import com.mffs.common.tile.type.*;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
@@ -81,6 +75,8 @@ public class ClientProxy extends CommonProxy {
                     return new GuiFortronCapacitor(player, (TileFortronCapacitor) tileEntity);
                 } else if (tileEntity instanceof TileBiometricIdentifier) {
                     return new GuiBiometricIdentifier(player, (TileBiometricIdentifier) tileEntity);
+                } else if(tileEntity instanceof TileInterdictionMatrix) {
+                    return new GuiInterdictionMatrix(player, (TileInterdictionMatrix) tileEntity);
                 }
             }
         } else if(ID == 1) {
