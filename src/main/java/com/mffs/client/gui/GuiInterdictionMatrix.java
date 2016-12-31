@@ -2,9 +2,11 @@ package com.mffs.client.gui;
 
 import com.builtbroken.mc.lib.helper.LanguageUtility;
 import com.builtbroken.mc.lib.transform.vector.Point;
+import com.mffs.ModularForcefieldSystem;
 import com.mffs.api.gui.GuiSlotType;
 import com.mffs.client.gui.base.MFFSGui;
 import com.mffs.common.container.entity.InterdictionContainer;
+import com.mffs.common.net.packet.EntityToggle;
 import com.mffs.common.tile.type.TileInterdictionMatrix;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
@@ -35,6 +37,7 @@ public class GuiInterdictionMatrix extends MFFSGui {
         super.actionPerformed(guiButton);
         if(guiButton.id == 1) {
             //TODO: Send banned toggle.
+            ModularForcefieldSystem.channel.sendToServer(new EntityToggle((TileInterdictionMatrix) this.frequencyTile, EntityToggle.FILTER_TOGGLE));
         }
     }
     @Override

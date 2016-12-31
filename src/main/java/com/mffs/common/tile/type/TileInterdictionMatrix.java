@@ -11,7 +11,10 @@ import com.mffs.api.security.Permission;
 import com.mffs.common.items.card.ItemCardFrequency;
 import com.mffs.common.items.modules.interdiction.ItemModuleWarn;
 import com.mffs.common.items.modules.upgrades.ItemModuleScale;
+import com.mffs.common.net.packet.EntityToggle;
 import com.mffs.common.tile.TileModuleAcceptor;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -109,6 +112,23 @@ public final class TileInterdictionMatrix extends TileModuleAcceptor implements 
     @Override
     public int getActionRange() {
         return Math.min(getModuleCount(ItemModuleScale.class), SettingConfiguration.INTERDICTION_MAX_RANGE);
+    }
+
+    /**
+     * Handles the message given by the handler.
+     *
+     * @param imessage The message.
+     */
+    public IMessage handleMessage(IMessage imessage) {
+        if (imessage instanceof EntityToggle) {
+            EntityToggle tog = (EntityToggle) imessage;
+            if(tog.toggle_opcode == EntityToggle.FILTER_TOGGLE) {
+                this.banMode = !banMode;
+                this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
+                return null;
+            }
+        }
+        return super.handleMessage(imessage);
     }
 
     @Override
