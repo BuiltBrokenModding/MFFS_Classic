@@ -14,7 +14,6 @@ import com.mffs.common.items.modules.upgrades.ItemModuleScale;
 import com.mffs.common.net.packet.EntityToggle;
 import com.mffs.common.tile.TileModuleAcceptor;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;

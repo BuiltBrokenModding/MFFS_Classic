@@ -1,14 +1,12 @@
 package com.mffs.common.container.entity;
 
 import com.builtbroken.mc.prefab.gui.slot.SlotSpecific;
-import com.mffs.api.gui.GuiSlotType;
 import com.mffs.api.slots.BaseSlot;
 import com.mffs.common.container.PlayerContainer;
 import com.mffs.common.items.card.ItemCardFrequency;
 import com.mffs.common.items.card.ItemCardInfinite;
 import com.mffs.common.tile.type.TileInterdictionMatrix;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 
 /**
  * Created by pwaln on 12/28/2016.

@@ -1,6 +1,7 @@
 package com.mffs.api.utils;
 
 import com.mffs.api.IBlockFrequency;
+import com.mffs.api.fortron.FrequencyGrid;
 import com.mffs.api.security.IBiometricIdentifier;
 import com.mffs.api.security.IInterdictionMatrix;
 import com.mffs.api.security.Permission;
@@ -30,7 +31,26 @@ public class MatrixHelper {
     public static IInterdictionMatrix findMatrix(World world, Vector3D vec, Set<IBlockFrequency> seq) {
         for (IBlockFrequency freq : seq) {
             TileEntity entity = (TileEntity) freq;
-            if (seq instanceof IInterdictionMatrix && world == entity.getWorldObj()) {
+            if (entity instanceof IInterdictionMatrix && world == entity.getWorldObj()) {
+                IInterdictionMatrix matrix = (IInterdictionMatrix) freq;
+                if (matrix.isActive() && vec.distance(entity.xCoord, entity.yCoord, entity.zCoord) < matrix.getActionRange())
+                    return matrix;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Find the matrix within distance.
+     *
+     * @param world
+     * @param vec
+     * @return
+     */
+    public static IInterdictionMatrix findMatrix(World world, Vector3D vec) {
+        for (IBlockFrequency freq : FrequencyGrid.instance().get()) {
+            TileEntity entity = (TileEntity) freq;
+            if (entity instanceof IInterdictionMatrix && world == entity.getWorldObj()) {
                 IInterdictionMatrix matrix = (IInterdictionMatrix) freq;
                 if (matrix.isActive() && vec.distance(entity.xCoord, entity.yCoord, entity.zCoord) < matrix.getActionRange())
                     return matrix;
@@ -47,7 +67,7 @@ public class MatrixHelper {
      * @param perm
      * @return
      */
-    public static boolean checkPermission(IInterdictionMatrix matrix, String name, Permission perm) {
+    public static boolean hasPermission(IInterdictionMatrix matrix, String name, Permission perm) {
         IBiometricIdentifier bio = matrix.getBiometricIdentifier();
         if (bio != null && matrix.isActive()) {
             return bio.isAccessGranted(name, perm);
@@ -61,13 +81,13 @@ public class MatrixHelper {
      * @param player
      * @return
      */
-    public static boolean checkActionPermission(IInterdictionMatrix matrix, PlayerInteractEvent.Action action, EntityPlayer player) {
+    public static boolean hasPermission(IInterdictionMatrix matrix, PlayerInteractEvent.Action action, EntityPlayer player) {
         boolean perm = true;
         if (matrix.getModuleCount(ItemModuleBlockAccess.class) > 0 && action == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK)
-            perm = checkPermission(matrix, player.getGameProfile().getName(), Permission.BLOCK_ACCESS);
+            perm = hasPermission(matrix, player.getGameProfile().getName(), Permission.BLOCK_ACCESS);
 
         if (perm && matrix.getModuleCount(ItemModuleBlockAlter.class) > 0 && (action == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK || player.getCurrentEquippedItem() != null))
-            perm = checkPermission(matrix, player.getGameProfile().getName(), Permission.BLOCK_PLACE_ACCESS);
+            perm = hasPermission(matrix, player.getGameProfile().getName(), Permission.BLOCK_PLACE_ACCESS);
 
         return perm;
     }

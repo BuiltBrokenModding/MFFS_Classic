@@ -10,7 +10,6 @@ import com.mffs.common.net.packet.EntityToggle;
 import com.mffs.common.tile.type.TileInterdictionMatrix;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
 
 /**
  * @author Calclavia
@@ -62,6 +61,7 @@ public class GuiInterdictionMatrix extends MFFSGui {
     @Override
     protected void drawGuiContainerBackgroundLayer(float var1, int x, int y) {
         super.drawGuiContainerBackgroundLayer(var1, x, y);
+        TileInterdictionMatrix entity = (TileInterdictionMatrix) this.frequencyTile;
 
         for(int i = 0; i < 2; i++)
             for(int i2 = 0; i2 < 4; i2++)
@@ -76,6 +76,6 @@ public class GuiInterdictionMatrix extends MFFSGui {
         drawSlot(68, 88);
         drawSlot(86, 88);
 
-        drawForce(8, 120, 0.0F);
+        drawForce(8, 120, entity.getFortronEnergy() > 0 ? ((float) entity.getFortronEnergy()) / entity.getFortronCapacity() : 0);
     }
 }

@@ -144,7 +144,7 @@ public class RemoteController extends ItemCardFrequency implements ICoordLink {
                     Set<IBlockFrequency> freq = FrequencyGrid.instance().get();
                     Vector3D usrLoc = new Vector3D(usr);
                     IInterdictionMatrix matrix = MatrixHelper.findMatrix(world, usrLoc, freq);
-                    if (chunk != null && chunk.isChunkLoaded && (matrix == null || MatrixHelper.checkActionPermission(matrix, PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK, usr) || MatrixHelper.checkPermission(matrix, usr.getGameProfile().getName(), Permission.REMOTE_CONTROL))) {
+                    if (chunk != null && chunk.isChunkLoaded && (matrix == null || MatrixHelper.hasPermission(matrix, PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK, usr) || MatrixHelper.hasPermission(matrix, usr.getGameProfile().getName(), Permission.REMOTE_CONTROL))) {
                         float requiredEnergy = (float) usrLoc.distance(position.xi(), position.yi(), position.zi()) * 10.0F;
                         int receivedEnergy = 0;
 
