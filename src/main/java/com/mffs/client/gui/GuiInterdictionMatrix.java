@@ -36,7 +36,6 @@ public class GuiInterdictionMatrix extends MFFSGui {
     protected void actionPerformed(GuiButton guiButton) {
         super.actionPerformed(guiButton);
         if(guiButton.id == 1) {
-            //TODO: Send banned toggle.
             ModularForcefieldSystem.channel.sendToServer(new EntityToggle((TileInterdictionMatrix) this.frequencyTile, EntityToggle.FILTER_TOGGLE));
         }
     }

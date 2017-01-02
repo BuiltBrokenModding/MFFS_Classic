@@ -58,17 +58,18 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
         super.updateEntity();
         if (isActive() && getMode() != null && requestFortron(getFortronCost(), false) >= getFortronCost()) {
             requestFortron(getFortronCost(), true);
-            if (this.ticks % 10 == 0 || markFieldUpdate || requireTicks)
-                if (!this.isFinished)
-                    calculatedForceField();
-                else
-                    projectField();
-
-            if (isActive() && worldObj.isRemote)
+            if(!this.worldObj.isRemote) {
+                if (this.ticks % 10 == 0 || markFieldUpdate || requireTicks)
+                    if (!this.isFinished)
+                        calculatedForceField();
+                    else
+                        projectField();
+            } else {
                 this.animation += getFortronCost() / 10;
 
-            if (this.ticks % 40 == 0 && getModuleCount(ItemModuleSilence.class) <= 0)
-                this.worldObj.playSoundEffect(this.xCoord + 0.5, this.yCoord + 0.5, this.zCoord + 0.5, ModularForcefieldSystem.MODID + ":field", 0.6F, 1.0F - this.worldObj.rand.nextFloat() * 0.1F);
+                if (this.ticks % 40 == 0 && getModuleCount(ItemModuleSilence.class) <= 0)
+                    this.worldObj.playSoundEffect(this.xCoord + 0.5, this.yCoord + 0.5, this.zCoord + 0.5, ModularForcefieldSystem.MODID + ":field", 0.6F, 1.0F - this.worldObj.rand.nextFloat() * 0.1F);
+            }
         } else if (!this.worldObj.isRemote) {
             destroyField();
         }
@@ -79,7 +80,7 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
      */
     @Override
     public void calculatedForceField() {
-        if (!isCalc && !getWorldObj().isRemote) {
+        if (!isCalc) {
             IProjectorMode stack = getMode();
             if (stack != null) {
                 this.blocks.clear();
@@ -195,8 +196,7 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
 
                     if (flag != 1 && flag != 2)
                     {
-                        if (!worldObj.isRemote)
-                            worldObj.setBlock(vec.intX(), vec.intY(), vec.intZ(), BlockForceField.BLOCK_FORCE_FIELD, 0, 2);
+                        worldObj.setBlock(vec.intX(), vec.intY(), vec.intZ(), BlockForceField.BLOCK_FORCE_FIELD, 0, 2);
                         this.blocks.add(vec);
 
                         TileEntity entity = vec.getTileEntity(worldObj);
@@ -217,7 +217,7 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
 
     @Override
     public void destroyField() {
-        if (!worldObj.isRemote && !this.isCalc && isFinished) {
+        if (!this.isCalc && isFinished) {
             synchronized (this.calculatedFields) {
                 for (IModule module : getModules(getModuleSlots())) {
                     if (module.onDestroy(this, getCalculatedField())) {

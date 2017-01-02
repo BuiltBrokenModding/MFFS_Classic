@@ -88,12 +88,15 @@ public abstract class TileMFFSInventory extends TileMFFS implements IInventory {
      */
     @Override
     public void setInventorySlotContents(int slot, ItemStack item) {
-        this.inventory[slot] = item;
-        if ((item != null) && (item.stackSize > getInventoryStackLimit())) {
-            item.stackSize = getInventoryStackLimit();
+        if (item != null) {
+            if(item.stackSize > getInventoryStackLimit())
+                item.stackSize = getInventoryStackLimit();
+            onSlotsChanged(slot);
         }
-        onSlotsChanged(slot);
+        this.inventory[slot] = item;
     }
+
+
 
     /**
      * Returns the name of the inventory

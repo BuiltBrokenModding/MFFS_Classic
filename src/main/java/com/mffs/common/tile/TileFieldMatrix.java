@@ -48,7 +48,6 @@ public abstract class TileFieldMatrix extends TileModuleAcceptor implements IFie
     /* Holds information on positions that have been finished */
     protected final Set<Vector3D> calculatedFields = Collections.synchronizedSet(new HashSet<Vector3D>());
     /* Tasks that have been stored */
-    private final List<EventTimedTask> delayedEvents = new LinkedList<>();
     private final List<EventTimedTask> eventsQueued = new LinkedList<>();
     /* Deteremines if the machine is absolute */
     public boolean isAbs = true;
@@ -58,6 +57,7 @@ public abstract class TileFieldMatrix extends TileModuleAcceptor implements IFie
     @Override
     public void updateEntity() {
         super.updateEntity();
+        if(this.worldObj.isRemote) return; //events only need to process serverside!
         for (Iterator<EventTimedTask> it$ = eventsQueued.iterator(); it$.hasNext(); ) {
             EventTimedTask task = it$.next();
             task.tick();
@@ -65,7 +65,6 @@ public abstract class TileFieldMatrix extends TileModuleAcceptor implements IFie
                 it$.remove();
             }
         }
-        //Infinite, infinite loop of adding to list!
     }
 
     /**
@@ -122,9 +121,7 @@ public abstract class TileFieldMatrix extends TileModuleAcceptor implements IFie
         }
     }
 
-    public void onCalculationCompletion() {
-
-    }
+    public void onCalculationCompletion() {}
 
     @Override
     public IProjectorMode getMode() {

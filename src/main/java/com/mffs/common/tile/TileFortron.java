@@ -25,8 +25,6 @@ public abstract class TileFortron extends TileFrequency implements IFluidHandler
 
     /* Bounds of the force box */
     public static final Matrix2d FORCE_BOUNDS = new Matrix2d(new Vector3D(175, 0, 0), new Vector3D(186, 107, 0));
-    /* Deteremines if we can export fortron */
-    public boolean sendFortron = true;
 
     /* This will hold our fluids */
     protected FluidTank tank = new FluidTank(1_000);
@@ -43,8 +41,7 @@ public abstract class TileFortron extends TileFrequency implements IFluidHandler
 
     @Override
     public void invalidate() {
-        if (sendFortron)
-            FortronHelper.transfer(this, FrequencyGrid.instance().getFortronTiles(this.worldObj, new Vector3D(this), 100, getFrequency()), TransferMode.DRAIN, Integer.MAX_VALUE);
+        FortronHelper.transfer(this, FrequencyGrid.instance().getFortronTiles(this.worldObj, new Vector3D(this), 100, getFrequency()), TransferMode.DRAIN, Integer.MAX_VALUE);
 
         super.invalidate();
     }
