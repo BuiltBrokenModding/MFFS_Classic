@@ -25,6 +25,9 @@ public class SettingConfiguration {
     /* This is the base power required for the coercion deriver */
     public static int BASE_POWER_REQUIRED = 5_000_000;
 
+    /* The amount of fortron required for the base capacitor to run! */
+    public static int BASE_POWER_CONSUMPTION_CAPACITOR = 60;
+
     /* Deteremines if items will be collected upon death of personel */
     public static boolean COLLECT_ON_PERSONELL_KILL = false;
 
@@ -51,7 +54,8 @@ public class SettingConfiguration {
         useElectricity.comment = "Turning this to false will make ModularForcefieldSystem run without electricity or energy systems required. Great for vanilla!";
         ENABLE_ELECTRICITY = useElectricity.getBoolean(ENABLE_ELECTRICITY);
         INTERDICTION_MURDER_ENERGY = CONFIGURATION.get("fortron", "Interdiction Murder Fortron Consumption", INTERDICTION_MURDER_ENERGY).getInt(INTERDICTION_MURDER_ENERGY);
-        BASE_POWER_REQUIRED = CONFIGURATION.get("fortron", "Base Coercion Deriver Power Consumption", BASE_POWER_REQUIRED).getInt(BASE_POWER_REQUIRED);
+        BASE_POWER_REQUIRED = CONFIGURATION.get("fortron", "Base Coercion Deriver Power Consumption", BASE_POWER_REQUIRED).getInt();
+        BASE_POWER_CONSUMPTION_CAPACITOR = CONFIGURATION.get("fortron", "Base Capacitor Power Consumption", BASE_POWER_CONSUMPTION_CAPACITOR).getInt();
 
         //FORCEFIELD_PROJECTOR
         Property propFieldScale = CONFIGURATION.get("forcefield_projector", "Max Force Field Scale", MAX_FORCE_FIELD_SCALE);

@@ -45,7 +45,7 @@ public class RemoteController extends ItemCardFrequency implements ICoordLink {
 
         Location link = getLink(stack);
         if (link != null) {
-            World world = link.getWorld();
+            World world = link.world;
             Block block = link.getBlock(world);
             if (block != null)
                 list.add(LanguageRegistry.instance().getStringLocalization("info.item.linkedWith") + " " + block.getLocalizedName());

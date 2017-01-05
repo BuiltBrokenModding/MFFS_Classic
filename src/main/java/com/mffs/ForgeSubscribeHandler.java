@@ -1,5 +1,6 @@
 package com.mffs;
 
+import com.builtbroken.mc.core.asm.ChunkSetBlockEvent;
 import com.mffs.api.IBlockFrequency;
 import com.mffs.api.fortron.FrequencyGrid;
 import com.mffs.api.security.IInterdictionMatrix;
@@ -35,8 +36,8 @@ public class ForgeSubscribeHandler {
 
     @SubscribeEvent
     @SideOnly(Side.SERVER)
-    public void blockModify(BlockEvent.BreakEvent event) { //TODO: Think of better way for this to work.
-        if (event.world.isRemote || event.block == null || event.block instanceof BlockAir)
+    public void blockModify(ChunkSetBlockEvent event) { //TODO: Think of better way for this to work.
+        if (event.block == null || event.block instanceof BlockAir)
             return;
 
         for (IBlockFrequency freq : FrequencyGrid.instance().get()) {
