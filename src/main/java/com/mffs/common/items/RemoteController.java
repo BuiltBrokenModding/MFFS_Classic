@@ -110,14 +110,13 @@ public class RemoteController extends ItemCardFrequency implements ICoordLink {
      */
     @Override
     public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
-        if (!world.isRemote) {
-           Location coord = new Location(world, x, y, z);
-            setLink(stack, coord);
-
+        if (!world.isRemote && player.isSneaking()) { //you should be sneaking to set coord!
+            Location coord = new Location(world, x, y, z);
             Block block = coord.getBlock();
-            if (block != null) {
-                if (!world.isRemote)
-                    player.addChatMessage(new ChatComponentText(String.format(LanguageRegistry.instance().getStringLocalization("message.remoteController.linked")
+            if (block != null && block instanceof IBlockFrequency) {
+
+                setLink(stack, coord);
+                player.addChatMessage(new ChatComponentText(String.format(LanguageRegistry.instance().getStringLocalization("message.remoteController.linked")
                             .replace("%p", x + ", " + y + ", " + z).replace("%q", block.getLocalizedName()))));
             }
         }
@@ -133,7 +132,7 @@ public class RemoteController extends ItemCardFrequency implements ICoordLink {
      */
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer usr) {
-        if (!usr.isSneaking()) {
+        if (!usr.isSneaking() && !world.isRemote) {
             Location position = getLink(stack);
 
             if (position != null) {
@@ -177,8 +176,7 @@ public class RemoteController extends ItemCardFrequency implements ICoordLink {
                             }
                         }
 
-                        if (!world.isRemote)
-                            usr.addChatMessage(new ChatComponentText(LanguageRegistry.instance().getStringLocalization("message.remoteController.fail").replaceAll("%p", UnitDisplay.getDisplay(requiredEnergy, UnitDisplay.Unit.JOULES))));
+                        usr.addChatMessage(new ChatComponentText(LanguageRegistry.instance().getStringLocalization("message.remoteController.fail").replaceAll("%p", UnitDisplay.getDisplay(requiredEnergy, UnitDisplay.Unit.JOULES))));
                     }
                 }
             }

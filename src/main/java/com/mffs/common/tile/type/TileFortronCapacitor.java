@@ -1,6 +1,7 @@
 package com.mffs.common.tile.type;
 
 import com.builtbroken.mc.lib.transform.vector.Location;
+import com.mffs.SettingConfiguration;
 import com.mffs.api.card.ICardInfinite;
 import com.mffs.api.card.ICoordLink;
 import com.mffs.api.fortron.FrequencyGrid;
@@ -44,31 +45,41 @@ public class TileFortronCapacitor extends TileModuleAcceptor implements IFortron
     public void updateEntity() {
         super.updateEntity();
 
-        int cost = getFortronCost();
-        if (cost > 0)
-            requestFortron(cost, true);
-
-        if (isActive() && this.ticks % 10 == 0) {
-            Set<IFortronFrequency> connected = new HashSet<>();
-            for (ItemStack stack : getCards()) {
-                if (stack == null)
-                    continue;
-
-                if (stack.getItem() instanceof ICardInfinite) {
-                    setFortronEnergy(getFortronCapacity());
-                } else if (stack.getItem() instanceof ICoordLink) {
-                    Location link = ((ICoordLink) stack.getItem()).getLink(stack);
-                    TileEntity link_machine = link.getTileEntity(worldObj);
-                    if (link != null && link_machine instanceof IFortronFrequency) {
-                        connected.add(this);
-                        connected.add((IFortronFrequency) link_machine);
-                    }
+        if(this.isActive()) {
+            int cost = getFortronCost();
+            //TODO: Rethink when it should check for draining, maybe even a price per block distance?
+            if (requestFortron(cost + SettingConfiguration.BASE_POWER_CONSUMPTION_CAPACITOR, false) <= 0) {
+                ItemStack card = getStackInSlot(0);
+                if(card != null && !(card.getItem() instanceof ICardInfinite)) {
+                    return;
                 }
             }
-            if (connected.isEmpty())
-                getLinkedDevices(connected);
+            requestFortron(cost + SettingConfiguration.BASE_POWER_CONSUMPTION_CAPACITOR, true);
 
-            FortronHelper.transfer(this, connected, mode, getTransmissionRate());
+            if (this.ticks % 10 == 0) {
+                Set<IFortronFrequency> connected = new HashSet<>();
+                for (ItemStack stack : getCards()) {
+                    if (stack == null)
+                        continue;
+
+                    if (stack.getItem() instanceof ICardInfinite) {
+                        setFortronEnergy(getFortronCapacity());
+                    } else if (stack.getItem() instanceof ICoordLink) {
+                        Location link = ((ICoordLink) stack.getItem()).getLink(stack);
+                        if (link != null) {
+                            TileEntity link_machine = link.getTileEntity(this.worldObj);
+                            if (link_machine instanceof IFortronFrequency) {
+                                connected.add(this);
+                                connected.add((IFortronFrequency) link_machine);
+                            }
+                        }
+                    }
+                }
+                if (connected.isEmpty())
+                    getLinkedDevices(connected);
+
+                FortronHelper.transfer(this, connected, mode, getTransmissionRate());
+            }
         }
     }
 
