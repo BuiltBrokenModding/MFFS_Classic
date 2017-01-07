@@ -1,9 +1,11 @@
 package com.mffs.common;
 
+import com.builtbroken.mc.api.tile.IRemovable;
 import com.mffs.api.IActivatable;
 import com.mffs.common.net.IPacketReceiver_Entity;
 import com.mffs.common.net.packet.EntityToggle;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
@@ -14,7 +16,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 /**
  * @author Calclavia
  */
-public abstract class TileMFFS extends TileEntity implements IActivatable, IPacketReceiver_Entity {
+public abstract class TileMFFS extends TileEntity implements IActivatable, IPacketReceiver_Entity, IRemovable.ICustomRemoval {
     public float animation;
 
     /* Ticks */
@@ -115,5 +117,10 @@ public abstract class TileMFFS extends TileEntity implements IActivatable, IPack
         //this.isProvidingSignal = pkt.func_148857_g().getBoolean("redstone");
         readFromNBT(pkt.func_148857_g());
         super.onDataPacket(net, pkt);
+    }
+
+    @Override
+    public boolean canBeRemoved(EntityPlayer entityPlayer) {
+        return true;
     }
 }

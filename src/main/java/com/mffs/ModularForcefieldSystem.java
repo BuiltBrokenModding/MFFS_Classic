@@ -24,6 +24,7 @@ import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
@@ -64,15 +65,18 @@ public class ModularForcefieldSystem extends AbstractMod {
         return proxy;
     }
 
+    /* Blocks, Needed for wrench */
+    public static Block biometricIdentifier, coercionDeriver, forcefieldProjector, fortronCapacitor, interdictionMatrix;
+
     @Override
     protected void loadBlocks(ModManager manager) {
         //TODO: Change Block/Tile to VE 'Tile'
-        manager.newBlock(BlockBiometricIdentifier.class).setBlockName("biometricIdentifier");
-        manager.newBlock(BlockCoercionDeriver.class).setBlockName("coercionDeriver");
+        biometricIdentifier = manager.newBlock(BlockBiometricIdentifier.class).setBlockName("biometricIdentifier");
+        coercionDeriver = manager.newBlock(BlockCoercionDeriver.class).setBlockName("coercionDeriver");
         BlockForceField.BLOCK_FORCE_FIELD = (BlockForceField) manager.newBlock(BlockForceField.class).setBlockName("forceField").setCreativeTab(null);
-        manager.newBlock(BlockForceFieldProjector.class).setBlockName("forceFieldProjector");
-        manager.newBlock(BlockFortronCapacitor.class).setBlockName("fortronCapacitor");
-        manager.newBlock(BlockInterdictionMatrix.class).setBlockName("interdictionMatrix");
+        forcefieldProjector = manager.newBlock(BlockForceFieldProjector.class).setBlockName("forceFieldProjector");
+        fortronCapacitor = manager.newBlock(BlockFortronCapacitor.class).setBlockName("fortronCapacitor");
+        interdictionMatrix = manager.newBlock(BlockInterdictionMatrix.class).setBlockName("interdictionMatrix");
     }
 
     @Override

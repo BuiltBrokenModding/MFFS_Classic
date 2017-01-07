@@ -14,7 +14,9 @@ import net.minecraft.tileentity.TileEntityChest;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -234,5 +236,14 @@ public abstract class TileMFFSInventory extends TileMFFS implements IInventory {
         return cards;
     }
 
-
+    @Override
+    public List<ItemStack> getRemovedItems(EntityPlayer entityPlayer) {
+        List<ItemStack> drops = new ArrayList<>();
+        for(ItemStack st : inventory) {
+            if(st != null) {
+                drops.add(st);
+            }
+        }
+        return drops;
+    }
 }

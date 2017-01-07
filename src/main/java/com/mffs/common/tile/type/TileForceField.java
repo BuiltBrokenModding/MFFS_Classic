@@ -1,7 +1,6 @@
 package com.mffs.common.tile.type;
 
 import com.mffs.api.vector.Vector3D;
-import com.mffs.common.TileMFFS;
 import com.mffs.common.items.modules.projector.ItemModuleCamouflage;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -14,7 +13,7 @@ import net.minecraft.tileentity.TileEntity;
 /**
  * @author Calclavia
  */
-public final class TileForceField extends TileMFFS {
+public final class TileForceField extends TileEntity {
 
     /* Represents the item that is this block */
     public ItemStack camo;

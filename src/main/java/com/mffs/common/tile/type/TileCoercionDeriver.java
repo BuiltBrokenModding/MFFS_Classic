@@ -2,18 +2,22 @@ package com.mffs.common.tile.type;
 
 import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyHandler;
+import com.mffs.ModularForcefieldSystem;
 import com.mffs.SettingConfiguration;
 import com.mffs.api.modules.IModule;
 import com.mffs.common.items.card.ItemCardFrequency;
 import com.mffs.common.items.modules.upgrades.ItemModuleScale;
 import com.mffs.common.items.modules.upgrades.ItemModuleSpeed;
 import com.mffs.common.tile.TileModuleAcceptor;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.List;
 
 /**
  * @author Calclavia
@@ -217,5 +221,12 @@ public final class TileCoercionDeriver extends TileModuleAcceptor implements IEn
     @Override
     public boolean canConnectEnergy(ForgeDirection from) {
         return true;
+    }
+
+    @Override
+    public List<ItemStack> getRemovedItems(EntityPlayer entityPlayer) {
+        List<ItemStack> stack = super.getRemovedItems(entityPlayer);
+        stack.add(new ItemStack(ModularForcefieldSystem.coercionDeriver));
+        return stack;
     }
 }

@@ -18,6 +18,7 @@ import com.mffs.common.net.packet.ForcefieldCalculation;
 import com.mffs.common.tile.TileFieldMatrix;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import net.minecraft.block.*;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -322,5 +323,12 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
             return null;
         }
         return super.handleMessage(imessage);
+    }
+
+    @Override
+    public List<ItemStack> getRemovedItems(EntityPlayer entityPlayer) {
+        List<ItemStack> stack = super.getRemovedItems(entityPlayer);
+        stack.add(new ItemStack(ModularForcefieldSystem.forcefieldProjector));
+        return stack;
     }
 }

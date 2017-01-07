@@ -1,16 +1,20 @@
 package com.mffs.common.tile;
 
+import com.builtbroken.mc.lib.helper.WrenchUtility;
 import com.builtbroken.mc.lib.transform.vector.Location;
 import com.mffs.api.IBiometricIdentifierLink;
 import com.mffs.api.IBlockFrequency;
 import com.mffs.api.card.ICoordLink;
 import com.mffs.api.fortron.FrequencyGrid;
 import com.mffs.api.security.IBiometricIdentifier;
+import com.mffs.api.security.Permission;
 import com.mffs.common.net.packet.ChangeFrequency;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChatComponentText;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -118,5 +122,18 @@ public abstract class TileFrequency extends TileMFFSInventory implements IBlockF
     public void readFromNBT(NBTTagCompound nbt) {
         super.readFromNBT(nbt);
         this.frequency = nbt.getInteger("mffs_freq");
+    }
+
+    @Override
+    public boolean canBeRemoved(EntityPlayer player) {
+        if (player.isSneaking()) {
+            IBiometricIdentifier bio = getBiometricIdentifier();
+            if (bio != null && !bio.isAccessGranted(player.getGameProfile().getName(), Permission.CONFIGURE)) {
+                player.addChatMessage(new ChatComponentText("[SECURITY]Cannot remove machine! Access denied!"));
+                return false;
+            }
+            return WrenchUtility.isHoldingWrench(player);
+        }
+        return false;
     }
 }

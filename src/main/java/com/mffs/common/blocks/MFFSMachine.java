@@ -3,6 +3,7 @@ package com.mffs.common.blocks;
 import com.builtbroken.mc.lib.helper.WrenchUtility;
 import com.mffs.ModularForcefieldSystem;
 import com.mffs.api.IBiometricIdentifierLink;
+import com.mffs.api.security.IBiometricIdentifier;
 import com.mffs.api.security.Permission;
 import com.mffs.common.TileMFFS;
 import com.mffs.common.items.card.ItemCardLink;
@@ -100,18 +101,11 @@ public abstract class MFFSMachine extends Block implements ITileEntityProvider {
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
         if (world.isRemote) return true;
         if (player.inventory.getCurrentItem() != null) {
-            if (player.isSneaking() && WrenchUtility.isUsableWrench(player, x, y, z))
+            /*if (WrenchUtility.isUsableWrench(player, x, y, z))
             {
-                TileEntity entity = world.getTileEntity(x, y, z);
-                if (entity instanceof IBiometricIdentifierLink && ((IBiometricIdentifierLink) entity).getBiometricIdentifier() != null) {
-                    if (!((IBiometricIdentifierLink) entity).getBiometricIdentifier().isAccessGranted(player.getGameProfile().getName(), Permission.CONFIGURE)) {
-                        player.addChatMessage(new ChatComponentText("[SECURITY]Cannot remove machine! Access denied!"));
-                        return true;
-                    }
-                }
-                //TODO move this code to wrench method
                 return wrenchMachine(world, x, y, z, player, side);
-            } else if (player.inventory.getCurrentItem().getItem() instanceof ItemCardLink) {
+            } else */
+            if (player.inventory.getCurrentItem().getItem() instanceof ItemCardLink) {
                 return false;
             }
         }
@@ -148,7 +142,19 @@ public abstract class MFFSMachine extends Block implements ITileEntityProvider {
      * @param side   The side being clicked.
      * @return
      */
-    public abstract boolean wrenchMachine(World world, int x, int y, int z, EntityPlayer player, int side);
+    @Deprecated
+    public boolean wrenchMachine(World world, int x, int y, int z, EntityPlayer player, int side) {
+        TileEntity entity = world.getTileEntity(x, y, z);
+        if (entity instanceof IBiometricIdentifierLink) {
+            IBiometricIdentifier bio = ((IBiometricIdentifierLink) entity).getBiometricIdentifier();
+            if (bio != null && !bio.isAccessGranted(player.getGameProfile().getName(), Permission.CONFIGURE)) {
+                player.addChatMessage(new ChatComponentText("[SECURITY]Cannot remove machine! Access denied!"));
+                return false;
+            }
+        }
+        WrenchUtility.damageWrench(player, x, y, z);
+        return true;
+    }
 
     @Override
     public boolean isOpaqueCube() {

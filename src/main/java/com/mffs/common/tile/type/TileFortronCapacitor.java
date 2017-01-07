@@ -1,6 +1,7 @@
 package com.mffs.common.tile.type;
 
 import com.builtbroken.mc.lib.transform.vector.Location;
+import com.mffs.ModularForcefieldSystem;
 import com.mffs.SettingConfiguration;
 import com.mffs.api.card.ICardInfinite;
 import com.mffs.api.card.ICoordLink;
@@ -17,11 +18,13 @@ import com.mffs.common.items.modules.upgrades.ItemModuleSpeed;
 import com.mffs.common.net.packet.EntityToggle;
 import com.mffs.common.tile.TileModuleAcceptor;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -166,5 +169,12 @@ public class TileFortronCapacitor extends TileModuleAcceptor implements IFortron
             }
         }
         return super.handleMessage(imessage);
+    }
+
+    @Override
+    public List<ItemStack> getRemovedItems(EntityPlayer entityPlayer) {
+        List<ItemStack> stack = super.getRemovedItems(entityPlayer);
+        stack.add(new ItemStack(ModularForcefieldSystem.fortronCapacitor));
+        return stack;
     }
 }

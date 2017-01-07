@@ -1,6 +1,7 @@
 package com.mffs.common.tile.type;
 
 import com.builtbroken.mc.lib.helper.LanguageUtility;
+import com.mffs.ModularForcefieldSystem;
 import com.mffs.SettingConfiguration;
 import com.mffs.api.card.ICardInfinite;
 import com.mffs.api.modules.IInterdictionModule;
@@ -195,5 +196,12 @@ public final class TileInterdictionMatrix extends TileModuleAcceptor implements 
         if(slot > this.module_end)
             return true;
         return item.getItem() instanceof IModule;
+    }
+
+    @Override
+    public List<ItemStack> getRemovedItems(EntityPlayer entityPlayer) {
+        List<ItemStack> stack = super.getRemovedItems(entityPlayer);
+        stack.add(new ItemStack(ModularForcefieldSystem.interdictionMatrix));
+        return stack;
     }
 }

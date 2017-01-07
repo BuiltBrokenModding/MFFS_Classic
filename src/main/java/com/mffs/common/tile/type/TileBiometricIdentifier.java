@@ -1,13 +1,16 @@
 package com.mffs.common.tile.type;
 
+import com.mffs.ModularForcefieldSystem;
 import com.mffs.api.IItemFrequency;
 import com.mffs.api.card.ICardIdentification;
 import com.mffs.api.security.IBiometricIdentifier;
 import com.mffs.api.security.Permission;
 import com.mffs.common.tile.TileFrequency;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -60,5 +63,12 @@ public class TileBiometricIdentifier extends TileFrequency implements IBiometric
         Set<IBiometricIdentifier> set = new HashSet();
         set.add(this);
         return set;
+    }
+
+    @Override
+    public List<ItemStack> getRemovedItems(EntityPlayer entityPlayer) {
+        List<ItemStack> stack = super.getRemovedItems(entityPlayer);
+        stack.add(new ItemStack(ModularForcefieldSystem.biometricIdentifier));
+        return stack;
     }
 }

@@ -9,7 +9,6 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
@@ -28,20 +27,6 @@ public class BlockForceFieldProjector extends MFFSMachine implements IPostInit {
      */
     public BlockForceFieldProjector() {
         setBlockBounds(0, 0, 0, 1, 0.8F, 1);
-    }
-
-    /**
-     * @param world  The current world.
-     * @param x      X position of block.
-     * @param y      Y position of block.
-     * @param z      Z position of block.
-     * @param player The user.
-     * @param side   The side being clicked.
-     * @return
-     */
-    @Override
-    public boolean wrenchMachine(World world, int x, int y, int z, EntityPlayer player, int side) {
-        return false;
     }
 
     /**

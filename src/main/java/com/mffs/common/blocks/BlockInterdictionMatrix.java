@@ -3,7 +3,6 @@ package com.mffs.common.blocks;
 import com.builtbroken.mc.core.registry.implement.IPostInit;
 import com.mffs.common.tile.type.TileInterdictionMatrix;
 import cpw.mods.fml.common.registry.GameRegistry;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
@@ -14,19 +13,6 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
  * @author Calclavia
  */
 public class BlockInterdictionMatrix extends MFFSMachine implements IPostInit {
-
-    /**
-     * @param world  The current world.
-     * @param x      X position of block.
-     * @param y      Y position of block.
-     * @param z      Z position of block.
-     * @param player The user.
-     * @param side   The side being clicked.
-     * @return
-     */
-    public boolean wrenchMachine(World world, int x, int y, int z, EntityPlayer player, int side) {
-        return false;
-    }
 
     /**
      * Returns a new instance of a block's tile entity class. Called on placing the block.
