@@ -23,7 +23,6 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.world.BlockEvent;
 
 public class ForgeSubscribeHandler {
 
@@ -35,15 +34,15 @@ public class ForgeSubscribeHandler {
     }
 
     @SubscribeEvent
-    @SideOnly(Side.SERVER)
+    //@SideOnly(Side.SERVER)
     public void blockModify(ChunkSetBlockEvent event) { //TODO: Think of better way for this to work.
-        if (event.block == null || event.block instanceof BlockAir)
+        if (event.world.isRemote || !(event.block instanceof BlockAir))
             return;
-
         for (IBlockFrequency freq : FrequencyGrid.instance().get()) {
             if (freq instanceof TileForceFieldProjector && ((TileEntity) freq).getWorldObj() == event.world) {
                 TileForceFieldProjector proj = (TileForceFieldProjector) freq;
-                if (proj.getCalculatedField() != null && proj.getCalculatedField().contains(new Vector3D(event.x, event.y, event.z))) {
+                if (proj.getCalculatedField() != null && !proj.markFieldUpdate
+                        && proj.getCalculatedField().contains(new Vector3D(event.x, event.y, event.z))) {
                     proj.markFieldUpdate = true;
                     break;
                 }
@@ -81,7 +80,6 @@ public class ForgeSubscribeHandler {
     }
 
     @SubscribeEvent
-    @SideOnly(Side.SERVER)
     public void livingSpawnEvent(LivingSpawnEvent event) {
         IInterdictionMatrix matrix = MatrixHelper.findMatrix(event.world, new Vector3D(event.entityLiving));
         if(matrix != null && matrix.getModuleCount(ItemModuleAntiSpawn.class) > 0)

@@ -13,6 +13,7 @@ import com.mffs.api.utils.MatrixHelper;
 import com.mffs.api.utils.UnitDisplay;
 import com.mffs.api.utils.Util;
 import com.mffs.api.vector.Vector3D;
+import com.mffs.common.blocks.MFFSMachine;
 import com.mffs.common.items.card.ItemCardFrequency;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import net.minecraft.block.Block;
@@ -113,7 +114,7 @@ public class RemoteController extends ItemCardFrequency implements ICoordLink {
         if (!world.isRemote && player.isSneaking()) { //you should be sneaking to set coord!
             Location coord = new Location(world, x, y, z);
             Block block = coord.getBlock();
-            if (block != null && block instanceof IBlockFrequency) {
+            if (block != null && block instanceof MFFSMachine) {
 
                 setLink(stack, coord);
                 player.addChatMessage(new ChatComponentText(String.format(LanguageRegistry.instance().getStringLocalization("message.remoteController.linked")

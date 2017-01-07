@@ -48,7 +48,7 @@ public class BlockForceField extends Block implements ITileEntityProvider, IForc
      */
     public BlockForceField() {
         super(Material.glass);
-        setResistance(-1);
+        setResistance(999.0F);
         this.setBlockUnbreakable();
         setCreativeTab(null);
     }
