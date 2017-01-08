@@ -1,6 +1,5 @@
 package com.mffs.common.tile;
 
-import com.builtbroken.mc.lib.helper.WrenchUtility;
 import com.builtbroken.mc.lib.transform.vector.Location;
 import com.mffs.api.IBiometricIdentifierLink;
 import com.mffs.api.IBlockFrequency;
@@ -132,7 +131,7 @@ public abstract class TileFrequency extends TileMFFSInventory implements IBlockF
                 player.addChatMessage(new ChatComponentText("[SECURITY]Cannot remove machine! Access denied!"));
                 return false;
             }
-            return WrenchUtility.isHoldingWrench(player);
+            return true;
         }
         return false;
     }

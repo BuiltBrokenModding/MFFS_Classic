@@ -1,6 +1,7 @@
 package com.mffs.common.blocks;
 
 import com.mffs.ModularForcefieldSystem;
+import com.mffs.SettingConfiguration;
 import com.mffs.api.IForceFieldBlock;
 import com.mffs.api.IProjector;
 import com.mffs.api.fortron.IFortronStorage;
@@ -31,6 +32,7 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -220,8 +222,20 @@ public class BlockForceField extends Block implements ITileEntityProvider, IForc
      */
     @Override
     public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z) {
-        //IProjector proj = getProjector(world, x, y, z);
-        return super.getCollisionBoundingBoxFromPool(world, x, y, z);
+        IProjector proj = getProjector(world, x, y, z);
+        if(proj != null) {
+            IBiometricIdentifier bio = proj.getBiometricIdentifier();
+            List<EntityPlayer> entities = world.getEntitiesWithinAABB(EntityPlayer.class, AxisAlignedBB.getBoundingBox(x, y, z, x + 1, y + 0.9D, z + 1));
+            for(EntityPlayer pl : entities) {
+                if(pl == null)
+                    continue;
+
+                if(pl.isSneaking() &&
+                        (pl.capabilities.isCreativeMode || bio != null && bio.isAccessGranted(pl.getGameProfile().getName(), Permission.WARP)))
+                    return null;
+            }
+        }
+        return AxisAlignedBB.getBoundingBox(x + 0.0625, y + 0.0625, z + .0625, x + .9375, y + .9375, z + .9375);
     }
 
     /**
@@ -250,7 +264,13 @@ public class BlockForceField extends Block implements ITileEntityProvider, IForc
         TileEntity tile = world.getTileEntity(x, y, z);
         if (tile instanceof TileForceField) {
             ItemStack stack = ((TileForceField)tile).camo;
-            return stack != null && ((ItemBlock)stack.getItem()).field_150939_a.shouldSideBeRendered(world, x, y, z, p_149646_5_);
+            try {
+                return stack != null && ((ItemBlock) stack.getItem()).field_150939_a.shouldSideBeRendered(world, x, y, z, p_149646_5_);
+            } catch(Exception e) {
+                System.out.println("Side Render Error: ForceFieldBlock");
+                e.printStackTrace();
+                return true;
+            }
         }
         return super.shouldSideBeRendered(world, x, y, z, p_149646_5_);
     }
@@ -258,7 +278,7 @@ public class BlockForceField extends Block implements ITileEntityProvider, IForc
     @Override
     @SideOnly(Side.CLIENT)
     public int getRenderType() {
-        return RenderForceFieldHandler.RENDER_ID;
+        return SettingConfiguration.USE_FORCEFIELD_RENDERER ? RenderForceFieldHandler.RENDER_ID : super.getRenderType();
     }
 
     @Override

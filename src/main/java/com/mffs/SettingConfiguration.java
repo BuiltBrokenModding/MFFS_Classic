@@ -32,7 +32,7 @@ public class SettingConfiguration {
     public static boolean COLLECT_ON_PERSONELL_KILL = false;
 
     /* Enables debug mode */
-    public static boolean DEV_MODE = false;
+    public static boolean DEV_MODE = false, USE_FORCEFIELD_RENDERER = true;
 
     public static void load() {
         Configuration CONFIGURATION = ModularForcefieldSystem.modularForcefieldSystem_mod.getConfig();
@@ -42,7 +42,6 @@ public class SettingConfiguration {
         Property propChunkLoading = CONFIGURATION.get("general", "Load Chunks", LOAD_CHUNKS);
         propChunkLoading.comment = "Set this to false to turn off the ModularForcefieldSystem Chunkloading capabilities.";
         LOAD_CHUNKS = propChunkLoading.getBoolean(LOAD_CHUNKS);
-        DEV_MODE = CONFIGURATION.getBoolean("Debug Mode", "general", DEV_MODE, "This is for developers!");
 
         Property propOpOverride = CONFIGURATION.get("general", "Op Override", OP_OVERRIDE);
         propOpOverride.comment = "Allow the operator(s) to override security measures created by ModularForcefieldSystem?";
@@ -91,6 +90,10 @@ public class SettingConfiguration {
         Property blacklist2 = CONFIGURATION.get("modules", "Disintegration Blacklist", "");
         String blackListDisintegrate = blacklist1.getString();
         //Blacklist.disintegrationBlacklist.addAll(LanguageUtility.decodeIDSeparatedByComma(blackListDisintegrate));
+
+        //DEBUG mode
+        DEV_MODE = CONFIGURATION.getBoolean("Debug Mode", "debug", DEV_MODE, "This is for developers!");
+        USE_FORCEFIELD_RENDERER = CONFIGURATION.getBoolean("Use Forcefield Renderer", "debug", USE_FORCEFIELD_RENDERER, "Enables/Disables the renderer used for the forcefield block.");
 
         CONFIGURATION.save();
 
