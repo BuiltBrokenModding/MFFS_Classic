@@ -211,8 +211,8 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
     }
 
     @Override
-    public void onSlotsChanged(int... slots) {
-        super.onSlotsChanged(slots);
+    public void markDirty() {
+        super.markDirty();
         destroyField();
     }
 

@@ -132,9 +132,9 @@ public abstract class TileModuleAcceptor extends TileFortron implements IModuleA
     }
 
     @Override
-    public void onSlotsChanged(int... slots) {
-        super.onSlotsChanged(slots);
-        this.tank.setCapacity(getModuleCount(ItemModuleCapacity.class) * capacityBoost + capacityBase * 1000);
+    public void markDirty() {
+        super.markDirty();
+        this.tank.setCapacity((getModuleCount(ItemModuleCapacity.class) * this.capacityBoost + this.capacityBase) * 1_000);
     }
 
     public float getAmplifier() {

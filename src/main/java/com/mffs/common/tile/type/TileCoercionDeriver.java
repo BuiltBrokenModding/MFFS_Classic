@@ -51,8 +51,8 @@ public final class TileCoercionDeriver extends TileModuleAcceptor implements IEn
     }
 
     @Override
-    public void onSlotsChanged(int... slots) {
-        super.onSlotsChanged(slots);
+    public void markDirty() {
+        super.markDirty();
         storage.setCapacity(Math.round(getWattage()));
         storage.setMaxTransfer(Math.round(getWattage() / 20L));
     }
