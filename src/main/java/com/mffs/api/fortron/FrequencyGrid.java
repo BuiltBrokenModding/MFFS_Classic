@@ -159,4 +159,28 @@ public class FrequencyGrid {
         return set;
 
     }
+
+    /**
+     * Gets FortronFreqency entityes registered.
+     *
+     * @param entity     The world.
+     * @param position  The position
+     * @param radius    The radius to check.
+     * @param frequency The frequency to check.
+     * @return
+     */
+    public Set<IFortronFrequency> getFortronTilesExcluding(TileEntity entity, Vector3D position, int radius, int frequency) {
+        Set<IFortronFrequency> set = new HashSet<>();
+
+        this.get(frequency).forEach(entityT -> {
+            TileEntity tile = (TileEntity) entityT;
+            if (tile.getWorldObj() == entity.getWorldObj() && tile instanceof IFortronFrequency && entity != tile) {
+                if (position.distance(tile.xCoord, tile.yCoord, tile.zCoord) <= radius) {
+                    set.add((IFortronFrequency) entityT);
+                }
+            }
+        });
+        return set;
+
+    }
 }

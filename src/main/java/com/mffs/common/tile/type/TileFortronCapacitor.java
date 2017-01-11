@@ -13,6 +13,7 @@ import com.mffs.api.utils.FortronHelper;
 import com.mffs.api.vector.Vector3D;
 import com.mffs.common.TransferMode;
 import com.mffs.common.items.card.ItemCardFrequency;
+import com.mffs.common.items.card.ItemCardLink;
 import com.mffs.common.items.modules.upgrades.ItemModuleScale;
 import com.mffs.common.items.modules.upgrades.ItemModuleSpeed;
 import com.mffs.common.net.packet.EntityToggle;
@@ -95,9 +96,9 @@ public class TileFortronCapacitor extends TileModuleAcceptor implements IFortron
     @Override
     public boolean isItemValidForSlot(int slot, ItemStack stack) {
         if(slot == 0)
-            return stack.getItem() instanceof ICardInfinite;
+            return stack.getItem() instanceof ICardInfinite || stack.getItem() instanceof ItemCardLink;
         else if(slot == 1)
-            return stack.getItem() instanceof ItemCardFrequency;
+            return stack.getItem() instanceof ItemCardFrequency || stack.getItem() instanceof ItemCardLink;
         return stack.getItem() instanceof IModule;
     }
 
@@ -114,7 +115,7 @@ public class TileFortronCapacitor extends TileModuleAcceptor implements IFortron
 
     @Override
     public void getLinkedDevices(Set<IFortronFrequency> list) {
-        list.addAll(FrequencyGrid.instance().getFortronTiles(worldObj, new Vector3D(this), getTransmissionRange(), getFrequency()));
+        list.addAll(FrequencyGrid.instance().getFortronTilesExcluding(this, new Vector3D(this), getTransmissionRange(), getFrequency()));
     }
 
     @Override
