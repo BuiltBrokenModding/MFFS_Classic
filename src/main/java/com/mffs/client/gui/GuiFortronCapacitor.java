@@ -63,7 +63,7 @@ public class GuiFortronCapacitor extends MFFSGui {
 
         Set<IFortronFrequency> freq = new HashSet<>();
         cap.getLinkedDevices(freq);
-        drawTextWithTooltip("linkedDevices", "%1: " + freq.size(), 8, 28, mouseX, mouseY);
+        drawTextWithTooltip("linkedDevice", "%1: " + freq.size(), 8, 28, mouseX, mouseY);
 
         drawTextWithTooltip("transmissionRate", "%1: " + UnitDisplay.getDisplayShort(cap.getTransmissionRate() * 20, UnitDisplay.Unit.LITER) + "/s", 8, 40, mouseX, mouseY);
         drawTextWithTooltip("range", "%1: " + cap.getTransmissionRange(), 8, 52, mouseX, mouseY);

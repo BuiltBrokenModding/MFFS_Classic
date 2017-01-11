@@ -140,7 +140,7 @@ gui.manipulator.anchor=Anchor:
 gui.manipulator.fortron=Fortron:
 
 # Capacitor
-gui.linkedDevice.name=Linked Device
+gui.linkedDevice.name=Linked Devices
 gui.linkedDevice.tooltip=The amount of devices linked to this machine.
 gui.range.name=Range
 gui.range.tooltip=The range can be upgraded with a range module.

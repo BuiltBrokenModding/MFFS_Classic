@@ -2,7 +2,6 @@ package com.mffs.common.tile.type;
 
 import com.builtbroken.mc.lib.transform.vector.Location;
 import com.mffs.ModularForcefieldSystem;
-import com.mffs.SettingConfiguration;
 import com.mffs.api.card.ICardInfinite;
 import com.mffs.api.card.ICoordLink;
 import com.mffs.api.fortron.FrequencyGrid;
@@ -51,16 +50,11 @@ public class TileFortronCapacitor extends TileModuleAcceptor implements IFortron
 
         if(this.isActive()) {
             int cost = getFortronCost();
-            //TODO: Rethink when it should check for draining, maybe even a price per block distance?
-            if (requestFortron(cost + SettingConfiguration.BASE_POWER_CONSUMPTION_CAPACITOR, false) <= 0) {
-                ItemStack card = getStackInSlot(0);
-                if(card != null && !(card.getItem() instanceof ICardInfinite)) {
-                    return;
-                }
-            }
-            requestFortron(cost + SettingConfiguration.BASE_POWER_CONSUMPTION_CAPACITOR, true);
+            if (cost > 0)
+                requestFortron(cost, true);
 
-            if (this.ticks % 10 == 0) {
+            //TODO: Change the draining to remove X% of transfered fortron.
+            if (this.ticks % 10 == 0) { //cannot run if there is 0 energy!
                 Set<IFortronFrequency> connected = new HashSet<>();
                 for (ItemStack stack : getCards()) {
                     if (stack == null)
