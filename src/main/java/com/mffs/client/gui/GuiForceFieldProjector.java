@@ -21,7 +21,6 @@ import org.lwjgl.opengl.GL11;
 /**
  * @author Calclavia
  */
-//TODO: Add a seperate disintigration / camoflauge slot
 @SideOnly(Side.CLIENT)
 public class GuiForceFieldProjector extends GuiMatrix {
 

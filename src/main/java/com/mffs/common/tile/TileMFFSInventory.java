@@ -22,6 +22,7 @@ import java.util.Set;
 /**
  * @author Calclavia
  */
+//TODO: Convert inventory entity to use IInventoryProvider and extend TileModuleMachine
 public abstract class TileMFFSInventory extends TileMFFS implements IInventory {
 
     /* Inventory of this object */
@@ -58,14 +59,12 @@ public abstract class TileMFFSInventory extends TileMFFS implements IInventory {
             if (this.inventory[i].stackSize <= j) {
                 ItemStack itemstack = this.inventory[i];
                 this.inventory[i] = null;
-                //markDirty();
                 return itemstack;
             }
             ItemStack itemstack1 = this.inventory[i].splitStack(j);
             if (this.inventory[i].stackSize == 0) {
                 this.inventory[i] = null;
             }
-            //markDirty();
             return itemstack1;
         }
         return null;
@@ -95,7 +94,6 @@ public abstract class TileMFFSInventory extends TileMFFS implements IInventory {
                 item.stackSize = getInventoryStackLimit();
         }
         this.inventory[slot] = item;
-        //markDirty();
     }
 
 
@@ -165,6 +163,7 @@ public abstract class TileMFFSInventory extends TileMFFS implements IInventory {
      */
     public ItemStack placeAdjInv(ItemStack stack, ForgeDirection dir) {
         TileEntity tileEntity = worldObj.getTileEntity(xCoord + dir.offsetX, yCoord + dir.offsetY, zCoord + dir.offsetZ);
+        //ForgeDirection o_dir = dir.getOpposite();
         if (stack != null && tileEntity != null) {
             if (tileEntity instanceof TileEntityChest) {
                 TileEntityChest chest1 = (TileEntityChest) tileEntity;

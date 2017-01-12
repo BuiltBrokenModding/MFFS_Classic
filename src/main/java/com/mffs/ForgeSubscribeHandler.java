@@ -35,8 +35,7 @@ public class ForgeSubscribeHandler {
     }
 
     @SubscribeEvent
-    //@SideOnly(Side.SERVER)
-    public void blockModify(ChunkSetBlockEvent event) { //TODO: Think of better way for this to work.
+    public void chunkModify(ChunkSetBlockEvent event) {
         if (event.world.isRemote || !(event.block instanceof BlockAir))
             return;
         Vector3D vec = new Vector3D(event.x + (event.getChunk().xPosition << 4), event.y, event.z + (event.getChunk().zPosition << 4));

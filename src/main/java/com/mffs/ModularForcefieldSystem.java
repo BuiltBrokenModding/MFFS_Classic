@@ -70,7 +70,6 @@ public class ModularForcefieldSystem extends AbstractMod {
 
     @Override
     protected void loadBlocks(ModManager manager) {
-        //TODO: Change Block/Tile to VE 'Tile'
         biometricIdentifier = manager.newBlock(BlockBiometricIdentifier.class).setBlockName("biometricIdentifier");
         coercionDeriver = manager.newBlock(BlockCoercionDeriver.class).setBlockName("coercionDeriver");
         BlockForceField.BLOCK_FORCE_FIELD = (BlockForceField) manager.newBlock(BlockForceField.class).setBlockName("forceField").setCreativeTab(null);
