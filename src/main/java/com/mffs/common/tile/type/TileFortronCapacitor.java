@@ -2,6 +2,7 @@ package com.mffs.common.tile.type;
 
 import com.builtbroken.mc.lib.transform.vector.Location;
 import com.mffs.ModularForcefieldSystem;
+import com.mffs.SettingConfiguration;
 import com.mffs.api.card.ICardInfinite;
 import com.mffs.api.card.ICoordLink;
 import com.mffs.api.fortron.FrequencyGrid;
@@ -49,7 +50,7 @@ public class TileFortronCapacitor extends TileModuleAcceptor implements IFortron
         super.updateEntity();
 
         if(this.isActive()) {
-            int cost = getFortronCost();
+            int cost = getFortronCost() + SettingConfiguration.BASE_POWER_CONSUMPTION_CAPACITOR;
             if (cost > 0)
                 requestFortron(cost, true);
 
