@@ -26,7 +26,7 @@ public class FortronHelper {
      * @param limit The tick limit.
      */
     public static void transfer(IFortronFrequency freq, Set<IFortronFrequency> tiles, TransferMode mode, int limit) {
-        int fortron = 0, capacity = 0;
+        int fortron = freq.getFortronEnergy(), capacity = freq.getFortronCapacity();
         for (Iterator<IFortronFrequency> it$ = tiles.iterator(); it$.hasNext(); ) {
             IFortronFrequency machine = it$.next();
             if (machine == null) {//this should prevent nulls.

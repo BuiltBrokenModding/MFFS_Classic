@@ -64,7 +64,7 @@ public class ForgeSubscribeHandler {
             return;
         }
 
-        if (event.entityPlayer.capabilities.isCreativeMode)
+        if (event.entityPlayer.capabilities.isCreativeMode && SettingConfiguration.INTERACT_CREATIVE)
             return;
 
         Vector3D vec = new Vector3D(event.x, event.y, event.z);
