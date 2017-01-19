@@ -48,9 +48,9 @@ public class FortronHelper {
                     transfer(freq, machine, (fortron / tiles.size()) - machine.getFortronEnergy(), limit);
                 return;
 
+            case EQUALIZE: //TODO: This should be different than drain!?
+                //tiles.add(freq);//we wanna equally send to ourselves.
             case DRAIN://Seems like the same as EQUALIZE
-                tiles.remove(freq);
-            case EQUALIZE:
                 //tiles.remove(freq);
                 for (IFortronFrequency machine : tiles) {
                     int transfer = (int) (((double) machine.getFortronCapacity() / capacity) * fortron) - machine.getFortronEnergy();
@@ -63,7 +63,6 @@ public class FortronHelper {
             case FILL:
                 if (freq.getFortronEnergy() >= freq.getFortronCapacity())
                     return;
-                tiles.remove(freq);
                 int transfer = freq.getFortronCapacity() - freq.getFortronEnergy();
                 for (IFortronFrequency machine : tiles) {
                     int consume = Math.min(transfer, machine.getFortronEnergy());
