@@ -37,7 +37,7 @@ public class ItemModuleAntiPersonnel extends MatrixModule {
         if (paramEntityLivingBase instanceof EntityPlayer) {
             EntityPlayer pl = (EntityPlayer) paramEntityLivingBase;
             IBiometricIdentifier bio = matri.getBiometricIdentifier();
-            if (!pl.capabilities.isCreativeMode && !pl.isEntityInvulnerable() && bio.isAccessGranted(pl.getGameProfile().getName(), Permission.BYPASS_DEFENSE)) {
+            if (!pl.capabilities.isCreativeMode && !pl.isEntityInvulnerable() && (bio == null || !bio.isAccessGranted(pl.getGameProfile().getName(), Permission.BYPASS_DEFENSE))) {
                 if (SettingConfiguration.COLLECT_ON_PERSONELL_KILL || matri.getModuleCount(ItemModuleCollection.class) > 0) {
                     Set<ItemStack> safe_items = matri.getFilteredItems();
                     for (int slot = 0; slot < pl.inventory.getSizeInventory(); slot++) {

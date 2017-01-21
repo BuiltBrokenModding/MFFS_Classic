@@ -88,7 +88,7 @@ public final class TileInterdictionMatrix extends TileModuleAcceptor implements 
                 for(ItemStack stack : modules) {
                     if(stack != null && stack.getItem() instanceof IInterdictionModule) {
                         IInterdictionModule mod = (IInterdictionModule) stack.getItem();
-                        if(mod.onDefend(this, entity) || entity.isDead)
+                        if(mod.onDefend(this, entity) ||  entity.isDead)
                             break;
                     }
                 }
