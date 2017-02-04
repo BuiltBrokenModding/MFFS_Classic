@@ -131,7 +131,7 @@ public abstract class TileFrequency extends TileMFFSInventory implements IBlockF
                 player.addChatMessage(new ChatComponentText("[SECURITY]Cannot remove machine! Access denied!"));
                 return false;
             }
-            return true;
+            return super.canBeRemoved(player);
         }
         return false;
     }

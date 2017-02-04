@@ -53,8 +53,9 @@ public class ItemModuleAntiPersonnel extends MatrixModule {
                 pl.attackEntityFrom(ItemModuleShock.SHOCK_SOURCE, 100F);
                 matri.requestFortron(SettingConfiguration.INTERDICTION_MURDER_ENERGY, false);
                 pl.addChatMessage(new ChatComponentText("[" + matri.getInventoryName() + "] " + LanguageRegistry.instance().getStringLocalization("message.moduleAntiPersonnel.death")));
+                return true;
             }
         }
-        return super.onDefend(matri, paramEntityLivingBase);
+        return false;
     }
 }

@@ -1,6 +1,7 @@
 package com.mffs.common;
 
 import com.builtbroken.mc.api.tile.IRemovable;
+import com.builtbroken.mc.lib.helper.WrenchUtility;
 import com.mffs.api.IActivatable;
 import com.mffs.common.net.IPacketReceiver_Entity;
 import com.mffs.common.net.packet.EntityToggle;
@@ -121,6 +122,6 @@ public abstract class TileMFFS extends TileEntity implements IActivatable, IPack
 
     @Override
     public boolean canBeRemoved(EntityPlayer entityPlayer) {
-        return true;
+        return WrenchUtility.isHoldingWrench(entityPlayer);
     }
 }

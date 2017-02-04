@@ -24,14 +24,15 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.fluids.FluidRegistry;
 
 public class ForgeSubscribeHandler {
 
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
-    public void preTextureHook(TextureStitchEvent event) {
+    public void preTextureHook(TextureStitchEvent.Pre event) {
         if (event.map.getTextureType() == 0)
-            Fortron.fluidIcon = event.map.registerIcon(ModularForcefieldSystem.MODID + ":fortron");
+            FluidRegistry.getFluid(Fortron.FLUID_ID).setIcons(event.map.registerIcon(ModularForcefieldSystem.MODID + ":fortron"));
     }
 
     @SubscribeEvent

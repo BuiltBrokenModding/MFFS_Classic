@@ -31,6 +31,7 @@ public class ItemModuleAntiHostile extends MatrixModule {
     public boolean onDefend(IInterdictionMatrix paramIInterdictionMatrix, EntityLivingBase paramEntityLivingBase) {
         if (paramEntityLivingBase instanceof IMob) {
             paramEntityLivingBase.attackEntityFrom(ItemModuleShock.SHOCK_SOURCE, 20F);
+            return true;
         }
         return false;
     }

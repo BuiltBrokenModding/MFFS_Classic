@@ -117,6 +117,7 @@ public abstract class TileFortron extends TileFrequency implements IFluidHandler
     @Override
     public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain) {
         if ((resource == null) || (!resource.isFluidEqual(this.tank.getFluid()))) {
+            System.out.println("NULL");
             return null;
         }
         return this.tank.drain(resource.amount, doDrain);

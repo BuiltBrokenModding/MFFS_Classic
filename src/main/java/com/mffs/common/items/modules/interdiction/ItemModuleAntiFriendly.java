@@ -31,6 +31,7 @@ public class ItemModuleAntiFriendly extends MatrixModule {
         if (paramEntityLivingBase instanceof INpc || !(paramEntityLivingBase instanceof IMob)) {
             paramEntityLivingBase.setHealth(1F);
             paramEntityLivingBase.attackEntityFrom(ItemModuleShock.SHOCK_SOURCE, 100F);
+            return true;
         }
         return false;
     }
