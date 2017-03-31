@@ -1,6 +1,6 @@
 package com.mffs.client.buttons;
 
-import com.builtbroken.mc.lib.transform.vector.Point;
+import com.builtbroken.mc.imp.transform.vector.Point;
 import com.mffs.client.gui.base.MFFSGui;
 import com.mffs.common.TransferMode;
 import com.mffs.common.tile.type.TileFortronCapacitor;

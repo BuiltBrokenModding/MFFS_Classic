@@ -1,6 +1,6 @@
 package com.mffs.api.card;
 
-import com.builtbroken.mc.lib.transform.vector.Location;
+import com.builtbroken.mc.imp.transform.vector.Location;
 import net.minecraft.item.ItemStack;
 
 /**

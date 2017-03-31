@@ -1,6 +1,6 @@
 package com.mffs.common.tile;
 
-import com.builtbroken.mc.lib.transform.vector.Location;
+import com.builtbroken.mc.imp.transform.vector.Location;
 import com.mffs.api.IBiometricIdentifierLink;
 import com.mffs.api.IBlockFrequency;
 import com.mffs.api.card.ICoordLink;

@@ -1,6 +1,6 @@
 package com.mffs.client.gui;
 
-import com.builtbroken.mc.lib.transform.vector.Point;
+import com.builtbroken.mc.imp.transform.vector.Point;
 import com.mffs.client.gui.base.MFFSGui;
 import com.mffs.common.container.entity.BiometricContainer;
 import com.mffs.common.tile.type.TileBiometricIdentifier;

@@ -1,6 +1,6 @@
 package com.mffs.client.render;
 
-import com.builtbroken.mc.lib.transform.vector.Point;
+import com.builtbroken.mc.imp.transform.vector.Point;
 import com.mffs.api.card.ICardIdentification;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;

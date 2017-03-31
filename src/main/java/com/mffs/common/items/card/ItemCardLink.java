@@ -1,7 +1,7 @@
 package com.mffs.common.items.card;
 
 import com.builtbroken.mc.lib.helper.recipe.UniversalRecipe;
-import com.builtbroken.mc.lib.transform.vector.Location;
+import com.builtbroken.mc.imp.transform.vector.Location;
 import com.mffs.api.card.ICoordLink;
 import com.mffs.api.utils.Util;
 import cpw.mods.fml.common.registry.LanguageRegistry;

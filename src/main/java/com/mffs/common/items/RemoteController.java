@@ -1,7 +1,7 @@
 package com.mffs.common.items;
 
 import com.builtbroken.mc.lib.helper.recipe.UniversalRecipe;
-import com.builtbroken.mc.lib.transform.vector.Location;
+import com.builtbroken.mc.imp.transform.vector.Location;
 import com.mffs.ModularForcefieldSystem;
 import com.mffs.api.IBlockFrequency;
 import com.mffs.api.card.ICoordLink;

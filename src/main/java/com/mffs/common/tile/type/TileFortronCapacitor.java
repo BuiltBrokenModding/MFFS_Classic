@@ -1,6 +1,6 @@
 package com.mffs.common.tile.type;
 
-import com.builtbroken.mc.lib.transform.vector.Location;
+import com.builtbroken.mc.imp.transform.vector.Location;
 import com.mffs.ModularForcefieldSystem;
 import com.mffs.SettingConfiguration;
 import com.mffs.api.card.ICardInfinite;

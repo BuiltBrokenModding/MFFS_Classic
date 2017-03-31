@@ -1,6 +1,6 @@
 package com.mffs.api.fortron;
 
-import com.builtbroken.mc.lib.transform.vector.Pos;
+import com.builtbroken.mc.imp.transform.vector.Pos;
 import com.mffs.api.IBlockFrequency;
 import com.mffs.api.vector.Vector3D;
 import cpw.mods.fml.common.FMLCommonHandler;

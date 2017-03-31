@@ -1,6 +1,6 @@
 package com.mffs.common.tile;
 
-import com.builtbroken.mc.lib.transform.vector.Point;
+import com.builtbroken.mc.imp.transform.vector.Point;
 import com.mffs.api.IFieldInteraction;
 import com.mffs.api.event.EventTimedTask;
 import com.mffs.api.modules.IModule;
