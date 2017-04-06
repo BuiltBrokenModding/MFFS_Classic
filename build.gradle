@@ -35,7 +35,7 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 minecraft {
-    replace "required-after:VoltzEngine", "required-after:VoltzEngine@[$voltz_engine_version,)"
+    replace "required-after:voltzengine", "required-after:voltzengine@[$voltz_engine_version,)"
     version = "1.7.10-10.13.4.1558-1.7.10"
     runDir = "build"
 }
