@@ -10,9 +10,8 @@ import org.lwjgl.input.Mouse;
 @SideOnly(Side.CLIENT)
 public class GuiScroll
 {
-
     /* Bar expansion */
-    private float bar_expansion;
+    private float scrollPosScale;
 
     /* The height of the scroll */
     private int height;
@@ -33,15 +32,21 @@ public class GuiScroll
         int scroll = Mouse.getEventDWheel();
         if (scroll != 0)
         {
+            //Seems mouse scroll is between -120 to 120 - Dark
+            //TODO fix as I think this go to 0 or 1 every time
             scroll = Math.min(Math.max(scroll, -1), 1);
-            bar_expansion = bar_expansion - (float) scroll / height;
-            bar_expansion = Math.max(0, bar_expansion);
-            bar_expansion = Math.min(1, bar_expansion);
+
+            //Get new scroll position based on movement
+            scrollPosScale = scrollPosScale - (float) scroll / height;
+
+            //Limit scroll between 0 and 1
+            scrollPosScale = Math.max(0, scrollPosScale);
+            scrollPosScale = Math.min(1, scrollPosScale);
         }
     }
 
     public float getBar()
     {
-        return Math.min(Math.max(bar_expansion, 0), 1);
+        return scrollPosScale;
     }
 }

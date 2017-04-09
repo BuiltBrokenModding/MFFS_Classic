@@ -4,7 +4,7 @@ import com.mffs.CommonProxy;
 import com.mffs.ModularForcefieldSystem;
 import com.mffs.api.vector.Vector3D;
 import com.mffs.client.gui.*;
-import com.mffs.client.gui.items.GuiCardID;
+import com.mffs.common.items.card.id.GuiCardID;
 import com.mffs.client.render.*;
 import com.mffs.client.render.particles.FortronBeam;
 import com.mffs.client.render.particles.MovingFortron;
@@ -98,7 +98,7 @@ public class ClientProxy extends CommonProxy
         }
         else if (ID == 1)
         {
-            return new GuiCardID(player);
+            return new GuiCardID(player, x);
         }
         return null;
     }

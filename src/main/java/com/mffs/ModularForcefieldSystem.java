@@ -8,6 +8,7 @@ import com.mffs.common.fluids.Fortron;
 import com.mffs.common.items.ItemFocusMatrix;
 import com.mffs.common.items.RemoteController;
 import com.mffs.common.items.card.*;
+import com.mffs.common.items.card.id.ItemCardID;
 import com.mffs.common.items.modules.interdiction.*;
 import com.mffs.common.items.modules.projector.*;
 import com.mffs.common.items.modules.projector.mode.*;
@@ -37,6 +38,16 @@ public class ModularForcefieldSystem extends AbstractMod
     public static final String VERSION = "0.50";
     public static final String MOD_NAME = "Modular Forcefield System";
 
+
+    //Blocks
+    public static Block biometricIdentifier;
+    public static Block coercionDeriver;
+    public static Block forcefieldProjector;
+    public static Block fortronCapacitor;
+    public static Block interdictionMatrix;
+
+    //Items
+    public static ItemCardID itemCardID;
     /**
      * Constructor.
      */
@@ -70,9 +81,6 @@ public class ModularForcefieldSystem extends AbstractMod
         return proxy;
     }
 
-    /* Blocks, Needed for wrench */
-    public static Block biometricIdentifier, coercionDeriver, forcefieldProjector, fortronCapacitor, interdictionMatrix;
-
     @Override
     protected void loadBlocks(ModManager manager)
     {
@@ -89,7 +97,7 @@ public class ModularForcefieldSystem extends AbstractMod
     {
         manager.newItem("cardBlank", ItemCardBlank.class);
         manager.newItem("cardFrequency", ItemCardFrequency.class);
-        manager.newItem("cardID", ItemCardID.class);
+        itemCardID = manager.newItem("cardID", ItemCardID.class);
         manager.newItem("cardInfinite", ItemCardInfinite.class);
         manager.newItem("cardLink", ItemCardLink.class);
         manager.newItem("focusMatrix", ItemFocusMatrix.class);

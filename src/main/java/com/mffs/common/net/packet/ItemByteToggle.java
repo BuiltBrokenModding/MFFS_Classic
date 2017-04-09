@@ -8,7 +8,6 @@ import io.netty.buffer.ByteBuf;
  */
 public class ItemByteToggle extends ItemMessage
 {
-
     /* Toggleid */
     public byte toggleId;
 

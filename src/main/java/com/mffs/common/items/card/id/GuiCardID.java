@@ -1,16 +1,14 @@
-package com.mffs.client.gui.items;
+package com.mffs.common.items.card.id;
 
 import com.builtbroken.mc.client.SharedAssets;
-import com.builtbroken.mc.prefab.gui.ContainerDummy;
 import com.builtbroken.mc.prefab.gui.GuiContainerBase;
 import com.mffs.ModularForcefieldSystem;
 import com.mffs.api.card.ICardIdentification;
 import com.mffs.api.security.Permission;
 import com.mffs.client.gui.components.GuiScroll;
-import com.mffs.common.net.packet.ItemByteToggle;
-import com.mffs.common.net.packet.ItemStringToggle;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import cpw.mods.fml.common.registry.LanguageRegistry;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,6 +18,7 @@ import org.lwjgl.opengl.GL11;
 
 /**
  * Created by Poopsicle360 on 7/16/2016.
+ * Edited by DarkCow on 4/9/2017
  */
 public class GuiCardID extends GuiContainerBase
 {
@@ -34,9 +33,9 @@ public class GuiCardID extends GuiContainerBase
     /**
      * @param player
      */
-    public GuiCardID(EntityPlayer player)
+    public GuiCardID(EntityPlayer player, int slot)
     {
-        super(new ContainerDummy(player, null));
+        super(new ContainerCardID(player, player.inventory, slot));
         this.baseTexture = SharedAssets.GUI__MC_EMPTY_FILE;
         this.player = player;
     }
@@ -53,6 +52,8 @@ public class GuiCardID extends GuiContainerBase
         //Create and init permission buttons
         for (int id = 0; id < Permission.values().length; id++)
         {
+            //TODO replace buttons with check boxes to make it more efficient to understand
+            //      check box would be a string prefix and a button looking like a checkbox
             buttonList.add(new GuiButton(id, 0, 0, 150, 20, Permission.getPerm(id).name()));
         }
     }
@@ -73,16 +74,24 @@ public class GuiCardID extends GuiContainerBase
     @Override
     public void updateScreen()
     {
-        int index = (int) (scroll.getBar() * (buttonList.size() - 1));
-        int maxIndex = Math.min(index + 5, Permission.values().length - 1);
         final ItemStack stack = player.getCurrentEquippedItem();
-        if (stack == null || !(stack.getItem() instanceof ICardIdentification))
+
+        //Exit screen if we are no longer holding an item, solves for player death or inventory clear actions
+        if (stack == null || stack.getItem() != ModularForcefieldSystem.itemCardID)
         {
             player.closeScreen();
             return;
         }
-        int xStart = 80;
-        int yStart = 50;
+
+        //Get index and max index
+        int index = (int) (scroll.getBar() * (buttonList.size() - 1));
+        int maxIndex = Math.min(index + 5, Permission.values().length - 1);
+
+        //Cached position offsets
+        final int xStart = 80;
+        final int yStart = 50;
+
+        //Loop buttons and reset position based on scroll
         for (Object obj : buttonList)
         {
             if (obj instanceof GuiButton)
@@ -90,16 +99,24 @@ public class GuiCardID extends GuiContainerBase
                 GuiButton button = (GuiButton) obj;
                 if (button.id >= index && button.id <= maxIndex)
                 {
+                    //Get permission
                     Permission perm = Permission.getPerm(button.id);
+                    //Get card as interface
                     ICardIdentification icard = (ICardIdentification) stack.getItem();
 
+                    //Set button name to match permission node and state,
                     button.displayString = (stack != null && icard.hasPermission(stack, perm) ? ChatFormatting.GREEN : ChatFormatting.RED) + LanguageRegistry.instance().getStringLocalization("gui." + perm.name() + ".name");
+
+                    //Update position to match scroll position
                     button.xPosition = width / 2 - xStart;
                     button.yPosition = height / 2 - yStart + (button.id - index) * 20;
+
+                    //Set visible
                     button.visible = true;
                 }
                 else
                 {
+                    //Set not visible if not in scroll area
                     button.visible = false;
                 }
             }
@@ -119,14 +136,18 @@ public class GuiCardID extends GuiContainerBase
     {
         super.drawGuiContainerBackgroundLayer(f, mouseX, mouseY);
 
+        //Set texture and reset color
         this.mc.renderEngine.bindTexture(SharedAssets.GUI_COMPONENTS_BARS);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
-        int yStart = 33;
-        int xStart = xSize - 16;
-        int topHeight = 20;
-        int bottomHeight = 102;
-        int totalSize = topHeight + bottomHeight;
+        //Position cache
+        final int yStart = 33;
+        final int xStart = xSize - 16;
+
+        //Size cache
+        final int topHeight = 20;
+        final int bottomHeight = 102;
+        final int totalSize = topHeight + bottomHeight;
 
         //Render background for scroll bar TODO make reusable
         drawTexturedModalRect(containerWidth + xStart, containerHeight + yStart, 16, 0, 9, topHeight);
@@ -137,6 +158,7 @@ public class GuiCardID extends GuiContainerBase
         int height = (int) (heightP * totalSize);
         int yPos = Math.max((int) (scroll.getBar() * totalSize) - height + yStart, yStart);
 
+        //Set color to red and render texture
         GL11.glColor4f(1.0F, 0, 0, 1.0F);
         drawTexturedModalRect(containerWidth + xStart, containerHeight + yPos, 16, 0, 9, 2 + height);
 
@@ -146,9 +168,14 @@ public class GuiCardID extends GuiContainerBase
     public void actionPerformed(GuiButton button)
     {
         super.actionPerformed(button);
-        if (button.id <= Permission.values().length)
+        ItemStack stack = Minecraft.getMinecraft().thePlayer.getHeldItem();
+        if (stack != null && stack.getItem() == ModularForcefieldSystem.itemCardID)
         {
-            ModularForcefieldSystem.channel.sendToServer(new ItemByteToggle(button.id));
+            if (button.id >= 0 && button.id < Permission.values().length)
+            {
+                boolean state = ModularForcefieldSystem.itemCardID.hasPermission(stack, Permission.values()[button.id]);
+                ModularForcefieldSystem.itemCardID.sendPermPacket(Minecraft.getMinecraft().thePlayer, button.id, !state);
+            }
         }
     }
 
@@ -160,9 +187,35 @@ public class GuiCardID extends GuiContainerBase
             super.keyTyped(c, keyID);
         }
         textField.textboxKeyTyped(c, keyID);
-        ModularForcefieldSystem.channel.sendToServer(new ItemStringToggle(textField.getText()));
+        if (textField.isFocused() && keyID == Keyboard.KEY_RETURN)
+        {
+            sendUsernamePacket();
+        }
+        onGuiClosed();
     }
 
+    /**
+     * Called to send username packet to server
+     */
+    protected void sendUsernamePacket()
+    {
+        ItemStack stack = Minecraft.getMinecraft().thePlayer.getHeldItem();
+        if (stack != null && stack.getItem() == ModularForcefieldSystem.itemCardID)
+        {
+            String text = textField.getText();
+            if (text == null)
+            {
+                text = "";
+                textField.setText("");
+            }
+            else
+            {
+                text = text.trim();
+                textField.setText(text);
+            }
+            ModularForcefieldSystem.itemCardID.sendUserNamePacket(Minecraft.getMinecraft().thePlayer, text);
+        }
+    }
 
     @Override
     public void mouseClicked(int x, int y, int par3)
@@ -172,5 +225,12 @@ public class GuiCardID extends GuiContainerBase
         {
             textField.mouseClicked(x - this.containerWidth, y - this.containerHeight, par3);
         }
+    }
+
+    @Override
+    public void onGuiClosed()
+    {
+        sendUsernamePacket();
+        super.onGuiClosed();
     }
 }

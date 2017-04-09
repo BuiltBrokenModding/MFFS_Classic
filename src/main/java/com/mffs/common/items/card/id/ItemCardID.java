@@ -1,14 +1,17 @@
-package com.mffs.common.items.card;
+package com.mffs.common.items.card.id;
 
+import com.builtbroken.mc.core.Engine;
+import com.builtbroken.mc.core.network.IPacketIDReceiver;
+import com.builtbroken.mc.core.network.packet.PacketPlayerItem;
+import com.builtbroken.mc.core.network.packet.PacketType;
 import com.mffs.ModularForcefieldSystem;
 import com.mffs.api.card.ICardIdentification;
 import com.mffs.api.security.Permission;
 import com.mffs.api.utils.Util;
-import com.mffs.common.net.IPacketReceiver_Item;
-import com.mffs.common.net.packet.ItemByteToggle;
-import com.mffs.common.net.packet.ItemStringToggle;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import com.mffs.common.items.card.ItemCardBlank;
+import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.registry.LanguageRegistry;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -23,7 +26,7 @@ import java.util.List;
 /**
  * @author Calclavia
  */
-public class ItemCardID extends ItemCardBlank implements ICardIdentification, IPacketReceiver_Item
+public class ItemCardID extends ItemCardBlank implements ICardIdentification, IPacketIDReceiver
 {
 
     /**
@@ -80,20 +83,20 @@ public class ItemCardID extends ItemCardBlank implements ICardIdentification, IP
      *
      * @param stack
      * @param world
-     * @param usr
+     * @param player
      */
     @Override
-    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer usr)
+    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
     {
         if (!world.isRemote)
         {
-            if (usr.isSneaking())
+            if (player.isSneaking())
             {
-                setUsername(stack, usr.getGameProfile().getName());
+                setUsername(stack, player.getGameProfile().getName());
             }
             else
             {
-                usr.openGui(ModularForcefieldSystem.modularForcefieldSystem_mod, 1, world, 0, 0, 0);
+                player.openGui(ModularForcefieldSystem.modularForcefieldSystem_mod, 1, world, player.inventory.currentItem, 0, 0);
             }
         }
         return stack;
@@ -131,32 +134,62 @@ public class ItemCardID extends ItemCardBlank implements ICardIdentification, IP
         Util.getTag(paramItemStack).setString("mffs_name", paramString);
     }
 
-    @Override
-    public IMessage handleMessage(IMessage message, ItemStack stack)
+    public void sendUserNamePacket(EntityPlayer player, String paramString)
     {
-        if (message instanceof ItemByteToggle)
+        PacketPlayerItem packet = new PacketPlayerItem(player.inventory.currentItem, 0);
+        ByteBufUtils.writeUTF8String(packet.data(), paramString);
+        Engine.instance.packetHandler.sendToServer(packet);
+    }
+
+    public void sendPermPacket(EntityPlayer player, int permID, boolean state)
+    {
+        Permission perm = Permission.getPerm(permID);
+        if (perm != null)
         {
-            ItemByteToggle tog = (ItemByteToggle) message;
-            Permission perm = Permission.getPerm(tog.toggleId);
-            if (perm != null)
-            {
-                NBTTagCompound tag = Util.getTag(stack);
-                tag.setBoolean("mffs_permission_" + tog.toggleId, !tag.getBoolean("mffs_permission_" + tog.toggleId));
-                return null;
-            }
+            PacketPlayerItem packet = new PacketPlayerItem(player.inventory.currentItem, 1);
+            packet.data().writeInt(permID);
+            packet.data().writeBoolean(state);
+            Engine.instance.packetHandler.sendToServer(packet);
         }
-        else if (message instanceof ItemStringToggle)
+        else
         {
-            ItemStringToggle tog = (ItemStringToggle) message;
-            setUsername(stack, tog.text);
-            return null;
+            //TODO error
         }
-        return null;
     }
 
     @Override
     public void genRecipes(List<IRecipe> list)
     {
         list.add(newShapedRecipe(this, " W ", "WCW", " W ", 'W', Items.redstone, 'C', Item.itemRegistry.getObject("mffs:cardBlank")));
+    }
+
+    @Override
+    public boolean read(ByteBuf buf, int id, EntityPlayer player, PacketType type)
+    {
+        if (player.getHeldItem() != null && player.getHeldItem().getItem() == this)
+        {
+            if (id == 0)
+            {
+                //TODO attempt to match name to existing users in case user miss spelled
+                String name = ByteBufUtils.readUTF8String(buf);
+                ItemStack stack = player.getHeldItem();
+                setUsername(stack, name);
+                player.inventoryContainer.detectAndSendChanges();
+                return true;
+            }
+            else if (id == 1)
+            {
+                int permID = buf.readInt();
+                Permission perm = Permission.getPerm(permID);
+                if (perm != null)
+                {
+                    NBTTagCompound tag = Util.getTag(player.getHeldItem());
+                    tag.setBoolean("mffs_permission_" + permID, buf.readBoolean());
+                }
+                player.inventoryContainer.detectAndSendChanges();
+                return true;
+            }
+        }
+        return false;
     }
 }
