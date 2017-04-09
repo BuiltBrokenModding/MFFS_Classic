@@ -12,7 +12,8 @@ import java.util.Set;
 /**
  * @author Calclavia
  */
-public abstract class TileModuleAcceptor extends TileFortron implements IModuleAcceptor {
+public abstract class TileModuleAcceptor extends TileFortron implements IModuleAcceptor
+{
 
     protected int capacityBase = 500;
     protected int capacityBoost = 5;
@@ -21,17 +22,22 @@ public abstract class TileModuleAcceptor extends TileFortron implements IModuleA
     protected byte module_index, module_end = (byte) getSizeInventory();
 
     @Override
-    public void start() {
+    public void start()
+    {
         super.start();
         this.tank.setCapacity((getModuleCount(ItemModuleCapacity.class) * this.capacityBoost + this.capacityBase) * 1_000);
     }
 
     @Override
-    public ItemStack getModule(Class<? extends IModule> module) {
+    public ItemStack getModule(Class<? extends IModule> module)
+    {
         ItemStack returnStack = null;
-        for (ItemStack stack : inventory) {
-            if (stack != null && module.isAssignableFrom(stack.getItem().getClass())) {
-                if (returnStack == null) {//We can do this, or call module.newInstance()
+        for (ItemStack stack : inventory)
+        {
+            if (stack != null && module.isAssignableFrom(stack.getItem().getClass()))
+            {
+                if (returnStack == null)
+                {//We can do this, or call module.newInstance()
                     returnStack = new ItemStack(stack.getItem(), 0);
                 }
                 returnStack.stackSize += stack.stackSize;
@@ -41,18 +47,29 @@ public abstract class TileModuleAcceptor extends TileFortron implements IModuleA
     }
 
     @Override
-    public int getModuleCount(Class<? extends IModule> paramIModule, int... paramVarArgs) {
+    public int getModuleCount(Class<? extends IModule> paramIModule, int... slots)
+    {
         int count = 0;
-        if (paramVarArgs != null && paramVarArgs.length > 0) {
-            for (int slot : paramVarArgs) {
+        //If we have slots, scan though slots provided
+        if (slots != null && slots.length > 0)
+        {
+            for (int slot : slots)
+            {
+                //Get slot content and match to class
                 ItemStack stack = getStackInSlot(slot);
-                if (stack != null && paramIModule.isAssignableFrom(stack.getItem().getClass())) {
+                if (stack != null && paramIModule.isAssignableFrom(stack.getItem().getClass()))
+                {
                     count += stack.stackSize;
                 }
             }
-        } else {
-            for (ItemStack stack : getModuleStacks()) {
-                if (stack != null && paramIModule.isAssignableFrom(stack.getItem().getClass())) {
+        }
+        else
+        {
+            for (ItemStack stack : getModuleStacks())
+            {
+                //Get slot content and match to class
+                if (stack != null && paramIModule.isAssignableFrom(stack.getItem().getClass()))
+                {
                     count += stack.stackSize;
                 }
             }
@@ -61,19 +78,27 @@ public abstract class TileModuleAcceptor extends TileFortron implements IModuleA
     }
 
     @Override
-    public Set<ItemStack> getModuleStacks(int... paramVarArgs) {
+    public Set<ItemStack> getModuleStacks(int... paramVarArgs)
+    {
         Set<ItemStack> stacks = new HashSet<>();
-        if (paramVarArgs != null && paramVarArgs.length > 0) {
-            for (int slot : paramVarArgs) {
+        if (paramVarArgs != null && paramVarArgs.length > 0)
+        {
+            for (int slot : paramVarArgs)
+            {
                 ItemStack stack = getStackInSlot(slot);
-                if (stack != null && stack.getItem() instanceof IModule) {
+                if (stack != null && stack.getItem() instanceof IModule)
+                {
                     stacks.add(stack);
                 }
             }
-        } else {
-            for (int i = module_index; i < module_end; i++) {
+        }
+        else
+        {
+            for (int i = module_index; i < module_end; i++)
+            {
                 ItemStack stack = getStackInSlot(i);
-                if (stack != null && stack.getItem() instanceof IModule) {
+                if (stack != null && stack.getItem() instanceof IModule)
+                {
                     stacks.add(stack);
                 }
             }
@@ -82,19 +107,27 @@ public abstract class TileModuleAcceptor extends TileFortron implements IModuleA
     }
 
     @Override
-    public Set<IModule> getModules(int... paramVarArgs) {
+    public Set<IModule> getModules(int... paramVarArgs)
+    {
         Set<IModule> stacks = new HashSet<>();
-        if (paramVarArgs != null && paramVarArgs.length > 0) {
-            for (int slot : paramVarArgs) {
+        if (paramVarArgs != null && paramVarArgs.length > 0)
+        {
+            for (int slot : paramVarArgs)
+            {
                 ItemStack stack = getStackInSlot(slot);
-                if (stack != null && stack.getItem() instanceof IModule) {
+                if (stack != null && stack.getItem() instanceof IModule)
+                {
                     stacks.add((IModule) stack.getItem());
                 }
             }
-        } else {
-            for (int i = module_index; i < module_end; i++) {
+        }
+        else
+        {
+            for (int i = module_index; i < module_end; i++)
+            {
                 ItemStack stack = getStackInSlot(i);
-                if (stack != null && stack.getItem() instanceof IModule) {
+                if (stack != null && stack.getItem() instanceof IModule)
+                {
                     stacks.add((IModule) stack.getItem());
                 }
             }
@@ -103,7 +136,8 @@ public abstract class TileModuleAcceptor extends TileFortron implements IModuleA
     }
 
     @Override
-    public int getFortronCost() {
+    public int getFortronCost()
+    {
         int cost = calculateFortronCost();
         return cost;
     }
@@ -111,10 +145,13 @@ public abstract class TileModuleAcceptor extends TileFortron implements IModuleA
     /**
      * @return
      */
-    public int calculateFortronCost() {
+    public int calculateFortronCost()
+    {
         float cost = 0.0F;
-        for (ItemStack stack : getModuleStacks()) {
-            if (stack != null) {
+        for (ItemStack stack : getModuleStacks())
+        {
+            if (stack != null)
+            {
                 cost += stack.stackSize * ((IModule) stack.getItem()).getFortronCost(getAmplifier());
             }
         }
@@ -122,22 +159,26 @@ public abstract class TileModuleAcceptor extends TileFortron implements IModuleA
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbt) {
+    public void writeToNBT(NBTTagCompound nbt)
+    {
         super.writeToNBT(nbt);
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbt) {
+    public void readFromNBT(NBTTagCompound nbt)
+    {
         super.readFromNBT(nbt);
     }
 
     @Override
-    public void markDirty() {
+    public void markDirty()
+    {
         super.markDirty();
         this.tank.setCapacity((getModuleCount(ItemModuleCapacity.class) * this.capacityBoost + this.capacityBase) * 1_000);
     }
 
-    public float getAmplifier() {
+    public float getAmplifier()
+    {
         return 1.0F;
     }
 }

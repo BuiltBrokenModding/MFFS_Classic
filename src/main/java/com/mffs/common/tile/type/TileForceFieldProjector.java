@@ -29,7 +29,8 @@ import java.util.stream.Collectors;
 /**
  * @author Calclavia
  */
-public class TileForceFieldProjector extends TileFieldMatrix implements IProjector {
+public class TileForceFieldProjector extends TileFieldMatrix implements IProjector
+{
 
     /* Set of all forceFields by this entity */
     protected final Set<Vector3D> blocks = new HashSet<>();
@@ -37,41 +38,59 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
     /* Flag indicating if this entity has finished */
     private boolean isComplete;
 
-    public TileForceFieldProjector() {
+    public TileForceFieldProjector()
+    {
         this.capacityBase = 50;
         this.module_index = 1;
     }
 
     @Override
-    public void start() {
+    public void start()
+    {
         super.start();
         calculatedForceField();
     }
 
     @Override
-    public void invalidate() {
+    public void invalidate()
+    {
         super.invalidate();
         destroyField();
     }
 
     @Override
-    public void updateEntity() {
+    public void updateEntity()
+    {
         super.updateEntity();
-        if (isActive() && getMode() != null && requestFortron(getFortronCost(), false) >= getFortronCost()) {
+        if (isActive() && getMode() != null && requestFortron(getFortronCost(), false) >= getFortronCost())
+        {
             requestFortron(getFortronCost(), true);
-            if(!this.worldObj.isRemote) {
+            if (!this.worldObj.isRemote)
+            {
                 if (this.ticks % 10 == 0 || markFieldUpdate || requireTicks)
+                {
                     if (!this.isFinished)
+                    {
                         calculatedForceField();
+                    }
                     else
+                    {
                         projectField();
-            } else {
+                    }
+                }
+            }
+            else
+            {
                 this.animation += getFortronCost() / 10;
 
                 if (this.ticks % 40 == 0 && getModuleCount(ItemModuleSilence.class) <= 0)
+                {
                     this.worldObj.playSoundEffect(this.xCoord + 0.5, this.yCoord + 0.5, this.zCoord + 0.5, ModularForcefieldSystem.MODID + ":field", 0.6F, 1.0F - this.worldObj.rand.nextFloat() * 0.1F);
+                }
             }
-        } else if (!this.worldObj.isRemote) {
+        }
+        else if (!this.worldObj.isRemote)
+        {
             destroyField();
         }
     }
@@ -80,10 +99,13 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
      * Calculates the forcefield locations.
      */
     @Override
-    public void calculatedForceField() {
-        if (!isCalc) {
+    public void calculatedForceField()
+    {
+        if (!isCalc)
+        {
             IProjectorMode stack = getMode();
-            if (stack != null) {
+            if (stack != null)
+            {
                 this.blocks.clear();
             }
         }
@@ -92,8 +114,10 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
         this.requireTicks = false;
 
         Set<ItemStack> modules = getModuleStacks();
-        for (ItemStack mod : modules) {
-            if (((IModule) mod.getItem()).requireTicks(mod)) {
+        for (ItemStack mod : modules)
+        {
+            if (((IModule) mod.getItem()).requireTicks(mod))
+            {
                 requireTicks = true;
                 return;
             }
@@ -101,7 +125,8 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
     }
 
     @Override
-    public void onCalculationCompletion() {
+    public void onCalculationCompletion()
+    {
         //TODO: Send field to client
         //Check if repulsion
         //if(getModuleCount())
@@ -109,17 +134,20 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
     }
 
     @Override
-    public int getSizeInventory() {
+    public int getSizeInventory()
+    {
         return 32;
     }
 
     @Override
-    public int getProjectionSpeed() {
+    public int getProjectionSpeed()
+    {
         return 28 + 28 * getModuleCount(ItemModuleSpeed.class, getModuleSlots());
     }
 
     @Override
-    public long getTicks() {
+    public long getTicks()
+    {
         return this.ticks;
     }
 
@@ -127,37 +155,44 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
      * @return
      */
     @Override
-    public int calculateFortronCost() {
+    public int calculateFortronCost()
+    {
         IProjectorMode mode = getMode();
         if (mode != null)
+        {
             return Math.round(super.calculateFortronCost() + mode.getFortronCost(getAmplifier()));
+        }
 
         return 0;
     }
 
     @Override
-    public float getAmplifier() {
+    public float getAmplifier()
+    {
         IProjectorMode mode = getMode();
-        if (mode instanceof ItemModeCustom) {
+        if (mode instanceof ItemModeCustom)
+        {
             //TODO: Custom mode
         }
         return Math.max(Math.min(getCalculatedField().size() / 1000, 10), 1);
     }
 
     @Override
-    public Set<Vector3D> getForceFields() {
+    public Set<Vector3D> getForceFields()
+    {
         return blocks;
     }
 
     /**
-     *
      * @param vec
      * @return
      */
-    private boolean canReplace(Vector3D vec) {
+    private boolean canReplace(Vector3D vec)
+    {
         Block block = vec.getBlock(this.worldObj);
         int dmod = getModuleCount(ItemModuleDisintegration.class);
-        if(block != null && !(block instanceof BlockAir) && !block.getMaterial().isLiquid()) {
+        if (block != null && !(block instanceof BlockAir) && !block.getMaterial().isLiquid())
+        {
             return (dmod > 0 && block.getBlockHardness(worldObj, vec.intX(), vec.intY(), vec.intZ()) != -1.0
                     || block instanceof BlockSnow || block instanceof BlockVine || block instanceof BlockBush || block instanceof BlockGrass
                     || block.isReplaceable(worldObj, vec.intX(), vec.intY(), vec.intZ())) && !(block instanceof BlockForceField);
@@ -165,15 +200,20 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
         return dmod == 0;
     }
 
-    public void projectField() {
-        if (this.isFinished && !this.isCalc && (!this.isComplete || this.markFieldUpdate || this.requireTicks)) {
+    public void projectField()
+    {
+        if (this.isFinished && !this.isCalc && (!this.isComplete || this.markFieldUpdate || this.requireTicks))
+        {
             this.markFieldUpdate = false;
             int constructSpeed = Math.min(getProjectionSpeed(), SettingConfiguration.MAX_FORCE_FIELDS_PER_TICK);
             rebuild:
-            synchronized (this.calculatedFields) {
+            synchronized (this.calculatedFields)
+            {
                 Set<Vector3D> fieldToBeProjected = this.calculatedFields;
-                for (IModule module : getModules(getModuleSlots())) {
-                    if (module.onProject(this, fieldToBeProjected)) {
+                for (IModule module : getModules(getModuleSlots()))
+                {
+                    if (module.onProject(this, fieldToBeProjected))
+                    {
                         return;
                     }
                 }
@@ -184,14 +224,18 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
                         .filter(w -> getWorldObj().getChunkFromBlockCoords(w.intX(), w.intZ()).isChunkLoaded)
                         .limit(constructSpeed).collect(Collectors.toSet());
 
-                for(Vector3D vec : fieldToBeProjected) {
+                for (Vector3D vec : fieldToBeProjected)
+                {
                     int flag = 0;
-                    for(ItemStack stack : getModuleStacks(getModuleSlots()))
+                    for (ItemStack stack : getModuleStacks(getModuleSlots()))
                     {
-                        if(flag == 0 && stack != null && stack.getItem() instanceof IModule) {
+                        if (flag == 0 && stack != null && stack.getItem() instanceof IModule)
+                        {
                             flag = ((IModule) stack.getItem()).onProject(this, vec);
-                            if(flag != 0)
+                            if (flag != 0)
+                            {
                                 break;
+                            }
                         }
                     }
 
@@ -202,7 +246,9 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
 
                         TileEntity entity = vec.getTileEntity(worldObj);
                         if (entity instanceof TileForceField)
+                        {
                             ((TileForceField) entity).setProjector(projector);
+                        }
                     }
                 }
                 this.isComplete = (fieldToBeProjected.size() == 0);
@@ -211,24 +257,32 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
     }
 
     @Override
-    public void markDirty() {
+    public void markDirty()
+    {
         super.markDirty();
         destroyField();
     }
 
     @Override
-    public void destroyField() {
-        if (!this.isCalc && isFinished) {
-            synchronized (this.calculatedFields) {
-                for (IModule module : getModules(getModuleSlots())) {
-                    if (module.onDestroy(this, getCalculatedField())) {
+    public void destroyField()
+    {
+        if (!this.isCalc && isFinished)
+        {
+            synchronized (this.calculatedFields)
+            {
+                for (IModule module : getModules(getModuleSlots()))
+                {
+                    if (module.onDestroy(this, getCalculatedField()))
+                    {
                         break;
                     }
                 }
-                for (Iterator<Vector3D> it$ = new HashSet<>(this.calculatedFields).iterator(); it$.hasNext(); ) {
+                for (Iterator<Vector3D> it$ = new HashSet<>(this.calculatedFields).iterator(); it$.hasNext(); )
+                {
                     Vector3D vec = it$.next();
                     Block block = worldObj.getBlock(vec.intX(), vec.intY(), vec.intZ());
-                    if (block instanceof BlockForceField) {
+                    if (block instanceof BlockForceField)
+                    {
                         worldObj.setBlockToAir(vec.intX(), vec.intY(), vec.intZ());
                     }
                 }
@@ -243,13 +297,17 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
 
     /**
      * Gets the Filtered stacks based on Items.
+     *
      * @return
      */
-    public List<Item> getFilterItems() {
+    public List<Item> getFilterItems()
+    {
         List<Item> stacks = new ArrayList<>();
-        for(int slot = 26; slot < 32; slot++) {
+        for (int slot = 26; slot < 32; slot++)
+        {
             ItemStack stack = getStackInSlot(slot);
-            if(stack != null) {
+            if (stack != null)
+            {
                 stacks.add(stack.getItem());
             }
         }
@@ -258,13 +316,17 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
 
     /**
      * Gets the stacks in the filter.
+     *
      * @return
      */
-    public List<ItemStack> getFilterStacks() {
+    public List<ItemStack> getFilterStacks()
+    {
         List<ItemStack> stacks = new ArrayList<>();
-        for(int slot = 26; slot < 32; slot++) {
+        for (int slot = 26; slot < 32; slot++)
+        {
             ItemStack stack = getStackInSlot(slot);
-            if(stack != null) {
+            if (stack != null)
+            {
                 stacks.add(stack);
             }
         }
@@ -275,7 +337,8 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
      * @return
      */
     @Override
-    public Set<ItemStack> getCards() {
+    public Set<ItemStack> getCards()
+    {
         Set<ItemStack> set = new HashSet<>();
         set.add(super.getCard());
         set.add(getStackInSlot(1));
@@ -289,8 +352,10 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
      * @param stack
      */
     @Override
-    public boolean isItemValidForSlot(int slot, ItemStack stack) {
-        switch(slot) {
+    public boolean isItemValidForSlot(int slot, ItemStack stack)
+    {
+        switch (slot)
+        {
             case 0:
                 return stack.getItem() instanceof ItemCardFrequency;
 
@@ -298,8 +363,10 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
                 return stack.getItem() instanceof ItemMode;
         }
 
-        if(slot < 26)
+        if (slot < 26)
+        {
             return stack.getItem() instanceof IModule;
+        }
         return true;
     }
 
@@ -309,14 +376,18 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
      * @param imessage The message.
      */
     @Override
-    public IMessage handleMessage(IMessage imessage) {
-        if (imessage instanceof ForcefieldCalculation) {
+    public IMessage handleMessage(IMessage imessage)
+    {
+        if (imessage instanceof ForcefieldCalculation)
+        {
             ForcefieldCalculation calc = (ForcefieldCalculation) imessage;
             getCalculatedField().clear();
             getCalculatedField().addAll(calc.getBlocks());
             this.isCalc = true;
             return null; //we are done!
-        } else if (imessage instanceof BeamRequest) {
+        }
+        else if (imessage instanceof BeamRequest)
+        {
             BeamRequest req = (BeamRequest) imessage;
             ModularForcefieldSystem.proxy.registerBeamEffect(worldObj, req.destination.translate(.5), new Vector3D(this).translate(.5), 1.0F, 0.0F, 0.0F, 40);
             ModularForcefieldSystem.proxy.animateFortron(worldObj, req.destination, 1.0F, 0.0F, 0.0F, 60);
@@ -326,7 +397,8 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
     }
 
     @Override
-    public List<ItemStack> getRemovedItems(EntityPlayer entityPlayer) {
+    public List<ItemStack> getRemovedItems(EntityPlayer entityPlayer)
+    {
         List<ItemStack> stack = super.getRemovedItems(entityPlayer);
         stack.add(new ItemStack(ModularForcefieldSystem.forcefieldProjector));
         return stack;
