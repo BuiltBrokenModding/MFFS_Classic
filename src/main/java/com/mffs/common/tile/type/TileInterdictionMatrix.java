@@ -112,6 +112,15 @@ public final class TileInterdictionMatrix extends TileModuleAcceptor implements 
 
         //Get modules
         Set<ItemStack> modules = getModuleStacks(); //obtain modules here to save reIteration.
+        boolean hasWarnModule = false;
+        for(ItemStack stack : modules)
+        {
+            if(stack != null && stack.getItem() instanceof ItemModuleWarn)
+            {
+                hasWarnModule = true;
+                break;
+            }
+        }
 
         if (modules != null && modules.size() > 0)
         {
@@ -147,7 +156,7 @@ public final class TileInterdictionMatrix extends TileModuleAcceptor implements 
                     continue; //we do not need to warn them!
                 }
                 //Warning Range!
-                else if (entity instanceof EntityPlayer)
+                else if (entity instanceof EntityPlayer && hasWarnModule)
                 {
                     EntityPlayer pl = (EntityPlayer) entity;
                     if (bio != null && bio.isAccessGranted(pl.getGameProfile().getName(), Permission.BYPASS_DEFENSE))
