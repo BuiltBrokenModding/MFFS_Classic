@@ -17,7 +17,8 @@ import net.minecraftforge.common.util.ForgeDirection;
 /**
  * @author Calclavia
  */
-public abstract class TileMFFS extends TileEntity implements IActivatable, IPacketReceiver_Entity, IRemovable.ICustomRemoval {
+public abstract class TileMFFS extends TileEntity implements IActivatable, IPacketReceiver_Entity, IRemovable.ICustomRemoval
+{
     public float animation;
 
     /* Ticks */
@@ -30,40 +31,50 @@ public abstract class TileMFFS extends TileEntity implements IActivatable, IPack
     private boolean isProvidingSignal;
 
     @Override
-    public void updateEntity() {
-        if (ticks++ == 0) {
+    public void updateEntity()
+    {
+        if (ticks++ == 0)
+        {
             start();
-        } else if (ticks >= Integer.MAX_VALUE) {
+        }
+        else if (ticks >= Integer.MAX_VALUE)
+        {
             ticks = 1;
         }
     }
 
     /* Starts the entity */
-    public void start() {
+    public void start()
+    {
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbt) {
+    public void writeToNBT(NBTTagCompound nbt)
+    {
         super.writeToNBT(nbt);
         nbt.setBoolean("mffs_isActive", isActivated);
         nbt.setBoolean("mffs_redstone", isProvidingSignal);
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbt) {
+    public void readFromNBT(NBTTagCompound nbt)
+    {
         super.readFromNBT(nbt);
         isActivated = nbt.getBoolean("mffs_isActive");
         isProvidingSignal = nbt.getBoolean("mffs_redstone");
     }
 
     @Override
-    public boolean isActive() {
+    public boolean isActive()
+    {
         return isActivated;
     }
 
     @Override
-    public void setActive(boolean on) {
-        if (!on && (isProvidingSignal || worldObj.isRemote)) {
+    public void setActive(boolean on)
+    {
+        if (!on && (isProvidingSignal || worldObj.isRemote))
+        {
             return;
         }
         this.isActivated = on;
@@ -75,13 +86,18 @@ public abstract class TileMFFS extends TileEntity implements IActivatable, IPack
      *
      * @param imessage The message.
      */
-    public IMessage handleMessage(IMessage imessage) {
-        if (imessage instanceof EntityToggle) {
+    public IMessage handleMessage(IMessage imessage)
+    {
+        if (imessage instanceof EntityToggle)
+        {
             EntityToggle tog = (EntityToggle) imessage;
-            if (tog.toggle_opcode == EntityToggle.REDSTONE_TOGGLE) {
+            if (tog.toggle_opcode == EntityToggle.REDSTONE_TOGGLE)
+            {
                 this.isProvidingSignal = !this.isProvidingSignal;
                 this.isActivated = this.isProvidingSignal;
-            } else if (tog.toggle_opcode == EntityToggle.TOGGLE_STATE) {
+            }
+            else if (tog.toggle_opcode == EntityToggle.TOGGLE_STATE)
+            {
                 this.isActivated = !this.isActivated;
             }
             this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
@@ -89,7 +105,8 @@ public abstract class TileMFFS extends TileEntity implements IActivatable, IPack
         return null;
     }
 
-    public ForgeDirection getDirection() {
+    public ForgeDirection getDirection()
+    {
         return ForgeDirection.getOrientation(getBlockMetadata());
     }
 
@@ -97,7 +114,8 @@ public abstract class TileMFFS extends TileEntity implements IActivatable, IPack
      * Overriden in a sign to provide the text.
      */
     @Override
-    public Packet getDescriptionPacket() {
+    public Packet getDescriptionPacket()
+    {
         NBTTagCompound tag = new NBTTagCompound();
         writeToNBT(tag);
         return new S35PacketUpdateTileEntity(this.xCoord, this.yCoord, this.zCoord, 0, tag);
@@ -113,7 +131,8 @@ public abstract class TileMFFS extends TileEntity implements IActivatable, IPack
      * @param pkt The data packet
      */
     @Override
-    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
+    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
+    {
         //this.isActivated = pkt.func_148857_g().getBoolean("active");
         //this.isProvidingSignal = pkt.func_148857_g().getBoolean("redstone");
         readFromNBT(pkt.func_148857_g());
@@ -121,7 +140,8 @@ public abstract class TileMFFS extends TileEntity implements IActivatable, IPack
     }
 
     @Override
-    public boolean canBeRemoved(EntityPlayer entityPlayer) {
+    public boolean canBeRemoved(EntityPlayer entityPlayer)
+    {
         return WrenchUtility.isHoldingWrench(entityPlayer);
     }
 }

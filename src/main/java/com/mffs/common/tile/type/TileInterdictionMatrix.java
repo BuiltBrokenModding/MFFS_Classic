@@ -29,7 +29,8 @@ import java.util.Set;
 /**
  * @author Calclavia
  */
-public final class TileInterdictionMatrix extends TileModuleAcceptor implements IInterdictionMatrix {
+public final class TileInterdictionMatrix extends TileModuleAcceptor implements IInterdictionMatrix
+{
 
     /* Deteremines if this machine is in 'ban' mode */
     private boolean banMode;
@@ -37,22 +38,28 @@ public final class TileInterdictionMatrix extends TileModuleAcceptor implements 
     /**
      * Constructor. DUH
      */
-    public TileInterdictionMatrix() {
+    public TileInterdictionMatrix()
+    {
         this.capacityBase = 30;
         this.module_index = 2;
         this.module_end = 9;
     }
 
     @Override
-    public void updateEntity() {
+    public void updateEntity()
+    {
         super.updateEntity();
-        if(!worldObj.isRemote)
+        if (!worldObj.isRemote)
         {
-            if(this.isActive() && this.ticks % 20L == 0) { //Increase this to 1 a second.
-                if(requestFortron(getFortronCost() * 10, false) > 0) {
+            if (this.isActive() && this.ticks % 20L == 0)
+            { //Increase this to 1 a second.
+                if (requestFortron(getFortronCost() * 10, false) > 0)
+                {
                     requestFortron(getFortronCost() * 10, true);
                     scan();
-                } else {
+                }
+                else
+                {
                     setActive(false);
                 }
             }
@@ -65,7 +72,8 @@ public final class TileInterdictionMatrix extends TileModuleAcceptor implements 
     /**
      * Scans the action range of this entity and performs appropriate action.
      */
-    private void scan() {
+    private void scan()
+    {
         IBiometricIdentifier bio = getBiometricIdentifier();
         AxisAlignedBB axis = AxisAlignedBB.getBoundingBox(this.xCoord, this.yCoord, this.zCoord, this.xCoord + 1, this.yCoord + 1, this.zCoord + 1);
 
@@ -75,42 +83,56 @@ public final class TileInterdictionMatrix extends TileModuleAcceptor implements 
         List<EntityLivingBase> entities = this.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, axis.expand(range, range, range));
         Set<ItemStack> modules = getModuleStacks(); //obtain modules here to save reIteration.
 
-        for(EntityLivingBase entity : entities) {
+        for (EntityLivingBase entity : entities)
+        {
             double dist = entity.getDistance(this.xCoord, this.yCoord, this.zCoord);
 
-            if(dist <= aRange) { //Action Range
-                if(entity instanceof EntityPlayer) {
+            if (dist <= aRange)
+            { //Action Range
+                if (entity instanceof EntityPlayer)
+                {
                     EntityPlayer pl = (EntityPlayer) entity;
-                    if(bio != null && bio.isAccessGranted(pl.getGameProfile().getName(), Permission.BYPASS_DEFENSE)
+                    if (bio != null && bio.isAccessGranted(pl.getGameProfile().getName(), Permission.BYPASS_DEFENSE)
                             || !SettingConfiguration.INTERACT_CREATIVE && pl.capabilities.isCreativeMode)
+                    {
                         continue;
+                    }
                 }
-                for(ItemStack stack : modules) {
-                    if(stack != null && stack.getItem() instanceof IInterdictionModule) {
+                for (ItemStack stack : modules)
+                {
+                    if (stack != null && stack.getItem() instanceof IInterdictionModule)
+                    {
                         IInterdictionModule mod = (IInterdictionModule) stack.getItem();
-                        if(mod.onDefend(this, entity) ||  entity.isDead)
+                        if (mod.onDefend(this, entity) || entity.isDead)
+                        {
                             break;
+                        }
                     }
                 }
                 continue; //we do not need to warn them!
             }
 
-            if(dist <= wRange && entity instanceof EntityPlayer) {//Warning Range!
+            if (dist <= wRange && entity instanceof EntityPlayer)
+            {//Warning Range!
                 EntityPlayer pl = (EntityPlayer) entity;
-                if(bio != null && bio.isAccessGranted(pl.getGameProfile().getName(), Permission.BYPASS_DEFENSE))
+                if (bio != null && bio.isAccessGranted(pl.getGameProfile().getName(), Permission.BYPASS_DEFENSE))
+                {
                     continue;
+                }
                 pl.addChatMessage(warning);
             }
         }
     }
 
     @Override
-    public int getWarningRange() {
-        return Math.min(getModuleCount(ItemModuleWarn.class)+ getActionRange(), SettingConfiguration.INTERDICTION_MAX_RANGE) + 3;
+    public int getWarningRange()
+    {
+        return Math.min(getModuleCount(ItemModuleWarn.class) + getActionRange(), SettingConfiguration.INTERDICTION_MAX_RANGE) + 3;
     }
 
     @Override
-    public int getActionRange() {
+    public int getActionRange()
+    {
         return Math.min(getModuleCount(ItemModuleScale.class), SettingConfiguration.INTERDICTION_MAX_RANGE);
     }
 
@@ -119,10 +141,13 @@ public final class TileInterdictionMatrix extends TileModuleAcceptor implements 
      *
      * @param imessage The message.
      */
-    public IMessage handleMessage(IMessage imessage) {
-        if (imessage instanceof EntityToggle) {
+    public IMessage handleMessage(IMessage imessage)
+    {
+        if (imessage instanceof EntityToggle)
+        {
             EntityToggle tog = (EntityToggle) imessage;
-            if(tog.toggle_opcode == EntityToggle.FILTER_TOGGLE) {
+            if (tog.toggle_opcode == EntityToggle.FILTER_TOGGLE)
+            {
                 this.banMode = !banMode;
                 this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
                 return null;
@@ -132,22 +157,28 @@ public final class TileInterdictionMatrix extends TileModuleAcceptor implements 
     }
 
     @Override
-    public Set<ItemStack> getFilteredItems() {
+    public Set<ItemStack> getFilteredItems()
+    {
         Set<ItemStack> stacks = new HashSet();
-        for(int i = module_end; i < getSizeInventory() - 1; i++) {
-            if(getStackInSlot(i) != null)
+        for (int i = module_end; i < getSizeInventory() - 1; i++)
+        {
+            if (getStackInSlot(i) != null)
+            {
                 stacks.add(getStackInSlot(i));
+            }
         }
         return stacks;
     }
 
     @Override
-    public boolean getFilterMode() {
+    public boolean getFilterMode()
+    {
         return this.banMode;
     }
 
     @Override
-    public float getAmplifier() {
+    public float getAmplifier()
+    {
         return Math.max(Math.min(getActionRange() / 20, 10), 1);
     }
 
@@ -155,30 +186,33 @@ public final class TileInterdictionMatrix extends TileModuleAcceptor implements 
      * Returns the number of slots in the inventory.
      */
     @Override
-    public int getSizeInventory() {
+    public int getSizeInventory()
+    {
         return 19;
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbt) {
+    public void writeToNBT(NBTTagCompound nbt)
+    {
         super.writeToNBT(nbt);
         nbt.setBoolean("ban", banMode);
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbt) {
+    public void readFromNBT(NBTTagCompound nbt)
+    {
         super.readFromNBT(nbt);
         this.banMode = nbt.getBoolean("ban");
     }
 
     @Override
     public Set<ItemStack> getCards()
-   {
-     Set<ItemStack> cards = new HashSet();
-     cards.add(super.getCard());
-     cards.add(getStackInSlot(1));
-     return cards;
-   }
+    {
+        Set<ItemStack> cards = new HashSet();
+        cards.add(super.getCard());
+        cards.add(getStackInSlot(1));
+        return cards;
+    }
 
     /**
      * Returns true if automation is allowed to insert the given stack (ignoring stack size) into the given slot.
@@ -187,19 +221,27 @@ public final class TileInterdictionMatrix extends TileModuleAcceptor implements 
      * @param item
      */
     @Override
-    public boolean isItemValidForSlot(int slot, ItemStack item) {
-        if(slot == 0)
+    public boolean isItemValidForSlot(int slot, ItemStack item)
+    {
+        if (slot == 0)
+        {
             return item.getItem() instanceof ICardInfinite;
-        else if(slot == 1)
+        }
+        else if (slot == 1)
+        {
             return item.getItem() instanceof ItemCardFrequency;
+        }
 
-        if(slot > this.module_end)
+        if (slot > this.module_end)
+        {
             return true;
+        }
         return item.getItem() instanceof IModule;
     }
 
     @Override
-    public List<ItemStack> getRemovedItems(EntityPlayer entityPlayer) {
+    public List<ItemStack> getRemovedItems(EntityPlayer entityPlayer)
+    {
         List<ItemStack> stack = super.getRemovedItems(entityPlayer);
         stack.add(new ItemStack(ModularForcefieldSystem.interdictionMatrix));
         return stack;

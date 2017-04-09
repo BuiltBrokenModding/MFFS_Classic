@@ -16,7 +16,8 @@ import net.minecraft.item.ItemStack;
 /**
  * Created by Poopsicle360 on 7/16/2016.
  */
-public class GuiCardID extends GuiItemBase {
+public class GuiCardID extends GuiItemBase
+{
 
     /* The item this interface is interacting with */
     private EntityPlayer player;
@@ -25,10 +26,10 @@ public class GuiCardID extends GuiItemBase {
     private GuiScroll scroll = new GuiScroll(Math.max(Permission.values().length - 4, 0));
 
     /**
-     *
      * @param player
      */
-    public GuiCardID(EntityPlayer player) {
+    public GuiCardID(EntityPlayer player)
+    {
         super(new HotBarContainer(player));
         this.player = player;
     }
@@ -38,16 +39,19 @@ public class GuiCardID extends GuiItemBase {
     {
         super.initGui();
         textField.setMaxStringLength(20);
-        textField.setText(((ICardIdentification)player.getCurrentEquippedItem().getItem()).getUsername(player.getCurrentEquippedItem()));
-        for(int id = 0; id < Permission.values().length; id++)
+        textField.setText(((ICardIdentification) player.getCurrentEquippedItem().getItem()).getUsername(player.getCurrentEquippedItem()));
+        for (int id = 0; id < Permission.values().length; id++)
+        {
             buttonList.add(new GuiButton(id, 0, 0, 160, 20, Permission.getPerm(id).name()));
+        }
     }
 
     /**
      * Handles mouse input.
      */
     @Override
-    public void handleMouseInput() {
+    public void handleMouseInput()
+    {
         super.handleMouseInput();
         scroll.handleMouseInput();
     }
@@ -56,18 +60,22 @@ public class GuiCardID extends GuiItemBase {
      * Called from the main game loop to update the screen.
      */
     @Override
-    public void updateScreen() {
+    public void updateScreen()
+    {
         int index = (int) (scroll.getBar() * (buttonList.size() - 1));
         int maxIndex = Math.min(index + 3, Permission.values().length - 1);
         final ItemStack stack = player.getCurrentEquippedItem();
-        if (stack == null || !(stack.getItem() instanceof ICardIdentification)) {
+        if (stack == null || !(stack.getItem() instanceof ICardIdentification))
+        {
             player.closeScreen();
             return;
         }
         buttonList.forEach(button -> {
-            if(button instanceof GuiButton) {
+            if (button instanceof GuiButton)
+            {
                 GuiButton b = (GuiButton) button;
-                if(b.id >= index && b.id <= maxIndex) {
+                if (b.id >= index && b.id <= maxIndex)
+                {
 
                     Permission perm = Permission.getPerm(b.id);
                     ICardIdentification icard = (ICardIdentification) stack.getItem();
@@ -75,7 +83,9 @@ public class GuiCardID extends GuiItemBase {
                     b.xPosition = width / 2 - 80;
                     b.yPosition = height / 2 - 60 + (b.id - index) * 20;
                     b.visible = true;
-                } else {
+                }
+                else
+                {
                     b.visible = false;
                 }
             }
@@ -83,17 +93,21 @@ public class GuiCardID extends GuiItemBase {
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
+    {
         textField.drawTextBox();
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
     @Override
-    public void actionPerformed(GuiButton button) {
+    public void actionPerformed(GuiButton button)
+    {
         super.actionPerformed(button);
 
-        if(button.id <= Permission.values().length)
+        if (button.id <= Permission.values().length)
+        {
             ModularForcefieldSystem.channel.sendToServer(new ItemByteToggle(button.id));
+        }
     }
 
     @Override

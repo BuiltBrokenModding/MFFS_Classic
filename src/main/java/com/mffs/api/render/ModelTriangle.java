@@ -9,12 +9,14 @@ import net.minecraft.client.model.ModelRenderer;
  * @author Calclavia
  */
 @SideOnly(Side.CLIENT)
-public class ModelTriangle extends ModelBase {
+public class ModelTriangle extends ModelBase
+{
 
     public static final ModelTriangle INSTNACE = new ModelTriangle();
     private ModelRenderer cube;
 
-    public ModelTriangle() {
+    public ModelTriangle()
+    {
         this.cube = new ModelRenderer(this, 0, 0);
         int size = 16;
 
@@ -24,7 +26,8 @@ public class ModelTriangle extends ModelBase {
         this.cube.mirror = true;
     }
 
-    public void render() {
+    public void render()
+    {
         this.cube.render(0.0625F);
     }
 }

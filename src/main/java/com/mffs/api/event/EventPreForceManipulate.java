@@ -7,7 +7,8 @@ import net.minecraft.world.World;
  * @author Calclavia
  */
 @Cancelable
-public class EventPreForceManipulate extends EventForceManipulate {
+public class EventPreForceManipulate extends EventForceManipulate
+{
 
     /**
      * @param world
@@ -18,7 +19,8 @@ public class EventPreForceManipulate extends EventForceManipulate {
      * @param afterY
      * @param afterZ
      */
-    public EventPreForceManipulate(World world, int beforeX, int beforeY, int beforeZ, int afterX, int afterY, int afterZ) {
+    public EventPreForceManipulate(World world, int beforeX, int beforeY, int beforeZ, int afterX, int afterY, int afterZ)
+    {
         super(world, beforeX, beforeY, beforeZ, afterX, afterY, afterZ);
     }
 }

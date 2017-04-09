@@ -10,14 +10,19 @@ import net.minecraft.item.ItemStack;
 /**
  * Created by Poopsicle360 on 7/16/2016.
  */
-public abstract class ItemMessage implements IMessage {
+public abstract class ItemMessage implements IMessage
+{
 
     /* The slot we are referencing */
     public byte slot;
 
-    public ItemMessage() {this.slot = -1;}
+    public ItemMessage()
+    {
+        this.slot = -1;
+    }
 
-    public ItemMessage(int slot) {
+    public ItemMessage(int slot)
+    {
         this.slot = (byte) slot;
     }
 
@@ -27,7 +32,8 @@ public abstract class ItemMessage implements IMessage {
      * @param buf
      */
     @Override
-    public void fromBytes(ByteBuf buf) {
+    public void fromBytes(ByteBuf buf)
+    {
         slot = buf.readByte();
     }
 
@@ -37,15 +43,16 @@ public abstract class ItemMessage implements IMessage {
      * @param buf
      */
     @Override
-    public void toBytes(ByteBuf buf) {
+    public void toBytes(ByteBuf buf)
+    {
         buf.writeByte(slot);
     }
 
     /**
-     *
      * @param <PACKET>
      */
-    public static class ServerHandler<PACKET extends ItemMessage> implements IMessageHandler<PACKET, IMessage> {
+    public static class ServerHandler<PACKET extends ItemMessage> implements IMessageHandler<PACKET, IMessage>
+    {
 
         /**
          * Called when a message is received of the appropriate type. You can optionally return a reply message, or null if no reply
@@ -56,11 +63,14 @@ public abstract class ItemMessage implements IMessage {
          * @return an optional return message
          */
         @Override
-        public IMessage onMessage(PACKET message, MessageContext ctx) {
+        public IMessage onMessage(PACKET message, MessageContext ctx)
+        {
             EntityPlayerMP mp = ctx.getServerHandler().playerEntity;
-            if(mp != null) {
+            if (mp != null)
+            {
                 ItemStack item = (message.slot >= 0 ? mp.inventory.getStackInSlot(message.slot) : mp.getCurrentEquippedItem());
-                if(item != null && item.getItem() instanceof IPacketReceiver_Item) {
+                if (item != null && item.getItem() instanceof IPacketReceiver_Item)
+                {
                     return ((IPacketReceiver_Item) item.getItem()).handleMessage(message, item);
                 }
             }

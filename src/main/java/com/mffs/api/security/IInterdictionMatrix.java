@@ -13,7 +13,8 @@ import java.util.Set;
  * @author Calclavia
  */
 public interface IInterdictionMatrix
-        extends IInventory, IFortronFrequency, IModuleAcceptor, IBiometricIdentifierLink, IActivatable {
+        extends IInventory, IFortronFrequency, IModuleAcceptor, IBiometricIdentifierLink, IActivatable
+{
     int getWarningRange();
 
     int getActionRange();

@@ -16,10 +16,12 @@ import java.util.List;
 /**
  * @author Calclavia
  */
-public class ItemModuleAntiFriendly extends MatrixModule {
+public class ItemModuleAntiFriendly extends MatrixModule
+{
 
     @Override
-    public void genRecipes(List<IRecipe> list) {
+    public void genRecipes(List<IRecipe> list)
+    {
         list.add(newShapedRecipe(this,
                 " W ", "LFP", " S ", 'W', Blocks.hay_block, //couldnt find wool block
                 'L', Items.leather, 'F', Item.itemRegistry.getObject("mffs:focusMatrix"), 'P', Items.cooked_porkchop,
@@ -27,8 +29,10 @@ public class ItemModuleAntiFriendly extends MatrixModule {
     }
 
     @Override
-    public boolean onDefend(IInterdictionMatrix paramIInterdictionMatrix, EntityLivingBase paramEntityLivingBase) {
-        if (paramEntityLivingBase instanceof INpc || !(paramEntityLivingBase instanceof IMob)) {
+    public boolean onDefend(IInterdictionMatrix paramIInterdictionMatrix, EntityLivingBase paramEntityLivingBase)
+    {
+        if (paramEntityLivingBase instanceof INpc || !(paramEntityLivingBase instanceof IMob))
+        {
             paramEntityLivingBase.setHealth(1F);
             paramEntityLivingBase.attackEntityFrom(ItemModuleShock.SHOCK_SOURCE, 100F);
             return true;

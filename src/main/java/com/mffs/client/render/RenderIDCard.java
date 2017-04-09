@@ -20,7 +20,8 @@ import org.lwjgl.opengl.GL11;
  * @author Calclavia
  */
 @SideOnly(Side.CLIENT)
-public class RenderIDCard implements IItemRenderer {
+public class RenderIDCard implements IItemRenderer
+{
     /**
      * Checks if this renderer should handle a specific item's render type
      *
@@ -30,7 +31,8 @@ public class RenderIDCard implements IItemRenderer {
      * otherwise false
      */
     @Override
-    public boolean handleRenderType(ItemStack item, ItemRenderType type) {
+    public boolean handleRenderType(ItemStack item, ItemRenderType type)
+    {
         return true;
     }
 
@@ -44,7 +46,8 @@ public class RenderIDCard implements IItemRenderer {
      * @return True to run the helper functionality, false to not.
      */
     @Override
-    public boolean shouldUseRenderHelper(ItemRenderType type, ItemStack item, ItemRendererHelper helper) {
+    public boolean shouldUseRenderHelper(ItemRenderType type, ItemStack item, ItemRendererHelper helper)
+    {
         return false;
     }
 
@@ -57,8 +60,10 @@ public class RenderIDCard implements IItemRenderer {
      * @param data      Extra Type specific data
      */
     @Override
-    public void renderItem(IItemRenderer.ItemRenderType type, ItemStack itemStack, Object... data) {
-        if ((itemStack.getItem() instanceof ICardIdentification)) {
+    public void renderItem(IItemRenderer.ItemRenderType type, ItemStack itemStack, Object... data)
+    {
+        if ((itemStack.getItem() instanceof ICardIdentification))
+        {
             ICardIdentification card = (ICardIdentification) itemStack.getItem();
 
             GL11.glPushMatrix();
@@ -67,7 +72,8 @@ public class RenderIDCard implements IItemRenderer {
             transform(type);
             renderItemIcon(itemStack.getIconIndex());
 
-            if (type != IItemRenderer.ItemRenderType.INVENTORY) {
+            if (type != IItemRenderer.ItemRenderType.INVENTORY)
+            {
 
                 GL11.glTranslatef(0.0F, 0.0F, -5.0E-4F);
             }
@@ -80,16 +86,19 @@ public class RenderIDCard implements IItemRenderer {
     }
 
 
-    private void transform(IItemRenderer.ItemRenderType type) {
+    private void transform(IItemRenderer.ItemRenderType type)
+    {
         float scale = 0.0625F;
 
-        if (type != IItemRenderer.ItemRenderType.INVENTORY) {
+        if (type != IItemRenderer.ItemRenderType.INVENTORY)
+        {
             GL11.glScalef(scale, -scale, -scale);
             GL11.glTranslatef(20.0F, -16.0F, 0.0F);
             GL11.glRotatef(180.0F, 1.0F, 1.0F, 0.0F);
             GL11.glRotatef(-90.0F, 0.0F, 0.0F, 1.0F);
         }
-        if (type == IItemRenderer.ItemRenderType.ENTITY) {
+        if (type == IItemRenderer.ItemRenderType.ENTITY)
+        {
             GL11.glTranslatef(20.0F, 0.0F, 0.0F);
             GL11.glRotatef((float) Minecraft.getSystemTime() / 12.0F % 360.0F, 0.0F, 1.0F, 0.0F);
             GL11.glTranslatef(-8.0F, 0.0F, 0.0F);
@@ -97,24 +106,31 @@ public class RenderIDCard implements IItemRenderer {
         }
     }
 
-    private ResourceLocation getSkinFace(String name) {
-        try {
+    private ResourceLocation getSkinFace(String name)
+    {
+        try
+        {
             ResourceLocation resourcelocation;
 
-            if ((name != null) && (!name.isEmpty())) {
+            if ((name != null) && (!name.isEmpty()))
+            {
                 resourcelocation = AbstractClientPlayer.getLocationSkin(name);
                 AbstractClientPlayer.getDownloadImageSkin(resourcelocation, name);
                 return resourcelocation;
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             e.printStackTrace();
         }
 
         return null;
     }
 
-    private void renderPlayerFace(ResourceLocation resourcelocation) {
-        if (resourcelocation != null) {
+    private void renderPlayerFace(ResourceLocation resourcelocation)
+    {
+        if (resourcelocation != null)
+        {
             Point translation = new Point(9.0D, 5.0D);
             int xSize = 4;
             int ySize = 4;
@@ -168,7 +184,8 @@ public class RenderIDCard implements IItemRenderer {
         }
     }
 
-    private void renderItemIcon(IIcon icon) {
+    private void renderItemIcon(IIcon icon)
+    {
         GL11.glBegin(7);
 
         GL11.glTexCoord2f(icon.getMinU(), icon.getMinV());
@@ -186,10 +203,12 @@ public class RenderIDCard implements IItemRenderer {
         GL11.glEnd();
     }
 
-    private void renderItem3D(EntityLiving par1EntityLiving, ItemStack par2ItemStack, int par3) {
+    private void renderItem3D(EntityLiving par1EntityLiving, ItemStack par2ItemStack, int par3)
+    {
         IIcon icon = par1EntityLiving.getItemIcon(par2ItemStack, par3);
 
-        if (icon == null) {
+        if (icon == null)
+        {
             GL11.glPopMatrix();
             return;
         }

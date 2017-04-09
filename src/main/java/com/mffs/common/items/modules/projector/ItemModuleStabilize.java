@@ -22,10 +22,12 @@ import java.util.Set;
 /**
  * Created by pwaln on 6/17/2016.
  */
-public class ItemModuleStabilize extends BaseModule implements IRecipeContainer {
+public class ItemModuleStabilize extends BaseModule implements IRecipeContainer
+{
 
     @Override
-    public void genRecipes(List<IRecipe> list) {
+    public void genRecipes(List<IRecipe> list)
+    {
         list.add(newShapedRecipe(this,
                 "FDF", "PSA", "FDF",
                 'F', Item.itemRegistry.getObject("mffs:focusMatrix"),
@@ -41,7 +43,8 @@ public class ItemModuleStabilize extends BaseModule implements IRecipeContainer 
     /**
      * Default constructor.
      */
-    public ItemModuleStabilize() {
+    public ItemModuleStabilize()
+    {
         setCost(20);
         setMaxStackSize(1);
     }
@@ -54,43 +57,55 @@ public class ItemModuleStabilize extends BaseModule implements IRecipeContainer 
      * @return
      */
     @Override
-    public boolean onProject(IProjector projector, Set<Vector3D> fields) {
+    public boolean onProject(IProjector projector, Set<Vector3D> fields)
+    {
         this.blockCount = 0;
         return false;
     }
 
     @Override
-    public int onProject(IProjector projector, Vector3D position) {
-        if (projector.getTicks() % 40 == 0) {
+    public int onProject(IProjector projector, Vector3D position)
+    {
+        if (projector.getTicks() % 40 == 0)
+        {
             //TODO: CUstom Mode
             //int[] blockInfo = null;
-            for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
+            for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
+            {
                 TileEntity proj = (TileEntity) projector;
                 TileEntity entity = proj.getWorldObj().getTileEntity(proj.xCoord + dir.offsetX, proj.yCoord + dir.offsetY, proj.zCoord + dir.offsetZ);
-                if (entity != null && entity instanceof IInventory) {
+                if (entity != null && entity instanceof IInventory)
+                {
                     IInventory inv = (IInventory) entity;
-                    for (int slot = 0; slot < inv.getSizeInventory(); slot++) {
+                    for (int slot = 0; slot < inv.getSizeInventory(); slot++)
+                    {
                         ItemStack stack = inv.getStackInSlot(slot);
-                        if (stack != null) {
+                        if (stack != null)
+                        {
                             EventStabilize event = new EventStabilize(proj.getWorldObj(), (int) Math.floor(position.x), (int) Math.floor(position.y), (int) Math.floor(position.z), stack);
                             MinecraftForge.EVENT_BUS.post(event);
 
-                            if (!event.isCanceled()) {
+                            if (!event.isCanceled())
+                            {
                                 if (stack.getItem() instanceof ItemBlock //TODO: Check block info if custom
                                         && entity.getWorldObj().canPlaceEntityOnSide(((ItemBlock) stack.getItem()).field_150939_a, (int) Math.floor(position.x), (int) Math.floor(position.y), (int) Math.floor(position.z),
-                                        false, 0, null, stack)) {
+                                        false, 0, null, stack))
+                                {
                                     int meta = stack.getHasSubtypes() ? stack.getItemDamage() : 0/* Block info */;
 
                                     ((ItemBlock) stack.getItem()).placeBlockAt(stack, null, entity.getWorldObj(), (int) Math.floor(position.x), (int) Math.floor(position.y), (int) Math.floor(position.z), 0, 0, 0, 0, meta);
                                     inv.decrStackSize(slot, 1);
                                     //SEND Packet!
                                     //calclavia.lib.network.PacketHandler.sendPacketToClients(ModularForceFieldSystem.PACKET_TILE.getPacket((TileEntity)projector, new Object[] { Integer.valueOf(TileMFFS.TilePacketType.FXS.ordinal()), Integer.valueOf(1), Integer.valueOf(position.intX()), Integer.valueOf(position.intY()), Integer.valueOf(position.intZ()) }), ((TileEntity)projector).field_70331_k);
-                                    if (blockCount++ >= projector.getModuleCount(ItemModuleSpeed.class) / 3) {
+                                    if (blockCount++ >= projector.getModuleCount(ItemModuleSpeed.class) / 3)
+                                    {
                                         return 2;
                                     }
                                     return 1;
                                 }
-                            } else {
+                            }
+                            else
+                            {
                                 return 1;
                             }
                         }
@@ -102,7 +117,8 @@ public class ItemModuleStabilize extends BaseModule implements IRecipeContainer 
     }
 
     @Override
-    public float getFortronCost(float amplifier) {
+    public float getFortronCost(float amplifier)
+    {
         return super.getFortronCost(amplifier) + super.getFortronCost(amplifier) * amplifier;
     }
 }

@@ -4,7 +4,8 @@ package com.mffs.api.security;
 /**
  * @author Calclavia
  */
-public enum Permission {
+public enum Permission
+{
     WARP,
     BLOCK_PLACE_ACCESS,
     BLOCK_ACCESS,
@@ -17,9 +18,12 @@ public enum Permission {
      * @param id
      * @return
      */
-    public static Permission getPerm(int id) {
+    public static Permission getPerm(int id)
+    {
         if (id < Permission.values().length)
+        {
             return Permission.values()[id];
+        }
         return Permission.REMOTE_CONTROL;
     }
 }

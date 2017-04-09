@@ -22,25 +22,29 @@ import org.lwjgl.opengl.GL11;
  * @author Calclavia
  */
 @SideOnly(Side.CLIENT)
-public class GuiForceFieldProjector extends GuiMatrix {
+public class GuiForceFieldProjector extends GuiMatrix
+{
 
     /**
      * @param player
      * @param entity
      */
-    public GuiForceFieldProjector(EntityPlayer player, TileForceFieldProjector entity) {
+    public GuiForceFieldProjector(EntityPlayer player, TileForceFieldProjector entity)
+    {
         super(new ForceFieldProjectorContainer(player, entity), entity);
     }
 
     @Override
-    public void initGui() {
+    public void initGui()
+    {
         this.textFieldPos = new Point(30, 115);
         super.initGui();
         this.buttonList.add(new GuiIcon(1, this.width / 2 - 110, this.height / 2 - 82, null, new ItemStack(Items.compass)));
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(int x, int y) {
+    protected void drawGuiContainerForegroundLayer(int x, int y)
+    {
         TileFieldMatrix proj = getMatrix();
         this.fontRendererObj.drawString(proj.getInventoryName(), this.xSize / 2 - this.fontRendererObj.getStringWidth(proj.getInventoryName()) / 2, 6, 4210752);
 
@@ -58,26 +62,34 @@ public class GuiForceFieldProjector extends GuiMatrix {
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float var1, int x, int y) {
+    protected void drawGuiContainerBackgroundLayer(float var1, int x, int y)
+    {
         super.drawGuiContainerBackgroundLayer(var1, x, y);
 
         drawSlot(7, 113); //Frequency slot
 
-        for(int x1 = 0; x1 < 2; x1++)
-            for(int y1 = 0; y1 < 3; y1++)
+        for (int x1 = 0; x1 < 2; x1++)
+        {
+            for (int y1 = 0; y1 < 3; y1++)
+            {
                 drawSlot(20 + 18 * x1, 30 + 18 * y1);
+            }
+        }
     }
 
     @Override
-    protected void actionPerformed(GuiButton guiButton) {
+    protected void actionPerformed(GuiButton guiButton)
+    {
         super.actionPerformed(guiButton);
-        if (guiButton.id == 1) {
+        if (guiButton.id == 1)
+        {
             ModularForcefieldSystem.channel.sendToServer(new EntityToggle(getMatrix(), EntityToggle.ABSOLUTE_TOGGLE));
         }
     }
 
     @Override
-    public void updateScreen() {
+    public void updateScreen()
+    {
         super.updateScreen();
         ((GuiIcon) this.buttonList.get(1)).setIndex(getMatrix().isAbs ? 1 : 0);
     }

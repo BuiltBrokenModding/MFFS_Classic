@@ -7,7 +7,8 @@ import java.util.Set;
 /**
  * @author Calclavia
  */
-public interface IBiometricIdentifierLink {
+public interface IBiometricIdentifierLink
+{
     IBiometricIdentifier getBiometricIdentifier();
 
     Set<IBiometricIdentifier> getBiometricIdentifiers();

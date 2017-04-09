@@ -6,7 +6,8 @@ package com.mffs.api;
  * @author Calclavia
  */
 
-public interface IBlockFrequency {
+public interface IBlockFrequency
+{
     /**
      * @return The frequency of this object.
      */

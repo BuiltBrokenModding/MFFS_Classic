@@ -6,7 +6,8 @@ import net.minecraftforge.common.config.Property;
 /**
  * @author Calclavia
  */
-public class SettingConfiguration {
+public class SettingConfiguration
+{
 
     public static final int MAX_FREQUENCY_DIGITS = 6;
     public static int MAX_FORCE_FIELDS_PER_TICK = 1000;
@@ -34,7 +35,8 @@ public class SettingConfiguration {
     /* Enables debug mode */
     public static boolean DEV_MODE = false, USE_FORCEFIELD_RENDERER = true;
 
-    public static void load() {
+    public static void load()
+    {
         Configuration CONFIGURATION = ModularForcefieldSystem.modularForcefieldSystem_mod.getConfig();
 
         //GENERAL

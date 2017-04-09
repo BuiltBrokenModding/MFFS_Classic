@@ -18,7 +18,8 @@ import java.util.Set;
 /**
  * Created by pwaln on 7/9/2016.
  */
-public class MatrixHelper {
+public class MatrixHelper
+{
 
     /**
      * Find the matrix within distance.
@@ -28,13 +29,18 @@ public class MatrixHelper {
      * @param seq
      * @return
      */
-    public static IInterdictionMatrix findMatrix(World world, Vector3D vec, Set<IBlockFrequency> seq) {
-        for (IBlockFrequency freq : seq) {
+    public static IInterdictionMatrix findMatrix(World world, Vector3D vec, Set<IBlockFrequency> seq)
+    {
+        for (IBlockFrequency freq : seq)
+        {
             TileEntity entity = (TileEntity) freq;
-            if (entity instanceof IInterdictionMatrix && world == entity.getWorldObj()) {
+            if (entity instanceof IInterdictionMatrix && world == entity.getWorldObj())
+            {
                 IInterdictionMatrix matrix = (IInterdictionMatrix) freq;
                 if (matrix.isActive() && vec.distance(entity.xCoord, entity.yCoord, entity.zCoord) < matrix.getActionRange())
+                {
                     return matrix;
+                }
             }
         }
         return null;
@@ -47,13 +53,18 @@ public class MatrixHelper {
      * @param vec
      * @return
      */
-    public static IInterdictionMatrix findMatrix(World world, Vector3D vec) {
-        for (IBlockFrequency freq : FrequencyGrid.instance().get()) {
+    public static IInterdictionMatrix findMatrix(World world, Vector3D vec)
+    {
+        for (IBlockFrequency freq : FrequencyGrid.instance().get())
+        {
             TileEntity entity = (TileEntity) freq;
-            if (entity instanceof IInterdictionMatrix && world == entity.getWorldObj()) {
+            if (entity instanceof IInterdictionMatrix && world == entity.getWorldObj())
+            {
                 IInterdictionMatrix matrix = (IInterdictionMatrix) freq;
                 if (matrix.isActive() && vec.distance(entity.xCoord, entity.yCoord, entity.zCoord) < matrix.getActionRange())
+                {
                     return matrix;
+                }
             }
         }
         return null;
@@ -67,9 +78,11 @@ public class MatrixHelper {
      * @param perm
      * @return
      */
-    public static boolean hasPermission(IInterdictionMatrix matrix, String name, Permission perm) {
+    public static boolean hasPermission(IInterdictionMatrix matrix, String name, Permission perm)
+    {
         IBiometricIdentifier bio = matrix.getBiometricIdentifier();
-        if (bio != null && matrix.isActive()) {
+        if (bio != null && matrix.isActive())
+        {
             return bio.isAccessGranted(name, perm);
         }
         return true;
@@ -81,13 +94,18 @@ public class MatrixHelper {
      * @param player
      * @return
      */
-    public static boolean hasPermission(IInterdictionMatrix matrix, PlayerInteractEvent.Action action, EntityPlayer player) {
+    public static boolean hasPermission(IInterdictionMatrix matrix, PlayerInteractEvent.Action action, EntityPlayer player)
+    {
         boolean perm = true;
         if (matrix.getModuleCount(ItemModuleBlockAccess.class) > 0 && action == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK)
+        {
             perm = hasPermission(matrix, player.getGameProfile().getName(), Permission.BLOCK_ACCESS);
+        }
 
         if (perm && matrix.getModuleCount(ItemModuleBlockAlter.class) > 0 && (action == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK || player.getCurrentEquippedItem() != null))
+        {
             perm = hasPermission(matrix, player.getGameProfile().getName(), Permission.BLOCK_PLACE_ACCESS);
+        }
 
         return perm;
     }

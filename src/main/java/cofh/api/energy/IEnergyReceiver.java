@@ -9,7 +9,8 @@ import net.minecraftforge.common.util.ForgeDirection;
  *
  * @author King Lemming
  */
-public interface IEnergyReceiver extends IEnergyConnection {
+public interface IEnergyReceiver extends IEnergyConnection
+{
 
     /**
      * Add energy to an IEnergyReceiver, internal distribution is left entirely to the IEnergyReceiver.

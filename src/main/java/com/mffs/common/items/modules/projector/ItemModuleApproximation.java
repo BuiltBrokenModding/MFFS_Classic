@@ -11,10 +11,12 @@ import java.util.List;
 /**
  * @author Calclavia
  */
-public class ItemModuleApproximation extends BaseModule implements IRecipeContainer {
+public class ItemModuleApproximation extends BaseModule implements IRecipeContainer
+{
 
     @Override
-    public void genRecipes(List<IRecipe> list) {
+    public void genRecipes(List<IRecipe> list)
+    {
         list.add(newShapedRecipe(this,
                 " A ", "AFA", " A ",
                 'F', Item.itemRegistry.getObject("mffs:focusMatrix"),
@@ -24,7 +26,8 @@ public class ItemModuleApproximation extends BaseModule implements IRecipeContai
     /**
      * Constructor.
      */
-    public ItemModuleApproximation() {
+    public ItemModuleApproximation()
+    {
         setMaxStackSize(1);
         setCost(1F);
     }

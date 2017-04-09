@@ -16,18 +16,25 @@ import java.util.Set;
 /**
  * @author Calclavia
  */
-public class TileBiometricIdentifier extends TileFrequency implements IBiometricIdentifier {
+public class TileBiometricIdentifier extends TileFrequency implements IBiometricIdentifier
+{
 
     @Override
-    public boolean isAccessGranted(String paramString, Permission paramPermission) {
+    public boolean isAccessGranted(String paramString, Permission paramPermission)
+    {
         if (!isActive())
+        {
             return true;
+        }
         //TODO: Check for OP
-        for(int slot = 1; slot < getSizeInventory(); slot++) {
+        for (int slot = 1; slot < getSizeInventory(); slot++)
+        {
             ItemStack stack = getStackInSlot(slot);
-            if(stack != null) {
-                ICardIdentification card =(ICardIdentification) stack.getItem();
-                if(card.getUsername(stack).equals(paramString)) {
+            if (stack != null)
+            {
+                ICardIdentification card = (ICardIdentification) stack.getItem();
+                if (card.getUsername(stack).equals(paramString))
+                {
                     return card.hasPermission(stack, paramPermission);
                 }
             }
@@ -36,12 +43,14 @@ public class TileBiometricIdentifier extends TileFrequency implements IBiometric
     }
 
     @Override
-    public int getSizeInventory() {
+    public int getSizeInventory()
+    {
         return 37;
     }
 
     @Override
-    public int getInventoryStackLimit() {
+    public int getInventoryStackLimit()
+    {
         return 1;
     }
 
@@ -52,21 +61,26 @@ public class TileBiometricIdentifier extends TileFrequency implements IBiometric
      * @param stack
      */
     @Override
-    public boolean isItemValidForSlot(int slot, ItemStack stack) {
-        if(slot == 0)
+    public boolean isItemValidForSlot(int slot, ItemStack stack)
+    {
+        if (slot == 0)
+        {
             return stack.getItem() instanceof IItemFrequency;
+        }
         return stack.getItem() instanceof ICardIdentification;
     }
 
     @Override
-    public Set<IBiometricIdentifier> getBiometricIdentifiers() {
+    public Set<IBiometricIdentifier> getBiometricIdentifiers()
+    {
         Set<IBiometricIdentifier> set = new HashSet();
         set.add(this);
         return set;
     }
 
     @Override
-    public List<ItemStack> getRemovedItems(EntityPlayer entityPlayer) {
+    public List<ItemStack> getRemovedItems(EntityPlayer entityPlayer)
+    {
         List<ItemStack> stack = super.getRemovedItems(entityPlayer);
         stack.add(new ItemStack(ModularForcefieldSystem.biometricIdentifier));
         return stack;

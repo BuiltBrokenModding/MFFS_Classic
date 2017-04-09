@@ -13,7 +13,8 @@ import net.minecraft.tileentity.TileEntity;
 /**
  * @author Calclavia
  */
-public final class TileForceField extends TileEntity {
+public final class TileForceField extends TileEntity
+{
 
     /* Represents the item that is this block */
     public ItemStack camo;
@@ -27,7 +28,8 @@ public final class TileForceField extends TileEntity {
      * @return True if you want updateEntity() to be called, false if not
      */
     @Override
-    public boolean canUpdate() {
+    public boolean canUpdate()
+    {
         return false;
     }
 
@@ -35,11 +37,14 @@ public final class TileForceField extends TileEntity {
      * Overriden in a sign to provide the text.
      */
     @Override
-    public Packet getDescriptionPacket() {
+    public Packet getDescriptionPacket()
+    {
         NBTTagCompound tag = new NBTTagCompound();
         writeToNBT(tag);
-        if (getProj() != null) {
-            if (this.camo != null) {
+        if (getProj() != null)
+        {
+            if (this.camo != null)
+            {
                 tag.setTag("camo", camo.writeToNBT(new NBTTagCompound()));
             }
             tag.setTag("proj", projector.writeToNBT(new NBTTagCompound()));
@@ -57,17 +62,23 @@ public final class TileForceField extends TileEntity {
      * @param pkt The data packet
      */
     @Override
-    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
-        if (pkt.func_148857_g().hasKey("camo")) {
+    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
+    {
+        if (pkt.func_148857_g().hasKey("camo"))
+        {
             camo = ItemStack.loadItemStackFromNBT(pkt.func_148857_g().getCompoundTag("camo"));
         }
-        if (pkt.func_148857_g().hasKey("proj")) {
+        if (pkt.func_148857_g().hasKey("proj"))
+        {
             NBTTagCompound tag = pkt.func_148857_g().getCompoundTag("proj");
-            if (projector != null) {
+            if (projector != null)
+            {
                 projector.x = tag.getDouble("x");
                 projector.y = tag.getDouble("y");
                 projector.z = tag.getDouble("z");
-            } else {
+            }
+            else
+            {
                 setProjector(new Vector3D(tag));
             }
             worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
@@ -76,14 +87,18 @@ public final class TileForceField extends TileEntity {
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbt) {
+    public void writeToNBT(NBTTagCompound nbt)
+    {
         super.writeToNBT(nbt);
         if (getProj() != null)
+        {
             nbt.setTag("proj", projector.writeToNBT(new NBTTagCompound()));
+        }
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbt) {
+    public void readFromNBT(NBTTagCompound nbt)
+    {
         super.readFromNBT(nbt);
         projector = new Vector3D(nbt.getCompoundTag("proj"));
     }
@@ -93,10 +108,13 @@ public final class TileForceField extends TileEntity {
      *
      * @param vec
      */
-    public void setProjector(Vector3D vec) {
+    public void setProjector(Vector3D vec)
+    {
         this.projector = vec;
         if (!this.worldObj.isRemote)
+        {
             refresh();
+        }
     }
 
     /**
@@ -104,13 +122,18 @@ public final class TileForceField extends TileEntity {
      *
      * @return
      */
-    public TileForceFieldProjector getProj() {
+    public TileForceFieldProjector getProj()
+    {
         TileForceFieldProjector proj = findProj();
         if (proj != null)
+        {
             return proj;
+        }
 
         if (!worldObj.isRemote)
+        {
             worldObj.setBlockToAir(xCoord, yCoord, zCoord);
+        }
         return null;
     }
 
@@ -119,11 +142,15 @@ public final class TileForceField extends TileEntity {
      *
      * @return
      */
-    public TileForceFieldProjector findProj() {
-        if (this.projector != null) {
+    public TileForceFieldProjector findProj()
+    {
+        if (this.projector != null)
+        {
             TileEntity entity = projector.getTileEntity(getWorldObj());
-            if (entity != null && entity instanceof TileForceFieldProjector) {
-                if (worldObj.isRemote || ((TileForceFieldProjector) entity).getCalculatedField().contains(new Vector3D(this))) {
+            if (entity != null && entity instanceof TileForceFieldProjector)
+            {
+                if (worldObj.isRemote || ((TileForceFieldProjector) entity).getCalculatedField().contains(new Vector3D(this)))
+                {
                     return (TileForceFieldProjector) entity;
                 }
             }
@@ -131,20 +158,26 @@ public final class TileForceField extends TileEntity {
         return null;
     }
 
-    public Vector3D getProjLoc() {
+    public Vector3D getProjLoc()
+    {
         return this.projector;
     }
 
     /**
      * Refreshes all attributes of this entity.
      */
-    private void refresh() {
+    private void refresh()
+    {
         TileForceFieldProjector proj = findProj();
-        if (proj != null) {
-            if (proj.getModuleCount(ItemModuleCamouflage.class) > 0) {
+        if (proj != null)
+        {
+            if (proj.getModuleCount(ItemModuleCamouflage.class) > 0)
+            {
                 //TODO: CustomMode
-                for (ItemStack stack : proj.getFilterStacks()) {
-                    if (stack != null && stack.getItem() instanceof ItemBlock) {
+                for (ItemStack stack : proj.getFilterStacks())
+                {
+                    if (stack != null && stack.getItem() instanceof ItemBlock)
+                    {
                         this.camo = stack;
                         return;
                     }

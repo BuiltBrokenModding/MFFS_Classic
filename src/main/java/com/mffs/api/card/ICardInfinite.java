@@ -6,5 +6,6 @@ package com.mffs.api.card;
  *
  * @author Calclavia
  */
-public interface ICardInfinite {
+public interface ICardInfinite
+{
 }

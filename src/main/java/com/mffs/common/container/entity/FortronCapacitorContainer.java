@@ -11,13 +11,15 @@ import net.minecraft.entity.player.EntityPlayer;
 /**
  * @author Calclavia
  */
-public final class FortronCapacitorContainer extends PlayerContainer {
+public final class FortronCapacitorContainer extends PlayerContainer
+{
 
     /**
      * @param player
      * @param cap
      */
-    public FortronCapacitorContainer(EntityPlayer player, TileFortronCapacitor cap) {
+    public FortronCapacitorContainer(EntityPlayer player, TileFortronCapacitor cap)
+    {
         super(player, cap);
 
         addSlotToContainer(new SlotSpecific(cap, 0, 9, 74, ItemCardInfinite.class));

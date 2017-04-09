@@ -8,7 +8,8 @@ import org.lwjgl.input.Mouse;
  * Created by Poopsicle360 on 7/16/2016.
  */
 @SideOnly(Side.CLIENT)
-public class GuiScroll {
+public class GuiScroll
+{
 
     /* Bar expansion */
     private float bar_expansion;
@@ -17,25 +18,28 @@ public class GuiScroll {
     private int height;
 
     /**
-     *
      * @param height
      */
-    public GuiScroll(int height) {
+    public GuiScroll(int height)
+    {
         this.height = height;
     }
 
     /**
      * Handles mouse input.
      */
-    public void handleMouseInput() {
+    public void handleMouseInput()
+    {
         int scroll = Mouse.getEventDWheel();
-        if(scroll != 0) {
+        if (scroll != 0)
+        {
             scroll = Math.min(Math.max(scroll, -1), 1);
             bar_expansion = bar_expansion - (float) scroll / height;
         }
     }
 
-    public float getBar() {
+    public float getBar()
+    {
         return Math.min(Math.max(bar_expansion, 0), 1);
     }
 }

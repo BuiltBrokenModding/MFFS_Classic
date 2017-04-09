@@ -10,7 +10,8 @@ import net.minecraft.tileentity.TileEntity;
 /**
  * Created by pwaln on 6/16/2016.
  */
-public abstract class TileEntityMessage implements IMessage {
+public abstract class TileEntityMessage implements IMessage
+{
 
     /* Location index for entity */
     protected int x, y, z;
@@ -18,13 +19,15 @@ public abstract class TileEntityMessage implements IMessage {
     /**
      * Default constructor for class instance.
      */
-    public TileEntityMessage() {
+    public TileEntityMessage()
+    {
     }
 
     /**
      * @param entity
      */
-    public TileEntityMessage(TileEntity entity) {
+    public TileEntityMessage(TileEntity entity)
+    {
         this.x = entity.xCoord;
         this.y = entity.yCoord;
         this.z = entity.zCoord;
@@ -35,7 +38,8 @@ public abstract class TileEntityMessage implements IMessage {
      * @param y
      * @param z
      */
-    public TileEntityMessage(int x, int y, int z) {
+    public TileEntityMessage(int x, int y, int z)
+    {
         this.x = x;
         this.y = y;
         this.z = z;
@@ -47,7 +51,8 @@ public abstract class TileEntityMessage implements IMessage {
      * @param buf
      */
     @Override
-    public void fromBytes(ByteBuf buf) {
+    public void fromBytes(ByteBuf buf)
+    {
         x = buf.readInt();
         y = buf.readInt();
         z = buf.readInt();
@@ -59,7 +64,8 @@ public abstract class TileEntityMessage implements IMessage {
      * @param buf
      */
     @Override
-    public void toBytes(ByteBuf buf) {
+    public void toBytes(ByteBuf buf)
+    {
         buf.writeInt(x);
         buf.writeInt(y);
         buf.writeInt(z);
@@ -68,7 +74,8 @@ public abstract class TileEntityMessage implements IMessage {
     /**
      * Server Version.
      */
-    public static class ServerHandler<PACKET extends TileEntityMessage> implements IMessageHandler<PACKET, IMessage> {
+    public static class ServerHandler<PACKET extends TileEntityMessage> implements IMessageHandler<PACKET, IMessage>
+    {
         /**
          * Called when a message is received of the appropriate type. You can optionally return a reply message, or null if no reply
          * is needed.
@@ -78,9 +85,11 @@ public abstract class TileEntityMessage implements IMessage {
          * @return an optional return message
          */
         @Override
-        public IMessage onMessage(PACKET message, MessageContext ctx) {
+        public IMessage onMessage(PACKET message, MessageContext ctx)
+        {
             TileEntity entity = ctx.getServerHandler().playerEntity.worldObj.getTileEntity(message.x, message.y, message.z);
-            if (entity instanceof IPacketReceiver_Entity) {
+            if (entity instanceof IPacketReceiver_Entity)
+            {
                 return ((IPacketReceiver_Entity) entity).handleMessage(message);
             }
             return null;
@@ -90,7 +99,8 @@ public abstract class TileEntityMessage implements IMessage {
     /**
      * FortronSync handler.
      */
-    public static class ClientHandler<PACKET extends TileEntityMessage> implements IMessageHandler<PACKET, IMessage> {
+    public static class ClientHandler<PACKET extends TileEntityMessage> implements IMessageHandler<PACKET, IMessage>
+    {
         /**
          * Called when a message is received of the appropriate type. You can optionally return a reply message, or null if no reply
          * is needed.
@@ -100,9 +110,11 @@ public abstract class TileEntityMessage implements IMessage {
          * @return an optional return message
          */
         @Override
-        public IMessage onMessage(PACKET message, MessageContext ctx) {
+        public IMessage onMessage(PACKET message, MessageContext ctx)
+        {
             TileEntity entity = Minecraft.getMinecraft().thePlayer.worldObj.getTileEntity(message.x, message.y, message.z);
-            if (entity instanceof IPacketReceiver_Entity) {
+            if (entity instanceof IPacketReceiver_Entity)
+            {
                 return ((IPacketReceiver_Entity) entity).handleMessage(message);
             }
             return null;

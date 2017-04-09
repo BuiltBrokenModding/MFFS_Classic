@@ -21,7 +21,8 @@ import java.util.Set;
 /**
  * @author Calclavia
  */
-public abstract class BaseModule extends Item implements IModule, IRecipeContainer {
+public abstract class BaseModule extends Item implements IModule, IRecipeContainer
+{
 
     /* Current fortronCost */
     private float fortronCost = 0.5F;
@@ -35,11 +36,13 @@ public abstract class BaseModule extends Item implements IModule, IRecipeContain
      * @param dummy
      */
     @Override
-    public void addInformation(ItemStack stack, EntityPlayer usr, List list, boolean dummy) {
-        list.add(EnumChatFormatting.BLUE+LanguageRegistry.instance().getStringLocalization("info.item.fortron") + " " + UnitDisplay.getDisplay(getFortronCost(1.0F) * 20.0F, UnitDisplay.Unit.LITER) + "/s");
+    public void addInformation(ItemStack stack, EntityPlayer usr, List list, boolean dummy)
+    {
+        list.add(EnumChatFormatting.BLUE + LanguageRegistry.instance().getStringLocalization("info.item.fortron") + " " + UnitDisplay.getDisplay(getFortronCost(1.0F) * 20.0F, UnitDisplay.Unit.LITER) + "/s");
 
         String tooltip = LanguageRegistry.instance().getStringLocalization(getUnlocalizedName() + ".tooltip");
-        if (tooltip != null && tooltip.length() > 0) {
+        if (tooltip != null && tooltip.length() > 0)
+        {
             list.addAll(Util.sepString(tooltip, 30));
         }
     }
@@ -50,7 +53,8 @@ public abstract class BaseModule extends Item implements IModule, IRecipeContain
      * @return
      */
     @Override
-    public Set<Vector3D> onPreCalculate(IFieldInteraction projector, Set<Vector3D> position) {
+    public Set<Vector3D> onPreCalculate(IFieldInteraction projector, Set<Vector3D> position)
+    {
 
         return position;
     }
@@ -63,7 +67,8 @@ public abstract class BaseModule extends Item implements IModule, IRecipeContain
      * @param position  A set of positions.
      */
     @Override
-    public void onCalculate(IFieldInteraction projector, Set<Vector3D> position) {
+    public void onCalculate(IFieldInteraction projector, Set<Vector3D> position)
+    {
     }
 
 
@@ -75,18 +80,21 @@ public abstract class BaseModule extends Item implements IModule, IRecipeContain
      * @return
      */
     @Override
-    public boolean onProject(IProjector projector, Set<Vector3D> fields) {
+    public boolean onProject(IProjector projector, Set<Vector3D> fields)
+    {
         return false;
     }
 
 
     @Override
-    public int onProject(IProjector projector, Vector3D position) {
+    public int onProject(IProjector projector, Vector3D position)
+    {
         return 0;
     }
 
     @Override
-    public boolean onCollideWithForcefield(World world, int x, int y, int z, Entity entity, ItemStack moduleStack) {
+    public boolean onCollideWithForcefield(World world, int x, int y, int z, Entity entity, ItemStack moduleStack)
+    {
         return false;
     }
 
@@ -94,23 +102,27 @@ public abstract class BaseModule extends Item implements IModule, IRecipeContain
      * @param cost
      * @return
      */
-    public BaseModule setCost(float cost) {
+    public BaseModule setCost(float cost)
+    {
         this.fortronCost = cost;
         return this;
     }
 
     @Override
-    public float getFortronCost(float amplifier) {
+    public float getFortronCost(float amplifier)
+    {
         return this.fortronCost;
     }
 
     @Override
-    public boolean onDestroy(IProjector projector, Set<Vector3D> field) {
+    public boolean onDestroy(IProjector projector, Set<Vector3D> field)
+    {
         return false;
     }
 
     @Override
-    public boolean requireTicks(ItemStack moduleStack) {
+    public boolean requireTicks(ItemStack moduleStack)
+    {
         return false;
     }
 }

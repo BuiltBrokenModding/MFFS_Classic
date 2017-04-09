@@ -11,13 +11,15 @@ import net.minecraftforge.event.world.WorldEvent;
  */
 @Cancelable
 public class EventStabilize
-        extends WorldEvent {
+        extends WorldEvent
+{
     public final ItemStack itemStack;
     public final int x;
     public final int y;
     public final int z;
 
-    public EventStabilize(World world, int x, int y, int z, ItemStack itemStack) {
+    public EventStabilize(World world, int x, int y, int z, ItemStack itemStack)
+    {
         super(world);
         this.x = x;
         this.y = y;

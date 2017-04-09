@@ -12,7 +12,8 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 /**
  * @author Calclavia
  */
-public class BlockBiometricIdentifier extends MFFSMachine implements IPostInit {
+public class BlockBiometricIdentifier extends MFFSMachine implements IPostInit
+{
 
     /**
      * Returns a new instance of a block's tile entity class. Called on placing the block.
@@ -21,12 +22,14 @@ public class BlockBiometricIdentifier extends MFFSMachine implements IPostInit {
      * @param p_149915_2_
      */
     @Override
-    public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_) {
+    public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_)
+    {
         return new TileBiometricIdentifier();
     }
 
     @Override
-    public void onPostInit() {
+    public void onPostInit()
+    {
         ShapedOreRecipe recipe = new ShapedOreRecipe(this, "FSF", "SCS", "FSF",
                 'F', Item.itemRegistry.getObject("mffs:focusMatrix"),
                 'S', UniversalRecipe.PRIMARY_METAL.get(),

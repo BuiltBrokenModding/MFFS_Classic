@@ -15,7 +15,8 @@ import org.lwjgl.opengl.GL11;
  * @author Calclavia
  */
 @SideOnly(Side.CLIENT)
-public class RenderFortronCapacitor extends TileEntitySpecialRenderer {
+public class RenderFortronCapacitor extends TileEntitySpecialRenderer
+{
 
     /**
      * Resources that will be used.
@@ -27,7 +28,8 @@ public class RenderFortronCapacitor extends TileEntitySpecialRenderer {
     public static final ModelFortronCapacitor MODEL = new ModelFortronCapacitor();
 
     @Override
-    public void renderTileEntityAt(TileEntity t, double x, double y, double z, float f) {
+    public void renderTileEntityAt(TileEntity t, double x, double y, double z, float f)
+    {
         TileMFFS tileEntity = (TileMFFS) t;
         FMLClientHandler.instance().getClient().renderEngine.bindTexture(tileEntity.isActive() ? TEXTURE_ON : TEXTURE_OFF);
         GL11.glPushMatrix();

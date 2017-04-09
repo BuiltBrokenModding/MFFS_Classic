@@ -20,12 +20,14 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 /**
  * @author Calclavia
  */
-public class BlockForceFieldProjector extends MFFSMachine implements IPostInit {
+public class BlockForceFieldProjector extends MFFSMachine implements IPostInit
+{
 
     /**
      * Force field block.
      */
-    public BlockForceFieldProjector() {
+    public BlockForceFieldProjector()
+    {
         setBlockBounds(0, 0, 0, 1, 0.8F, 1);
     }
 
@@ -36,28 +38,33 @@ public class BlockForceFieldProjector extends MFFSMachine implements IPostInit {
      * @param p_149915_2_
      */
     @Override
-    public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_) {
+    public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_)
+    {
         return new TileForceFieldProjector();
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public int getRenderType() {
+    public int getRenderType()
+    {
         return RenderBlockHandler.RENDER_ID;
     }
 
     @Override
-    public void registerBlockIcons(IIconRegister reg) {
+    public void registerBlockIcons(IIconRegister reg)
+    {
         this.blockIcon = reg.registerIcon(ModularForcefieldSystem.MODID + ":machine");
     }
 
     @Override
-    public IIcon getIcon(IBlockAccess blockAccess, int x, int y, int z, int side) {
+    public IIcon getIcon(IBlockAccess blockAccess, int x, int y, int z, int side)
+    {
         return this.blockIcon;
     }
 
     @Override
-    public boolean renderAsNormalBlock() {
+    public boolean renderAsNormalBlock()
+    {
         return false;
     }
 
@@ -71,11 +78,14 @@ public class BlockForceFieldProjector extends MFFSMachine implements IPostInit {
      * @return The light value
      */
     @Override
-    public int getLightValue(IBlockAccess world, int x, int y, int z) {
+    public int getLightValue(IBlockAccess world, int x, int y, int z)
+    {
         TileEntity tileEntity = world.getTileEntity(x, y, z);
 
-        if ((tileEntity instanceof TileForceFieldProjector)) {
-            if (((TileForceFieldProjector) tileEntity).getMode() != null) {
+        if ((tileEntity instanceof TileForceFieldProjector))
+        {
+            if (((TileForceFieldProjector) tileEntity).getMode() != null)
+            {
                 return 10;
             }
         }
@@ -84,7 +94,8 @@ public class BlockForceFieldProjector extends MFFSMachine implements IPostInit {
     }
 
     @Override
-    public void onPostInit() {
+    public void onPostInit()
+    {
         ShapedOreRecipe recipe = new ShapedOreRecipe(this, " D ", "SSS", "FBF",
                 'F', Item.itemRegistry.getObject("mffs:focusMatrix"),
                 'S', UniversalRecipe.PRIMARY_METAL.get(),

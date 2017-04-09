@@ -7,7 +7,8 @@ import io.netty.buffer.ByteBuf;
 /**
  * Created by pwaln on 6/14/2016.
  */
-public class FortronSync extends TileEntityMessage {
+public class FortronSync extends TileEntityMessage
+{
 
     /* Amount of fortron to be sent */
     public int amount, capacity;
@@ -15,11 +16,13 @@ public class FortronSync extends TileEntityMessage {
     /**
      * Default Constructor
      */
-    public FortronSync() {
+    public FortronSync()
+    {
         super();
     }
 
-    public FortronSync(TileFortron tile) {
+    public FortronSync(TileFortron tile)
+    {
         super(tile);
         amount = tile.getTank().getFluidAmount();
         capacity = tile.getTank().getCapacity();
@@ -31,7 +34,8 @@ public class FortronSync extends TileEntityMessage {
      * @param buf
      */
     @Override
-    public void fromBytes(ByteBuf buf) {
+    public void fromBytes(ByteBuf buf)
+    {
         super.fromBytes(buf);
         amount = buf.readInt();
         capacity = buf.readInt();
@@ -43,7 +47,8 @@ public class FortronSync extends TileEntityMessage {
      * @param buf
      */
     @Override
-    public void toBytes(ByteBuf buf) {
+    public void toBytes(ByteBuf buf)
+    {
         super.toBytes(buf);
         buf.writeInt(amount);
         buf.writeInt(capacity);
@@ -52,5 +57,7 @@ public class FortronSync extends TileEntityMessage {
     /**
      * FortronSync handler.
      */
-    public static class ClientHandler extends TileEntityMessage.ClientHandler<FortronSync> {}
+    public static class ClientHandler extends TileEntityMessage.ClientHandler<FortronSync>
+    {
+    }
 }

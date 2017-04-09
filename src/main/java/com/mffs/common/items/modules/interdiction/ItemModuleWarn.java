@@ -17,10 +17,12 @@ import java.util.List;
 /**
  * @author Calclavia
  */
-public class ItemModuleWarn extends MatrixModule {
+public class ItemModuleWarn extends MatrixModule
+{
 
     @Override
-    public void genRecipes(List<IRecipe> list) {
+    public void genRecipes(List<IRecipe> list)
+    {
         list.add(newShapedRecipe(this,
                 "JFJ",
                 'J', Blocks.jukebox,
@@ -28,12 +30,15 @@ public class ItemModuleWarn extends MatrixModule {
     }
 
     @Override
-    public boolean onDefend(IInterdictionMatrix matri, EntityLivingBase entity) {
-        if (entity instanceof EntityPlayer) {
+    public boolean onDefend(IInterdictionMatrix matri, EntityLivingBase entity)
+    {
+        if (entity instanceof EntityPlayer)
+        {
             EntityPlayer user = (EntityPlayer) entity;
             IBiometricIdentifier bio = matri.getBiometricIdentifier();
             if (bio != null &&
-                    bio.isAccessGranted(user.getGameProfile().getName(), Permission.BYPASS_DEFENSE)) {
+                    bio.isAccessGranted(user.getGameProfile().getName(), Permission.BYPASS_DEFENSE))
+            {
                 return false;
             }
             user.addChatMessage(new ChatComponentText("[" + matri.getInventoryName() + "] " + LanguageRegistry.instance().getStringLocalization("message.moduleWarn.warn")));

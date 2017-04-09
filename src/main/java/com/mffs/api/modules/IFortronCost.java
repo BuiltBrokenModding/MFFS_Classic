@@ -6,6 +6,7 @@ package com.mffs.api.modules;
  *
  * @author Calclavia
  */
-public interface IFortronCost {
+public interface IFortronCost
+{
     float getFortronCost(float paramFloat);
 }

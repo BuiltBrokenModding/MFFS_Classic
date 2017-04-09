@@ -38,7 +38,8 @@ import java.util.Random;
 /**
  * Created by pwaln on 6/24/2016.
  */
-public class BlockForceField extends Block implements ITileEntityProvider, IForceFieldBlock {
+public class BlockForceField extends Block implements ITileEntityProvider, IForceFieldBlock
+{
 
     /**
      * Force Field Block to reference!
@@ -48,7 +49,8 @@ public class BlockForceField extends Block implements ITileEntityProvider, IForc
     /**
      * Default method.
      */
-    public BlockForceField() {
+    public BlockForceField()
+    {
         super(Material.glass);
         setResistance(999.0F);
         this.setBlockUnbreakable();
@@ -57,22 +59,29 @@ public class BlockForceField extends Block implements ITileEntityProvider, IForc
 
 
     @Override
-    public IProjector getProjector(IBlockAccess access, int x, int y, int z) {
+    public IProjector getProjector(IBlockAccess access, int x, int y, int z)
+    {
         TileEntity tile = access.getTileEntity(x, y, z);
-        if (tile instanceof TileForceField) {
+        if (tile instanceof TileForceField)
+        {
             return ((TileForceField) tile).getProj();
         }
         return null;
     }
 
     @Override
-    public void weakenForceField(World world, int x, int y, int z, int joules) {
+    public void weakenForceField(World world, int x, int y, int z, int joules)
+    {
         IProjector proj = getProjector(world, x, y, z);
         if (proj != null)
+        {
             ((IFortronStorage) proj).provideFortron(joules, true);
+        }
 
         if (!world.isRemote)
+        {
             world.setBlockToAir(x, y, z);
+        }
     }
 
     /**
@@ -80,7 +89,8 @@ public class BlockForceField extends Block implements ITileEntityProvider, IForc
      * adjacent blocks and also whether the player can attach torches, redstone wire, etc to this block.
      */
     @Override
-    public boolean isOpaqueCube() {
+    public boolean isOpaqueCube()
+    {
         return false;
     }
 
@@ -88,7 +98,8 @@ public class BlockForceField extends Block implements ITileEntityProvider, IForc
      * If this block doesn't render as an ordinary block it will return False (examples: signs, buttons, stairs, etc)
      */
     @Override
-    public boolean renderAsNormalBlock() {
+    public boolean renderAsNormalBlock()
+    {
         return false;
     }
 
@@ -96,7 +107,8 @@ public class BlockForceField extends Block implements ITileEntityProvider, IForc
      * Return true if a player with Silk Touch can harvest this block directly, and not its normal drops.
      */
     @Override
-    protected boolean canSilkHarvest() {
+    protected boolean canSilkHarvest()
+    {
         return false;
     }
 
@@ -106,16 +118,20 @@ public class BlockForceField extends Block implements ITileEntityProvider, IForc
      * @param p_149745_1_
      */
     @Override
-    public int quantityDropped(Random p_149745_1_) {
+    public int quantityDropped(Random p_149745_1_)
+    {
         return 0;
     }
 
     @SideOnly(Side.CLIENT)
-    public IIcon getIcon(IBlockAccess access, int x, int y, int z, int side) {
+    public IIcon getIcon(IBlockAccess access, int x, int y, int z, int side)
+    {
         TileEntity tile = access.getTileEntity(x, y, z);
-        if (tile instanceof TileForceField) {
+        if (tile instanceof TileForceField)
+        {
             ItemStack camo = ((TileForceField) tile).camo;
-            if (camo != null && camo.getItem() instanceof ItemBlock) {
+            if (camo != null && camo.getItem() instanceof ItemBlock)
+            {
                 ItemBlock block = (ItemBlock) camo.getItem();
                 return block.field_150939_a.getIcon(side, camo.getItemDamage());
             }
@@ -133,11 +149,14 @@ public class BlockForceField extends Block implements ITileEntityProvider, IForc
      * @param z
      */
     @Override
-    public int colorMultiplier(IBlockAccess world, int x, int y, int z) {
+    public int colorMultiplier(IBlockAccess world, int x, int y, int z)
+    {
         TileEntity tile = world.getTileEntity(x, y, z);
-        if (tile instanceof TileForceField) {
+        if (tile instanceof TileForceField)
+        {
             ItemStack stack = ((TileForceField) tile).camo;
-            if (stack != null && stack.getItem() instanceof ItemBlock) {
+            if (stack != null && stack.getItem() instanceof ItemBlock)
+            {
                 return ((ItemBlock) stack.getItem()).field_150939_a.colorMultiplier(world, x, y, z);
             }
         }
@@ -154,11 +173,15 @@ public class BlockForceField extends Block implements ITileEntityProvider, IForc
      * @param entity
      */
     @Override
-    public void onBlockClicked(World world, int x, int y, int z, EntityPlayer entity) {
+    public void onBlockClicked(World world, int x, int y, int z, EntityPlayer entity)
+    {
         IProjector proj = getProjector(world, x, y, z);
-        if (proj != null) {
-            for (ItemStack stack : proj.getModuleStacks(proj.getModuleSlots())) {
-                if (((IModule) stack.getItem()).onCollideWithForcefield(world, x, y, z, entity, stack)) {
+        if (proj != null)
+        {
+            for (ItemStack stack : proj.getModuleStacks(proj.getModuleSlots()))
+            {
+                if (((IModule) stack.getItem()).onCollideWithForcefield(world, x, y, z, entity, stack))
+                {
                     return;
                 }
             }
@@ -175,35 +198,54 @@ public class BlockForceField extends Block implements ITileEntityProvider, IForc
      * @param entity
      */
     @Override
-    public void onEntityCollidedWithBlock(World world, int x, int y, int z, Entity entity) {
+    public void onEntityCollidedWithBlock(World world, int x, int y, int z, Entity entity)
+    {
         if (world.isRemote)
+        {
             return;
+        }
 
         TileEntity tile = world.getTileEntity(x, y, z);
-        if (tile instanceof TileForceField) {
+        if (tile instanceof TileForceField)
+        {
             IProjector proj = getProjector(world, x, y, z);
             if (proj == null)
+            {
                 return;
+            }
 
             for (ItemStack module : proj.getModuleStacks(proj.getModuleSlots()))
+            {
                 if (((IModule) module.getItem()).onCollideWithForcefield(world, x, y, z, entity, module))
+                {
                     return;
+                }
+            }
 
             if (Vector3D.distance(tile, entity.posX + .4, entity.posY + .4, entity.posZ + .4) >= .5)
+            {
                 return;
+            }
 
             IBiometricIdentifier bio = proj.getBiometricIdentifier();
-            if (entity instanceof EntityLiving) {
+            if (entity instanceof EntityLiving)
+            {
                 ((EntityLiving) entity).addPotionEffect(new PotionEffect(Potion.confusion.getId(), 80, 3));
                 ((EntityLiving) entity).addPotionEffect(new PotionEffect(Potion.moveSlowdown.getId(), 20, 1));
-                if (entity instanceof EntityPlayer) {
+                if (entity instanceof EntityPlayer)
+                {
                     EntityPlayer pl = (EntityPlayer) entity;
-                    if (pl.isSneaking()) {
+                    if (pl.isSneaking())
+                    {
                         if (pl.capabilities.isCreativeMode)
+                        {
                             return;
+                        }
 
                         if (bio != null && bio.isAccessGranted(pl.getGameProfile().getName(), Permission.WARP))
+                        {
                             return;
+                        }
                     }
                     entity.attackEntityFrom(ItemModuleShock.SHOCK_SOURCE, 100);
                 }
@@ -221,18 +263,25 @@ public class BlockForceField extends Block implements ITileEntityProvider, IForc
      * @param z
      */
     @Override
-    public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z) {
+    public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z)
+    {
         IProjector proj = getProjector(world, x, y, z);
-        if(proj != null) {
+        if (proj != null)
+        {
             IBiometricIdentifier bio = proj.getBiometricIdentifier();
             List<EntityPlayer> entities = world.getEntitiesWithinAABB(EntityPlayer.class, AxisAlignedBB.getBoundingBox(x, y, z, x + 1, y + 0.9D, z + 1));
-            for(EntityPlayer pl : entities) {
-                if(pl == null)
+            for (EntityPlayer pl : entities)
+            {
+                if (pl == null)
+                {
                     continue;
+                }
 
-                if(pl.isSneaking() &&
+                if (pl.isSneaking() &&
                         (pl.capabilities.isCreativeMode || bio != null && bio.isAccessGranted(pl.getGameProfile().getName(), Permission.WARP)))
+                {
                     return null;
+                }
             }
         }
         return AxisAlignedBB.getBoundingBox(x + 0.0625, y + 0.0625, z + .0625, x + .9375, y + .9375, z + .9375);
@@ -248,25 +297,34 @@ public class BlockForceField extends Block implements ITileEntityProvider, IForc
      * @return The light value
      */
     @Override
-    public int getLightValue(IBlockAccess world, int x, int y, int z) {
+    public int getLightValue(IBlockAccess world, int x, int y, int z)
+    {
         TileEntity tile = world.getTileEntity(x, y, z);
-        if (tile instanceof TileForceField) {
+        if (tile instanceof TileForceField)
+        {
             IProjector proj = ((TileForceField) tile).findProj();
             if (proj != null)
+            {
                 return Math.min(proj.getModuleCount(ItemModuleGlow.class), 64) / 64 * 15;
+            }
         }
         return 0;
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public boolean shouldSideBeRendered(IBlockAccess world, int x, int y, int z, int p_149646_5_) {
+    public boolean shouldSideBeRendered(IBlockAccess world, int x, int y, int z, int p_149646_5_)
+    {
         TileEntity tile = world.getTileEntity(x, y, z);
-        if (tile instanceof TileForceField) {
-            ItemStack stack = ((TileForceField)tile).camo;
-            try {
+        if (tile instanceof TileForceField)
+        {
+            ItemStack stack = ((TileForceField) tile).camo;
+            try
+            {
                 return stack != null && ((ItemBlock) stack.getItem()).field_150939_a.shouldSideBeRendered(world, x, y, z, p_149646_5_);
-            } catch(Exception e) {
+            }
+            catch (Exception e)
+            {
                 System.out.println("Side Render Error: ForceFieldBlock");
                 e.printStackTrace();
                 return true;
@@ -277,12 +335,14 @@ public class BlockForceField extends Block implements ITileEntityProvider, IForc
 
     @Override
     @SideOnly(Side.CLIENT)
-    public int getRenderType() {
+    public int getRenderType()
+    {
         return SettingConfiguration.USE_FORCEFIELD_RENDERER ? RenderForceFieldHandler.RENDER_ID : super.getRenderType();
     }
 
     @Override
-    public void registerBlockIcons(IIconRegister reg) {
+    public void registerBlockIcons(IIconRegister reg)
+    {
         this.blockIcon = reg.registerIcon(ModularForcefieldSystem.MODID + ":forceField");
     }
 
@@ -290,7 +350,8 @@ public class BlockForceField extends Block implements ITileEntityProvider, IForc
      * Returns which pass should this block be rendered on. 0 for solids and 1 for alpha
      */
     @Override
-    public int getRenderBlockPass() {
+    public int getRenderBlockPass()
+    {
         return 1;
     }
 
@@ -301,7 +362,8 @@ public class BlockForceField extends Block implements ITileEntityProvider, IForc
      * @param p_149915_2_
      */
     @Override
-    public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_) {
+    public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_)
+    {
         return new TileForceField();
     }
 }

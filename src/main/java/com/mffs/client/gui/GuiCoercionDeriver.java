@@ -20,13 +20,16 @@ import org.lwjgl.opengl.GL11;
  * @author Calclavia
  */
 @SideOnly(Side.CLIENT)
-public class GuiCoercionDeriver extends MFFSGui {
+public class GuiCoercionDeriver extends MFFSGui
+{
 
-    public GuiCoercionDeriver(EntityPlayer player, TileCoercionDeriver tileentity) {
+    public GuiCoercionDeriver(EntityPlayer player, TileCoercionDeriver tileentity)
+    {
         super(new CoercionDeriverContainer(player, tileentity), tileentity);
     }
 
-    public void initGui() {
+    public void initGui()
+    {
         this.textFieldPos = new Point(30.0D, 43.0D);
         super.initGui();
         //this.buttonList.add(new GuiButton(1, this.width / 2 - 10, this.height / 2 - 28, 58, 20, LanguageRegistry.instance().getStringLocalization("gui.deriver.derive")));
@@ -37,13 +40,15 @@ public class GuiCoercionDeriver extends MFFSGui {
      *
      * @return
      */
-    private TileCoercionDeriver getEntity() {
+    private TileCoercionDeriver getEntity()
+    {
         return ((TileCoercionDeriver) this.frequencyTile);
     }
 
 
     @Override
-    protected void drawGuiContainerForegroundLayer(int x, int y) {
+    protected void drawGuiContainerForegroundLayer(int x, int y)
+    {
         TileCoercionDeriver entity = getEntity();
         this.fontRendererObj.drawString(entity.getInventoryName(), this.xSize / 2 - this.fontRendererObj.getStringWidth(entity.getInventoryName()) / 2, 6, 4210752);
 
@@ -76,7 +81,8 @@ public class GuiCoercionDeriver extends MFFSGui {
 
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float f, int x, int y) {
+    protected void drawGuiContainerBackgroundLayer(float f, int x, int y)
+    {
         TileCoercionDeriver entity = getEntity();
         super.drawGuiContainerBackgroundLayer(f, x, y);
 
@@ -100,9 +106,11 @@ public class GuiCoercionDeriver extends MFFSGui {
 
 
     @Override
-    protected void actionPerformed(GuiButton guibutton) {
+    protected void actionPerformed(GuiButton guibutton)
+    {
         super.actionPerformed(guibutton);
-        if (guibutton.id == 1) {
+        if (guibutton.id == 1)
+        {
             ModularForcefieldSystem.channel.sendToServer(new EntityToggle(getEntity(), EntityToggle.TOGGLE_STATE));
         }
     }

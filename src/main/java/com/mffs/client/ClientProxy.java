@@ -21,19 +21,22 @@ import net.minecraftforge.client.MinecraftForgeClient;
 /**
  * Created by pwaln on 5/22/2016.
  */
-public class ClientProxy extends CommonProxy {
+public class ClientProxy extends CommonProxy
+{
     /**
      * Called before the main INITIALIZE.
      */
     @Override
-    public void preInit() {
+    public void preInit()
+    {
     }
 
     /**
      * Called along with the main Initialize.
      */
     @Override
-    public void init() {
+    public void init()
+    {
         RenderingRegistry.registerBlockHandler(new RenderBlockHandler());
         RenderingRegistry.registerBlockHandler(new RenderForceFieldHandler());
         MinecraftForgeClient.registerItemRenderer((Item) Item.itemRegistry.getObject(ModularForcefieldSystem.MODID + ":cardID"), new RenderIDCard());
@@ -46,7 +49,8 @@ public class ClientProxy extends CommonProxy {
      * Called after the main Init.
      */
     @Override
-    public void postInit() {
+    public void postInit()
+    {
     }
 
     /**
@@ -63,35 +67,51 @@ public class ClientProxy extends CommonProxy {
      * @return A GuiScreen/Container to be displayed to the user, null if none.
      */
     @Override
-    public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
-        if(ID == 0) {
+    public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
+    {
+        if (ID == 0)
+        {
             TileEntity tileEntity = world.getTileEntity(x, y, z);
-            if (tileEntity != null) {
-                if (tileEntity instanceof TileCoercionDeriver) {
+            if (tileEntity != null)
+            {
+                if (tileEntity instanceof TileCoercionDeriver)
+                {
                     return new GuiCoercionDeriver(player, (TileCoercionDeriver) tileEntity);
-                } else if (tileEntity instanceof TileForceFieldProjector) {
+                }
+                else if (tileEntity instanceof TileForceFieldProjector)
+                {
                     return new GuiForceFieldProjector(player, (TileForceFieldProjector) tileEntity);
-                } else if (tileEntity instanceof TileFortronCapacitor) {
+                }
+                else if (tileEntity instanceof TileFortronCapacitor)
+                {
                     return new GuiFortronCapacitor(player, (TileFortronCapacitor) tileEntity);
-                } else if (tileEntity instanceof TileBiometricIdentifier) {
+                }
+                else if (tileEntity instanceof TileBiometricIdentifier)
+                {
                     return new GuiBiometricIdentifier(player, (TileBiometricIdentifier) tileEntity);
-                } else if(tileEntity instanceof TileInterdictionMatrix) {
+                }
+                else if (tileEntity instanceof TileInterdictionMatrix)
+                {
                     return new GuiInterdictionMatrix(player, (TileInterdictionMatrix) tileEntity);
                 }
             }
-        } else if(ID == 1) {
+        }
+        else if (ID == 1)
+        {
             return new GuiCardID(player);
         }
         return null;
     }
 
     @Override
-    public void registerBeamEffect(World world, Vector3D origin, Vector3D dest, float r, float g, float b, int lifespan) {
+    public void registerBeamEffect(World world, Vector3D origin, Vector3D dest, float r, float g, float b, int lifespan)
+    {
         FMLClientHandler.instance().getClient().effectRenderer.addEffect(new FortronBeam(world, origin, dest, r, g, b, lifespan));
     }
 
     @Override
-    public void animateFortron(World world, Vector3D dest, float r, float g, float b, int life) {
+    public void animateFortron(World world, Vector3D dest, float r, float g, float b, int life)
+    {
         FMLClientHandler.instance().getClient().effectRenderer.addEffect(new MovingFortron(world, dest, r, g, b, life));
     }
 }

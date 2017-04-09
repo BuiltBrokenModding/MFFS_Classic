@@ -1,7 +1,7 @@
 package com.mffs.common.items.card;
 
-import com.builtbroken.mc.lib.helper.recipe.UniversalRecipe;
 import com.builtbroken.mc.imp.transform.vector.Location;
+import com.builtbroken.mc.lib.helper.recipe.UniversalRecipe;
 import com.mffs.api.card.ICoordLink;
 import com.mffs.api.utils.Util;
 import cpw.mods.fml.common.registry.LanguageRegistry;
@@ -20,45 +20,55 @@ import java.util.List;
 /**
  * @author Calclavia
  */
-public class ItemCardLink extends ItemCardBlank implements ICoordLink {
+public class ItemCardLink extends ItemCardBlank implements ICoordLink
+{
 
     /* This is the local version for caching */
     private Location link;
 
     @Override
-    public void addInformation(ItemStack stack, EntityPlayer usr, List list, boolean dummy) {
+    public void addInformation(ItemStack stack, EntityPlayer usr, List list, boolean dummy)
+    {
         NBTTagCompound tag = Util.getTag(stack);
         Location link = getLink(stack);
-        if (link != null) {
+        if (link != null)
+        {
             World world = link.world;
             Block block = link.getBlock(world);
-            if (block != null) {
+            if (block != null)
+            {
                 list.add(LanguageRegistry.instance().getStringLocalization("info.item.linkedWith") + " " + block.getLocalizedName());
             }
             list.add(link.xi() + ", " + link.yi() + ", " + link.zi());
             list.add(LanguageRegistry.instance().getStringLocalization("info.item.dimension") + " " + world.getWorldInfo().getWorldName());
-        } else {
+        }
+        else
+        {
             super.addInformation(stack, usr, list, dummy);
             list.add(EnumChatFormatting.RED + LanguageRegistry.instance().getStringLocalization("info.item.notLinked"));
         }
     }
 
     @Override
-    public void setLink(ItemStack paramItemStack, Location paramVectorWorld) {
+    public void setLink(ItemStack paramItemStack, Location paramVectorWorld)
+    {
         NBTTagCompound tag = Util.getTag(paramItemStack);
         tag.setTag("mffs_link", paramVectorWorld.toNBT());
         this.link = paramVectorWorld;
     }
 
     @Override
-    public Location getLink(ItemStack paramItemStack) {
+    public Location getLink(ItemStack paramItemStack)
+    {
         NBTTagCompound tag = Util.getTag(paramItemStack);
-        if (!tag.hasKey("mffs_link")) {
+        if (!tag.hasKey("mffs_link"))
+        {
             return null;
         }
         NBTTagCompound linkTag = tag.getCompoundTag("mffs_link");
-        if (link == null) {
-            if(tag.hasKey("id"))
+        if (link == null)
+        {
+            if (tag.hasKey("id"))
             {
                 tag.setInteger("dimension", tag.getInteger("id"));
                 tag.removeTag("id");
@@ -89,13 +99,16 @@ public class ItemCardLink extends ItemCardBlank implements ICoordLink {
      * @param hitZ   @return Return true to prevent any further processing.
      */
     @Override
-    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
-        if (!world.isRemote) {
+    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
+    {
+        if (!world.isRemote)
+        {
             Location coord = new Location(world, x, y, z);
             setLink(stack, coord);
 
             Block block = coord.getBlock(world);
-            if (block != null) {
+            if (block != null)
+            {
                 player.addChatMessage(new ChatComponentText(String.format(LanguageRegistry.instance().getStringLocalization("info.item.linkedWith") + " %d %d %d %s", x, y, z, block.getLocalizedName())));
             }
         }
@@ -103,7 +116,8 @@ public class ItemCardLink extends ItemCardBlank implements ICoordLink {
     }
 
     @Override
-    public void genRecipes(List<IRecipe> list) {
+    public void genRecipes(List<IRecipe> list)
+    {
         list.add(newShapedRecipe(this, "CWC", 'W', UniversalRecipe.WIRE.get(), 'C', Item.itemRegistry.getObject("mffs:cardBlank")));
     }
 }

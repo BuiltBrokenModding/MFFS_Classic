@@ -19,17 +19,20 @@ import java.util.Set;
 /**
  * @author Calclavia
  */
-public class ItemModePyramid extends ItemMode implements IRecipeContainer {
+public class ItemModePyramid extends ItemMode implements IRecipeContainer
+{
 
     @Override
-    public void genRecipes(List<IRecipe> list) {
+    public void genRecipes(List<IRecipe> list)
+    {
         list.add(newShapedRecipe(this,
                 "F  ", "FF ", "FFF",
                 'F', Item.itemRegistry.getObject("mffs:focusMatrix")));
     }
 
     @Override
-    public Set<Vector3D> getExteriorPoints(IFieldInteraction projector) {
+    public Set<Vector3D> getExteriorPoints(IFieldInteraction projector)
+    {
         Set<Vector3D> fieldBlocks = new HashSet();
 
         Vector3D posScale = projector.getPositiveScale();
@@ -42,27 +45,33 @@ public class ItemModePyramid extends ItemMode implements IRecipeContainer {
 
         int inverseThickness = (int) Math.max((yStretch + zStretch) / 4.0F, 1.0F);
 
-        for (float y = 0.0F; y <= yStretch; y += 1.0F) {
-            for (float x = -xStretch; x <= xStretch; x += 1.0F) {
-                for (float z = -zStretch; z <= zStretch; z += 1.0F) {
+        for (float y = 0.0F; y <= yStretch; y += 1.0F)
+        {
+            for (float x = -xStretch; x <= xStretch; x += 1.0F)
+            {
+                for (float z = -zStretch; z <= zStretch; z += 1.0F)
+                {
                     double yTest = y / yStretch * inverseThickness;
                     double xzPositivePlane = (1.0F - x / xStretch - z / zStretch) * inverseThickness;
                     double xzNegativePlane = (1.0F + x / xStretch - z / zStretch) * inverseThickness;
 
 
-                    if ((x >= 0.0F) && (z >= 0.0F) && (Math.round(xzPositivePlane) == Math.round(yTest))) {
+                    if ((x >= 0.0F) && (z >= 0.0F) && (Math.round(xzPositivePlane) == Math.round(yTest)))
+                    {
                         fieldBlocks.add(new Vector3D(x, y, z).add(translation));
                         fieldBlocks.add(new Vector3D(x, y, -z).add(translation));
                     }
 
 
-                    if ((x <= 0.0F) && (z >= 0.0F) && (Math.round(xzNegativePlane) == Math.round(yTest))) {
+                    if ((x <= 0.0F) && (z >= 0.0F) && (Math.round(xzNegativePlane) == Math.round(yTest)))
+                    {
                         fieldBlocks.add(new Vector3D(x, y, -z).add(translation));
                         fieldBlocks.add(new Vector3D(x, y, z).add(translation));
                     }
 
 
-                    if ((y == 0.0F) && (Math.abs(x) + Math.abs(z) < (xStretch + yStretch) / 2)) {
+                    if ((y == 0.0F) && (Math.abs(x) + Math.abs(z) < (xStretch + yStretch) / 2))
+                    {
                         fieldBlocks.add(new Vector3D(x, y, z).add(translation));
                     }
                 }
@@ -73,7 +82,8 @@ public class ItemModePyramid extends ItemMode implements IRecipeContainer {
     }
 
     @Override
-    public Set<Vector3D> getInteriorPoints(IFieldInteraction projector) {
+    public Set<Vector3D> getInteriorPoints(IFieldInteraction projector)
+    {
         Set<Vector3D> fieldBlocks = new HashSet();
 
         Vector3D posScale = projector.getPositiveScale();
@@ -84,12 +94,16 @@ public class ItemModePyramid extends ItemMode implements IRecipeContainer {
         int zStretch = posScale.intZ() + negScale.intZ();
         Vector3D translation = new Vector3D(0.0D, -0.4D, 0.0D);
 
-        for (float x = -xStretch; x <= xStretch; x += 1.0F) {
-            for (float z = -zStretch; z <= zStretch; z += 1.0F) {
-                for (float y = 0.0F; y <= yStretch; y += 1.0F) {
+        for (float x = -xStretch; x <= xStretch; x += 1.0F)
+        {
+            for (float z = -zStretch; z <= zStretch; z += 1.0F)
+            {
+                for (float y = 0.0F; y <= yStretch; y += 1.0F)
+                {
                     Vector3D position = new Vector3D(x, y, z).add(translation);
 
-                    if (isInField(projector, Vector3D.translate(position, new Vector3D((TileEntity) projector)))) {
+                    if (isInField(projector, Vector3D.translate(position, new Vector3D((TileEntity) projector))))
+                    {
                         fieldBlocks.add(position);
                     }
                 }
@@ -100,7 +114,8 @@ public class ItemModePyramid extends ItemMode implements IRecipeContainer {
     }
 
     @Override
-    public boolean isInField(IFieldInteraction projector, Vector3D position) {
+    public boolean isInField(IFieldInteraction projector, Vector3D position)
+    {
         Vector3D posScale = projector.getPositiveScale().clone();
         Vector3D negScale = projector.getNegativeScale().clone();
 
@@ -117,8 +132,10 @@ public class ItemModePyramid extends ItemMode implements IRecipeContainer {
 
         Matrix2d region = new Matrix2d(negScale.scale(-1.0D), posScale);
 
-        if ((region.isIn(relativePosition)) && (relativePosition.y > 0.0D)) {
-            if (1.0D - Math.abs(relativePosition.x) / xStretch - Math.abs(relativePosition.z) / zStretch > relativePosition.y / yStretch) {
+        if ((region.isIn(relativePosition)) && (relativePosition.y > 0.0D))
+        {
+            if (1.0D - Math.abs(relativePosition.x) / xStretch - Math.abs(relativePosition.z) / zStretch > relativePosition.y / yStretch)
+            {
                 return true;
             }
         }
@@ -127,7 +144,8 @@ public class ItemModePyramid extends ItemMode implements IRecipeContainer {
     }
 
     @Override
-    public void render(IProjector projector, double x, double y, double z, float f, long ticks) {
+    public void render(IProjector projector, double x, double y, double z, float f, long ticks)
+    {
         Tessellator tessellator = Tessellator.instance;
 
         GL11.glPushMatrix();

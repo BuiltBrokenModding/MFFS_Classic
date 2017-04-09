@@ -8,13 +8,15 @@ import net.minecraft.item.ItemStack;
 /**
  * Created by Poopsicle360 on 7/16/2016.
  */
-public class HotBarContainer extends Container {
+public class HotBarContainer extends Container
+{
     /**
-     *
      * @param player
      */
-    public HotBarContainer(EntityPlayer player) {
-        for (int x = 0; x < 9; x++) {
+    public HotBarContainer(EntityPlayer player)
+    {
+        for (int x = 0; x < 9; x++)
+        {
             addSlotToContainer(new Slot(player.inventory, x, PlayerContainer.xInventoryDisplacement + x * 18, PlayerContainer.yHotBarDisplacement));
         }
     }
@@ -26,7 +28,8 @@ public class HotBarContainer extends Container {
      * @param p_82846_2_
      */
     @Override
-    public ItemStack transferStackInSlot(EntityPlayer p_82846_1_, int p_82846_2_) {
+    public ItemStack transferStackInSlot(EntityPlayer p_82846_1_, int p_82846_2_)
+    {
         return null;
     }
 
@@ -37,12 +40,14 @@ public class HotBarContainer extends Container {
      * @param p_94531_1_
      */
     @Override
-    public boolean canDragIntoSlot(Slot p_94531_1_) {
+    public boolean canDragIntoSlot(Slot p_94531_1_)
+    {
         return false;
     }
 
     @Override
-    public boolean canInteractWith(EntityPlayer p_75145_1_) {
+    public boolean canInteractWith(EntityPlayer p_75145_1_)
+    {
         return true;
     }
 }

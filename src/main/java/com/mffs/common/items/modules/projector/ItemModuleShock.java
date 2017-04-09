@@ -15,10 +15,12 @@ import java.util.List;
 /**
  * @author Calclavia
  */
-public class ItemModuleShock extends BaseModule implements IRecipeContainer {
+public class ItemModuleShock extends BaseModule implements IRecipeContainer
+{
 
     @Override
-    public void genRecipes(List<IRecipe> list) {
+    public void genRecipes(List<IRecipe> list)
+    {
         list.add(newShapedRecipe(this,
                 "FWF",
                 'F', Item.itemRegistry.getObject("mffs:focusMatrix"),
@@ -31,7 +33,8 @@ public class ItemModuleShock extends BaseModule implements IRecipeContainer {
     public static final DamageSource SHOCK_SOURCE = new DamageSource("fieldShock").setDamageBypassesArmor();
 
     @Override
-    public boolean onCollideWithForcefield(World world, int x, int y, int z, Entity entity, ItemStack moduleStack) {
+    public boolean onCollideWithForcefield(World world, int x, int y, int z, Entity entity, ItemStack moduleStack)
+    {
         entity.attackEntityFrom(SHOCK_SOURCE, moduleStack.stackSize);
         return false;
     }

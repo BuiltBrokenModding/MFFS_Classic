@@ -10,7 +10,8 @@ import org.lwjgl.opengl.GL11;
  * @author Calclavia
  */
 @SideOnly(Side.CLIENT)
-public class ModelForceFieldProjector extends ModelBase {
+public class ModelForceFieldProjector extends ModelBase
+{
     ModelRenderer top;
     ModelRenderer axle;
     ModelRenderer bottom;
@@ -38,7 +39,8 @@ public class ModelForceFieldProjector extends ModelBase {
     ModelRenderer lensecorner3;
     ModelRenderer lensecorner4;
 
-    public ModelForceFieldProjector() {
+    public ModelForceFieldProjector()
+    {
         this.textureWidth = 128;
         this.textureHeight = 64;
 
@@ -200,7 +202,8 @@ public class ModelForceFieldProjector extends ModelBase {
         setRotation(this.lensecorner4, 0.0F, 0.0F, 0.0F);
     }
 
-    public void render(float rotation, float f5) {
+    public void render(float rotation, float f5)
+    {
         this.top.render(f5);
         this.axle.render(f5);
         this.bottom.render(f5);
@@ -234,7 +237,8 @@ public class ModelForceFieldProjector extends ModelBase {
         this.lensecorner4.render(f5);
     }
 
-    private void setRotation(ModelRenderer model, float x, float y, float z) {
+    private void setRotation(ModelRenderer model, float x, float y, float z)
+    {
         model.rotateAngleX = x;
         model.rotateAngleY = y;
         model.rotateAngleZ = z;

@@ -6,14 +6,18 @@ import io.netty.buffer.ByteBuf;
 /**
  * Created by pwaln on 7/5/2016.
  */
-public class ItemByteToggle extends ItemMessage {
+public class ItemByteToggle extends ItemMessage
+{
 
     /* Toggleid */
     public byte toggleId;
 
-    public ItemByteToggle() {}
+    public ItemByteToggle()
+    {
+    }
 
-    public ItemByteToggle(int perm) {
+    public ItemByteToggle(int perm)
+    {
         this.toggleId = (byte) perm;
     }
 
@@ -24,7 +28,8 @@ public class ItemByteToggle extends ItemMessage {
      * @param buf
      */
     @Override
-    public void fromBytes(ByteBuf buf) {
+    public void fromBytes(ByteBuf buf)
+    {
         super.fromBytes(buf);
         toggleId = buf.readByte();
     }
@@ -35,7 +40,8 @@ public class ItemByteToggle extends ItemMessage {
      * @param buf
      */
     @Override
-    public void toBytes(ByteBuf buf) {
+    public void toBytes(ByteBuf buf)
+    {
         super.toBytes(buf);
         buf.writeByte(toggleId);
     }
@@ -43,5 +49,7 @@ public class ItemByteToggle extends ItemMessage {
     /**
      * aa
      */
-    public static class ServerHandler extends ItemMessage.ServerHandler<ItemByteToggle> {}
+    public static class ServerHandler extends ItemMessage.ServerHandler<ItemByteToggle>
+    {
+    }
 }

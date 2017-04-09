@@ -12,7 +12,8 @@ import java.util.Set;
  * @author Calclavia
  */
 public interface IProjectorMode
-        extends IFortronCost {
+        extends IFortronCost
+{
     Set<Vector3D> getExteriorPoints(IFieldInteraction paramIFieldInteraction);
 
     Set<Vector3D> getInteriorPoints(IFieldInteraction paramIFieldInteraction);

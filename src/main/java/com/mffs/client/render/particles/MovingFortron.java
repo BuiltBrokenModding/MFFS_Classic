@@ -14,8 +14,10 @@ import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
-public class MovingFortron extends EntityFX {
-    public MovingFortron(World par1World, Vector3D position, float red, float green, float blue, int age) {
+public class MovingFortron extends EntityFX
+{
+    public MovingFortron(World par1World, Vector3D position, float red, float green, float blue, int age)
+    {
 
         super(par1World, position.x, position.y, position.z);
 
@@ -29,7 +31,8 @@ public class MovingFortron extends EntityFX {
 
 
     @Override
-    public void onUpdate() {
+    public void onUpdate()
+    {
 
         this.prevPosX = this.posX;
 
@@ -38,7 +41,8 @@ public class MovingFortron extends EntityFX {
         this.prevPosZ = this.posZ;
 
 
-        if (this.particleAge++ >= this.particleMaxAge) {
+        if (this.particleAge++ >= this.particleMaxAge)
+        {
 
             setDead();
 
@@ -47,7 +51,8 @@ public class MovingFortron extends EntityFX {
     }
 
     @Override
-    public void renderParticle(Tessellator tessellator, float f, float f1, float f2, float f3, float f4, float f5) {
+    public void renderParticle(Tessellator tessellator, float f, float f1, float f2, float f3, float f4, float f5)
+    {
 
         tessellator.draw();
 
@@ -73,7 +78,8 @@ public class MovingFortron extends EntityFX {
 
         float op = 0.5F;
 
-        if (this.particleMaxAge - this.particleAge <= 4) {
+        if (this.particleMaxAge - this.particleAge <= 4)
+        {
 
             op = 0.5F - (5 - (this.particleMaxAge - this.particleAge)) * 0.1F;
 

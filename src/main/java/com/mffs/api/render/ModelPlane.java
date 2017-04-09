@@ -9,12 +9,14 @@ import net.minecraft.client.model.ModelRenderer;
  * @author Calclavia
  */
 @SideOnly(Side.CLIENT)
-public class ModelPlane extends ModelBase {
+public class ModelPlane extends ModelBase
+{
 
     public static final ModelPlane INSTNACE = new ModelPlane();
     private ModelRenderer cube;
 
-    public ModelPlane() {
+    public ModelPlane()
+    {
         this.cube = new ModelRenderer(this, 0, 0);
         int size = 16;
         this.cube.addBox(-size / 8, -size / 2, -size / 2, size / 6, size, size);
@@ -22,7 +24,8 @@ public class ModelPlane extends ModelBase {
         this.cube.mirror = true;
     }
 
-    public void render() {
+    public void render()
+    {
         this.cube.render(0.0625F);
     }
 }

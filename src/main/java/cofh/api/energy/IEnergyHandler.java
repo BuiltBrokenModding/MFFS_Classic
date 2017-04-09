@@ -9,7 +9,8 @@ import net.minecraftforge.common.util.ForgeDirection;
  *
  * @author King Lemming
  */
-public interface IEnergyHandler extends IEnergyProvider, IEnergyReceiver {
+public interface IEnergyHandler extends IEnergyProvider, IEnergyReceiver
+{
 
     // merely a convenience interface (remove these methods in 1.8; provided here for back-compat via compiler doing things)
 

@@ -26,25 +26,35 @@ import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fluids.FluidRegistry;
 
-public class ForgeSubscribeHandler {
+public class ForgeSubscribeHandler
+{
 
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
-    public void preTextureHook(TextureStitchEvent.Pre event) {
+    public void preTextureHook(TextureStitchEvent.Pre event)
+    {
         if (event.map.getTextureType() == 0)
+        {
             FluidRegistry.getFluid(Fortron.FLUID_ID).setIcons(event.map.registerIcon(ModularForcefieldSystem.MODID + ":fortron"));
+        }
     }
 
     @SubscribeEvent
-    public void chunkModify(ChunkSetBlockEvent event) {
+    public void chunkModify(ChunkSetBlockEvent event)
+    {
         if (event.world.isRemote || !(event.block instanceof BlockAir))
+        {
             return;
+        }
         Vector3D vec = new Vector3D(event.x + (event.getChunk().xPosition << 4), event.y, event.z + (event.getChunk().zPosition << 4));
-        for (IBlockFrequency freq : FrequencyGrid.instance().get()) {
-            if (freq instanceof TileForceFieldProjector && ((TileEntity) freq).getWorldObj() == event.world) {
+        for (IBlockFrequency freq : FrequencyGrid.instance().get())
+        {
+            if (freq instanceof TileForceFieldProjector && ((TileEntity) freq).getWorldObj() == event.world)
+            {
                 TileForceFieldProjector proj = (TileForceFieldProjector) freq;
                 if (proj.getCalculatedField() != null && !proj.markFieldUpdate
-                        && proj.getCalculatedField().contains(vec)) {
+                        && proj.getCalculatedField().contains(vec))
+                {
                     proj.markFieldUpdate = true;
                     break;
                 }
@@ -56,25 +66,35 @@ public class ForgeSubscribeHandler {
     private static final ChatComponentText ACTION_DENIED = new ChatComponentText("[InterdictionMatrix] You have no permission to do that!");
 
     @SubscribeEvent
-    public void playerInteraction(PlayerInteractEvent event) {
+    public void playerInteraction(PlayerInteractEvent event)
+    {
         if (event.action != PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK && event.action != PlayerInteractEvent.Action.LEFT_CLICK_BLOCK)
+        {
             return;
+        }
 
-        if (event.action == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK && event.world.getBlock(event.x, event.y, event.z) instanceof BlockForceField) {
+        if (event.action == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK && event.world.getBlock(event.x, event.y, event.z) instanceof BlockForceField)
+        {
             event.setCanceled(true);
             return;
         }
 
         if (event.entityPlayer.capabilities.isCreativeMode && SettingConfiguration.INTERACT_CREATIVE)
+        {
             return;
+        }
 
         Vector3D vec = new Vector3D(event.x, event.y, event.z);
         IInterdictionMatrix matrix = MatrixHelper.findMatrix(event.world, vec);
-        if(matrix != null) {
+        if (matrix != null)
+        {
             Block block = vec.getBlock(event.world);
-            if(block instanceof BlockInterdictionMatrix && MatrixHelper.hasPermission(matrix, event.entityPlayer.getGameProfile().getName(), Permission.CONFIGURE))
+            if (block instanceof BlockInterdictionMatrix && MatrixHelper.hasPermission(matrix, event.entityPlayer.getGameProfile().getName(), Permission.CONFIGURE))
+            {
                 return;
-            if(!MatrixHelper.hasPermission(matrix, event.action, event.entityPlayer)) {
+            }
+            if (!MatrixHelper.hasPermission(matrix, event.action, event.entityPlayer))
+            {
                 event.entityPlayer.addChatMessage(ACTION_DENIED);
                 event.setCanceled(true);
             }
@@ -82,12 +102,19 @@ public class ForgeSubscribeHandler {
     }
 
     @SubscribeEvent
-    public void livingSpawnEvent(LivingSpawnEvent event) {
-        if(event.world.isRemote || event.entity instanceof EntityPlayer)
+    public void livingSpawnEvent(LivingSpawnEvent event)
+    {
+        if (event.world.isRemote || event.entity instanceof EntityPlayer)
+        {
             return;
+        }
         IInterdictionMatrix matrix = MatrixHelper.findMatrix(event.world, new Vector3D(event.entityLiving));
-        if(matrix != null && matrix.getModuleCount(ItemModuleAntiSpawn.class) > 0)
-            if(matrix.getModuleCount(ItemModuleAntiSpawn.class) > 0)
+        if (matrix != null && matrix.getModuleCount(ItemModuleAntiSpawn.class) > 0)
+        {
+            if (matrix.getModuleCount(ItemModuleAntiSpawn.class) > 0)
+            {
                 event.setResult(Event.Result.DENY);
+            }
+        }
     }
 }

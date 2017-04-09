@@ -11,6 +11,7 @@ import net.minecraft.entity.EntityLivingBase;
  * @author Calclavia
  */
 public interface IInterdictionModule
-        extends IModule {
+        extends IModule
+{
     boolean onDefend(IInterdictionMatrix paramIInterdictionMatrix, EntityLivingBase paramEntityLivingBase);
 }

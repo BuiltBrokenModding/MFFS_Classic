@@ -11,7 +11,8 @@ import java.util.Set;
 /**
  * Created by pwaln on 7/3/2016.
  */
-public class ForcefieldCalculation extends TileEntityMessage {
+public class ForcefieldCalculation extends TileEntityMessage
+{
 
     /* List of vectors to be assigned. */
     private Set<Vector3D> blocks;
@@ -19,14 +20,16 @@ public class ForcefieldCalculation extends TileEntityMessage {
     /**
      * Default constructor for class instance.
      */
-    public ForcefieldCalculation() {
+    public ForcefieldCalculation()
+    {
         super();
     }
 
     /**
      * @param proj
      */
-    public ForcefieldCalculation(TileForceFieldProjector proj) {
+    public ForcefieldCalculation(TileForceFieldProjector proj)
+    {
         super(proj);
         this.blocks = proj.getCalculatedField();
     }
@@ -37,11 +40,13 @@ public class ForcefieldCalculation extends TileEntityMessage {
      * @param buf
      */
     @Override
-    public void fromBytes(ByteBuf buf) {
+    public void fromBytes(ByteBuf buf)
+    {
         super.fromBytes(buf);
         blocks = new HashSet<>();
         int size = buf.readInt();
-        for (int i = 0; i < size; i++) {
+        for (int i = 0; i < size; i++)
+        {
             Vector3D vec = new Vector3D(buf.readInt(), buf.readInt(), buf.readInt());
             blocks.add(vec);
         }
@@ -53,22 +58,27 @@ public class ForcefieldCalculation extends TileEntityMessage {
      * @param buf
      */
     @Override
-    public void toBytes(ByteBuf buf) {
+    public void toBytes(ByteBuf buf)
+    {
         super.toBytes(buf);
         buf.writeInt(blocks.size());
-        for (Vector3D vec : blocks) {
+        for (Vector3D vec : blocks)
+        {
             buf.writeInt(vec.intX());
             buf.writeInt(vec.intY());
             buf.writeInt(vec.intZ());
         }
     }
 
-    public Set<Vector3D> getBlocks() {
+    public Set<Vector3D> getBlocks()
+    {
         return blocks;
     }
 
     /**
      * Sends a sync to the Client.
      */
-    public static class ClientHandler extends TileEntityMessage.ClientHandler<ForcefieldCalculation> {}
+    public static class ClientHandler extends TileEntityMessage.ClientHandler<ForcefieldCalculation>
+    {
+    }
 }

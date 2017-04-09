@@ -10,5 +10,6 @@ import com.mffs.api.IBlockFrequency;
  * @author Calclavia
  */
 public interface IFortronFrequency
-        extends IFortronStorage, IBlockFrequency {
+        extends IFortronStorage, IBlockFrequency
+{
 }

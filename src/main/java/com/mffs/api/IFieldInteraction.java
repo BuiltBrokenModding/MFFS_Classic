@@ -13,7 +13,8 @@ import java.util.Set;
  * @author Calclavia
  */
 public interface IFieldInteraction
-        extends IModuleAcceptor, IActivatable {
+        extends IModuleAcceptor, IActivatable
+{
     IProjectorMode getMode();
 
     ItemStack getModeStack();

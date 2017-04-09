@@ -7,7 +7,8 @@ import net.minecraftforge.event.world.WorldEvent;
  * @author Calclavia
  */
 public abstract class EventForceManipulate
-        extends WorldEvent {
+        extends WorldEvent
+{
     public int beforeX;
     public int beforeY;
     public int beforeZ;
@@ -24,7 +25,8 @@ public abstract class EventForceManipulate
      * @param afterY
      * @param afterZ
      */
-    public EventForceManipulate(World world, int beforeX, int beforeY, int beforeZ, int afterX, int afterY, int afterZ) {
+    public EventForceManipulate(World world, int beforeX, int beforeY, int beforeZ, int afterX, int afterY, int afterZ)
+    {
         super(world);
         this.beforeX = beforeX;
         this.beforeY = beforeY;

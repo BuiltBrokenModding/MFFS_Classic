@@ -16,46 +16,56 @@ import net.minecraft.world.IBlockAccess;
  * @author Calclavia
  */
 @SideOnly(Side.CLIENT)
-public class RenderForceFieldHandler implements ISimpleBlockRenderingHandler {
+public class RenderForceFieldHandler implements ISimpleBlockRenderingHandler
+{
 
     /* Creates a render ID */
     public static int RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
 
     @Override
-    public void renderInventoryBlock(Block block, int metadata, int modelId, RenderBlocks renderer) {
+    public void renderInventoryBlock(Block block, int metadata, int modelId, RenderBlocks renderer)
+    {
         RenderBlockHandler.renderNormal(renderer, block, metadata);
     }
 
     @Override
-    public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, Block block, int modelId, RenderBlocks renderer) {
+    public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, Block block, int modelId, RenderBlocks renderer)
+    {
         int renderType = 0;
         ItemStack camoStack = null;
         Block camoBlock = null;
         TileEntity tileEntity = world.getTileEntity(x, y, z);
 
-        if ((tileEntity instanceof TileForceField)) {
+        if ((tileEntity instanceof TileForceField))
+        {
             camoStack = ((TileForceField) tileEntity).camo;
 
-            if (camoStack != null) {
+            if (camoStack != null)
+            {
                 camoBlock = ((ItemBlock) camoStack.getItem()).field_150939_a;
 
-                if (camoBlock != null) {
+                if (camoBlock != null)
+                {
                     renderType = camoBlock.getRenderType();
                 }
             }
         }
 
-        if (renderType >= 0) {
+        if (renderType >= 0)
+        {
 
 
-            try {
+            try
+            {
 
-                if (camoBlock != null) {
+                if (camoBlock != null)
+                {
                     renderer.setRenderBoundsFromBlock(camoBlock);
                 }
 
 
-                switch (renderType) {
+                switch (renderType)
+                {
                     case 4:
                         renderer.renderBlockLiquid(block, x, y, z);
                         break;
@@ -112,8 +122,11 @@ public class RenderForceFieldHandler implements ISimpleBlockRenderingHandler {
                         renderer.renderStandardBlock(block, x, y, z);
                 }
 
-            } catch (Exception e) {
-                if ((camoStack != null) && (camoBlock != null)) {
+            }
+            catch (Exception e)
+            {
+                if ((camoStack != null) && (camoBlock != null))
+                {
                     renderer.renderBlockAsItem(camoBlock, camoStack.getItemDamage(), 1.0F);
                 }
             }
@@ -124,12 +137,14 @@ public class RenderForceFieldHandler implements ISimpleBlockRenderingHandler {
     }
 
     @Override
-    public boolean shouldRender3DInInventory(int modelId) {
+    public boolean shouldRender3DInInventory(int modelId)
+    {
         return false;
     }
 
     @Override
-    public int getRenderId() {
+    public int getRenderId()
+    {
         return RENDER_ID;
     }
 }

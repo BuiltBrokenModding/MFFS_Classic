@@ -21,27 +21,34 @@ import java.util.Set;
 /**
  * @author Calclavia
  */
-public class ItemModeCube extends ItemMode implements IRecipeContainer {
+public class ItemModeCube extends ItemMode implements IRecipeContainer
+{
 
     @Override
-    public void genRecipes(List<IRecipe> list) {
+    public void genRecipes(List<IRecipe> list)
+    {
         list.add(newShapedRecipe(this,
                 "FFF", "FFF", "FFF",
                 'F', Item.itemRegistry.getObject("mffs:focusMatrix")));
     }
 
     @Override
-    public Set<Vector3D> getExteriorPoints(IFieldInteraction projector) {
+    public Set<Vector3D> getExteriorPoints(IFieldInteraction projector)
+    {
         Set<Vector3D> fieldBlocks = new HashSet();
         Vector3D posScale = projector.getPositiveScale();
         Vector3D negScale = projector.getNegativeScale();
 
-        for (float x = -negScale.intX(); x <= posScale.intX(); x += 0.5F) {
-            for (float z = -negScale.intZ(); z <= posScale.intZ(); z += 0.5F) {
-                for (float y = -negScale.intY(); y <= posScale.intY(); y += 0.5F) {
+        for (float x = -negScale.intX(); x <= posScale.intX(); x += 0.5F)
+        {
+            for (float z = -negScale.intZ(); z <= posScale.intZ(); z += 0.5F)
+            {
+                for (float y = -negScale.intY(); y <= posScale.intY(); y += 0.5F)
+                {
                     if (y == -negScale.intY() || y == posScale.intY()
                             || x == -negScale.intX() || x == posScale.intX()
-                            || z == -negScale.intZ() || z == posScale.intZ()) {
+                            || z == -negScale.intZ() || z == posScale.intZ())
+                    {
                         fieldBlocks.add(new Vector3D(x, y, z));
                     }
                 }
@@ -51,7 +58,8 @@ public class ItemModeCube extends ItemMode implements IRecipeContainer {
     }
 
     @Override
-    public Set<Vector3D> getInteriorPoints(IFieldInteraction projector) {
+    public Set<Vector3D> getInteriorPoints(IFieldInteraction projector)
+    {
         Set<Vector3D> fieldBlocks = new HashSet();
 
         Vector3D posScale = projector.getPositiveScale();
@@ -59,11 +67,14 @@ public class ItemModeCube extends ItemMode implements IRecipeContainer {
         Vector3D negScale = projector.getNegativeScale();
 
 
-        for (int x = -negScale.intX(); x <= posScale.intX(); x++) {
+        for (int x = -negScale.intX(); x <= posScale.intX(); x++)
+        {
 
-            for (int z = -negScale.intZ(); z <= posScale.intZ(); z++) {
+            for (int z = -negScale.intZ(); z <= posScale.intZ(); z++)
+            {
 
-                for (int y = -negScale.intY(); y <= posScale.intY(); y++) {
+                for (int y = -negScale.intY(); y <= posScale.intY(); y++)
+                {
 
                     fieldBlocks.add(new Vector3D(x, y, z));
 
@@ -78,13 +89,15 @@ public class ItemModeCube extends ItemMode implements IRecipeContainer {
     }
 
     @SideOnly(Side.CLIENT)
-    public void render(IProjector projector, double x, double y, double z, float f, long ticks) {
+    public void render(IProjector projector, double x, double y, double z, float f, long ticks)
+    {
         GL11.glScalef(0.5F, 0.5F, 0.5F);
         ModelCube.INSTNACE.render();
     }
 
     @Override
-    public boolean isInField(IFieldInteraction projector, Vector3D position) {
+    public boolean isInField(IFieldInteraction projector, Vector3D position)
+    {
         Vector3D projectorPos = new Vector3D((TileEntity) projector);
         projectorPos.add(projector.getTranslation());
         Vector3D relativePosition = position.clone().subtract(projectorPos);

@@ -13,7 +13,8 @@ import java.util.regex.Pattern;
 /**
  * Created by pwaln on 5/31/2016.
  */
-public class Util {
+public class Util
+{
 
     /**
      * Gets a string and seperates it based on the count parameter.
@@ -22,11 +23,13 @@ public class Util {
      * @param count
      * @return
      */
-    public static List<String> sepString(String s, int count) {
+    public static List<String> sepString(String s, int count)
+    {
         List<String> list = new ArrayList<>();
         Pattern regex = Pattern.compile(".{1," + count + "}(?:\\s|$)", Pattern.DOTALL);
         Matcher regexMatcher = regex.matcher(s);
-        while (regexMatcher.find()) {
+        while (regexMatcher.find())
+        {
             list.add(regexMatcher.group());
         }
         return list;
@@ -34,11 +37,13 @@ public class Util {
 
     /**
      * Takes a string and creates a new string out of a designated words per line.
+     *
      * @param string
      * @param wordsPerLine
      * @return
      */
-    public static String[] splitStringPerWord(String string, int wordsPerLine) {
+    public static String[] splitStringPerWord(String string, int wordsPerLine)
+    {
         return WordUtils.wrap(string, wordsPerLine).split("\\r?\\n");
     }
 
@@ -49,20 +54,29 @@ public class Util {
      * @param stack
      * @return
      */
-    public static ItemStack addToInv_search(IInventory inv, ItemStack stack) {
+    public static ItemStack addToInv_search(IInventory inv, ItemStack stack)
+    {
         if (stack == null || stack.stackSize <= 0)
+        {
             return null;
+        }
         //Do a loop for the exact item.
-        for (int slot = 0; slot < inv.getSizeInventory(); slot++) {
+        for (int slot = 0; slot < inv.getSizeInventory(); slot++)
+        {
             if (add_stack(inv.getStackInSlot(slot), stack, Math.min(inv.getInventoryStackLimit(), stack.getMaxStackSize())) && stack.stackSize <= 0)
+            {
                 return null;
+            }
         }
 
         //Now we check for empty slots to fill.
-        if (stack != null && stack.stackSize > 0) {
-            for (int slot = 0; slot < inv.getSizeInventory(); slot++) {
+        if (stack != null && stack.stackSize > 0)
+        {
+            for (int slot = 0; slot < inv.getSizeInventory(); slot++)
+            {
                 ItemStack item = inv.getStackInSlot(slot);
-                if (item == null) {
+                if (item == null)
+                {
                     inv.setInventorySlotContents(slot, stack);
                     return null;
                 }
@@ -78,26 +92,38 @@ public class Util {
      * @param stack
      * @return
      */
-    public static ItemStack addToInv_first(IInventory inv, ItemStack stack) {
+    public static ItemStack addToInv_first(IInventory inv, ItemStack stack)
+    {
         if (stack == null || stack.stackSize <= 0)
+        {
             return null;
+        }
         //Do a loop for the exact item.
-        for (int slot = 0; slot < inv.getSizeInventory(); slot++) {
+        for (int slot = 0; slot < inv.getSizeInventory(); slot++)
+        {
             ItemStack item = addToInv_slot(inv, stack, slot);
             if (item == null || item.stackSize <= 0)
+            {
                 return null;
+            }
         }
         return stack;
     }
 
-    public static ItemStack addToInv_slot(IInventory inv, ItemStack stack, int slot) {
+    public static ItemStack addToInv_slot(IInventory inv, ItemStack stack, int slot)
+    {
         if (stack == null || stack.stackSize <= 0)
+        {
             return null;
+        }
         ItemStack item = inv.getStackInSlot(slot);
-        if (item == null) {
+        if (item == null)
+        {
             inv.setInventorySlotContents(slot, stack);
             return null;
-        } else if (add_stack(item, stack, Math.min(inv.getInventoryStackLimit(), item.getMaxStackSize())) && stack.stackSize <= 0) {
+        }
+        else if (add_stack(item, stack, Math.min(inv.getInventoryStackLimit(), item.getMaxStackSize())) && stack.stackSize <= 0)
+        {
             return null;
         }
         return stack;
@@ -110,8 +136,10 @@ public class Util {
      * @param stack
      * @return
      */
-    public static boolean add_stack(ItemStack item, ItemStack stack, int maxStackSize) {
-        if (item != null && item.isItemEqual(stack) && item.isStackable()) {
+    public static boolean add_stack(ItemStack item, ItemStack stack, int maxStackSize)
+    {
+        if (item != null && item.isItemEqual(stack) && item.isStackable())
+        {
             int newSize = Math.min(item.stackSize + stack.stackSize, maxStackSize);
             stack.stackSize -= (newSize - item.stackSize);
             item.stackSize = newSize;
@@ -127,8 +155,10 @@ public class Util {
      * @param stack
      * @return
      */
-    public static NBTTagCompound getTag(ItemStack stack) {
-        if (stack.getTagCompound() == null) {
+    public static NBTTagCompound getTag(ItemStack stack)
+    {
+        if (stack.getTagCompound() == null)
+        {
             stack.setTagCompound(new NBTTagCompound());
         }
         return stack.getTagCompound();

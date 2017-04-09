@@ -8,7 +8,8 @@ package cofh.api.energy;
  *
  * @author King Lemming
  */
-public interface IEnergyStorage {
+public interface IEnergyStorage
+{
 
     /**
      * Adds energy to the storage. Returns quantity of energy that was accepted.

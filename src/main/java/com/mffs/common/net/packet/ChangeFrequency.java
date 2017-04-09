@@ -7,7 +7,8 @@ import net.minecraft.tileentity.TileEntity;
 /**
  * Created by pwaln on 6/16/2016.
  */
-public class ChangeFrequency extends TileEntityMessage {
+public class ChangeFrequency extends TileEntityMessage
+{
 
     /**
      * The Frequency.
@@ -17,7 +18,8 @@ public class ChangeFrequency extends TileEntityMessage {
     /**
      * Default Constructor.
      */
-    public ChangeFrequency() {
+    public ChangeFrequency()
+    {
         super();
     }
 
@@ -25,12 +27,14 @@ public class ChangeFrequency extends TileEntityMessage {
      * @param entity
      * @param freq
      */
-    public ChangeFrequency(TileEntity entity, int freq) {
+    public ChangeFrequency(TileEntity entity, int freq)
+    {
         super(entity);
         this.frequency = freq;
     }
 
-    public int getFrequency() {
+    public int getFrequency()
+    {
         return frequency;
     }
 
@@ -40,7 +44,8 @@ public class ChangeFrequency extends TileEntityMessage {
      * @param buf
      */
     @Override
-    public void fromBytes(ByteBuf buf) {
+    public void fromBytes(ByteBuf buf)
+    {
         super.fromBytes(buf);
         frequency = buf.readInt();
     }
@@ -51,7 +56,8 @@ public class ChangeFrequency extends TileEntityMessage {
      * @param buf
      */
     @Override
-    public void toBytes(ByteBuf buf) {
+    public void toBytes(ByteBuf buf)
+    {
         super.toBytes(buf);
         buf.writeInt(frequency);
     }
@@ -59,5 +65,7 @@ public class ChangeFrequency extends TileEntityMessage {
     /**
      * Reads the message and handles it server side.
      */
-    public static class ServerHandler extends TileEntityMessage.ServerHandler<ChangeFrequency> {}
+    public static class ServerHandler extends TileEntityMessage.ServerHandler<ChangeFrequency>
+    {
+    }
 }

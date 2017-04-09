@@ -8,8 +8,11 @@ import java.util.List;
 /**
  * @author Calclavia
  */
-public class ItemCardInfinite extends ItemCardBlank implements ICardInfinite {
+public class ItemCardInfinite extends ItemCardBlank implements ICardInfinite
+{
 
     @Override
-    public void genRecipes(List<IRecipe> list) {}
+    public void genRecipes(List<IRecipe> list)
+    {
+    }
 }

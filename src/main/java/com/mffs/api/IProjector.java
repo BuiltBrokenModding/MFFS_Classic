@@ -9,7 +9,8 @@ import java.util.Set;
  * @author Calclavia
  */
 public interface IProjector
-        extends IInventory, IBiometricIdentifierLink, IFieldInteraction {
+        extends IInventory, IBiometricIdentifierLink, IFieldInteraction
+{
     void projectField();
 
     void destroyField();

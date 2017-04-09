@@ -10,7 +10,8 @@ import net.minecraft.item.ItemStack;
  * @author Calclavia
  */
 //TODO depricate and move to VE interface
-public interface ICoordLink {
+public interface ICoordLink
+{
     void setLink(ItemStack paramItemStack, Location paramVectorWorld);
 
     Location getLink(ItemStack paramItemStack);

@@ -9,10 +9,12 @@ import java.util.List;
 /**
  * @author Calclavia
  */
-public class ItemModuleAntiSpawn extends MatrixModule {
+public class ItemModuleAntiSpawn extends MatrixModule
+{
 
     @Override
-    public void genRecipes(List<IRecipe> list) {
+    public void genRecipes(List<IRecipe> list)
+    {
         list.add(newShapedRecipe(this,
                 " H ", "F F", " H ", 'H', Item.itemRegistry.getObject("mffs:moduleAntiHostile"),
                 'F', Item.itemRegistry.getObject("mffs:moduleAntiFriendly")));
@@ -21,7 +23,8 @@ public class ItemModuleAntiSpawn extends MatrixModule {
     /**
      * Constructor.
      */
-    public ItemModuleAntiSpawn() {
+    public ItemModuleAntiSpawn()
+    {
         setCost(10F);
     }
 }

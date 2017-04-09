@@ -19,7 +19,8 @@ import org.lwjgl.opengl.GL11;
  * @author Calclavia
  */
 @SideOnly(Side.CLIENT)
-public class RenderForceFieldProjector extends TileEntitySpecialRenderer {
+public class RenderForceFieldProjector extends TileEntitySpecialRenderer
+{
 
     public static final ResourceLocation TEXTURE_ON = new ResourceLocation(ModularForcefieldSystem.MODID, "textures/models/projector_on.png");
     public static final ResourceLocation TEXTURE_OFF = new ResourceLocation(ModularForcefieldSystem.MODID, "textures/models/projector_off.png");
@@ -27,7 +28,8 @@ public class RenderForceFieldProjector extends TileEntitySpecialRenderer {
     public static final ModelForceFieldProjector MODEL = new ModelForceFieldProjector();
 
     @Override
-    public void renderTileEntityAt(TileEntity t, double x, double y, double z, float f) {
+    public void renderTileEntityAt(TileEntity t, double x, double y, double z, float f)
+    {
         TileForceFieldProjector tileEntity = (TileForceFieldProjector) t;
 
 
@@ -41,7 +43,8 @@ public class RenderForceFieldProjector extends TileEntitySpecialRenderer {
 
         GL11.glPopMatrix();
 
-        if (tileEntity.getMode() != null) {
+        if (tileEntity.getMode() != null)
+        {
 
 
             Tessellator tessellator = Tessellator.instance;

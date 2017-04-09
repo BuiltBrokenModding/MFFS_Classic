@@ -14,13 +14,15 @@ import java.util.List;
 /**
  * @author Calclavia
  */
-public class ItemModuleAntiHostile extends MatrixModule {
+public class ItemModuleAntiHostile extends MatrixModule
+{
 
     @Override
-    public void genRecipes(List<IRecipe> list) {
+    public void genRecipes(List<IRecipe> list)
+    {
         list.add(newShapedRecipe(this,
                 " W ", "LFP", " S ",
-                'W',   Items.rotten_flesh,
+                'W', Items.rotten_flesh,
                 'L', Items.gunpowder,
                 'F', Item.itemRegistry.getObject("mffs:focusMatrix"),
                 'P', Items.bone,
@@ -28,8 +30,10 @@ public class ItemModuleAntiHostile extends MatrixModule {
     }
 
     @Override
-    public boolean onDefend(IInterdictionMatrix paramIInterdictionMatrix, EntityLivingBase paramEntityLivingBase) {
-        if (paramEntityLivingBase instanceof IMob) {
+    public boolean onDefend(IInterdictionMatrix paramIInterdictionMatrix, EntityLivingBase paramEntityLivingBase)
+    {
+        if (paramEntityLivingBase instanceof IMob)
+        {
             paramEntityLivingBase.attackEntityFrom(ItemModuleShock.SHOCK_SOURCE, 20F);
             return true;
         }

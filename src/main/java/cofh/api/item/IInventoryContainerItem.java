@@ -9,7 +9,8 @@ import net.minecraft.item.ItemStack;
  *
  * @author King Lemming
  */
-public interface IInventoryContainerItem {
+public interface IInventoryContainerItem
+{
 
     /**
      * Get the size of this inventory of this container item.

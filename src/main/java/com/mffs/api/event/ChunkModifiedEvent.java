@@ -7,7 +7,8 @@ import net.minecraftforge.event.world.ChunkEvent;
 /**
  * Created by pwaln on 7/8/2016.
  */
-public class ChunkModifiedEvent extends ChunkEvent {
+public class ChunkModifiedEvent extends ChunkEvent
+{
 
     /* The coordinates of this event */
     public final int x, y, z;
@@ -26,7 +27,8 @@ public class ChunkModifiedEvent extends ChunkEvent {
      * @param block
      * @param meta
      */
-    public ChunkModifiedEvent(Chunk chunk, int cX, int y, int cZ, Block block, int meta) {
+    public ChunkModifiedEvent(Chunk chunk, int cX, int y, int cZ, Block block, int meta)
+    {
         super(chunk);
         this.x = cX;
         this.y = y;

@@ -10,10 +10,12 @@ import java.util.List;
 /**
  * @author Calclavia
  */
-public class ItemModuleBlockAccess extends MatrixModule {
+public class ItemModuleBlockAccess extends MatrixModule
+{
 
     @Override
-    public void genRecipes(List<IRecipe> list) {
+    public void genRecipes(List<IRecipe> list)
+    {
         list.add(newShapedRecipe(this,
                 " C ", "IFI", " C ",
                 'C', Blocks.chest,
@@ -24,7 +26,8 @@ public class ItemModuleBlockAccess extends MatrixModule {
     /**
      * Constructor.
      */
-    public ItemModuleBlockAccess() {
+    public ItemModuleBlockAccess()
+    {
         setMaxStackSize(1);
         setCost(10F);
     }

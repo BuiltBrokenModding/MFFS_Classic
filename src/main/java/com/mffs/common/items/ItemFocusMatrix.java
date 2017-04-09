@@ -12,10 +12,12 @@ import java.util.List;
 /**
  * Created by pwaln on 12/18/2016.
  */
-public final class ItemFocusMatrix extends Item implements IRecipeContainer {
+public final class ItemFocusMatrix extends Item implements IRecipeContainer
+{
 
     @Override
-    public void genRecipes(List<IRecipe> list) {
+    public void genRecipes(List<IRecipe> list)
+    {
         list.add(newShapedRecipe(new ItemStack(this, 9), "RSR", "SDS", "RSR", 'R', OreNames.REDSTONE, 'S', UniversalRecipe.PRIMARY_METAL.get(), 'D', OreNames.DIAMOND));
     }
 }

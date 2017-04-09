@@ -31,7 +31,8 @@ import java.util.Set;
 /**
  * @author Calclavia
  */
-public class TileFortronCapacitor extends TileModuleAcceptor implements IFortronCapacitor {
+public class TileFortronCapacitor extends TileModuleAcceptor implements IFortronCapacitor
+{
 
     /* Current distribution method */
     private TransferMode mode = TransferMode.EQUALIZE;
@@ -39,35 +40,49 @@ public class TileFortronCapacitor extends TileModuleAcceptor implements IFortron
     /**
      * Constructor.
      */
-    public TileFortronCapacitor() {
+    public TileFortronCapacitor()
+    {
         this.capacityBase = 700;
         this.capacityBoost = 10;
         this.module_index = 2;
     }
 
     @Override
-    public void updateEntity() {
+    public void updateEntity()
+    {
         super.updateEntity();
 
-        if(this.isActive()) {
+        if (this.isActive())
+        {
             int cost = getFortronCost() + SettingConfiguration.BASE_POWER_CONSUMPTION_CAPACITOR;
             if (cost > 0)
+            {
                 requestFortron(cost, true);
+            }
 
             //TODO: Change the draining to remove X% of transfered fortron.
-            if (this.ticks % 10 == 0) { //cannot run if there is 0 energy!
+            if (this.ticks % 10 == 0)
+            { //cannot run if there is 0 energy!
                 Set<IFortronFrequency> connected = new HashSet<>();
-                for (ItemStack stack : getCards()) {
+                for (ItemStack stack : getCards())
+                {
                     if (stack == null)
+                    {
                         continue;
+                    }
 
-                    if (stack.getItem() instanceof ICardInfinite) {
+                    if (stack.getItem() instanceof ICardInfinite)
+                    {
                         setFortronEnergy(getFortronCapacity());
-                    } else if (stack.getItem() instanceof ICoordLink) {
+                    }
+                    else if (stack.getItem() instanceof ICoordLink)
+                    {
                         Location link = ((ICoordLink) stack.getItem()).getLink(stack);
-                        if (link != null) {
+                        if (link != null)
+                        {
                             TileEntity link_machine = link.getTileEntity(this.worldObj);
-                            if (link_machine instanceof IFortronFrequency) {
+                            if (link_machine instanceof IFortronFrequency)
+                            {
                                 connected.add(this);
                                 connected.add((IFortronFrequency) link_machine);
                             }
@@ -75,7 +90,9 @@ public class TileFortronCapacitor extends TileModuleAcceptor implements IFortron
                     }
                 }
                 if (connected.isEmpty())
+                {
                     getLinkedDevices(connected);
+                }
 
                 FortronHelper.transfer(this, connected, mode, getTransmissionRate());
             }
@@ -89,11 +106,16 @@ public class TileFortronCapacitor extends TileModuleAcceptor implements IFortron
      * @param stack
      */
     @Override
-    public boolean isItemValidForSlot(int slot, ItemStack stack) {
-        if(slot == 0)
+    public boolean isItemValidForSlot(int slot, ItemStack stack)
+    {
+        if (slot == 0)
+        {
             return stack.getItem() instanceof ICardInfinite || stack.getItem() instanceof ItemCardLink;
-        else if(slot == 1)
+        }
+        else if (slot == 1)
+        {
             return stack.getItem() instanceof ItemCardFrequency || stack.getItem() instanceof ItemCardLink;
+        }
         return stack.getItem() instanceof IModule;
     }
 
@@ -101,7 +123,8 @@ public class TileFortronCapacitor extends TileModuleAcceptor implements IFortron
      * @return
      */
     @Override
-    public Set<ItemStack> getCards() {
+    public Set<ItemStack> getCards()
+    {
         Set<ItemStack> set = new HashSet<>();
         set.add(super.getCard());
         set.add(getStackInSlot(1));
@@ -109,43 +132,51 @@ public class TileFortronCapacitor extends TileModuleAcceptor implements IFortron
     }
 
     @Override
-    public void getLinkedDevices(Set<IFortronFrequency> list) {
+    public void getLinkedDevices(Set<IFortronFrequency> list)
+    {
         list.addAll(FrequencyGrid.instance().getFortronTilesExcluding(this, new Vector3D(this), getTransmissionRange(), getFrequency()));
     }
 
     @Override
-    public int getTransmissionRange() {
+    public int getTransmissionRange()
+    {
         return 15 + getModuleCount(ItemModuleScale.class);
     }
 
     @Override
-    public int getTransmissionRate() {
+    public int getTransmissionRate()
+    {
         return 250 + 50 * getModuleCount(ItemModuleSpeed.class);
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbt) {
+    public void writeToNBT(NBTTagCompound nbt)
+    {
         super.writeToNBT(nbt);
         nbt.setByte("transferMode", (byte) mode.ordinal());
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbt) {
+    public void readFromNBT(NBTTagCompound nbt)
+    {
         super.readFromNBT(nbt);
         this.mode = TransferMode.values()[nbt.getByte("transferMode")];
     }
 
     @Override
-    public int getSizeInventory() {
+    public int getSizeInventory()
+    {
         return 5;
     }
 
-    public TransferMode getTransferMode() {
+    public TransferMode getTransferMode()
+    {
         return this.mode;
     }
 
     @Override
-    public float getAmplifier() {
+    public float getAmplifier()
+    {
         return .001F;
     }
 
@@ -155,10 +186,13 @@ public class TileFortronCapacitor extends TileModuleAcceptor implements IFortron
      * @param imessage The message.
      */
     @Override
-    public IMessage handleMessage(IMessage imessage) {
-        if (imessage instanceof EntityToggle) {
+    public IMessage handleMessage(IMessage imessage)
+    {
+        if (imessage instanceof EntityToggle)
+        {
             EntityToggle tog = (EntityToggle) imessage;
-            if (tog.toggle_opcode == EntityToggle.TRANSFER_TOGGLE) {
+            if (tog.toggle_opcode == EntityToggle.TRANSFER_TOGGLE)
+            {
                 this.mode = this.mode.toggle();
                 worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
                 return null;
@@ -168,7 +202,8 @@ public class TileFortronCapacitor extends TileModuleAcceptor implements IFortron
     }
 
     @Override
-    public List<ItemStack> getRemovedItems(EntityPlayer entityPlayer) {
+    public List<ItemStack> getRemovedItems(EntityPlayer entityPlayer)
+    {
         List<ItemStack> stack = super.getRemovedItems(entityPlayer);
         stack.add(new ItemStack(ModularForcefieldSystem.fortronCapacitor));
         return stack;

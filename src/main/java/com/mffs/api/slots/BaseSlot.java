@@ -7,7 +7,8 @@ import net.minecraft.item.ItemStack;
 /**
  * Created by pwaln on 6/3/2016.
  */
-public class BaseSlot<ENTITY extends IInventory> extends Slot {
+public class BaseSlot<ENTITY extends IInventory> extends Slot
+{
 
     /* The IInventory that will be assigned. */
     protected ENTITY inventoryTile;
@@ -20,19 +21,23 @@ public class BaseSlot<ENTITY extends IInventory> extends Slot {
      * @param xPos   The Xpossition of the slot.
      * @param yPos   The Y position of the slot.
      */
-    public BaseSlot(ENTITY entity, int slotId, int xPos, int yPos) {
+    public BaseSlot(ENTITY entity, int slotId, int xPos, int yPos)
+    {
         super(entity, slotId, xPos, yPos);
         this.inventoryTile = entity;
     }
 
     @Override
-    public boolean isItemValid(ItemStack stack) {
+    public boolean isItemValid(ItemStack stack)
+    {
         return inventoryTile.isItemValidForSlot(this.slotNumber, stack);
     }
 
-    public int getSlotStackLimit() {
+    public int getSlotStackLimit()
+    {
         ItemStack stack = inventoryTile.getStackInSlot(this.slotNumber);
-        if (stack != null) {
+        if (stack != null)
+        {
             return stack.getMaxStackSize();
         }
         return inventoryTile.getInventoryStackLimit();

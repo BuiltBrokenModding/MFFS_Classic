@@ -7,7 +7,8 @@ import io.netty.buffer.ByteBuf;
 /**
  * Created by Poopsicle360 on 7/15/2016.
  */
-public final class ItemStringToggle extends ItemMessage {
+public final class ItemStringToggle extends ItemMessage
+{
 
     /* The text to be sent */
     public String text;
@@ -15,11 +16,13 @@ public final class ItemStringToggle extends ItemMessage {
     /**
      * Default constructor for class instance.
      */
-    public ItemStringToggle() {
+    public ItemStringToggle()
+    {
         super();
     }
 
-    public ItemStringToggle(String text) {
+    public ItemStringToggle(String text)
+    {
         this.text = text;
     }
 
@@ -29,7 +32,8 @@ public final class ItemStringToggle extends ItemMessage {
      * @param buf
      */
     @Override
-    public void fromBytes(ByteBuf buf) {
+    public void fromBytes(ByteBuf buf)
+    {
         super.fromBytes(buf);
         text = ByteBufUtils.readUTF8String(buf);
     }
@@ -40,7 +44,8 @@ public final class ItemStringToggle extends ItemMessage {
      * @param buf
      */
     @Override
-    public void toBytes(ByteBuf buf) {
+    public void toBytes(ByteBuf buf)
+    {
         super.toBytes(buf);
         ByteBufUtils.writeUTF8String(buf, text);
     }
@@ -48,5 +53,7 @@ public final class ItemStringToggle extends ItemMessage {
     /**
      * Reads the message and handles it server side.
      */
-    public static class ServerHandler extends ItemMessage.ServerHandler<ItemStringToggle> {}
+    public static class ServerHandler extends ItemMessage.ServerHandler<ItemStringToggle>
+    {
+    }
 }

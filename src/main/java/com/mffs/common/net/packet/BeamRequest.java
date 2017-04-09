@@ -8,7 +8,8 @@ import net.minecraft.tileentity.TileEntity;
 /**
  * Created by pwaln on 7/6/2016.
  */
-public class BeamRequest extends TileEntityMessage {
+public class BeamRequest extends TileEntityMessage
+{
 
     /* This is the position we want the beam to go to. */
     public Vector3D destination;
@@ -16,14 +17,16 @@ public class BeamRequest extends TileEntityMessage {
     /**
      * Default constructor for class instance.
      */
-    public BeamRequest() {
+    public BeamRequest()
+    {
         super();
     }
 
     /**
      * @param entity
      */
-    public BeamRequest(TileEntity entity, Vector3D vec) {
+    public BeamRequest(TileEntity entity, Vector3D vec)
+    {
         super(entity);
         this.destination = vec;
     }
@@ -34,7 +37,8 @@ public class BeamRequest extends TileEntityMessage {
      * @param buf
      */
     @Override
-    public void fromBytes(ByteBuf buf) {
+    public void fromBytes(ByteBuf buf)
+    {
         super.fromBytes(buf);
         destination = new Vector3D(buf.readInt(), buf.readInt(), buf.readInt());
     }
@@ -45,7 +49,8 @@ public class BeamRequest extends TileEntityMessage {
      * @param buf
      */
     @Override
-    public void toBytes(ByteBuf buf) {
+    public void toBytes(ByteBuf buf)
+    {
         super.toBytes(buf);
         buf.writeInt(destination.intX()).writeInt(destination.intY()).writeInt(destination.intZ());
     }
@@ -53,5 +58,7 @@ public class BeamRequest extends TileEntityMessage {
     /**
      * Sends a sync to the Client.
      */
-    public static class ClientHandler extends TileEntityMessage.ClientHandler<BeamRequest> {}
+    public static class ClientHandler extends TileEntityMessage.ClientHandler<BeamRequest>
+    {
+    }
 }

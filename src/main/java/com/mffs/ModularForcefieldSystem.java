@@ -31,7 +31,8 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.FluidRegistry;
 
 @Mod(modid = ModularForcefieldSystem.MODID, name = ModularForcefieldSystem.MOD_NAME, version = ModularForcefieldSystem.VERSION, dependencies = "required-after:voltzengine")
-public class ModularForcefieldSystem extends AbstractMod {
+public class ModularForcefieldSystem extends AbstractMod
+{
     public static final String MODID = "mffs";
     public static final String VERSION = "0.50";
     public static final String MOD_NAME = "Modular Forcefield System";
@@ -39,13 +40,16 @@ public class ModularForcefieldSystem extends AbstractMod {
     /**
      * Constructor.
      */
-    public ModularForcefieldSystem() {
-        super(MODID, MODID+"/general_settings");
-        manager.defaultTab = new CreativeTabs(ModularForcefieldSystem.MODID) {
+    public ModularForcefieldSystem()
+    {
+        super(MODID, MODID + "/general_settings");
+        manager.defaultTab = new CreativeTabs(ModularForcefieldSystem.MODID)
+        {
 
             @Override
             @SideOnly(Side.CLIENT)
-            public Item getTabIconItem() {
+            public Item getTabIconItem()
+            {
                 return Item.getItemFromBlock(forcefieldProjector);
             }
         };
@@ -61,7 +65,8 @@ public class ModularForcefieldSystem extends AbstractMod {
     public static SimpleNetworkWrapper channel;
 
     @Override
-    public AbstractProxy getProxy() {
+    public AbstractProxy getProxy()
+    {
         return proxy;
     }
 
@@ -69,7 +74,8 @@ public class ModularForcefieldSystem extends AbstractMod {
     public static Block biometricIdentifier, coercionDeriver, forcefieldProjector, fortronCapacitor, interdictionMatrix;
 
     @Override
-    protected void loadBlocks(ModManager manager) {
+    protected void loadBlocks(ModManager manager)
+    {
         biometricIdentifier = manager.newBlock(BlockBiometricIdentifier.class).setBlockName("biometricIdentifier");
         coercionDeriver = manager.newBlock(BlockCoercionDeriver.class).setBlockName("coercionDeriver");
         BlockForceField.BLOCK_FORCE_FIELD = (BlockForceField) manager.newBlock(BlockForceField.class).setBlockName("forceField").setCreativeTab(null);
@@ -124,7 +130,8 @@ public class ModularForcefieldSystem extends AbstractMod {
     }
 
     @Override
-    public void loadEntities(ModManager manager) {
+    public void loadEntities(ModManager manager)
+    {
         GameRegistry.registerTileEntity(TileBiometricIdentifier.class, "biometricIdentifier");
         GameRegistry.registerTileEntity(TileCoercionDeriver.class, "coercionDeriver");
         GameRegistry.registerTileEntity(TileForceField.class, "forceField");
@@ -134,7 +141,8 @@ public class ModularForcefieldSystem extends AbstractMod {
     }
 
     @EventHandler
-    public void preInit(FMLPreInitializationEvent event) {
+    public void preInit(FMLPreInitializationEvent event)
+    {
         super.preInit(event);
         channel = new SimpleNetworkWrapper(MODID);
         SettingConfiguration.load();
@@ -152,13 +160,15 @@ public class ModularForcefieldSystem extends AbstractMod {
     }
 
     @EventHandler
-    public void init(FMLInitializationEvent event) {
+    public void init(FMLInitializationEvent event)
+    {
         super.init(event);
         proxy.init();
     }
 
     @EventHandler
-    public void postInit(FMLPostInitializationEvent event) {
+    public void postInit(FMLPostInitializationEvent event)
+    {
         super.postInit(event);
         proxy.postInit();
     }

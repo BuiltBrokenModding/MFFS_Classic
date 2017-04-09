@@ -21,10 +21,12 @@ import java.util.Set;
  * @author Calclavia
  */
 //TODO: Way this is done needs to be reWritten!
-public class ItemModuleSponge extends BaseModule {
+public class ItemModuleSponge extends BaseModule
+{
 
     @Override
-    public void genRecipes(List<IRecipe> list) {
+    public void genRecipes(List<IRecipe> list)
+    {
         list.add(newShapedRecipe(this,
                 "WWW", "WFW", "WWW",
                 'F', Item.itemRegistry.getObject("mffs:focusMatrix"),
@@ -34,7 +36,8 @@ public class ItemModuleSponge extends BaseModule {
     /**
      * Initialize constructor so we can set attributes.
      */
-    public ItemModuleSponge() {
+    public ItemModuleSponge()
+    {
         super();
         setMaxStackSize(1);
     }
@@ -47,15 +50,20 @@ public class ItemModuleSponge extends BaseModule {
      * @return
      */
     @Override
-    public boolean onProject(IProjector projector, Set<Vector3D> fields) {
-        if (projector.getTicks() % 60L == 0L) {
+    public boolean onProject(IProjector projector, Set<Vector3D> fields)
+    {
+        if (projector.getTicks() % 60L == 0L)
+        {
             World world = ((TileEntity) projector).getWorldObj();
 
-            if (!world.isRemote) {
-                for (Vector3D point : projector.getInteriorPoints()) {
+            if (!world.isRemote)
+            {
+                for (Vector3D point : projector.getInteriorPoints())
+                {
                     Block block = point.getBlock(world);
 
-                    if (((block instanceof BlockLiquid)) || ((block instanceof BlockFluidBase))) {
+                    if (((block instanceof BlockLiquid)) || ((block instanceof BlockFluidBase)))
+                    {
                         point.setBlock(world, Blocks.air);
                     }
                 }
@@ -65,7 +73,8 @@ public class ItemModuleSponge extends BaseModule {
     }
 
     @Override
-    public boolean requireTicks(ItemStack moduleStack) {
+    public boolean requireTicks(ItemStack moduleStack)
+    {
         return true;
     }
 }

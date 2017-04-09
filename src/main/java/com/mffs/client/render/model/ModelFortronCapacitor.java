@@ -9,7 +9,8 @@ import net.minecraft.client.model.ModelRenderer;
  * @author Calclavia
  */
 @SideOnly(Side.CLIENT)
-public class ModelFortronCapacitor extends ModelBase {
+public class ModelFortronCapacitor extends ModelBase
+{
     ModelRenderer corner1;
     ModelRenderer bottom;
     ModelRenderer top;
@@ -24,7 +25,8 @@ public class ModelFortronCapacitor extends ModelBase {
     ModelRenderer Core;
     ModelRenderer Tout;
 
-    public ModelFortronCapacitor() {
+    public ModelFortronCapacitor()
+    {
         this.textureWidth = 64;
         this.textureHeight = 32;
 
@@ -108,7 +110,8 @@ public class ModelFortronCapacitor extends ModelBase {
         setRotation(this.Tout, 0.0F, 0.0F, 0.0F);
     }
 
-    public void render(float f5) {
+    public void render(float f5)
+    {
         this.corner1.render(f5);
         this.bottom.render(f5);
         this.top.render(f5);
@@ -124,7 +127,8 @@ public class ModelFortronCapacitor extends ModelBase {
         this.Tout.render(f5);
     }
 
-    private void setRotation(ModelRenderer model, float x, float y, float z) {
+    private void setRotation(ModelRenderer model, float x, float y, float z)
+    {
         model.rotateAngleX = x;
         model.rotateAngleY = y;
         model.rotateAngleZ = z;

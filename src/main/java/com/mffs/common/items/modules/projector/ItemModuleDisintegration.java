@@ -25,10 +25,12 @@ import java.util.Set;
 /**
  * @author Calclavia
  */
-public class ItemModuleDisintegration extends BaseModule implements IRecipeContainer {
+public class ItemModuleDisintegration extends BaseModule implements IRecipeContainer
+{
 
     @Override
-    public void genRecipes(List<IRecipe> list) {
+    public void genRecipes(List<IRecipe> list)
+    {
         list.add(newShapedRecipe(this,
                 " W ", "FBF", " W ",
                 'F', Item.itemRegistry.getObject("mffs:focusMatrix"),
@@ -41,7 +43,8 @@ public class ItemModuleDisintegration extends BaseModule implements IRecipeConta
     /**
      *
      */
-    public ItemModuleDisintegration() {
+    public ItemModuleDisintegration()
+    {
         setMaxStackSize(1);
         setCost(20);
     }
@@ -54,29 +57,38 @@ public class ItemModuleDisintegration extends BaseModule implements IRecipeConta
      * @return
      */
     @Override
-    public boolean onProject(IProjector projector, Set<Vector3D> fields) {
+    public boolean onProject(IProjector projector, Set<Vector3D> fields)
+    {
         this.blockCount = 0;
         return false;
     }
 
     @Override
-    public int onProject(IProjector projector, Vector3D position) {
-        if (projector.getTicks() % 40 == 0) {
+    public int onProject(IProjector projector, Vector3D position)
+    {
+        if (projector.getTicks() % 40 == 0)
+        {
             TileForceFieldProjector entity = (TileForceFieldProjector) projector;
             Block block = position.getBlock(entity.getWorldObj());
 
-            if(position.intX() == entity.xCoord && position.intY() == entity.yCoord
+            if (position.intX() == entity.xCoord && position.intY() == entity.yCoord
                     && position.intZ() == entity.zCoord) //prevent destroying itself.
+            {
                 return 1;
+            }
 
-            if (block != null) {
+            if (block != null)
+            {
                 int meta = entity.getWorldObj().getBlockMetadata(position.intX(), position.intY(), position.intZ()); //destory specific blocks
                 boolean aprox = projector.getModuleCount(ItemModuleApproximation.class) > 0;
                 boolean blockMatch = false;
                 ItemStack search = new ItemStack(block, meta);
-                for (ItemStack item : entity.getFilterStacks()) {
-                    if (item != null && item.getItem() instanceof ItemBlock) {
-                        if (item.equals(search) || ((ItemBlock) item.getItem()).field_150939_a == block && aprox) {
+                for (ItemStack item : entity.getFilterStacks())
+                {
+                    if (item != null && item.getItem() instanceof ItemBlock)
+                    {
+                        if (item.equals(search) || ((ItemBlock) item.getItem()).field_150939_a == block && aprox)
+                        {
                             blockMatch = true;
                             break;
                         }
@@ -84,20 +96,26 @@ public class ItemModuleDisintegration extends BaseModule implements IRecipeConta
                 }
                 //Filter???
                 if (projector.getModuleCount(ItemModuleCamouflage.class) > 0 == !blockMatch || block instanceof IFluidBlock || Blacklist.disintegrationBlacklist.contains(block)
-                        || block instanceof BlockFluidBase) {
+                        || block instanceof BlockFluidBase)
+                {
                     return 1;
                 }
 
-                if (!entity.getWorldObj().isRemote) {
+                if (!entity.getWorldObj().isRemote)
+                {
                     TileForceFieldProjector proj = (TileForceFieldProjector) projector;
-                    if (projector.getModuleCount(ItemModuleCollection.class) > 0) {
+                    if (projector.getModuleCount(ItemModuleCollection.class) > 0)
+                    {
                         proj.getEventsQueued().add(new DelayedBlockInventoryEvent(39, entity.getWorldObj(), position, proj));
-                    } else {
+                    }
+                    else
+                    {
                         proj.getEventsQueued().add(new DelayedBlockDropEvent(39, entity.getWorldObj(), position));
                     }
                 }
 
-                if (++this.blockCount >= projector.getProjectionSpeed() / 3) {
+                if (++this.blockCount >= projector.getProjectionSpeed() / 3)
+                {
                     return 2;
                 }
 

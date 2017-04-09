@@ -1,7 +1,7 @@
 package com.mffs.common.items;
 
-import com.builtbroken.mc.lib.helper.recipe.UniversalRecipe;
 import com.builtbroken.mc.imp.transform.vector.Location;
+import com.builtbroken.mc.lib.helper.recipe.UniversalRecipe;
 import com.mffs.ModularForcefieldSystem;
 import com.mffs.api.IBlockFrequency;
 import com.mffs.api.card.ICoordLink;
@@ -35,32 +35,40 @@ import java.util.Set;
 /**
  * @author Calclavia
  */
-public class RemoteController extends ItemCardFrequency implements ICoordLink {
+public class RemoteController extends ItemCardFrequency implements ICoordLink
+{
 
     /* This is the local version for caching */
     private Location link;
 
     @Override
-    public void addInformation(ItemStack stack, EntityPlayer usr, List list, boolean dummy) {
+    public void addInformation(ItemStack stack, EntityPlayer usr, List list, boolean dummy)
+    {
         super.addInformation(stack, usr, list, dummy);
 
         Location link = getLink(stack);
-        if (link != null) {
+        if (link != null)
+        {
             World world = link.world;
             Block block = link.getBlock(world);
             if (block != null)
+            {
                 list.add(LanguageRegistry.instance().getStringLocalization("info.item.linkedWith") + " " + block.getLocalizedName());
+            }
 
             list.add(link.xi() + ", " + link.yi() + ", " + link.zi());
             list.add(LanguageRegistry.instance().getStringLocalization("info.item.dimension") + " " + world.getWorldInfo().getWorldName());
-        } else {
+        }
+        else
+        {
             super.addInformation(stack, usr, list, dummy);
             list.add(EnumChatFormatting.RED + LanguageRegistry.instance().getStringLocalization("info.item.notLinked"));
         }
     }
 
     @Override
-    public void genRecipes(List<IRecipe> list) {
+    public void genRecipes(List<IRecipe> list)
+    {
         list.add(newShapedRecipe(this, "WWW", "SBS", "SBS",
                 'W', UniversalRecipe.WIRE.get(),
                 'S', UniversalRecipe.PRIMARY_METAL.get(),
@@ -68,7 +76,8 @@ public class RemoteController extends ItemCardFrequency implements ICoordLink {
     }
 
     @Override
-    public void setLink(ItemStack paramItemStack, Location paramVectorWorld) {
+    public void setLink(ItemStack paramItemStack, Location paramVectorWorld)
+    {
         NBTTagCompound tag = Util.getTag(paramItemStack);
         this.link = paramVectorWorld;
         tag.setTag("mffs_link", paramVectorWorld.toNBT());
@@ -76,7 +85,8 @@ public class RemoteController extends ItemCardFrequency implements ICoordLink {
 
 
     @Override
-    public Location getLink(ItemStack paramItemStack) {
+    public Location getLink(ItemStack paramItemStack)
+    {
         NBTTagCompound tag = Util.getTag(paramItemStack);
         if (!tag.hasKey("mffs_link"))
         {
@@ -84,7 +94,7 @@ public class RemoteController extends ItemCardFrequency implements ICoordLink {
         }
         if (link == null)
         {
-            if(tag.hasKey("id"))
+            if (tag.hasKey("id"))
             {
                 tag.setInteger("dimension", tag.getInteger("id"));
                 tag.removeTag("id");
@@ -110,15 +120,18 @@ public class RemoteController extends ItemCardFrequency implements ICoordLink {
      * @param hitZ   @return Return true to prevent any further processing.
      */
     @Override
-    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
-        if (!world.isRemote && player.isSneaking()) { //you should be sneaking to set coord!
+    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
+    {
+        if (!world.isRemote && player.isSneaking())
+        { //you should be sneaking to set coord!
             Location coord = new Location(world, x, y, z);
             Block block = coord.getBlock();
-            if (block != null && block instanceof MFFSMachine) {
+            if (block != null && block instanceof MFFSMachine)
+            {
 
                 setLink(stack, coord);
                 player.addChatMessage(new ChatComponentText(String.format(LanguageRegistry.instance().getStringLocalization("message.remoteController.linked")
-                            .replace("%p", x + ", " + y + ", " + z).replace("%q", block.getLocalizedName()))));
+                        .replace("%p", x + ", " + y + ", " + z).replace("%q", block.getLocalizedName()))));
             }
         }
         return true;
@@ -132,45 +145,62 @@ public class RemoteController extends ItemCardFrequency implements ICoordLink {
      * @param usr
      */
     @Override
-    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer usr) {
-        if (!usr.isSneaking() && !world.isRemote) {
+    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer usr)
+    {
+        if (!usr.isSneaking() && !world.isRemote)
+        {
             Location position = getLink(stack);
 
-            if (position != null) {
+            if (position != null)
+            {
                 Block block = position.getBlock(world);
 
-                if (block != null) {
+                if (block != null)
+                {
                     Chunk chunk = world.getChunkFromBlockCoords(position.xi(), position.zi());
                     Set<IBlockFrequency> freq = FrequencyGrid.instance().get();
                     Vector3D usrLoc = new Vector3D(usr);
                     IInterdictionMatrix matrix = MatrixHelper.findMatrix(world, usrLoc, freq);
-                    if (chunk != null && chunk.isChunkLoaded && (matrix == null || MatrixHelper.hasPermission(matrix, PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK, usr) || MatrixHelper.hasPermission(matrix, usr.getGameProfile().getName(), Permission.REMOTE_CONTROL))) {
+                    if (chunk != null && chunk.isChunkLoaded && (matrix == null || MatrixHelper.hasPermission(matrix, PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK, usr) || MatrixHelper.hasPermission(matrix, usr.getGameProfile().getName(), Permission.REMOTE_CONTROL)))
+                    {
                         float requiredEnergy = (float) usrLoc.distance(position.xi(), position.yi(), position.zi()) * 10.0F;
                         int receivedEnergy = 0;
 
                         int freq_ = getFrequency(stack);
-                        for (Iterator<IBlockFrequency> it$ = freq.iterator(); it$.hasNext(); ) {//By doing this we cut out a extra loop
+                        for (Iterator<IBlockFrequency> it$ = freq.iterator(); it$.hasNext(); )
+                        {//By doing this we cut out a extra loop
                             IBlockFrequency b_freq = it$.next();
                             if (!(b_freq instanceof IFortronFrequency)
                                     || usrLoc.distance(((TileEntity) b_freq).xCoord, ((TileEntity) b_freq).yCoord, ((TileEntity) b_freq).zCoord) > 50)
+                            {
                                 it$.remove();
+                            }
                             else if (b_freq.getFrequency() != freq_)
+                            {
                                 it$.remove();
+                            }
                         }
 
                         Vector3D center = usrLoc.clone().add(new Vector3D(0.0D, usr.getEyeHeight() - 0.2D, 0.0D));
-                        for (IBlockFrequency bl : freq) {
+                        for (IBlockFrequency bl : freq)
+                        {
                             IFortronFrequency fortronTile = (IFortronFrequency) bl;
                             int consumedEnergy = fortronTile.requestFortron((int) Math.ceil(requiredEnergy / freq.size()), true);
 
-                            if (consumedEnergy > 0) {
-                                ModularForcefieldSystem.proxy.registerBeamEffect(world, center, new Vector3D((TileEntity) fortronTile).add(0.5), 0.6F, 0.6F, 1.0F, 20);receivedEnergy += consumedEnergy;
+                            if (consumedEnergy > 0)
+                            {
+                                ModularForcefieldSystem.proxy.registerBeamEffect(world, center, new Vector3D((TileEntity) fortronTile).add(0.5), 0.6F, 0.6F, 1.0F, 20);
+                                receivedEnergy += consumedEnergy;
                             }
 
-                            if (receivedEnergy >= requiredEnergy) {
-                                try {
+                            if (receivedEnergy >= requiredEnergy)
+                            {
+                                try
+                                {
                                     block.onBlockActivated(world, position.xi(), position.yi(), position.zi(), usr, 0, 0.0F, 0.0F, 0.0F);
-                                } catch (Exception e) {
+                                }
+                                catch (Exception e)
+                                {
                                     e.printStackTrace();
                                 }
                                 return stack;

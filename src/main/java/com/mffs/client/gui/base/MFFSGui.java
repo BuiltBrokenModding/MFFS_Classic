@@ -24,7 +24,8 @@ import org.lwjgl.input.Keyboard;
  * @author Calclavia
  */
 @SideOnly(Side.CLIENT)
-public class MFFSGui extends GuiContainerBase {
+public class MFFSGui extends GuiContainerBase
+{
 
     protected GuiTextField textFieldFrequency;
     protected Point textFieldPos;
@@ -33,7 +34,8 @@ public class MFFSGui extends GuiContainerBase {
     /**
      * @param container
      */
-    public MFFSGui(Container container) {
+    public MFFSGui(Container container)
+    {
         super(container);
         ySize = 217;
     }
@@ -42,18 +44,21 @@ public class MFFSGui extends GuiContainerBase {
      * @param container
      * @param freq
      */
-    public MFFSGui(Container container, IBlockFrequency freq) {
+    public MFFSGui(Container container, IBlockFrequency freq)
+    {
         this(container);
         this.frequencyTile = freq;
     }
 
     @Override
-    public void initGui() {
+    public void initGui()
+    {
         super.initGui();
         buttonList.clear();
         this.buttonList.add(new GuiIcon(0, this.width / 2 - 110, this.height / 2 - 104, new ItemStack(Blocks.torch), new ItemStack(Blocks.redstone_torch)));
         Keyboard.enableRepeatEvents(true);
-        if (this.frequencyTile != null) {
+        if (this.frequencyTile != null)
+        {
             this.textFieldFrequency = new GuiTextField(this.fontRendererObj, (int) this.textFieldPos.x(), (int) this.textFieldPos.y(), 50, 12);
             this.textFieldFrequency.setMaxStringLength(6);
             this.textFieldFrequency.setText(this.frequencyTile.getFrequency() + "");
@@ -61,21 +66,28 @@ public class MFFSGui extends GuiContainerBase {
     }
 
     @Override
-    protected void keyTyped(char par1, int par2) {
+    protected void keyTyped(char par1, int par2)
+    {
         super.keyTyped(par1, par2);
 
-        if (this.textFieldFrequency != null) {
+        if (this.textFieldFrequency != null)
+        {
 
             if (!Character.isDigit(par1) && par1 != 8)
+            {
                 return;
+            }
             this.textFieldFrequency.textboxKeyTyped(par1, par2);
 
-            try {
+            try
+            {
                 int newFrequency = this.textFieldFrequency.getText().isEmpty() ? 0 : Integer.parseInt(this.textFieldFrequency.getText());
                 this.frequencyTile.setFrequency(newFrequency);
                 this.textFieldFrequency.setText(this.frequencyTile.getFrequency() + "");
                 ModularForcefieldSystem.channel.sendToServer(new ChangeFrequency(((TileEntity) this.frequencyTile), newFrequency));
-            } catch (NumberFormatException e) {
+            }
+            catch (NumberFormatException e)
+            {
                 e.printStackTrace();
             }
         }
@@ -83,27 +95,34 @@ public class MFFSGui extends GuiContainerBase {
 
 
     @Override
-    protected void actionPerformed(GuiButton guiButton) {
+    protected void actionPerformed(GuiButton guiButton)
+    {
         super.actionPerformed(guiButton);
 
-        if ((this.frequencyTile != null) && (guiButton.id == 0)) {
+        if ((this.frequencyTile != null) && (guiButton.id == 0))
+        {
             ModularForcefieldSystem.channel.sendToServer(new EntityToggle((TileEntity) frequencyTile, EntityToggle.REDSTONE_TOGGLE));
         }
     }
 
 
     @Override
-    public void updateScreen() {
+    public void updateScreen()
+    {
         super.updateScreen();
 
-        if (this.textFieldFrequency != null) {
-            if (!this.textFieldFrequency.isFocused()) {
+        if (this.textFieldFrequency != null)
+        {
+            if (!this.textFieldFrequency.isFocused())
+            {
                 this.textFieldFrequency.setText(this.frequencyTile.getFrequency() + "");
             }
         }
 
-        if ((this.frequencyTile instanceof TileMFFS)) {
-            if ((this.buttonList.size() > 0) && (this.buttonList.get(0) != null)) {
+        if ((this.frequencyTile instanceof TileMFFS))
+        {
+            if ((this.buttonList.size() > 0) && (this.buttonList.get(0) != null))
+            {
                 ((GuiIcon) this.buttonList.get(0)).setIndex(((TileMFFS) this.frequencyTile).isActive() ? 1 : 0);
             }
         }
@@ -111,21 +130,26 @@ public class MFFSGui extends GuiContainerBase {
 
 
     @Override
-    public void mouseClicked(int x, int y, int par3) {
+    public void mouseClicked(int x, int y, int par3)
+    {
         super.mouseClicked(x, y, par3);
 
-        if (this.textFieldFrequency != null) {
+        if (this.textFieldFrequency != null)
+        {
             this.textFieldFrequency.mouseClicked(x - this.containerWidth, y - this.containerHeight, par3);
         }
     }
 
 
     @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
+    {
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 
-        if (this.textFieldFrequency != null) {
-            if (func_146978_c((int) this.textFieldPos.x(), (int) this.textFieldPos.y(), this.textFieldFrequency.getWidth(), 12, mouseX, mouseY)) {
+        if (this.textFieldFrequency != null)
+        {
+            if (func_146978_c((int) this.textFieldPos.x(), (int) this.textFieldPos.y(), this.textFieldFrequency.getWidth(), 12, mouseX, mouseY))
+            {
                 this.tooltip = LanguageRegistry.instance().getStringLocalization("gui.frequency.tooltip");
             }
         }
@@ -133,10 +157,12 @@ public class MFFSGui extends GuiContainerBase {
 
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float var1, int x, int y) {
+    protected void drawGuiContainerBackgroundLayer(float var1, int x, int y)
+    {
         super.drawGuiContainerBackgroundLayer(var1, x, y);
 
-        if ((this.frequencyTile instanceof IBiometricIdentifierLink)) {
+        if ((this.frequencyTile instanceof IBiometricIdentifierLink))
+        {
             drawBulb(167, 4, ((IBiometricIdentifierLink) this.frequencyTile).getBiometricIdentifier() != null);
         }
     }

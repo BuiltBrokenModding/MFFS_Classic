@@ -21,17 +21,20 @@ import java.util.Set;
 /**
  * @author Calclavia
  */
-public final class ItemModuleRepulsion extends BaseModule {
+public final class ItemModuleRepulsion extends BaseModule
+{
 
     /**
      *
      */
-    public ItemModuleRepulsion() {
+    public ItemModuleRepulsion()
+    {
         setCost(8);
     }
 
     @Override
-    public void genRecipes(List<IRecipe> list) {
+    public void genRecipes(List<IRecipe> list)
+    {
 
     }
 
@@ -43,20 +46,26 @@ public final class ItemModuleRepulsion extends BaseModule {
      * @return
      */
     @Override
-    public boolean onProject(IProjector projector, Set<Vector3D> fields) {
+    public boolean onProject(IProjector projector, Set<Vector3D> fields)
+    {
         double velocity = Math.max(projector.getModuleCount(ItemModuleRepulsion.class) / 20, 1.2);
         projector.getCalculatedField().forEach(vec -> {
-            List<Entity> entities = ((TileEntity)projector).getWorldObj().getEntitiesWithinAABB(Entity.class,
+            List<Entity> entities = ((TileEntity) projector).getWorldObj().getEntitiesWithinAABB(Entity.class,
                     AxisAlignedBB.getBoundingBox(vec.intX(), vec.intY(), vec.intZ(), vec.intX() + 1, vec.intY() + 1, vec.intZ() + 1));
 
-            for(Entity entity : entities) {
-                if(entity instanceof EntityPlayer) {
+            for (Entity entity : entities)
+            {
+                if (entity instanceof EntityPlayer)
+                {
                     EntityPlayer player = (EntityPlayer) entity;
 
-                    if(player.isSneaking()) {
+                    if (player.isSneaking())
+                    {
                         IBiometricIdentifier bio = projector.getBiometricIdentifier();
-                        if(player.capabilities.isCreativeMode || bio != null && bio.isAccessGranted(player.getGameProfile().getName(), Permission.WARP))
+                        if (player.capabilities.isCreativeMode || bio != null && bio.isAccessGranted(player.getGameProfile().getName(), Permission.WARP))
+                        {
                             continue;
+                        }
                     }
                 }
                 Vector3D repelDir = new Vector3D(entity).difference(vec).translate(0.5);
@@ -81,13 +90,15 @@ public final class ItemModuleRepulsion extends BaseModule {
     }
 
     @Override
-    public boolean onDestroy(IProjector projector, Set<Vector3D> field) {
+    public boolean onDestroy(IProjector projector, Set<Vector3D> field)
+    {
         ModularForcefieldSystem.channel.sendToAll(new ForcefieldCalculation((TileForceFieldProjector) projector));
         return false;
     }
 
     @Override
-    public boolean requireTicks(ItemStack moduleStack) {
+    public boolean requireTicks(ItemStack moduleStack)
+    {
         return true;
     }
 }

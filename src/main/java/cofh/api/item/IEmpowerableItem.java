@@ -9,7 +9,8 @@ import net.minecraft.item.ItemStack;
  *
  * @author King Lemming
  */
-public interface IEmpowerableItem {
+public interface IEmpowerableItem
+{
 
     /**
      * Check whether or not a given item is currently in an empowered state.

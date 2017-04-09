@@ -3,7 +3,8 @@ package com.mffs.api.event;
 /**
  * Created by pwaln on 6/24/2016.
  */
-public class EventTimedTask {
+public class EventTimedTask
+{
 
     /* The number of ticks until execution */
     private short ticks;
@@ -20,7 +21,8 @@ public class EventTimedTask {
      * @param tick The number of ticks till execution.
      * @param run  The action to be run upon execution.
      */
-    public EventTimedTask(int tick, Runnable run) {
+    public EventTimedTask(int tick, Runnable run)
+    {
         this.action = run;
         this.ticks = (short) tick;
         this.runAmount = 1;
@@ -33,7 +35,8 @@ public class EventTimedTask {
      * @param runCount The amount of times to execute this task.
      * @param runnable The action to be run upon execution.
      */
-    public EventTimedTask(int tick, int runCount, Runnable runnable) {
+    public EventTimedTask(int tick, int runCount, Runnable runnable)
+    {
         this.action = runnable;
         this.ticks = (short) tick;
         this.runAmount = (byte) runCount;
@@ -44,8 +47,10 @@ public class EventTimedTask {
      *
      * @return If has executed or not.
      */
-    public boolean tick() {
-        if (--ticks <= 0) {
+    public boolean tick()
+    {
+        if (--ticks <= 0)
+        {
             execute();
             runAmount--;
             return true;
@@ -58,15 +63,18 @@ public class EventTimedTask {
      *
      * @return
      */
-    public boolean isActive() {
+    public boolean isActive()
+    {
         return runAmount >= 1;
     }
 
     /**
      * Execute the desired action.
      */
-    public void execute() {
-        if (action != null) {
+    public void execute()
+    {
+        if (action != null)
+        {
             action.run();
             ;
         }

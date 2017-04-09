@@ -10,13 +10,15 @@ import net.minecraft.entity.player.EntityPlayer;
 /**
  * @author Calclavia
  */
-public class CoercionDeriverContainer extends PlayerContainer {
+public class CoercionDeriverContainer extends PlayerContainer
+{
 
     /**
      * @param player
      * @param driver
      */
-    public CoercionDeriverContainer(EntityPlayer player, TileCoercionDeriver driver) {
+    public CoercionDeriverContainer(EntityPlayer player, TileCoercionDeriver driver)
+    {
         super(player, driver);
         //Add slots
         addSlotToContainer(new SlotSpecific(driver, 0, 9, 41, ItemCardFrequency.class));

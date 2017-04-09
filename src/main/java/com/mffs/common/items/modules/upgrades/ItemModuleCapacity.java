@@ -10,10 +10,12 @@ import java.util.List;
 /**
  * @author Calclavia
  */
-public class ItemModuleCapacity extends BaseModule {
+public class ItemModuleCapacity extends BaseModule
+{
 
     @Override
-    public void genRecipes(List<IRecipe> list) {
+    public void genRecipes(List<IRecipe> list)
+    {
         list.add(newShapedRecipe(this,
                 "FBF",
                 'F', Item.itemRegistry.getObject("mffs:focusMatrix"),
@@ -23,7 +25,8 @@ public class ItemModuleCapacity extends BaseModule {
     /**
      * Constructor.
      */
-    public ItemModuleCapacity() {
+    public ItemModuleCapacity()
+    {
         //setMaxStackSize(1);
         setCost(1F);
     }

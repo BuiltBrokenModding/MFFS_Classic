@@ -10,7 +10,8 @@ import org.lwjgl.opengl.GL11;
  * @author Calclavia
  */
 @SideOnly(Side.CLIENT)
-public class ModelCoercionDeriver extends ModelBase {
+public class ModelCoercionDeriver extends ModelBase
+{
 
     ModelRenderer corner1;
     ModelRenderer corner2;
@@ -25,7 +26,8 @@ public class ModelCoercionDeriver extends ModelBase {
     ModelRenderer Movingthingleft;
     ModelRenderer bottom;
 
-    public ModelCoercionDeriver() {
+    public ModelCoercionDeriver()
+    {
         this.textureWidth = 64;
         this.textureHeight = 32;
 
@@ -103,7 +105,8 @@ public class ModelCoercionDeriver extends ModelBase {
         setRotation(this.bottom, 0.0F, 0.0F, 0.0F);
     }
 
-    public void render(float movement, float f5) {
+    public void render(float movement, float f5)
+    {
         this.corner1.render(f5);
         this.corner2.render(f5);
         this.corner3.render(f5);
@@ -123,7 +126,8 @@ public class ModelCoercionDeriver extends ModelBase {
         this.bottom.render(f5);
     }
 
-    private void setRotation(ModelRenderer model, float x, float y, float z) {
+    private void setRotation(ModelRenderer model, float x, float y, float z)
+    {
         model.rotateAngleX = x;
         model.rotateAngleY = y;
         model.rotateAngleZ = z;

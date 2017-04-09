@@ -21,7 +21,8 @@ import net.minecraftforge.fluids.*;
 /**
  * @author Calclavia
  */
-public abstract class TileFortron extends TileFrequency implements IFluidHandler, IFortronFrequency {
+public abstract class TileFortron extends TileFrequency implements IFluidHandler, IFortronFrequency
+{
 
     /* Bounds of the force box */
     public static final Matrix2d FORCE_BOUNDS = new Matrix2d(new Vector3D(175, 0, 0), new Vector3D(186, 107, 0));
@@ -32,60 +33,73 @@ public abstract class TileFortron extends TileFrequency implements IFluidHandler
     protected FluidTank tank = new FluidTank(1_000);
 
     @Override
-    public void updateEntity() {
+    public void updateEntity()
+    {
         super.updateEntity();
 
-        if (this.ticks % SettingConfiguration.FORTRON_SYNC_TICKS == 0 && !worldObj.isRemote) {//We do not need to send by client!
+        if (this.ticks % SettingConfiguration.FORTRON_SYNC_TICKS == 0 && !worldObj.isRemote)
+        {//We do not need to send by client!
             //TODO: Send fortron only to people in the interface!
             ModularForcefieldSystem.channel.sendToAllAround(new FortronSync(this), new NetworkRegistry.TargetPoint(this.worldObj.provider.dimensionId, xCoord, yCoord, zCoord, 25));
         }
     }
 
     @Override
-    public void invalidate() {
+    public void invalidate()
+    {
         if (sendFortron)
+        {
             FortronHelper.transfer(this, FrequencyGrid.instance().getFortronTiles(this.worldObj, new Vector3D(this), 100, getFrequency()), TransferMode.DRAIN, Integer.MAX_VALUE);
+        }
 
         super.invalidate();
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbt) {
+    public void writeToNBT(NBTTagCompound nbt)
+    {
         super.writeToNBT(nbt);
-        if (tank.getFluid() != null) {
+        if (tank.getFluid() != null)
+        {
             nbt.setTag("mffs_fortron", this.tank.getFluid().writeToNBT(nbt.getCompoundTag("mffs_fortron")));
         }
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbt) {
+    public void readFromNBT(NBTTagCompound nbt)
+    {
         super.readFromNBT(nbt);
         this.tank.setFluid(FluidStack.loadFluidStackFromNBT(nbt.getCompoundTag("mffs_fortron")));
     }
 
     @Override
-    public int getFortronEnergy() {
+    public int getFortronEnergy()
+    {
         return tank.getFluidAmount();
     }
 
     @Override
-    public void setFortronEnergy(int paramInt) {
+    public void setFortronEnergy(int paramInt)
+    {
         tank.setFluid(FluidRegistry.getFluidStack("fortron", paramInt));
     }
 
     @Override
-    public int getFortronCapacity() {
+    public int getFortronCapacity()
+    {
         return tank.getCapacity();
     }
 
     @Override
-    public int requestFortron(int paramInt, boolean paramBoolean) {
+    public int requestFortron(int paramInt, boolean paramBoolean)
+    {
         FluidStack stack = tank.drain(paramInt, paramBoolean);
         return stack == null ? 0 : stack.amount;
     }
 
     @Override
-    public int provideFortron(int paramInt, boolean paramBoolean) {
+    public int provideFortron(int paramInt, boolean paramBoolean)
+    {
         return tank.fill(FluidRegistry.getFluidStack("fortron", paramInt), paramBoolean);
     }
 
@@ -98,8 +112,10 @@ public abstract class TileFortron extends TileFrequency implements IFluidHandler
      * @return Amount of resource that was (or would have been, if simulated) filled.
      */
     @Override
-    public int fill(ForgeDirection from, FluidStack resource, boolean doFill) {
-        if (resource.getFluidID() == Fortron.FLUID_ID) {
+    public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
+    {
+        if (resource.getFluidID() == Fortron.FLUID_ID)
+        {
             return this.tank.fill(resource, doFill);
         }
         return 0;
@@ -115,8 +131,10 @@ public abstract class TileFortron extends TileFrequency implements IFluidHandler
      * simulated) drained.
      */
     @Override
-    public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain) {
-        if ((resource == null) || (!resource.isFluidEqual(this.tank.getFluid()))) {
+    public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain)
+    {
+        if ((resource == null) || (!resource.isFluidEqual(this.tank.getFluid())))
+        {
             System.out.println("NULL");
             return null;
         }
@@ -135,7 +153,8 @@ public abstract class TileFortron extends TileFrequency implements IFluidHandler
      * simulated) drained.
      */
     @Override
-    public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) {
+    public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
+    {
         return this.tank.drain(maxDrain, doDrain);
     }
 
@@ -148,7 +167,8 @@ public abstract class TileFortron extends TileFrequency implements IFluidHandler
      * @param fluid
      */
     @Override
-    public boolean canFill(ForgeDirection from, Fluid fluid) {
+    public boolean canFill(ForgeDirection from, Fluid fluid)
+    {
         return true;
     }
 
@@ -161,7 +181,8 @@ public abstract class TileFortron extends TileFrequency implements IFluidHandler
      * @param fluid
      */
     @Override
-    public boolean canDrain(ForgeDirection from, Fluid fluid) {
+    public boolean canDrain(ForgeDirection from, Fluid fluid)
+    {
         return true;
     }
 
@@ -173,15 +194,19 @@ public abstract class TileFortron extends TileFrequency implements IFluidHandler
      * @return Info for the relevant internal tanks.
      */
     @Override
-    public FluidTankInfo[] getTankInfo(ForgeDirection from) {
+    public FluidTankInfo[] getTankInfo(ForgeDirection from)
+    {
         return new FluidTankInfo[0];
     }
 
-    public ItemStack getCard() {
+    public ItemStack getCard()
+    {
         ItemStack itemStack = getStackInSlot(0);
 
-        if (itemStack != null) {
-            if ((itemStack.getItem() instanceof ICard)) {
+        if (itemStack != null)
+        {
+            if ((itemStack.getItem() instanceof ICard))
+            {
                 return itemStack;
             }
         }
@@ -194,7 +219,8 @@ public abstract class TileFortron extends TileFrequency implements IFluidHandler
      *
      * @return
      */
-    public FluidTank getTank() {
+    public FluidTank getTank()
+    {
         return tank;
     }
 
@@ -204,12 +230,17 @@ public abstract class TileFortron extends TileFrequency implements IFluidHandler
      * @param imessage The message.
      */
     @Override
-    public IMessage handleMessage(IMessage imessage) {
-        if (imessage instanceof FortronSync) {
+    public IMessage handleMessage(IMessage imessage)
+    {
+        if (imessage instanceof FortronSync)
+        {
             FortronSync sync = (FortronSync) imessage;
-            if (tank.getFluid() != null) {
+            if (tank.getFluid() != null)
+            {
                 tank.getFluid().amount = sync.amount;
-            } else {
+            }
+            else
+            {
                 tank.setFluid(FluidRegistry.getFluidStack("fortron", sync.amount));
             }
         }

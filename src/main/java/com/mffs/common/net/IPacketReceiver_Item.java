@@ -6,10 +6,10 @@ import net.minecraft.item.ItemStack;
 /**
  * Created by Poopsicle360 on 7/16/2016.
  */
-public interface IPacketReceiver_Item {
+public interface IPacketReceiver_Item
+{
 
     /**
-     *
      * @param message
      * @param item
      * @return

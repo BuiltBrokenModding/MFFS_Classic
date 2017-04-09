@@ -9,19 +9,22 @@ import net.minecraftforge.common.util.ForgeDirection;
  *
  * @author King Lemming
  */
-public class TileEnergyHandler extends TileEntity implements IEnergyHandler {
+public class TileEnergyHandler extends TileEntity implements IEnergyHandler
+{
 
     protected EnergyStorage storage = new EnergyStorage(32000);
 
     @Override
-    public void readFromNBT(NBTTagCompound nbt) {
+    public void readFromNBT(NBTTagCompound nbt)
+    {
 
         super.readFromNBT(nbt);
         storage.readFromNBT(nbt);
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbt) {
+    public void writeToNBT(NBTTagCompound nbt)
+    {
 
         super.writeToNBT(nbt);
         storage.writeToNBT(nbt);
@@ -29,34 +32,39 @@ public class TileEnergyHandler extends TileEntity implements IEnergyHandler {
 
     /* IEnergyConnection */
     @Override
-    public boolean canConnectEnergy(ForgeDirection from) {
+    public boolean canConnectEnergy(ForgeDirection from)
+    {
 
         return true;
     }
 
     /* IEnergyReceiver */
     @Override
-    public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate) {
+    public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate)
+    {
 
         return storage.receiveEnergy(maxReceive, simulate);
     }
 
     /* IEnergyProvider */
     @Override
-    public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate) {
+    public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate)
+    {
 
         return storage.extractEnergy(maxExtract, simulate);
     }
 
     /* IEnergyReceiver and IEnergyProvider */
     @Override
-    public int getEnergyStored(ForgeDirection from) {
+    public int getEnergyStored(ForgeDirection from)
+    {
 
         return storage.getEnergyStored();
     }
 
     @Override
-    public int getMaxEnergyStored(ForgeDirection from) {
+    public int getMaxEnergyStored(ForgeDirection from)
+    {
 
         return storage.getMaxEnergyStored();
     }

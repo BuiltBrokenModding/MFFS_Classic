@@ -13,7 +13,8 @@ import java.util.Set;
  * @author Calclavia
  */
 public interface IModule
-        extends IFortronCost {
+        extends IFortronCost
+{
 
     /**
      * Calls this on projection.

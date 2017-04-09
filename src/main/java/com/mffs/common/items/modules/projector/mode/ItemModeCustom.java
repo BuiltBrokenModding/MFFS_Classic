@@ -14,7 +14,8 @@ import java.util.Set;
 /**
  * Created by pwaln on 6/9/2016.
  */
-public class ItemModeCustom extends ItemMode {
+public class ItemModeCustom extends ItemMode
+{
 
     private static final String NBT_ID = "id";
     private static final String NBT_MODE = "mode";
@@ -36,28 +37,33 @@ public class ItemModeCustom extends ItemMode {
      * @param dummy
      */
     @Override
-    public void addInformation(ItemStack stack, EntityPlayer usr, List list, boolean dummy) {
+    public void addInformation(ItemStack stack, EntityPlayer usr, List list, boolean dummy)
+    {
         //super.addInformation(stack, usr, list, dummy);
         list.add("This Item has been disabled.");
     }
 
     @Override
-    public Set<Vector3D> getExteriorPoints(IFieldInteraction paramIFieldInteraction) {
+    public Set<Vector3D> getExteriorPoints(IFieldInteraction paramIFieldInteraction)
+    {
         return null;
     }
 
     @Override
-    public Set<Vector3D> getInteriorPoints(IFieldInteraction paramIFieldInteraction) {
+    public Set<Vector3D> getInteriorPoints(IFieldInteraction paramIFieldInteraction)
+    {
         return null;
     }
 
     @Override
-    public boolean isInField(IFieldInteraction paramIFieldInteraction, Vector3D paramVector3D) {
+    public boolean isInField(IFieldInteraction paramIFieldInteraction, Vector3D paramVector3D)
+    {
         return false;
     }
 
     @Override
-    public void render(IProjector paramIProjector, double paramDouble1, double paramDouble2, double paramDouble3, float paramFloat, long paramLong) {
+    public void render(IProjector paramIProjector, double paramDouble1, double paramDouble2, double paramDouble3, float paramFloat, long paramLong)
+    {
 
     }
 }

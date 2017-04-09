@@ -15,14 +15,16 @@ import org.lwjgl.opengl.GL11;
  * @author Calclavia
  */
 @SideOnly(Side.CLIENT)
-public class RenderCoercionDeriver extends TileEntitySpecialRenderer {
+public class RenderCoercionDeriver extends TileEntitySpecialRenderer
+{
 
     public static final ResourceLocation TEXTURE_ON = new ResourceLocation(ModularForcefieldSystem.MODID, "textures/models/coercionDeriver_on.png");
     public static final ResourceLocation TEXTURE_OFF = new ResourceLocation(ModularForcefieldSystem.MODID, "textures/models/coercionDeriver_off.png");
     public static final ModelCoercionDeriver MODEL = new ModelCoercionDeriver();
 
     @Override
-    public void renderTileEntityAt(TileEntity t, double x, double y, double z, float f) {
+    public void renderTileEntityAt(TileEntity t, double x, double y, double z, float f)
+    {
         TileMFFS tileEntity = (TileMFFS) t;
         FMLClientHandler.instance().getClient().renderEngine.bindTexture(tileEntity.isActive() ? TEXTURE_ON : TEXTURE_OFF);
         GL11.glPushMatrix();

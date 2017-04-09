@@ -15,10 +15,12 @@ import java.util.Set;
 /**
  * @author Calclavia
  */
-public class ItemModuleDome extends BaseModule implements IRecipeContainer {
+public class ItemModuleDome extends BaseModule implements IRecipeContainer
+{
 
     @Override
-    public void genRecipes(List<IRecipe> list) {
+    public void genRecipes(List<IRecipe> list)
+    {
         list.add(newShapedRecipe(this,
                 "FFF", "F F", //"F  ", "   ", "F  "
                 'F', Item.itemRegistry.getObject("mffs:focusMatrix")));
@@ -27,7 +29,8 @@ public class ItemModuleDome extends BaseModule implements IRecipeContainer {
     /**
      * Need to initialize stack size.
      */
-    public ItemModuleDome() {
+    public ItemModuleDome()
+    {
         super();
         setMaxStackSize(1);
     }
@@ -39,15 +42,18 @@ public class ItemModuleDome extends BaseModule implements IRecipeContainer {
      * @param fieldBlocks A set of positions.
      */
     @Override
-    public void onCalculate(IFieldInteraction projector, Set<Vector3D> fieldBlocks) {
+    public void onCalculate(IFieldInteraction projector, Set<Vector3D> fieldBlocks)
+    {
         Vector3D absoluteTranslation = new Vector3D((TileEntity) projector).add(projector.getTranslation());
 
         Iterator<Vector3D> it = fieldBlocks.iterator();
 
-        while (it.hasNext()) {
+        while (it.hasNext())
+        {
             Vector3D pos = it.next();
 
-            if (pos.y < absoluteTranslation.y) {
+            if (pos.y < absoluteTranslation.y)
+            {
                 it.remove();
             }
         }

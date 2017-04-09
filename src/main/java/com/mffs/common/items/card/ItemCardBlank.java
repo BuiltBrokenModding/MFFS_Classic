@@ -16,7 +16,8 @@ import java.util.List;
 /**
  * @author Calclavia
  */
-public class ItemCardBlank extends Item implements ICard, IRecipeContainer {
+public class ItemCardBlank extends Item implements ICard, IRecipeContainer
+{
 
     /**
      * allows items to add custom lines of information to the mouseover description
@@ -27,15 +28,18 @@ public class ItemCardBlank extends Item implements ICard, IRecipeContainer {
      * @param dummy
      */
     @Override
-    public void addInformation(ItemStack stack, EntityPlayer usr, List list, boolean dummy) {
+    public void addInformation(ItemStack stack, EntityPlayer usr, List list, boolean dummy)
+    {
         String tooltip = LanguageRegistry.instance().getStringLocalization(getUnlocalizedName() + ".tooltip");
-        if (tooltip != null && tooltip.length() > 0) {
+        if (tooltip != null && tooltip.length() > 0)
+        {
             list.addAll(Util.sepString(tooltip, 30));
         }
     }
 
     @Override
-    public void genRecipes(List<IRecipe> list) {
+    public void genRecipes(List<IRecipe> list)
+    {
         list.add(newShapedRecipe(this, "PPP", "PSP", "PPP", 'P', Items.paper, 'S', UniversalRecipe.PRIMARY_METAL.get()));
     }
 }

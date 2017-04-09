@@ -22,38 +22,45 @@ import java.util.Set;
  * @author Calclavia
  */
 @SideOnly(Side.CLIENT)
-public class GuiFortronCapacitor extends MFFSGui {
+public class GuiFortronCapacitor extends MFFSGui
+{
 
     /**
      * @param player
      * @param cap
      */
-    public GuiFortronCapacitor(EntityPlayer player, TileFortronCapacitor cap) {
+    public GuiFortronCapacitor(EntityPlayer player, TileFortronCapacitor cap)
+    {
         super(new FortronCapacitorContainer(player, cap), cap);
     }
 
-    public TileFortronCapacitor getCapacitor() {
+    public TileFortronCapacitor getCapacitor()
+    {
         return (TileFortronCapacitor) this.frequencyTile;
     }
 
     @Override
-    public void initGui() {
+    public void initGui()
+    {
         this.textFieldPos = new Point(50, 76);
         super.initGui();
         this.buttonList.add(new TransferModeButton(1, width / 2 + 15, height / 2 - 37, this, getCapacitor()));
     }
 
     @Override
-    protected void actionPerformed(GuiButton guiButton) {
+    protected void actionPerformed(GuiButton guiButton)
+    {
         super.actionPerformed(guiButton);
-        if (guiButton.id == 1) {
+        if (guiButton.id == 1)
+        {
             ModularForcefieldSystem.channel.sendToServer(new EntityToggle(getCapacitor(), EntityToggle.TRANSFER_TOGGLE));
         }
 
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
+    {
         TileFortronCapacitor cap = getCapacitor();
         fontRendererObj.drawString(cap.getInventoryName(), this.xSize / 2 - fontRendererObj.getStringWidth(cap.getInventoryName()) / 2, 6, 4210752);
         GL11.glPushMatrix();
@@ -75,7 +82,8 @@ public class GuiFortronCapacitor extends MFFSGui {
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float var1, int x, int y) {
+    protected void drawGuiContainerBackgroundLayer(float var1, int x, int y)
+    {
         super.drawGuiContainerBackgroundLayer(var1, x, y);
 
         drawSlot(153, 46);

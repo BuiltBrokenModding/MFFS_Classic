@@ -7,7 +7,8 @@ import java.util.Set;
 /**
  * @author Calclavia
  */
-public interface IModuleAcceptor {
+public interface IModuleAcceptor
+{
     ItemStack getModule(Class<? extends IModule> paramIModule);
 
     int getModuleCount(Class<? extends IModule> paramIModule, int... paramVarArgs);

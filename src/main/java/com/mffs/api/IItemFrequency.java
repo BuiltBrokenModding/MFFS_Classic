@@ -8,7 +8,8 @@ import net.minecraft.item.ItemStack;
  * @author Calclavia
  */
 
-public interface IItemFrequency {
+public interface IItemFrequency
+{
     /**
      * @param itemStack - Pass an ItemStack if dealing with items with frequencies.
      * @return The frequency of this object.

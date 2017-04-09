@@ -11,10 +11,12 @@ import java.util.List;
 /**
  * @author Calclavia
  */
-public class ItemModuleGlow extends BaseModule implements IRecipeContainer {
+public class ItemModuleGlow extends BaseModule implements IRecipeContainer
+{
 
     @Override
-    public void genRecipes(List<IRecipe> list) {
+    public void genRecipes(List<IRecipe> list)
+    {
         list.add(newShapedRecipe(this,
                 "GGG", "GFG", "GGG",
                 'F', Item.itemRegistry.getObject("mffs:focusMatrix"),

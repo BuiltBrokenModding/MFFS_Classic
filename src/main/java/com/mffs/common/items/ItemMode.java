@@ -12,12 +12,14 @@ import java.util.List;
 /**
  * @author Calclavia
  */
-public abstract class ItemMode extends Item implements IProjectorMode {
+public abstract class ItemMode extends Item implements IProjectorMode
+{
 
     /**
      *
      */
-    public ItemMode() {
+    public ItemMode()
+    {
         setMaxStackSize(1);
     }
 
@@ -30,9 +32,11 @@ public abstract class ItemMode extends Item implements IProjectorMode {
      * @param dummy
      */
     @Override
-    public void addInformation(ItemStack stack, EntityPlayer usr, List list, boolean dummy) {
+    public void addInformation(ItemStack stack, EntityPlayer usr, List list, boolean dummy)
+    {
         String tooltip = LanguageRegistry.instance().getStringLocalization(getUnlocalizedName() + ".tooltip");
-        if (tooltip != null && tooltip.length() > 0) {
+        if (tooltip != null && tooltip.length() > 0)
+        {
             list.addAll(Util.sepString(tooltip, 30));
         }
     }
@@ -45,7 +49,8 @@ public abstract class ItemMode extends Item implements IProjectorMode {
      * @return
      */
     @Override
-    public float getFortronCost(float amplifier) {
+    public float getFortronCost(float amplifier)
+    {
         return 8.0F;
     }
 }

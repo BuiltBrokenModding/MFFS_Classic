@@ -23,7 +23,8 @@ import java.util.Set;
  * @author Calclavia
  */
 //TODO: Convert inventory entity to use IInventoryProvider and extend TileModuleMachine
-public abstract class TileMFFSInventory extends TileMFFS implements IInventory {
+public abstract class TileMFFSInventory extends TileMFFS implements IInventory
+{
 
     /* Inventory of this object */
     protected ItemStack[] inventory = new ItemStack[getSizeInventory()];
@@ -32,7 +33,8 @@ public abstract class TileMFFSInventory extends TileMFFS implements IInventory {
      * Returns the number of slots in the inventory.
      */
     @Override
-    public int getSizeInventory() {
+    public int getSizeInventory()
+    {
         return inventory.length;
     }
 
@@ -42,7 +44,8 @@ public abstract class TileMFFSInventory extends TileMFFS implements IInventory {
      * @param slot
      */
     @Override
-    public ItemStack getStackInSlot(int slot) {
+    public ItemStack getStackInSlot(int slot)
+    {
         return inventory[slot];
     }
 
@@ -54,15 +57,19 @@ public abstract class TileMFFSInventory extends TileMFFS implements IInventory {
      * @param j
      */
     @Override
-    public ItemStack decrStackSize(int i, int j) {
-        if (this.inventory[i] != null) {
-            if (this.inventory[i].stackSize <= j) {
+    public ItemStack decrStackSize(int i, int j)
+    {
+        if (this.inventory[i] != null)
+        {
+            if (this.inventory[i].stackSize <= j)
+            {
                 ItemStack itemstack = this.inventory[i];
                 this.inventory[i] = null;
                 return itemstack;
             }
             ItemStack itemstack1 = this.inventory[i].splitStack(j);
-            if (this.inventory[i].stackSize == 0) {
+            if (this.inventory[i].stackSize == 0)
+            {
                 this.inventory[i] = null;
             }
             return itemstack1;
@@ -77,7 +84,8 @@ public abstract class TileMFFSInventory extends TileMFFS implements IInventory {
      * @param p_70304_1_
      */
     @Override
-    public ItemStack getStackInSlotOnClosing(int p_70304_1_) {
+    public ItemStack getStackInSlotOnClosing(int p_70304_1_)
+    {
         return null;
     }
 
@@ -88,22 +96,27 @@ public abstract class TileMFFSInventory extends TileMFFS implements IInventory {
      * @param item
      */
     @Override
-    public void setInventorySlotContents(int slot, ItemStack item) {
-        if (item != null) {
-            if(item.stackSize > getInventoryStackLimit())
+    public void setInventorySlotContents(int slot, ItemStack item)
+    {
+        if (item != null)
+        {
+            if (item.stackSize > getInventoryStackLimit())
+            {
                 item.stackSize = getInventoryStackLimit();
+            }
         }
         this.inventory[slot] = item;
     }
-
 
 
     /**
      * Returns the name of the inventory
      */
     @Override
-    public String getInventoryName() {
-        if (getBlockType() != null) {
+    public String getInventoryName()
+    {
+        if (getBlockType() != null)
+        {
             return getBlockType().getLocalizedName();
         }
         return null;
@@ -113,7 +126,8 @@ public abstract class TileMFFSInventory extends TileMFFS implements IInventory {
      * Returns if the inventory is named
      */
     @Override
-    public boolean hasCustomInventoryName() {
+    public boolean hasCustomInventoryName()
+    {
         return false;
     }
 
@@ -121,7 +135,8 @@ public abstract class TileMFFSInventory extends TileMFFS implements IInventory {
      * Returns the maximum stack size for a inventory slot.
      */
     @Override
-    public int getInventoryStackLimit() {
+    public int getInventoryStackLimit()
+    {
         return 64;
     }
 
@@ -131,27 +146,35 @@ public abstract class TileMFFSInventory extends TileMFFS implements IInventory {
      * @param p_70300_1_
      */
     @Override
-    public boolean isUseableByPlayer(EntityPlayer p_70300_1_) {
+    public boolean isUseableByPlayer(EntityPlayer p_70300_1_)
+    {
         return worldObj.getTileEntity(xCoord, yCoord, zCoord) == this;
     }
 
     @Override
-    public void openInventory() {
+    public void openInventory()
+    {
     }
 
     @Override
-    public void closeInventory() {
+    public void closeInventory()
+    {
     }
 
     @Override
-    public void markDirty() {
+    public void markDirty()
+    {
     }
 
-    public boolean mergeIntoInventory(ItemStack stack) {
-        for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
+    public boolean mergeIntoInventory(ItemStack stack)
+    {
+        for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
+        {
             stack = placeAdjInv(stack, dir);
             if (stack == null || stack.stackSize <= 0)
+            {
                 return true;
+            }
         }
         return worldObj.spawnEntityInWorld(new EntityItem(worldObj, xCoord + .5, yCoord + 1, zCoord + .5, stack));
     }
@@ -161,24 +184,35 @@ public abstract class TileMFFSInventory extends TileMFFS implements IInventory {
      * @param dir
      * @return
      */
-    public ItemStack placeAdjInv(ItemStack stack, ForgeDirection dir) {
+    public ItemStack placeAdjInv(ItemStack stack, ForgeDirection dir)
+    {
         TileEntity tileEntity = worldObj.getTileEntity(xCoord + dir.offsetX, yCoord + dir.offsetY, zCoord + dir.offsetZ);
         //ForgeDirection o_dir = dir.getOpposite();
-        if (stack != null && tileEntity != null) {
-            if (tileEntity instanceof TileEntityChest) {
+        if (stack != null && tileEntity != null)
+        {
+            if (tileEntity instanceof TileEntityChest)
+            {
                 TileEntityChest chest1 = (TileEntityChest) tileEntity;
                 return Util.addToInv_first(chest1, stack);
-            } else if (tileEntity instanceof ISidedInventory) {
+            }
+            else if (tileEntity instanceof ISidedInventory)
+            {
                 ISidedInventory inv = (ISidedInventory) tileEntity;
                 int[] slot = inv.getAccessibleSlotsFromSide(dir.ordinal());
-                for (int s : slot) {
-                    if (inv.canInsertItem(s, stack, dir.ordinal())) {
+                for (int s : slot)
+                {
+                    if (inv.canInsertItem(s, stack, dir.ordinal()))
+                    {
                         stack = Util.addToInv_slot(inv, stack, s);
                         if (stack == null || stack.stackSize <= 0)
+                        {
                             return null;
+                        }
                     }
                 }
-            } else if (tileEntity instanceof IInventory) {
+            }
+            else if (tileEntity instanceof IInventory)
+            {
                 IInventory inv = (IInventory) tileEntity;
                 return Util.addToInv_first(inv, stack);
             }
@@ -193,16 +227,20 @@ public abstract class TileMFFSInventory extends TileMFFS implements IInventory {
      * @param p_94041_2_
      */
     @Override
-    public boolean isItemValidForSlot(int p_94041_1_, ItemStack p_94041_2_) {
+    public boolean isItemValidForSlot(int p_94041_1_, ItemStack p_94041_2_)
+    {
         return true;
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbt) {
+    public void writeToNBT(NBTTagCompound nbt)
+    {
         super.writeToNBT(nbt);
         NBTTagList nbtTagList = new NBTTagList();
-        for (int i = 0; i < this.inventory.length; i++) {
-            if (this.inventory[i] != null) {
+        for (int i = 0; i < this.inventory.length; i++)
+        {
+            if (this.inventory[i] != null)
+            {
                 NBTTagCompound nbttagcompound1 = new NBTTagCompound();
                 nbttagcompound1.setByte("slot", (byte) i);
                 this.inventory[i].writeToNBT(nbttagcompound1);
@@ -213,32 +251,39 @@ public abstract class TileMFFSInventory extends TileMFFS implements IInventory {
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbt) {
+    public void readFromNBT(NBTTagCompound nbt)
+    {
         super.readFromNBT(nbt);
         NBTTagList nbtTagList = nbt.getTagList("items", Constants.NBT.TAG_COMPOUND);
         this.inventory = new ItemStack[getSizeInventory()];
 
-        for (int i = 0; i < nbtTagList.tagCount(); i++) {
+        for (int i = 0; i < nbtTagList.tagCount(); i++)
+        {
             NBTTagCompound nbttagcompound1 = nbtTagList.getCompoundTagAt(i);
 
             byte byte0 = nbttagcompound1.getByte("slot");
-            if ((byte0 >= 0) && (byte0 < this.inventory.length)) {
+            if ((byte0 >= 0) && (byte0 < this.inventory.length))
+            {
                 this.inventory[byte0] = ItemStack.loadItemStackFromNBT(nbttagcompound1);
             }
         }
     }
 
-    public Set<ItemStack> getCards() {
+    public Set<ItemStack> getCards()
+    {
         Set<ItemStack> cards = new HashSet<>();
         cards.add(getStackInSlot(0));
         return cards;
     }
 
     @Override
-    public List<ItemStack> getRemovedItems(EntityPlayer entityPlayer) {
+    public List<ItemStack> getRemovedItems(EntityPlayer entityPlayer)
+    {
         List<ItemStack> drops = new ArrayList<>();
-        for(ItemStack st : inventory) {
-            if(st != null) {
+        for (ItemStack st : inventory)
+        {
+            if (st != null)
+            {
                 drops.add(st);
             }
         }

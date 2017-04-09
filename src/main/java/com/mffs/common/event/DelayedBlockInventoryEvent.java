@@ -12,7 +12,8 @@ import java.util.ArrayList;
 /**
  * Created by pwaln on 7/6/2016.
  */
-public class DelayedBlockInventoryEvent extends EventTimedTask {
+public class DelayedBlockInventoryEvent extends EventTimedTask
+{
 
     /* The world this event is happening in */
     private World world;
@@ -28,7 +29,8 @@ public class DelayedBlockInventoryEvent extends EventTimedTask {
      *
      * @param tick The number of ticks till execution.
      */
-    public DelayedBlockInventoryEvent(int tick, World world, Vector3D vec, TileMFFSInventory inv) {
+    public DelayedBlockInventoryEvent(int tick, World world, Vector3D vec, TileMFFSInventory inv)
+    {
         super(tick, null);
         this.world = world;
         this.vec = vec;
@@ -39,12 +41,16 @@ public class DelayedBlockInventoryEvent extends EventTimedTask {
      * Execute the desired action.
      */
     @Override
-    public void execute() {
+    public void execute()
+    {
         Block block = vec.getBlock(world);
-        if (block != null) {
+        if (block != null)
+        {
             ArrayList<ItemStack> items = block.getDrops(world, vec.intX(), vec.intY(), vec.intZ(), vec.getBlockMetadata(world), 0);
-            for (ItemStack stack : items) {
-                if (!inventory.mergeIntoInventory(stack)) {
+            for (ItemStack stack : items)
+            {
+                if (!inventory.mergeIntoInventory(stack))
+                {
                     //Logger wont let me use it WTF
                     block.dropBlockAsItem(world, vec.intX(), vec.intY(), vec.intZ(), world.getBlockMetadata(vec.intX(), vec.intY(), vec.intZ()), 0);
                     return;

@@ -7,7 +7,8 @@ import net.minecraft.tileentity.TileEntity;
 /**
  * Created by pwaln on 6/14/2016.
  */
-public class EntityToggle extends TileEntityMessage {
+public class EntityToggle extends TileEntityMessage
+{
 
     /* The Redstone activation button opcode */
     public static final byte REDSTONE_TOGGLE = 0, TOGGLE_STATE = 1, ABSOLUTE_TOGGLE = 2, TRANSFER_TOGGLE = 3, FILTER_TOGGLE = 4;
@@ -15,21 +16,24 @@ public class EntityToggle extends TileEntityMessage {
     /* This is the opcode representing the field to toggle */
     public byte toggle_opcode = 0;
 
-    public EntityToggle() {
+    public EntityToggle()
+    {
         super();
     }
 
     /**
      * @param entity
      */
-    public EntityToggle(TileEntity entity) {
+    public EntityToggle(TileEntity entity)
+    {
         super(entity);
     }
 
     /**
      * @param entity
      */
-    public EntityToggle(TileEntity entity, byte subOp) {
+    public EntityToggle(TileEntity entity, byte subOp)
+    {
         super(entity);
         this.toggle_opcode = subOp;
     }
@@ -40,7 +44,8 @@ public class EntityToggle extends TileEntityMessage {
      * @param buf
      */
     @Override
-    public void fromBytes(ByteBuf buf) {
+    public void fromBytes(ByteBuf buf)
+    {
         super.fromBytes(buf);
         this.toggle_opcode = (byte) buf.readUnsignedByte();
     }
@@ -51,7 +56,8 @@ public class EntityToggle extends TileEntityMessage {
      * @param buf
      */
     @Override
-    public void toBytes(ByteBuf buf) {
+    public void toBytes(ByteBuf buf)
+    {
         super.toBytes(buf);
         buf.writeByte(toggle_opcode);
     }
@@ -59,6 +65,7 @@ public class EntityToggle extends TileEntityMessage {
     /**
      * Server Version.
      */
-    public static class ServerHandler extends TileEntityMessage.ServerHandler<EntityToggle> {
+    public static class ServerHandler extends TileEntityMessage.ServerHandler<EntityToggle>
+    {
     }
 }
