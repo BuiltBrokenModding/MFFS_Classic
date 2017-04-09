@@ -190,14 +190,20 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
     private boolean canReplace(Vector3D vec)
     {
         Block block = vec.getBlock(this.worldObj);
-        int dmod = getModuleCount(ItemModuleDisintegration.class);
-        if (block != null && !(block instanceof BlockAir) && !block.getMaterial().isLiquid())
+        if(!(block instanceof BlockForceField))
         {
-            return (dmod > 0 && block.getBlockHardness(worldObj, vec.intX(), vec.intY(), vec.intZ()) != -1.0
-                    || block instanceof BlockSnow || block instanceof BlockVine || block instanceof BlockBush || block instanceof BlockGrass
-                    || block.isReplaceable(worldObj, vec.intX(), vec.intY(), vec.intZ())) && !(block instanceof BlockForceField);
+            final int disintegrationModule = getModuleCount(ItemModuleDisintegration.class); //TODO cache, do not recalc each tick
+            if (block != null)
+            {
+                if (disintegrationModule > 0 && block.getBlockHardness(worldObj, vec.intX(), vec.intY(), vec.intZ()) >= 0)
+                {
+                    return true;
+                }
+                return block.isReplaceable(worldObj, vec.intX(), vec.intY(), vec.intZ());
+            }
+            return disintegrationModule > 0;
         }
-        return dmod == 0;
+        return false;
     }
 
     public void projectField()
