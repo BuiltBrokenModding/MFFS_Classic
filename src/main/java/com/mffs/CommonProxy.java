@@ -1,8 +1,8 @@
 package com.mffs;
 
 import com.builtbroken.mc.lib.mod.AbstractProxy;
+import com.builtbroken.mc.prefab.gui.ContainerDummy;
 import com.mffs.api.vector.Vector3D;
-import com.mffs.common.container.HotBarContainer;
 import com.mffs.common.container.entity.*;
 import com.mffs.common.tile.type.*;
 import net.minecraft.entity.player.EntityPlayer;
@@ -82,7 +82,7 @@ public class CommonProxy extends AbstractProxy
         }
         else if (ID == 1)
         {
-            return new HotBarContainer(player);
+            return new ContainerDummy(player, null);
         }
         return null;
     }

@@ -35,6 +35,8 @@ public class GuiScroll
         {
             scroll = Math.min(Math.max(scroll, -1), 1);
             bar_expansion = bar_expansion - (float) scroll / height;
+            bar_expansion = Math.max(0, bar_expansion);
+            bar_expansion = Math.min(1, bar_expansion);
         }
     }
 

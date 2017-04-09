@@ -61,7 +61,7 @@ public final class TileInterdictionMatrix extends TileModuleAcceptor implements 
         if (!worldObj.isRemote)
         {
             //Increase this to 1 a second.
-            if (this.isActive() && this.ticks % TICK_RATE == 0)
+            if (this.isActive() && this.ticks % TICK_RATE == 0) //TODO randomize start to reduce several fields running on same tick
             {
                 //Find projector
                 if (projector == null)
@@ -85,17 +85,20 @@ public final class TileInterdictionMatrix extends TileModuleAcceptor implements 
                     }
                 }
 
+                //TODO move energy cost to variable with config
                 if (requestFortron(getFortronCost() * 10, false) > 0)
                 {
                     requestFortron(getFortronCost() * 10, true);
                     scan();
                 }
-                else
-                {
-                    setActive(false);
-                }
             }
         }
+    }
+
+    @Override
+    public boolean isActive()
+    {
+        return super.isActive() && ticks > 12  && (projector == null || projector.isActive());
     }
 
     /**
@@ -113,9 +116,9 @@ public final class TileInterdictionMatrix extends TileModuleAcceptor implements 
         //Get modules
         Set<ItemStack> modules = getModuleStacks(); //obtain modules here to save reIteration.
         boolean hasWarnModule = false;
-        for(ItemStack stack : modules)
+        for (ItemStack stack : modules)
         {
-            if(stack != null && stack.getItem() instanceof ItemModuleWarn)
+            if (stack != null && stack.getItem() instanceof ItemModuleWarn)
             {
                 hasWarnModule = true;
                 break;
@@ -133,15 +136,17 @@ public final class TileInterdictionMatrix extends TileModuleAcceptor implements 
                 //Action Range
                 if (actionRange.isWithin(entity.posX, entity.posY, entity.posZ) && inField) //TODO unit test position
                 {
-                    if (entity instanceof EntityPlayer)
+                    //Checking if player has permissions
+                    if (bio != null && entity instanceof EntityPlayer)
                     {
                         EntityPlayer player = (EntityPlayer) entity;
-                        if (bio != null && bio.isAccessGranted(player.getGameProfile().getName(), Permission.BYPASS_DEFENSE)
-                                || !SettingConfiguration.INTERACT_CREATIVE && player.capabilities.isCreativeMode)
+                        if (bio.isAccessGranted(player.getGameProfile().getName(), Permission.BYPASS_DEFENSE) || !SettingConfiguration.INTERACT_CREATIVE && player.capabilities.isCreativeMode)
                         {
                             continue;
                         }
                     }
+
+                    //Run modular actions
                     for (ItemStack stack : modules)
                     {
                         if (stack != null && stack.getItem() instanceof IInterdictionModule)
@@ -153,9 +158,14 @@ public final class TileInterdictionMatrix extends TileModuleAcceptor implements 
                             }
                         }
                     }
-                    continue; //we do not need to warn them!
                 }
                 //Warning Range!
+                //TODO add config to force enable
+                //TODO add system to detect enter and leave to reduce chat spam
+                //TODO add timer to reduce chat spam
+                //TODO add config to switch chat to audio
+                //TODO add audio warning
+                //TODO only chat spam if harmful to user
                 else if (entity instanceof EntityPlayer && hasWarnModule)
                 {
                     EntityPlayer pl = (EntityPlayer) entity;
