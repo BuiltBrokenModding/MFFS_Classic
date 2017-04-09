@@ -1,5 +1,6 @@
 package com.mffs.api.utils;
 
+import com.builtbroken.mc.imp.transform.region.Cube;
 import com.mffs.api.IBlockFrequency;
 import com.mffs.api.fortron.FrequencyGrid;
 import com.mffs.api.security.IBiometricIdentifier;
@@ -37,7 +38,8 @@ public class MatrixHelper
             if (entity instanceof IInterdictionMatrix && world == entity.getWorldObj())
             {
                 IInterdictionMatrix matrix = (IInterdictionMatrix) freq;
-                if (matrix.isActive() && vec.distance(entity.xCoord, entity.yCoord, entity.zCoord) < matrix.getActionRange())
+                Cube range = matrix.getActionRange();
+                if (matrix.isActive() && range.isWithin(vec.x, vec.y, vec.z))
                 {
                     return matrix;
                 }
@@ -57,11 +59,12 @@ public class MatrixHelper
     {
         for (IBlockFrequency freq : FrequencyGrid.instance().get())
         {
-            TileEntity entity = (TileEntity) freq;
-            if (entity instanceof IInterdictionMatrix && world == entity.getWorldObj())
+            TileEntity tile = (TileEntity) freq;
+            if (tile instanceof IInterdictionMatrix && world == tile.getWorldObj())
             {
                 IInterdictionMatrix matrix = (IInterdictionMatrix) freq;
-                if (matrix.isActive() && vec.distance(entity.xCoord, entity.yCoord, entity.zCoord) < matrix.getActionRange())
+                Cube range = matrix.getActionRange();
+                if (matrix.isActive() && range.isWithin(vec.x, vec.y, vec.z))
                 {
                     return matrix;
                 }

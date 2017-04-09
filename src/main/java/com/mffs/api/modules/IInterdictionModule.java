@@ -1,7 +1,7 @@
 package com.mffs.api.modules;
 
 import com.mffs.api.security.IInterdictionMatrix;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.Entity;
 
 /**
  * A grid ModularForcefieldSystem uses to search for machines with frequencies that can be linked and spread Fortron
@@ -10,8 +10,7 @@ import net.minecraft.entity.EntityLivingBase;
  *
  * @author Calclavia
  */
-public interface IInterdictionModule
-        extends IModule
+public interface IInterdictionModule extends IModule
 {
-    boolean onDefend(IInterdictionMatrix paramIInterdictionMatrix, EntityLivingBase paramEntityLivingBase);
+    boolean onDefend(IInterdictionMatrix paramIInterdictionMatrix, Entity paramEntityLivingBase);
 }

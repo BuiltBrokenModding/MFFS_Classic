@@ -5,6 +5,7 @@ import com.mffs.api.security.IInterdictionMatrix;
 import com.mffs.api.security.Permission;
 import com.mffs.common.items.modules.MatrixModule;
 import cpw.mods.fml.common.registry.LanguageRegistry;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -30,18 +31,21 @@ public class ItemModuleWarn extends MatrixModule
     }
 
     @Override
-    public boolean onDefend(IInterdictionMatrix matri, EntityLivingBase entity)
+    public boolean onDefend(IInterdictionMatrix matri, Entity entity)
     {
-        if (entity instanceof EntityPlayer)
+        if (entity instanceof EntityLivingBase)
         {
-            EntityPlayer user = (EntityPlayer) entity;
-            IBiometricIdentifier bio = matri.getBiometricIdentifier();
-            if (bio != null &&
-                    bio.isAccessGranted(user.getGameProfile().getName(), Permission.BYPASS_DEFENSE))
+            if (entity instanceof EntityPlayer)
             {
-                return false;
+                EntityPlayer user = (EntityPlayer) entity;
+                IBiometricIdentifier bio = matri.getBiometricIdentifier();
+                if (bio != null &&
+                        bio.isAccessGranted(user.getGameProfile().getName(), Permission.BYPASS_DEFENSE))
+                {
+                    return false;
+                }
+                user.addChatMessage(new ChatComponentText("[" + matri.getInventoryName() + "] " + LanguageRegistry.instance().getStringLocalization("message.moduleWarn.warn")));
             }
-            user.addChatMessage(new ChatComponentText("[" + matri.getInventoryName() + "] " + LanguageRegistry.instance().getStringLocalization("message.moduleWarn.warn")));
         }
         return false;
     }

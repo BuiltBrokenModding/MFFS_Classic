@@ -8,6 +8,7 @@ import com.mffs.common.items.modules.MatrixModule;
 import com.mffs.common.items.modules.projector.ItemModuleCollection;
 import com.mffs.common.items.modules.projector.ItemModuleShock;
 import cpw.mods.fml.common.registry.LanguageRegistry;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -35,33 +36,36 @@ public class ItemModuleAntiPersonnel extends MatrixModule
     }
 
     @Override
-    public boolean onDefend(IInterdictionMatrix matri, EntityLivingBase paramEntityLivingBase)
+    public boolean onDefend(IInterdictionMatrix matri, Entity paramEntityLivingBase)
     {
-        if (paramEntityLivingBase instanceof EntityPlayer)
+        if(paramEntityLivingBase instanceof EntityLivingBase)
         {
-            EntityPlayer pl = (EntityPlayer) paramEntityLivingBase;
-            IBiometricIdentifier bio = matri.getBiometricIdentifier();
-            if (!pl.capabilities.isCreativeMode && !pl.isEntityInvulnerable() && (bio == null || !bio.isAccessGranted(pl.getGameProfile().getName(), Permission.BYPASS_DEFENSE)))
+            if (paramEntityLivingBase instanceof EntityPlayer)
             {
-                if (SettingConfiguration.COLLECT_ON_PERSONELL_KILL || matri.getModuleCount(ItemModuleCollection.class) > 0)
+                EntityPlayer pl = (EntityPlayer) paramEntityLivingBase;
+                IBiometricIdentifier bio = matri.getBiometricIdentifier();
+                if (!pl.capabilities.isCreativeMode && !pl.isEntityInvulnerable() && (bio == null || !bio.isAccessGranted(pl.getGameProfile().getName(), Permission.BYPASS_DEFENSE)))
                 {
-                    Set<ItemStack> safe_items = matri.getFilteredItems();
-                    for (int slot = 0; slot < pl.inventory.getSizeInventory(); slot++)
+                    if (SettingConfiguration.COLLECT_ON_PERSONELL_KILL || matri.getModuleCount(ItemModuleCollection.class) > 0)
                     {
-                        ItemStack stack = pl.inventory.getStackInSlot(slot);
-                        if (stack == null || safe_items.contains(stack))
+                        Set<ItemStack> safe_items = matri.getFilteredItems();
+                        for (int slot = 0; slot < pl.inventory.getSizeInventory(); slot++)
                         {
-                            continue;
+                            ItemStack stack = pl.inventory.getStackInSlot(slot);
+                            if (stack == null || safe_items.contains(stack))
+                            {
+                                continue;
+                            }
+                            matri.mergeIntoInventory(stack);
+                            pl.inventory.setInventorySlotContents(slot, null);
                         }
-                        matri.mergeIntoInventory(stack);
-                        pl.inventory.setInventorySlotContents(slot, null);
                     }
+                    pl.setHealth(1F);
+                    pl.attackEntityFrom(ItemModuleShock.SHOCK_SOURCE, 100F);
+                    matri.requestFortron(SettingConfiguration.INTERDICTION_MURDER_ENERGY, false);
+                    pl.addChatMessage(new ChatComponentText("[" + matri.getInventoryName() + "] " + LanguageRegistry.instance().getStringLocalization("message.moduleAntiPersonnel.death")));
+                    return true;
                 }
-                pl.setHealth(1F);
-                pl.attackEntityFrom(ItemModuleShock.SHOCK_SOURCE, 100F);
-                matri.requestFortron(SettingConfiguration.INTERDICTION_MURDER_ENERGY, false);
-                pl.addChatMessage(new ChatComponentText("[" + matri.getInventoryName() + "] " + LanguageRegistry.instance().getStringLocalization("message.moduleAntiPersonnel.death")));
-                return true;
             }
         }
         return false;

@@ -1,5 +1,6 @@
 package com.mffs.api.security;
 
+import com.builtbroken.mc.imp.transform.region.Cube;
 import com.mffs.api.IActivatable;
 import com.mffs.api.IBiometricIdentifierLink;
 import com.mffs.api.fortron.IFortronFrequency;
@@ -12,12 +13,11 @@ import java.util.Set;
 /**
  * @author Calclavia
  */
-public interface IInterdictionMatrix
-        extends IInventory, IFortronFrequency, IModuleAcceptor, IBiometricIdentifierLink, IActivatable
+public interface IInterdictionMatrix extends IInventory, IFortronFrequency, IModuleAcceptor, IBiometricIdentifierLink, IActivatable
 {
-    int getWarningRange();
+    Cube getWarningRange();
 
-    int getActionRange();
+    Cube getActionRange();
 
     boolean mergeIntoInventory(ItemStack paramItemStack);
 

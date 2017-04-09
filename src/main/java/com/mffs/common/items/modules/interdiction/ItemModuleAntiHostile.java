@@ -3,6 +3,7 @@ package com.mffs.common.items.modules.interdiction;
 import com.mffs.api.security.IInterdictionMatrix;
 import com.mffs.common.items.modules.MatrixModule;
 import com.mffs.common.items.modules.projector.ItemModuleShock;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.init.Items;
@@ -30,14 +31,16 @@ public class ItemModuleAntiHostile extends MatrixModule
     }
 
     @Override
-    public boolean onDefend(IInterdictionMatrix paramIInterdictionMatrix, EntityLivingBase paramEntityLivingBase)
+    public boolean onDefend(IInterdictionMatrix paramIInterdictionMatrix, Entity paramEntityLivingBase)
     {
-        if (paramEntityLivingBase instanceof IMob)
+        if(paramEntityLivingBase instanceof EntityLivingBase)
         {
-            paramEntityLivingBase.attackEntityFrom(ItemModuleShock.SHOCK_SOURCE, 20F);
-            return true;
+            if (paramEntityLivingBase instanceof IMob)
+            {
+                paramEntityLivingBase.attackEntityFrom(ItemModuleShock.SHOCK_SOURCE, 20F);
+                return true;
+            }
         }
         return false;
     }
-
 }

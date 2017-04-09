@@ -1,5 +1,7 @@
 package com.mffs.common.tile.type;
 
+import com.builtbroken.mc.imp.transform.region.Cube;
+import com.builtbroken.mc.imp.transform.vector.Pos;
 import com.builtbroken.mc.lib.helper.LanguageUtility;
 import com.mffs.ModularForcefieldSystem;
 import com.mffs.SettingConfiguration;
@@ -9,18 +11,20 @@ import com.mffs.api.modules.IModule;
 import com.mffs.api.security.IBiometricIdentifier;
 import com.mffs.api.security.IInterdictionMatrix;
 import com.mffs.api.security.Permission;
+import com.mffs.api.vector.Vector3D;
 import com.mffs.common.items.card.ItemCardFrequency;
 import com.mffs.common.items.modules.interdiction.ItemModuleWarn;
 import com.mffs.common.items.modules.upgrades.ItemModuleScale;
 import com.mffs.common.net.packet.EntityToggle;
 import com.mffs.common.tile.TileModuleAcceptor;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
+import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.HashSet;
 import java.util.List;
@@ -31,13 +35,15 @@ import java.util.Set;
  */
 public final class TileInterdictionMatrix extends TileModuleAcceptor implements IInterdictionMatrix
 {
+    private static final int TICK_RATE = 20; //TODO make configurable TODO scale module effects by speed to keep constant
+    /* Single instance of interdiction warning */
+    private static ChatComponentText warning = new ChatComponentText("[InterdictionMatrix] " + LanguageUtility.getLocal("message.interdictionMatrix.warn"));
 
     /* Deteremines if this machine is in 'ban' mode */
     private boolean banMode;
 
-    /**
-     * Constructor. DUH
-     */
+    private TileForceFieldProjector projector;
+
     public TileInterdictionMatrix()
     {
         this.capacityBase = 30;
@@ -48,11 +54,37 @@ public final class TileInterdictionMatrix extends TileModuleAcceptor implements 
     @Override
     public void updateEntity()
     {
+        //TODO repogram to have a visual effect so this can not be used as a trap
+        //TODO increase power cost when not attached to forcefield
+        //TODO decrease damage effects when not attached to forcefield
         super.updateEntity();
         if (!worldObj.isRemote)
         {
-            if (this.isActive() && this.ticks % 20L == 0)
-            { //Increase this to 1 a second.
+            //Increase this to 1 a second.
+            if (this.isActive() && this.ticks % TICK_RATE == 0)
+            {
+                //Find projector
+                if (projector == null)
+                {
+                    int count = 0;
+                    Pos pos = new Pos(xCoord, yCoord, zCoord);
+                    for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
+                    {
+                        TileEntity tile = pos.add(direction).getTileEntity(worldObj);
+                        if (tile instanceof TileForceFieldProjector)
+                        {
+                            count++;
+                            projector = (TileForceFieldProjector) tile;
+                        }
+                    }
+
+                    if (count > 1)
+                    {
+                        projector = null;
+                        //TODO error saying that there can only be 1 projector per matrix
+                    }
+                }
+
                 if (requestFortron(getFortronCost() * 10, false) > 0)
                 {
                     requestFortron(getFortronCost() * 10, true);
@@ -66,74 +98,97 @@ public final class TileInterdictionMatrix extends TileModuleAcceptor implements 
         }
     }
 
-    /* Single instance of interdiction warning */
-    private static ChatComponentText warning = new ChatComponentText("[InterdictionMatrix] " + LanguageUtility.getLocal("message.interdictionMatrix.warn"));
-
     /**
      * Scans the action range of this entity and performs appropriate action.
      */
     private void scan()
     {
+        //Get biometrix identifier
         IBiometricIdentifier bio = getBiometricIdentifier();
-        AxisAlignedBB axis = AxisAlignedBB.getBoundingBox(this.xCoord, this.yCoord, this.zCoord, this.xCoord + 1, this.yCoord + 1, this.zCoord + 1);
 
-        int wRange = getWarningRange();
-        int aRange = getActionRange();
-        int range = Math.max(aRange, wRange);
-        List<EntityLivingBase> entities = this.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, axis.expand(range, range, range));
+        //Get ranges
+        Cube warningRange = getWarningRange();
+        Cube actionRange = getActionRange();
+
+        //Get modules
         Set<ItemStack> modules = getModuleStacks(); //obtain modules here to save reIteration.
 
-        for (EntityLivingBase entity : entities)
+        if (modules != null && modules.size() > 0)
         {
-            double dist = entity.getDistance(this.xCoord, this.yCoord, this.zCoord);
+            //Get entities in box
+            List<Entity> entities = warningRange.getEntities(worldObj);
 
-            if (dist <= aRange)
-            { //Action Range
-                if (entity instanceof EntityPlayer)
+            for (Entity entity : entities)
+            {
+                boolean inField = (projector == null || projector.getInteriorPoints().contains(new Vector3D(entity).floor()));
+                //Action Range
+                if (actionRange.isWithin(entity.posX, entity.posY, entity.posZ) && inField) //TODO unit test position
+                {
+                    if (entity instanceof EntityPlayer)
+                    {
+                        EntityPlayer player = (EntityPlayer) entity;
+                        if (bio != null && bio.isAccessGranted(player.getGameProfile().getName(), Permission.BYPASS_DEFENSE)
+                                || !SettingConfiguration.INTERACT_CREATIVE && player.capabilities.isCreativeMode)
+                        {
+                            continue;
+                        }
+                    }
+                    for (ItemStack stack : modules)
+                    {
+                        if (stack != null && stack.getItem() instanceof IInterdictionModule)
+                        {
+                            IInterdictionModule mod = (IInterdictionModule) stack.getItem();
+                            if (mod.onDefend(this, entity) || entity.isDead)
+                            {
+                                break;
+                            }
+                        }
+                    }
+                    continue; //we do not need to warn them!
+                }
+                //Warning Range!
+                else if (entity instanceof EntityPlayer)
                 {
                     EntityPlayer pl = (EntityPlayer) entity;
-                    if (bio != null && bio.isAccessGranted(pl.getGameProfile().getName(), Permission.BYPASS_DEFENSE)
-                            || !SettingConfiguration.INTERACT_CREATIVE && pl.capabilities.isCreativeMode)
+                    if (bio != null && bio.isAccessGranted(pl.getGameProfile().getName(), Permission.BYPASS_DEFENSE))
                     {
                         continue;
                     }
+                    pl.addChatMessage(warning);
                 }
-                for (ItemStack stack : modules)
-                {
-                    if (stack != null && stack.getItem() instanceof IInterdictionModule)
-                    {
-                        IInterdictionModule mod = (IInterdictionModule) stack.getItem();
-                        if (mod.onDefend(this, entity) || entity.isDead)
-                        {
-                            break;
-                        }
-                    }
-                }
-                continue; //we do not need to warn them!
-            }
-
-            if (dist <= wRange && entity instanceof EntityPlayer)
-            {//Warning Range!
-                EntityPlayer pl = (EntityPlayer) entity;
-                if (bio != null && bio.isAccessGranted(pl.getGameProfile().getName(), Permission.BYPASS_DEFENSE))
-                {
-                    continue;
-                }
-                pl.addChatMessage(warning);
             }
         }
     }
 
     @Override
-    public int getWarningRange()
+    public Cube getWarningRange()
     {
-        return Math.min(getModuleCount(ItemModuleWarn.class) + getActionRange(), SettingConfiguration.INTERDICTION_MAX_RANGE) + 3;
+        int range = Math.min(getModuleCount(ItemModuleWarn.class), SettingConfiguration.INTERDICTION_MAX_RANGE) + 3;
+        return getActionRange().expand(range);
     }
 
     @Override
-    public int getActionRange()
+    public Cube getActionRange()
     {
-        return Math.min(getModuleCount(ItemModuleScale.class), SettingConfiguration.INTERDICTION_MAX_RANGE);
+        if (projector != null)
+        {
+            Vector3D negScale = projector.getNegativeScale();
+            Vector3D posScale = projector.getPositiveScale();
+            Vector3D translation = projector.getTranslation();
+            Vector3D pos = new Vector3D(projector.xCoord + 0.5, projector.yCoord + 0.5, projector.zCoord + 0.5);
+
+            negScale = negScale.scale(-1).add(translation).add(pos);
+            posScale = posScale.add(translation).add(pos);
+
+            Pos start = new Pos(negScale.x, negScale.y, negScale.z);
+            Pos end = new Pos(posScale.x, posScale.y, posScale.z);
+
+            return new Cube(start, end);
+        }
+
+        Pos center = new Pos(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5);
+        int range = Math.min(getModuleCount(ItemModuleScale.class), SettingConfiguration.INTERDICTION_MAX_RANGE);
+        return new Cube(center.sub(range), center.add(range));
     }
 
     /**
@@ -179,7 +234,7 @@ public final class TileInterdictionMatrix extends TileModuleAcceptor implements 
     @Override
     public float getAmplifier()
     {
-        return Math.max(Math.min(getActionRange() / 20, 10), 1);
+        return 1;
     }
 
     /**

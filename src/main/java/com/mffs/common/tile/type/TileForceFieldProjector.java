@@ -224,12 +224,14 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
                     }
                 }
 
+                //Get force field blocks
                 Vector3D projector = new Vector3D(this);
                 fieldToBeProjected = fieldToBeProjected.stream()
                         .filter(x -> !x.equals(projector) && canReplace(x))
                         .filter(w -> getWorldObj().getChunkFromBlockCoords(w.intX(), w.intZ()).isChunkLoaded)
                         .limit(constructSpeed).collect(Collectors.toSet());
 
+                //Place force field blocks
                 for (Vector3D vec : fieldToBeProjected)
                 {
                     int flag = 0;

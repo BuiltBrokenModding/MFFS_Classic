@@ -3,7 +3,7 @@ package com.mffs.common.items.modules;
 import com.mffs.api.modules.IInterdictionModule;
 import com.mffs.api.security.IInterdictionMatrix;
 import cpw.mods.fml.common.registry.LanguageRegistry;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
@@ -32,7 +32,7 @@ public abstract class MatrixModule extends BaseModule implements IInterdictionMo
     }
 
     @Override
-    public boolean onDefend(IInterdictionMatrix paramIInterdictionMatrix, EntityLivingBase paramEntityLivingBase)
+    public boolean onDefend(IInterdictionMatrix paramIInterdictionMatrix, Entity paramEntityLivingBase)
     {
         return false;
     }
