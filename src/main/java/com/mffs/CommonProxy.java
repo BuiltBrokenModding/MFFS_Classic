@@ -1,6 +1,6 @@
 package com.mffs;
 
-import com.builtbroken.mc.lib.mod.AbstractProxy;
+import com.builtbroken.mc.framework.mod.AbstractProxy;
 import com.mffs.api.vector.Vector3D;
 import com.mffs.common.container.entity.*;
 import com.mffs.common.items.card.id.ContainerCardID;

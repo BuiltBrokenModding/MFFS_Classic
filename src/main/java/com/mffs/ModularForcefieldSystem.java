@@ -1,8 +1,8 @@
 package com.mffs;
 
 import com.builtbroken.mc.core.registry.ModManager;
-import com.builtbroken.mc.lib.mod.AbstractMod;
-import com.builtbroken.mc.lib.mod.AbstractProxy;
+import com.builtbroken.mc.framework.mod.AbstractMod;
+import com.builtbroken.mc.framework.mod.AbstractProxy;
 import com.mffs.common.blocks.*;
 import com.mffs.common.fluids.Fortron;
 import com.mffs.common.items.ItemFocusMatrix;
