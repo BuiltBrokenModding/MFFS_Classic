@@ -4,28 +4,44 @@ import com.mffs.api.modules.IModule;
 import com.mffs.api.modules.IModuleAcceptor;
 import com.mffs.common.items.modules.upgrades.ItemModuleCapacity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.fluids.FluidContainerRegistry;
 
 import java.util.HashSet;
 import java.util.Set;
 
 /**
+ * Prefab for any tile that accepts modules
+ *
  * @author Calclavia
  */
 public abstract class TileModuleAcceptor extends TileFortron implements IModuleAcceptor
 {
+    /** Amount of fortron to store */
+    protected int fortronCapacity = 500; //TODO move to static settings
+    /** fortron boost per capacity card {@link ItemModuleCapacity} */
+    protected int fortronCapacityBoostPerCard = 5; //TODO move to static settings
 
-    protected int capacityBase = 500;
-    protected int capacityBoost = 5;
+    /** First slot to start looking for modules */
+    protected int module_inventory_start = 0; //TODO move to static settings
+    /** Stopping point for looking for modules, not searched */
+    protected int module_inventory_end; //TODO move to static settings
 
-    /* This is the index of first module slot, and the number of slots. */
-    protected byte module_index, module_end = (byte) getSizeInventory();
-
-    @Override
-    public void start()
+    public TileModuleAcceptor()
     {
-        super.start();
-        this.tank.setCapacity((getModuleCount(ItemModuleCapacity.class) * this.capacityBoost + this.capacityBase) * 1_000);
+        module_inventory_end = getSizeInventory();
+    }
+
+    /**
+     * Called any time the machine changes (moved, reset, loaded, etc)
+     * <p>
+     * Should be used to update settings dependent on the internals or
+     * externals of the machine
+     * <p>
+     * Called from {@link #validate()} {@link #markDirty()} {@link #start()}
+     */
+    protected void updateSettings()
+    {
+        this.tank.setCapacity((getModuleCount(ItemModuleCapacity.class) * this.fortronCapacityBoostPerCard + this.fortronCapacity) * FluidContainerRegistry.BUCKET_VOLUME);
     }
 
     @Override
@@ -94,9 +110,9 @@ public abstract class TileModuleAcceptor extends TileFortron implements IModuleA
         }
         else
         {
-            for (int i = module_index; i < module_end; i++)
+            for (int slot = module_inventory_start; slot < module_inventory_end; slot++) //TODO replace with inventory iterator
             {
-                ItemStack stack = getStackInSlot(i);
+                ItemStack stack = getStackInSlot(slot);
                 if (stack != null && stack.getItem() instanceof IModule)
                 {
                     stacks.add(stack);
@@ -123,9 +139,9 @@ public abstract class TileModuleAcceptor extends TileFortron implements IModuleA
         }
         else
         {
-            for (int i = module_index; i < module_end; i++)
+            for (int slot = module_inventory_start; slot < module_inventory_end; slot++) //TODO replace with inventory iterator
             {
-                ItemStack stack = getStackInSlot(i);
+                ItemStack stack = getStackInSlot(slot);
                 if (stack != null && stack.getItem() instanceof IModule)
                 {
                     stacks.add((IModule) stack.getItem());
@@ -138,14 +154,13 @@ public abstract class TileModuleAcceptor extends TileFortron implements IModuleA
     @Override
     public int getFortronCost()
     {
-        int cost = calculateFortronCost();
-        return cost;
+        return calculateFortronCost();
     }
 
     /**
      * @return
      */
-    public int calculateFortronCost()
+    public int calculateFortronCost() //TODO why do we have a get and calculate method?
     {
         float cost = 0.0F;
         for (ItemStack stack : getModuleStacks())
@@ -159,24 +174,27 @@ public abstract class TileModuleAcceptor extends TileFortron implements IModuleA
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbt)
+    public void start()
     {
-        super.writeToNBT(nbt);
+        super.start();
+        updateSettings();
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbt)
+    public void validate()
     {
-        super.readFromNBT(nbt);
+        super.validate();
+        updateSettings();
     }
 
     @Override
     public void markDirty()
     {
         super.markDirty();
-        this.tank.setCapacity((getModuleCount(ItemModuleCapacity.class) * this.capacityBoost + this.capacityBase) * 1_000);
+        updateSettings();
     }
 
+    //TODO document
     public float getAmplifier()
     {
         return 1.0F;

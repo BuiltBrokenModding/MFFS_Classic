@@ -1,7 +1,7 @@
 package com.mffs.common.tile;
 
 import com.mffs.ModularForcefieldSystem;
-import com.mffs.SettingConfiguration;
+import com.mffs.MFFSSettings;
 import com.mffs.api.card.ICard;
 import com.mffs.api.fortron.FrequencyGrid;
 import com.mffs.api.fortron.IFortronFrequency;
@@ -37,7 +37,7 @@ public abstract class TileFortron extends TileFrequency implements IFluidHandler
     {
         super.updateEntity();
 
-        if (this.ticks % SettingConfiguration.FORTRON_SYNC_TICKS == 0 && !worldObj.isRemote)
+        if (this.ticks % MFFSSettings.FORTRON_SYNC_TICKS == 0 && !worldObj.isRemote)
         {//We do not need to send by client!
             //TODO: Send fortron only to people in the interface!
             ModularForcefieldSystem.channel.sendToAllAround(new FortronSync(this), new NetworkRegistry.TargetPoint(this.worldObj.provider.dimensionId, xCoord, yCoord, zCoord, 25));
@@ -81,7 +81,7 @@ public abstract class TileFortron extends TileFrequency implements IFluidHandler
     @Override
     public void setFortronEnergy(int paramInt)
     {
-        tank.setFluid(FluidRegistry.getFluidStack("fortron", paramInt));
+        tank.setFluid(FluidRegistry.getFluidStack("fortron", paramInt)); //TODO move fortron var to const
     }
 
     @Override
@@ -91,16 +91,16 @@ public abstract class TileFortron extends TileFrequency implements IFluidHandler
     }
 
     @Override
-    public int requestFortron(int paramInt, boolean paramBoolean)
+    public int requestFortron(int amount, boolean doAction)
     {
-        FluidStack stack = tank.drain(paramInt, paramBoolean);
+        FluidStack stack = tank.drain(amount, doAction);
         return stack == null ? 0 : stack.amount;
     }
 
     @Override
-    public int provideFortron(int paramInt, boolean paramBoolean)
+    public int provideFortron(int amount, boolean doAction)
     {
-        return tank.fill(FluidRegistry.getFluidStack("fortron", paramInt), paramBoolean);
+        return tank.fill(FluidRegistry.getFluidStack("fortron", amount), doAction); //TODO move fortron var to const
     }
 
     /**

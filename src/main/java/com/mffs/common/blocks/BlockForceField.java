@@ -1,7 +1,6 @@
 package com.mffs.common.blocks;
 
 import com.mffs.ModularForcefieldSystem;
-import com.mffs.SettingConfiguration;
 import com.mffs.api.IForceFieldBlock;
 import com.mffs.api.IProjector;
 import com.mffs.api.fortron.IFortronStorage;
@@ -337,7 +336,7 @@ public class BlockForceField extends Block implements ITileEntityProvider, IForc
     @SideOnly(Side.CLIENT)
     public int getRenderType()
     {
-        return SettingConfiguration.USE_FORCEFIELD_RENDERER ? RenderForceFieldHandler.RENDER_ID : super.getRenderType();
+        return RenderForceFieldHandler.RENDER_ID;
     }
 
     @Override

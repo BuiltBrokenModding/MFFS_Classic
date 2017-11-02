@@ -1,7 +1,7 @@
 package com.mffs.common.tile.type;
 
 import com.mffs.ModularForcefieldSystem;
-import com.mffs.SettingConfiguration;
+import com.mffs.MFFSSettings;
 import com.mffs.api.IProjector;
 import com.mffs.api.modules.IModule;
 import com.mffs.api.modules.IProjectorMode;
@@ -40,8 +40,8 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
 
     public TileForceFieldProjector()
     {
-        this.capacityBase = 50;
-        this.module_index = 1;
+        this.fortronCapacity = 50;
+        this.module_inventory_start = 1;
     }
 
     @Override
@@ -211,7 +211,7 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
         if (this.isFinished && !this.isCalc && (!this.isComplete || this.markFieldUpdate || this.requireTicks))
         {
             this.markFieldUpdate = false;
-            int constructSpeed = Math.min(getProjectionSpeed(), SettingConfiguration.MAX_FORCE_FIELDS_PER_TICK);
+            int constructSpeed = Math.min(getProjectionSpeed(), MFFSSettings.PROJECTOR_BLOCKS_PER_TICK);
             rebuild:
             synchronized (this.calculatedFields)
             {

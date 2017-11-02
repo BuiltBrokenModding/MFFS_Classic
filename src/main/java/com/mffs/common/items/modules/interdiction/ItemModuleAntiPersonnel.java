@@ -1,6 +1,6 @@
 package com.mffs.common.items.modules.interdiction;
 
-import com.mffs.SettingConfiguration;
+import com.mffs.MFFSSettings;
 import com.mffs.api.security.IBiometricIdentifier;
 import com.mffs.api.security.IInterdictionMatrix;
 import com.mffs.api.security.Permission;
@@ -46,7 +46,7 @@ public class ItemModuleAntiPersonnel extends MatrixModule
                 IBiometricIdentifier bio = matri.getBiometricIdentifier();
                 if (!pl.capabilities.isCreativeMode && !pl.isEntityInvulnerable() && (bio == null || !bio.isAccessGranted(pl.getGameProfile().getName(), Permission.BYPASS_DEFENSE)))
                 {
-                    if (SettingConfiguration.COLLECT_ON_PERSONELL_KILL || matri.getModuleCount(ItemModuleCollection.class) > 0)
+                    if (MFFSSettings.ANTI_PERSONNEL_COLLECT_ITEMS || matri.getModuleCount(ItemModuleCollection.class) > 0)
                     {
                         Set<ItemStack> safe_items = matri.getFilteredItems();
                         for (int slot = 0; slot < pl.inventory.getSizeInventory(); slot++)
@@ -62,7 +62,7 @@ public class ItemModuleAntiPersonnel extends MatrixModule
                     }
                     pl.setHealth(1F);
                     pl.attackEntityFrom(ItemModuleShock.SHOCK_SOURCE, 100F);
-                    matri.requestFortron(SettingConfiguration.INTERDICTION_MURDER_ENERGY, false);
+                    matri.requestFortron(MFFSSettings.INTERDICTION_ATTACK_ENERGY, false);
                     pl.addChatMessage(new ChatComponentText("[" + matri.getInventoryName() + "] " + LanguageRegistry.instance().getStringLocalization("message.moduleAntiPersonnel.death")));
                     return true;
                 }

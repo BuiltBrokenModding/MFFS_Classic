@@ -2,7 +2,7 @@ package com.mffs.common.tile.type;
 
 import com.builtbroken.mc.imp.transform.vector.Location;
 import com.mffs.ModularForcefieldSystem;
-import com.mffs.SettingConfiguration;
+import com.mffs.MFFSSettings;
 import com.mffs.api.card.ICardInfinite;
 import com.mffs.api.card.ICoordLink;
 import com.mffs.api.fortron.FrequencyGrid;
@@ -42,9 +42,9 @@ public class TileFortronCapacitor extends TileModuleAcceptor implements IFortron
      */
     public TileFortronCapacitor()
     {
-        this.capacityBase = 700;
-        this.capacityBoost = 10;
-        this.module_index = 2;
+        this.fortronCapacity = 700;
+        this.fortronCapacityBoostPerCard = 10;
+        this.module_inventory_start = 2;
     }
 
     @Override
@@ -54,7 +54,7 @@ public class TileFortronCapacitor extends TileModuleAcceptor implements IFortron
 
         if (this.isActive())
         {
-            int cost = getFortronCost() + SettingConfiguration.BASE_POWER_CONSUMPTION_CAPACITOR;
+            int cost = getFortronCost() + MFFSSettings.CAPACITOR_POWER_DRAIN;
             if (cost > 0)
             {
                 requestFortron(cost, true);

@@ -1,9 +1,12 @@
 package com.mffs.common.tile.type;
 
-import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyHandler;
+import com.builtbroken.mc.api.energy.IEnergyBuffer;
+import com.builtbroken.mc.api.energy.IEnergyBufferProvider;
+import com.builtbroken.mc.framework.energy.UniversalEnergySystem;
+import com.builtbroken.mc.framework.energy.data.AbstractEnergyBuffer;
+import com.mffs.MFFSSettings;
 import com.mffs.ModularForcefieldSystem;
-import com.mffs.SettingConfiguration;
 import com.mffs.api.modules.IModule;
 import com.mffs.common.items.card.ItemCardFrequency;
 import com.mffs.common.items.modules.upgrades.ItemModuleScale;
@@ -13,60 +16,35 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.List;
 
 /**
- * @author Calclavia
+ * Fortron generator
+ *
+ * @author Calclavia, DarkCow
  */
-public final class TileCoercionDeriver extends TileModuleAcceptor implements IEnergyHandler
+public final class TileCoercionDeriver extends TileModuleAcceptor implements IEnergyHandler, IEnergyBufferProvider
 {
-
-    /* Slots */
+    //Inventory slots
     public static final int SLOT_FREQUENCY = 0;
     public static final int SLOT_BATTERY = 1;
     public static final int SLOT_FUEL = 2;
 
-    /* Size of the energy buffer */
-    public static int ENERGY_BUFFER_SIZE = 500_000;
+    //Battery
+    private CoercionEnergyBuffer energyBuffer;
 
-    /* Holds energy */
-    protected EnergyStorage storage = new EnergyStorage(ENERGY_BUFFER_SIZE);
-    //private EnergyBuffer buffer;
+    /** How much time is left for the fuel */
+    public int fuelTimer = 0;
 
-    public int processTime = 0;
-    public boolean isInversed;
+    /** Should be output power instead of consume it */
+    public boolean outputPower;
 
     public TileCoercionDeriver()
     {
-        this.capacityBase = 30;
-        this.module_index = 3;
-    }
-
-    @Override
-    public void validate()
-    {
-        super.validate();
-        start();
-    }
-
-    @Override
-    public void markDirty()
-    {
-        super.markDirty();
-        storage.setCapacity(Math.round(getWattage()));
-        storage.setMaxTransfer(Math.round(getWattage() / 20L));
-    }
-
-    @Override
-    public void start()
-    {
-        super.start();
-        storage.setCapacity(Math.round(getWattage()));
-        storage.setMaxTransfer(Math.round(getWattage() / 20L));
+        this.fortronCapacity = MFFSSettings.COERCION_FORTRON_TANK_SIZE;
+        this.module_inventory_start = 3;
     }
 
     @Override
@@ -75,35 +53,41 @@ public final class TileCoercionDeriver extends TileModuleAcceptor implements IEn
         super.updateEntity();
         if (!worldObj.isRemote)
         {
-
             if (isActive())
             {
-                if (isInversed && SettingConfiguration.ENABLE_ELECTRICITY)
+                //Turn fortron back into power
+                if (outputPower && MFFSSettings.COERCION_USE_POWER)
                 {
-                    if (storage.getEnergyStored() < storage.getMaxEnergyStored())
+                    if (getBattery().getEnergyStored() < getBattery().getMaxBufferSize())
                     {
-                        int produce = (int) Math.floor(requestFortron(getProductionRate() / 20, true) / 0.001);
-                        storage.receiveEnergy(produce, false);
+                        requestFortron(getFortronCreationRate(), true);
+                        getBattery().addEnergyToStorage(getFortronCreationRate(), true);
                     }
-                    //TODO: recharge from battery!
+                    //TODO: recharge batteries
                 }
-                else if (getFortronEnergy() < getFortronCapacity())
+                //Turn power into fortron, only produce if we have space
+                else if ((getFortronEnergy() + getFortronCreationRate()) < getFortronCapacity())
                 {
-                    //CHeck slot 1 for batteries etc
-                    //TODO: Discharge battery
-                    if (!SettingConfiguration.ENABLE_ELECTRICITY && isItemValidForSlot(SLOT_FUEL, getStackInSlot(SLOT_FUEL))
-                            || storage.extractEnergy(storage.getMaxExtract(), true) >= storage.getMaxExtract())
+                    //TODO: Discharge batteries
+                    if (canCreateFortron())
                     {
-                        provideFortron(getProductionRate(), true);
-                        storage.extractEnergy(storage.getMaxExtract(), false);
-                        if (processTime == 0 && isItemValidForSlot(SLOT_FUEL, getStackInSlot(SLOT_FUEL)))
+                        //Create fortron
+                        provideFortron(getFortronCreationRate(), true);
+
+                        //Eat power
+                        getBattery().removeEnergyFromStorage(getPowerUsage(), true);
+
+                        //Consume fuel, in power mode this boosts output
+                        if (fuelTimer == 0 && isItemValidForSlot(SLOT_FUEL, getStackInSlot(SLOT_FUEL)))
                         {
                             decrStackSize(SLOT_FUEL, 1);
-                            this.processTime = (200 * Math.max(getModuleCount(ItemModuleScale.class) / 20, 1));
+                            this.fuelTimer = (200 * Math.max(getModuleCount(ItemModuleScale.class) / 20, 1));
                         }
-                        if (processTime > 0)
+
+                        //Tick down processing time
+                        if (fuelTimer > 0)
                         {
-                            processTime--;
+                            fuelTimer--;
                         }
                     }
                 }
@@ -115,20 +99,36 @@ public final class TileCoercionDeriver extends TileModuleAcceptor implements IEn
         }
     }
 
-    /**
-     * Called when you receive a TileEntityData packet for the location this
-     * TileEntity is currently in. On the client, the NetworkManager will always
-     * be the remote server. On the server, it will be whomever is responsible for
-     * sending the packet.
-     *
-     * @param net The NetworkManager the packet originated from
-     * @param pkt The data packet
-     */
-    @Override
-    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
+    protected boolean canCreateFortron()
     {
-        super.onDataPacket(net, pkt);
+        //In no power mode, consume items
+        return !MFFSSettings.COERCION_USE_POWER && isItemValidForSlot(SLOT_FUEL, getStackInSlot(SLOT_FUEL))
+                //In power mode, consume energy
+                || getBattery().getEnergyStored() >= getPowerUsage();
     }
+
+    /**
+     * How much fortron is created each cycle
+     *
+     * @return value greater than zero
+     */
+    public int getFortronCreationRate()
+    {
+        if (isActive())
+        {
+            int fortron = MFFSSettings.COERCION_OUTPUT_PER_TICK + MFFSSettings.COERCION_OUTPUT_PER_TICK * getModuleCount(ItemModuleSpeed.class);
+            if (this.fuelTimer > 0)
+            {
+                fortron *= MFFSSettings.COERCION_FUEL_BONUS;
+            }
+            return fortron;
+        }
+        return 0;
+    }
+
+    //===========================================
+    //========== Inventory Code =================
+    //===========================================
 
     @Override
     public int getSizeInventory()
@@ -136,24 +136,13 @@ public final class TileCoercionDeriver extends TileModuleAcceptor implements IEn
         return 6;
     }
 
-    public float getWattage()
-    {
-        return (SettingConfiguration.BASE_POWER_REQUIRED + SettingConfiguration.BASE_POWER_REQUIRED * (getModuleCount(ItemModuleSpeed.class) / 8));
-    }
 
-    public int getProductionRate()
+    @Override
+    public List<ItemStack> getRemovedItems(EntityPlayer entityPlayer)
     {
-        if (isActive())
-        {
-            int production = (int) (getWattage() / 20.0F * 0.001F * SettingConfiguration.FORTRON_PRODUCTION_MULTIPLIER);
-
-            if (this.processTime > 0)
-            {
-                production *= 4;
-            }
-            return production;
-        }
-        return 0;
+        List<ItemStack> stack = super.getRemovedItems(entityPlayer);
+        stack.add(new ItemStack(ModularForcefieldSystem.coercionDeriver));
+        return stack;
     }
 
     @Override
@@ -161,7 +150,7 @@ public final class TileCoercionDeriver extends TileModuleAcceptor implements IEn
     {
         if (itemStack != null)
         {
-            if (slotID >= this.module_index)
+            if (slotID >= this.module_inventory_start)
             {
                 return itemStack.getItem() instanceof IModule;
             }
@@ -178,72 +167,96 @@ public final class TileCoercionDeriver extends TileModuleAcceptor implements IEn
         return false;
     }
 
+    //===========================================
+    //========== Save/Load code =================
+    //===========================================
+
     @Override
     public void writeToNBT(NBTTagCompound nbt)
     {
         super.writeToNBT(nbt);
-        nbt.setInteger("process", processTime);
-        nbt.setBoolean("inverse", isInversed);
-        storage.writeToNBT(nbt);
+        nbt.setInteger("process", fuelTimer);
+        nbt.setBoolean("inverse", outputPower);
+        if (energyBuffer != null)
+        {
+            nbt.setInteger("energy", energyBuffer.getEnergyStored());
+        }
     }
 
     @Override
     public void readFromNBT(NBTTagCompound nbt)
     {
         super.readFromNBT(nbt);
-        processTime = nbt.getInteger("process");
-        isInversed = nbt.getBoolean("inverse");
-        storage.readFromNBT(nbt);
+        fuelTimer = nbt.getInteger("process");
+        outputPower = nbt.getBoolean("inverse");
+        getBattery().setEnergyStored(nbt.getInteger("energy"));
     }
 
-    /**
-     * Add energy to an IEnergyReceiver, internal distribution is left entirely to the IEnergyReceiver.
-     *
-     * @param from       Orientation the energy is received from.
-     * @param maxReceive Maximum amount of energy to receive.
-     * @param simulate   If TRUE, the charge will only be simulated.
-     * @return Amount of energy that was (or would have been, if simulated) received.
-     */
+    //===========================================
+    //============= Power code ==================
+    //===========================================
+
     @Override
     public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate)
     {
-        return storage.receiveEnergy(maxReceive, simulate);
+        IEnergyBuffer buffer = getEnergyBuffer(from);
+        if (buffer != null)
+        {
+            //Limits and converts to UE energy
+            maxReceive = Math.min(getTransferLimit(), UniversalEnergySystem.RF_HANDLER.toUEEnergy(maxReceive));
+
+            //Add energy
+            int received = buffer.addEnergyToStorage(maxReceive, !simulate);
+
+            //Convert result
+            return UniversalEnergySystem.RF_HANDLER.fromUE(received);
+        }
+        return 0;
     }
 
-    /**
-     * Remove energy from an IEnergyProvider, internal distribution is left entirely to the IEnergyProvider.
-     *
-     * @param from       Orientation the energy is extracted from.
-     * @param maxExtract Maximum amount of energy to extract.
-     * @param simulate   If TRUE, the extraction will only be simulated.
-     * @return Amount of energy that was (or would have been, if simulated) extracted.
-     */
     @Override
     public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate)
     {
-        return storage.extractEnergy(maxExtract, simulate);
+        IEnergyBuffer buffer = getEnergyBuffer(from);
+        if (buffer != null)
+        {
+            //Limits and converts to UE energy
+            maxExtract = Math.min(getTransferLimit(), UniversalEnergySystem.RF_HANDLER.toUEEnergy(maxExtract));
+
+            //Extract energy
+            int extracted = buffer.removeEnergyFromStorage(maxExtract, !simulate);
+
+            //Convert result
+            return UniversalEnergySystem.RF_HANDLER.fromUE(extracted);
+        }
+        return 0;
     }
 
-    /**
-     * Returns the amount of energy currently stored.
-     *
-     * @param from
-     */
     @Override
     public int getEnergyStored(ForgeDirection from)
     {
-        return storage.getEnergyStored();
+        IEnergyBuffer buffer = getEnergyBuffer(from);
+        if (buffer != null)
+        {
+            return UniversalEnergySystem.RF_HANDLER.fromUE(buffer.getEnergyStored());
+        }
+        return 0;
     }
 
-    /**
-     * Returns the maximum amount of energy that can be stored.
-     *
-     * @param from
-     */
     @Override
     public int getMaxEnergyStored(ForgeDirection from)
     {
-        return storage.getMaxEnergyStored();
+        return UniversalEnergySystem.RF_HANDLER.fromUE(getBattery().getMaxBufferSize());
+    }
+
+    /**
+     * Amount of power that can be moved in and out of the battery
+     *
+     * @return greater than zero
+     */
+    protected int getTransferLimit()
+    {
+        return Math.round(getBattery().getMaxBufferSize() * MFFSSettings.COERCION_BATTERY_TRANSFER_PERCENTAGE);
     }
 
     /**
@@ -254,14 +267,66 @@ public final class TileCoercionDeriver extends TileModuleAcceptor implements IEn
     @Override
     public boolean canConnectEnergy(ForgeDirection from)
     {
-        return true;
+        return MFFSSettings.COERCION_USE_POWER;
+    }
+
+    /**
+     * Battery storing power
+     *
+     * @return battery, will create if null
+     */
+    public CoercionEnergyBuffer getBattery()
+    {
+        if (energyBuffer == null)
+        {
+            energyBuffer = new CoercionEnergyBuffer(this);
+        }
+        return energyBuffer;
+    }
+
+    /**
+     * How much power is consumed per tick
+     *
+     * @return greater than zero
+     */
+    public int getPowerUsage()
+    {
+        return MFFSSettings.COERCION_POWER_COST + MFFSSettings.COERCION_POWER_COST * getModuleCount(ItemModuleSpeed.class);
     }
 
     @Override
-    public List<ItemStack> getRemovedItems(EntityPlayer entityPlayer)
+    public IEnergyBuffer getEnergyBuffer(ForgeDirection side)
     {
-        List<ItemStack> stack = super.getRemovedItems(entityPlayer);
-        stack.add(new ItemStack(ModularForcefieldSystem.coercionDeriver));
-        return stack;
+        return energyBuffer;
+    }
+
+    /**
+     * Custom battery implementation to allow dynamic changes to take effect without resetting battery instance
+     */
+    public static class CoercionEnergyBuffer extends AbstractEnergyBuffer
+    {
+        protected TileCoercionDeriver host;
+
+        public CoercionEnergyBuffer(TileCoercionDeriver host)
+        {
+            this.host = host;
+        }
+
+        @Override
+        public int addEnergyToStorage(int energy, boolean doAction) //TODO implement transfer limits
+        {
+            //Block energy addition, still allow removal
+            if (MFFSSettings.COERCION_USE_POWER)
+            {
+                return super.addEnergyToStorage(energy, doAction);
+            }
+            return 0;
+        }
+
+        @Override
+        public int getMaxBufferSize()
+        {
+            return MFFSSettings.COERCION_BATTERY_SIZE; //TODO maybe implement scaling?
+        }
     }
 }

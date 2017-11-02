@@ -68,23 +68,26 @@ public class ForgeSubscribeHandler
     @SubscribeEvent
     public void playerInteraction(PlayerInteractEvent event)
     {
+        //Only care about left and right clicks
         if (event.action != PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK && event.action != PlayerInteractEvent.Action.LEFT_CLICK_BLOCK)
         {
             return;
         }
 
+        //Always block force field breaking
         if (event.action == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK && event.world.getBlock(event.x, event.y, event.z) instanceof BlockForceField)
         {
             event.setCanceled(true);
             return;
         }
 
-        if (event.entityPlayer.capabilities.isCreativeMode && SettingConfiguration.INTERACT_CREATIVE)
+        //Creative mode is considered admin
+        if (event.entityPlayer.capabilities.isCreativeMode)
         {
             return;
         }
 
-        Vector3D vec = new Vector3D(event.x, event.y, event.z);
+        Vector3D vec = new Vector3D(event.x, event.y, event.z); //TODO move to Pos
         IInterdictionMatrix matrix = MatrixHelper.findMatrix(event.world, vec);
         if (matrix != null)
         {

@@ -53,7 +53,7 @@ public class ModularForcefieldSystem extends AbstractMod
      */
     public ModularForcefieldSystem()
     {
-        super(MODID, MODID + "/general_settings");
+        super(MODID);
         manager.defaultTab = new CreativeTabs(ModularForcefieldSystem.MODID)
         {
 
@@ -95,7 +95,7 @@ public class ModularForcefieldSystem extends AbstractMod
     @Override
     public void loadItems(ModManager manager)
     {
-        manager.newItem("cardBlank", ItemCardBlank.class);
+        manager.newItem("cardBlank", ItemCardBlank.class); //TODO Fix this mess, redo IDs, try to merge into one item using JSON system
         manager.newItem("cardFrequency", ItemCardFrequency.class);
         itemCardID = manager.newItem("cardID", ItemCardID.class);
         manager.newItem("cardInfinite", ItemCardInfinite.class);
@@ -153,10 +153,15 @@ public class ModularForcefieldSystem extends AbstractMod
     {
         super.preInit(event);
         channel = new SimpleNetworkWrapper(MODID);
-        SettingConfiguration.load();
+
+        MFFSSettings.load(getConfig());
+
         FluidRegistry.registerFluid(new Fortron());
         Fortron.FLUID_ID = FluidRegistry.getFluidID("fortron");
+
         MinecraftForge.EVENT_BUS.register(new ForgeSubscribeHandler());
+
+        //TODO move to VoltzEngine packet system
         ModularForcefieldSystem.channel.registerMessage(EntityToggle.ServerHandler.class, EntityToggle.class, 0, Side.SERVER);
         channel.registerMessage(FortronSync.ClientHandler.class, FortronSync.class, 1, Side.CLIENT);
         ModularForcefieldSystem.channel.registerMessage(ChangeFrequency.ServerHandler.class, ChangeFrequency.class, 2, Side.SERVER);
@@ -164,6 +169,7 @@ public class ModularForcefieldSystem extends AbstractMod
         ModularForcefieldSystem.channel.registerMessage(BeamRequest.ClientHandler.class, BeamRequest.class, 4, Side.CLIENT);
         ModularForcefieldSystem.channel.registerMessage(ItemByteToggle.ServerHandler.class, ItemByteToggle.class, 5, Side.SERVER);
         ModularForcefieldSystem.channel.registerMessage(ItemStringToggle.ServerHandler.class, ItemStringToggle.class, 6, Side.SERVER);
+
         proxy.preInit();
     }
 

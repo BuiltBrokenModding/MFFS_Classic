@@ -4,7 +4,7 @@ import com.builtbroken.mc.imp.transform.region.Cube;
 import com.builtbroken.mc.imp.transform.vector.Pos;
 import com.builtbroken.mc.lib.helper.LanguageUtility;
 import com.mffs.ModularForcefieldSystem;
-import com.mffs.SettingConfiguration;
+import com.mffs.MFFSSettings;
 import com.mffs.api.card.ICardInfinite;
 import com.mffs.api.modules.IInterdictionModule;
 import com.mffs.api.modules.IModule;
@@ -46,9 +46,9 @@ public final class TileInterdictionMatrix extends TileModuleAcceptor implements 
 
     public TileInterdictionMatrix()
     {
-        this.capacityBase = 30;
-        this.module_index = 2;
-        this.module_end = 9;
+        this.fortronCapacity = 30;
+        this.module_inventory_start = 2;
+        this.module_inventory_end = 9;
     }
 
     @Override
@@ -140,7 +140,7 @@ public final class TileInterdictionMatrix extends TileModuleAcceptor implements 
                     if (bio != null && entity instanceof EntityPlayer)
                     {
                         EntityPlayer player = (EntityPlayer) entity;
-                        if (bio.isAccessGranted(player.getGameProfile().getName(), Permission.BYPASS_DEFENSE) || !SettingConfiguration.INTERACT_CREATIVE && player.capabilities.isCreativeMode)
+                        if (bio.isAccessGranted(player.getGameProfile().getName(), Permission.BYPASS_DEFENSE) || player.capabilities.isCreativeMode)
                         {
                             continue;
                         }
@@ -182,7 +182,7 @@ public final class TileInterdictionMatrix extends TileModuleAcceptor implements 
     @Override
     public Cube getWarningRange()
     {
-        int range = Math.min(getModuleCount(ItemModuleWarn.class), SettingConfiguration.INTERDICTION_MAX_RANGE) + 3;
+        int range = Math.min(getModuleCount(ItemModuleWarn.class), MFFSSettings.INTERDICTION_MAX_RANGE) + 3;
         return getActionRange().expand(range);
     }
 
@@ -206,7 +206,7 @@ public final class TileInterdictionMatrix extends TileModuleAcceptor implements 
         }
 
         Pos center = new Pos(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5);
-        int range = Math.min(getModuleCount(ItemModuleScale.class), SettingConfiguration.INTERDICTION_MAX_RANGE);
+        int range = Math.min(getModuleCount(ItemModuleScale.class), MFFSSettings.INTERDICTION_MAX_RANGE);
         return new Cube(center.sub(range), center.add(range));
     }
 
@@ -234,7 +234,7 @@ public final class TileInterdictionMatrix extends TileModuleAcceptor implements 
     public Set<ItemStack> getFilteredItems()
     {
         Set<ItemStack> stacks = new HashSet();
-        for (int i = module_end; i < getSizeInventory() - 1; i++)
+        for (int i = module_inventory_end; i < getSizeInventory() - 1; i++)
         {
             if (getStackInSlot(i) != null)
             {
@@ -306,7 +306,7 @@ public final class TileInterdictionMatrix extends TileModuleAcceptor implements 
             return item.getItem() instanceof ItemCardFrequency;
         }
 
-        if (slot > this.module_end)
+        if (slot > this.module_inventory_end)
         {
             return true;
         }
