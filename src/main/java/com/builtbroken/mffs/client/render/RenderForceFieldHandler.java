@@ -1,6 +1,6 @@
 package com.builtbroken.mffs.client.render;
 
-import com.builtbroken.mffs.common.tile.type.TileForceField;
+import com.builtbroken.mffs.content.field.TileForceField;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.relauncher.Side;

@@ -2,7 +2,7 @@ package com.builtbroken.mffs.client.render;
 
 import com.builtbroken.mffs.ModularForcefieldSystem;
 import com.builtbroken.mffs.client.render.model.ModelCoercionDeriver;
-import com.builtbroken.mffs.common.TileMFFS;
+import com.builtbroken.mffs.prefab.tile.TileMFFS;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

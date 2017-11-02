@@ -7,7 +7,7 @@ import com.builtbroken.mffs.api.security.Permission;
 import com.builtbroken.mffs.api.vector.Vector3D;
 import com.builtbroken.mffs.common.items.modules.BaseModule;
 import com.builtbroken.mffs.common.net.packet.ForcefieldCalculation;
-import com.builtbroken.mffs.common.tile.type.TileForceFieldProjector;
+import com.builtbroken.mffs.content.projector.TileForceFieldProjector;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;

@@ -6,7 +6,7 @@ import com.builtbroken.mffs.api.IProjector;
 import com.builtbroken.mffs.api.fortron.FrequencyGrid;
 import com.builtbroken.mffs.api.fortron.IFortronFrequency;
 import com.builtbroken.mffs.api.vector.Vector3D;
-import com.builtbroken.mffs.common.TileMFFS;
+import com.builtbroken.mffs.prefab.tile.TileMFFS;
 import com.builtbroken.mffs.common.items.modules.BaseModule;
 import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipe;

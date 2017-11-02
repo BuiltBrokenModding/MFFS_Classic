@@ -2,7 +2,7 @@ package com.builtbroken.mffs.client.render.particles;
 
 import com.builtbroken.mffs.api.vector.Vector3D;
 import com.builtbroken.mffs.client.render.RenderBlockHandler;
-import com.builtbroken.mffs.common.blocks.BlockForceField;
+import com.builtbroken.mffs.content.field.BlockForceField;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

@@ -5,7 +5,7 @@ import com.builtbroken.mffs.api.IFieldInteraction;
 import com.builtbroken.mffs.api.IProjector;
 import com.builtbroken.mffs.api.render.ModelCube;
 import com.builtbroken.mffs.api.vector.Vector3D;
-import com.builtbroken.mffs.common.items.ItemMode;
+import com.builtbroken.mffs.prefab.item.ItemMode;
 import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.tileentity.TileEntity;

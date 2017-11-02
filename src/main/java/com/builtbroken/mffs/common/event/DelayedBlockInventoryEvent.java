@@ -2,7 +2,7 @@ package com.builtbroken.mffs.common.event;
 
 import com.builtbroken.mffs.api.event.EventTimedTask;
 import com.builtbroken.mffs.api.vector.Vector3D;
-import com.builtbroken.mffs.common.tile.TileMFFSInventory;
+import com.builtbroken.mffs.prefab.tile.TileMFFSInventory;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;

@@ -2,7 +2,7 @@ package com.builtbroken.mffs.common.net.packet;
 
 import com.builtbroken.mffs.api.vector.Vector3D;
 import com.builtbroken.mffs.common.net.TileEntityMessage;
-import com.builtbroken.mffs.common.tile.type.TileForceFieldProjector;
+import com.builtbroken.mffs.content.projector.TileForceFieldProjector;
 import io.netty.buffer.ByteBuf;
 
 import java.util.HashSet;

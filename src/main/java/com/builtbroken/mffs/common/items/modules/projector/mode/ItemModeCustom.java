@@ -3,7 +3,7 @@ package com.builtbroken.mffs.common.items.modules.projector.mode;
 import com.builtbroken.mffs.api.IFieldInteraction;
 import com.builtbroken.mffs.api.IProjector;
 import com.builtbroken.mffs.api.vector.Vector3D;
-import com.builtbroken.mffs.common.items.ItemMode;
+import com.builtbroken.mffs.prefab.item.ItemMode;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 

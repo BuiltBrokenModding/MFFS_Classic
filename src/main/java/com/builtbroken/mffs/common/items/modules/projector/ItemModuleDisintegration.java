@@ -10,7 +10,7 @@ import com.builtbroken.mffs.common.event.DelayedBlockDropEvent;
 import com.builtbroken.mffs.common.event.DelayedBlockInventoryEvent;
 import com.builtbroken.mffs.common.items.modules.BaseModule;
 import com.builtbroken.mffs.common.net.packet.BeamRequest;
-import com.builtbroken.mffs.common.tile.type.TileForceFieldProjector;
+import com.builtbroken.mffs.content.projector.TileForceFieldProjector;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;

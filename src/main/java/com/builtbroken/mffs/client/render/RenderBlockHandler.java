@@ -1,8 +1,8 @@
 package com.builtbroken.mffs.client.render;
 
-import com.builtbroken.mffs.common.blocks.BlockCoercionDeriver;
-import com.builtbroken.mffs.common.blocks.BlockForceFieldProjector;
-import com.builtbroken.mffs.common.blocks.BlockFortronCapacitor;
+import com.builtbroken.mffs.content.gen.BlockCoercionDeriver;
+import com.builtbroken.mffs.content.projector.BlockForceFieldProjector;
+import com.builtbroken.mffs.content.cap.BlockFortronCapacitor;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;

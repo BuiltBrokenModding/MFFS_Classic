@@ -1,7 +1,7 @@
 package com.builtbroken.mffs.common.net.packet;
 
 import com.builtbroken.mffs.common.net.TileEntityMessage;
-import com.builtbroken.mffs.common.tile.TileFortron;
+import com.builtbroken.mffs.prefab.tile.TileFortron;
 import io.netty.buffer.ByteBuf;
 
 /**
