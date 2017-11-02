@@ -1,0 +1,18 @@
+package com.builtbroken.mffs.api.fortron;
+
+import java.util.Set;
+
+/**
+ * A grid ModularForcefieldSystem uses to search for machines with frequencies that can be linked and spread Fortron
+ * energy.
+ *
+ * @author Calclavia
+ */
+public interface IFortronCapacitor
+{
+    void getLinkedDevices(Set<IFortronFrequency> map);
+
+    int getTransmissionRange();
+
+    int getTransmissionRate();
+}

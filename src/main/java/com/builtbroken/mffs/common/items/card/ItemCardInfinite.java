@@ -1,0 +1,18 @@
+package com.builtbroken.mffs.common.items.card;
+
+import com.builtbroken.mffs.api.card.ICardInfinite;
+import net.minecraft.item.crafting.IRecipe;
+
+import java.util.List;
+
+/**
+ * @author Calclavia
+ */
+public class ItemCardInfinite extends ItemCardBlank implements ICardInfinite
+{
+
+    @Override
+    public void genRecipes(List<IRecipe> list)
+    {
+    }
+}
