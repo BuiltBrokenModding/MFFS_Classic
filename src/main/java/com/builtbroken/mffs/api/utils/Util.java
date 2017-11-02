@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 /**
  * Created by pwaln on 5/31/2016.
  */
+@Deprecated
 public class Util
 {
 

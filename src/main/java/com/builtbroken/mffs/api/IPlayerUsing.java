@@ -7,6 +7,7 @@ import java.util.HashSet;
 /**
  * Created by pwaln on 6/1/2016.
  */
+@Deprecated
 public interface IPlayerUsing
 {
     HashSet<EntityPlayer> getPlayersUsing();

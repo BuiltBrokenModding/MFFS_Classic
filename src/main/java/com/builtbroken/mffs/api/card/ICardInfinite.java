@@ -6,6 +6,7 @@ package com.builtbroken.mffs.api.card;
  *
  * @author Calclavia
  */
+@Deprecated //Really don't need an interface for this
 public interface ICardInfinite
 {
 }

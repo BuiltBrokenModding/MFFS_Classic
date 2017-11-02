@@ -5,6 +5,7 @@ import net.minecraft.world.World;
 /**
  * Created by pwaln on 6/6/2016.
  */
+@Deprecated //Not used
 public class EventPostForceManipulate extends EventForceManipulate
 {
 

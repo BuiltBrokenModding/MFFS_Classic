@@ -7,6 +7,7 @@ import net.minecraft.item.ItemStack;
 /**
  * Created by pwaln on 6/3/2016.
  */
+@Deprecated
 public class BaseSlot<ENTITY extends IInventory> extends Slot
 {
 

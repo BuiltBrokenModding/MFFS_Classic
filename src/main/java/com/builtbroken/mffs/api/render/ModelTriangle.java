@@ -8,6 +8,7 @@ import net.minecraft.client.model.ModelRenderer;
 /**
  * @author Calclavia
  */
+@Deprecated //No clue why this is even in the AP
 @SideOnly(Side.CLIENT)
 public class ModelTriangle extends ModelBase
 {

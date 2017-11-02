@@ -6,6 +6,7 @@ import net.minecraft.world.World;
 /**
  * @author Calclavia
  */
+@Deprecated //Not used
 @Cancelable
 public class EventPreForceManipulate extends EventForceManipulate
 {

@@ -4,6 +4,7 @@ package com.builtbroken.mffs.api.security;
 /**
  * @author Calclavia
  */
+@Deprecated //Will be moved to VoltzEngine's permission system
 public enum Permission
 {
     WARP,

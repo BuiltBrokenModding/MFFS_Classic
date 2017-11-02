@@ -3,6 +3,7 @@ package com.builtbroken.mffs.api.utils;
 /**
  * @author Calclavia
  */
+@Deprecated
 public class UnitDisplay
 {
     public static String getDisplay(double value, Unit unit, int decimalPlaces, boolean isShort)

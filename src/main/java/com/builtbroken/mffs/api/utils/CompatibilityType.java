@@ -6,6 +6,7 @@ import cpw.mods.fml.common.Loader;
 /**
  * @author Calclavia
  */
+@Deprecated
 public enum CompatibilityType
 {
     THERMAL_EXPANSION("ThermalExpansion", "ThermalExpansion", "Redstone Flux", "RF", 5628), INDUSTRIALCRAFT("IC2", "IndustrialCraft", "Electrical Unit", "EU", 22512), BUILDCRAFT("BuildCraft|Energy", "BuildCraft", "Minecraft Joule", "MJ", 56280);

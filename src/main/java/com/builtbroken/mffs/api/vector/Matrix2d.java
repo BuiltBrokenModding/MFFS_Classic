@@ -8,6 +8,7 @@ import javax.vecmath.Vector2d;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 public class Matrix2d
 {
     public Vector3D min;

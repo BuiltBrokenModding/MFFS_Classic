@@ -14,6 +14,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.List;
 
+@Deprecated
 public class Vector3D
         implements Cloneable
 {

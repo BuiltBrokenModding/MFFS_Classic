@@ -9,7 +9,7 @@ import net.minecraft.item.ItemStack;
  *
  * @author Calclavia
  */
-//TODO depricate and move to VE interface
+@Deprecated //Will be replaced by VoltzEngine version
 public interface ICoordLink
 {
     void setLink(ItemStack paramItemStack, Location paramVectorWorld);

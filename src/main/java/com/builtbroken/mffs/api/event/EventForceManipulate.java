@@ -9,7 +9,7 @@ import net.minecraftforge.event.world.WorldEvent;
 public abstract class EventForceManipulate
         extends WorldEvent
 {
-    public int beforeX;
+    public int beforeX; //TODO document
     public int beforeY;
     public int beforeZ;
     public int afterX;

@@ -7,6 +7,7 @@ import net.minecraftforge.event.world.ChunkEvent;
 /**
  * Created by pwaln on 7/8/2016.
  */
+@Deprecated //Not used
 public class ChunkModifiedEvent extends ChunkEvent
 {
 

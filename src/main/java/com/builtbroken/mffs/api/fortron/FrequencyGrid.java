@@ -15,6 +15,7 @@ import java.util.*;
  *
  * @author Calclavia
  */
+@Deprecated //No clue why this is even in the AP
 public class FrequencyGrid
 {
     private static FrequencyGrid CLIENT_INSTANCE = new FrequencyGrid();

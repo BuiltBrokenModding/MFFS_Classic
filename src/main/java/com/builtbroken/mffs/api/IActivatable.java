@@ -3,6 +3,7 @@ package com.builtbroken.mffs.api;
 /**
  * @author Calclavia
  */
+@Deprecated
 public interface IActivatable
 {
     boolean isActive();

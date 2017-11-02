@@ -8,6 +8,7 @@ import java.util.Set;
 /**
  * @author Calclavia
  */
+@Deprecated
 public class Blacklist
 {
     public static final Set<Integer> stabilizationBlacklist = new HashSet();

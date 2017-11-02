@@ -8,6 +8,7 @@ import net.minecraft.client.model.ModelRenderer;
 /**
  * @author Calclavia
  */
+@Deprecated //No clue why this is even in the API
 @SideOnly(Side.CLIENT)
 public class ModelPlane extends ModelBase
 {
