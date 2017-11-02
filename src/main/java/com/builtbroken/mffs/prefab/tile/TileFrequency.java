@@ -21,6 +21,7 @@ import java.util.Set;
 /**
  * Created by pwaln on 6/1/2016.
  */
+@Deprecated //Being converted to node system
 public abstract class TileFrequency extends TileMFFSInventory implements IBlockFrequency, IBiometricIdentifierLink
 {
 

@@ -7,7 +7,7 @@ import com.builtbroken.mffs.content.biometric.BiometricContainer;
 import com.builtbroken.mffs.content.biometric.TileBiometricIdentifier;
 import com.builtbroken.mffs.content.cap.FortronCapacitorContainer;
 import com.builtbroken.mffs.content.cap.TileFortronCapacitor;
-import com.builtbroken.mffs.content.gen.CoercionDeriverContainer;
+import com.builtbroken.mffs.content.gen.ContainerCoercionDeriver;
 import com.builtbroken.mffs.content.gen.TileCoercionDeriver;
 import com.builtbroken.mffs.content.interdiction.InterdictionContainer;
 import com.builtbroken.mffs.content.interdiction.TileInterdictionMatrix;
@@ -68,7 +68,7 @@ public class CommonProxy extends AbstractProxy
             {
                 if (tileEntity instanceof TileCoercionDeriver)
                 {
-                    return new CoercionDeriverContainer(player, (TileCoercionDeriver) tileEntity);
+                    return new ContainerCoercionDeriver(player, (TileCoercionDeriver) tileEntity);
                 }
                 else if (tileEntity instanceof TileForceFieldProjector)
                 {

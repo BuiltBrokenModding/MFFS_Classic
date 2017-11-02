@@ -37,7 +37,7 @@ public final class BlockFortronCapacitor extends MFFSMachine implements IPostIni
     @Override
     public void registerBlockIcons(IIconRegister reg)
     {
-        this.blockIcon = reg.registerIcon(ModularForcefieldSystem.MODID + ":machine");
+        this.blockIcon = reg.registerIcon(ModularForcefieldSystem.DOMAIN + ":machine");
     }
 
     @Override

@@ -22,8 +22,8 @@ public class RenderFortronCapacitor extends TileEntitySpecialRenderer
      * Resources that will be used.
      */
     public static final ResourceLocation
-            TEXTURE_ON = new ResourceLocation(ModularForcefieldSystem.MODID, "textures/models/coercionDeriver_on.png"),
-            TEXTURE_OFF = new ResourceLocation(ModularForcefieldSystem.MODID, "textures/models/coercionDeriver_off.png");
+            TEXTURE_ON = new ResourceLocation(ModularForcefieldSystem.DOMAIN, "textures/models/coercionDeriver_on.png"),
+            TEXTURE_OFF = new ResourceLocation(ModularForcefieldSystem.DOMAIN, "textures/models/coercionDeriver_off.png");
 
     public static final ModelFortronCapacitor MODEL = new ModelFortronCapacitor();
 

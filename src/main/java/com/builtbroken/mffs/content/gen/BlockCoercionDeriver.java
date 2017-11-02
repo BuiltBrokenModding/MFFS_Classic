@@ -1,11 +1,9 @@
 package com.builtbroken.mffs.content.gen;
 
-import com.builtbroken.mc.core.registry.implement.IPostInit;
 import com.builtbroken.mc.lib.helper.recipe.UniversalRecipe;
 import com.builtbroken.mffs.ModularForcefieldSystem;
 import com.builtbroken.mffs.client.render.RenderBlockHandler;
 import com.builtbroken.mffs.prefab.blocks.MFFSMachine;
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -19,7 +17,7 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 /**
  * @author Calclavia
  */
-public final class BlockCoercionDeriver extends MFFSMachine implements IPostInit
+public final class BlockCoercionDeriver extends MFFSMachine
 {
 
     /**
@@ -37,7 +35,7 @@ public final class BlockCoercionDeriver extends MFFSMachine implements IPostInit
     @Override
     public void registerBlockIcons(IIconRegister reg)
     {
-        this.blockIcon = reg.registerIcon(ModularForcefieldSystem.MODID + ":machine");
+        this.blockIcon = reg.registerIcon(ModularForcefieldSystem.DOMAIN + ":machine");
     }
 
     @Override
@@ -59,13 +57,12 @@ public final class BlockCoercionDeriver extends MFFSMachine implements IPostInit
         return false;
     }
 
-    @Override
     public void onPostInit()
     {
         ShapedOreRecipe recipe = new ShapedOreRecipe(this, "S S", "SFS", "SBS",
                 'F', Item.itemRegistry.getObject("mffs:focusMatrix"),
                 'S', UniversalRecipe.PRIMARY_METAL.get(),
                 'B', UniversalRecipe.BATTERY.get());
-        GameRegistry.addRecipe(recipe);
+        //GameRegistry.addRecipe(recipe);
     }
 }

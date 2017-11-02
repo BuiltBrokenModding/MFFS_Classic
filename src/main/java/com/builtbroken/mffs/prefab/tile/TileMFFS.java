@@ -17,6 +17,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 /**
  * @author Calclavia
  */
+@Deprecated //Has been converted to node framework
 public abstract class TileMFFS extends TileEntity implements IActivatable, IPacketReceiver_Entity, IRemovable.ICustomRemoval
 {
     public float animation;

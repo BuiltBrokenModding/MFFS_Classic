@@ -22,9 +22,9 @@ import org.lwjgl.opengl.GL11;
 public class RenderForceFieldProjector extends TileEntitySpecialRenderer
 {
 
-    public static final ResourceLocation TEXTURE_ON = new ResourceLocation(ModularForcefieldSystem.MODID, "textures/models/projector_on.png");
-    public static final ResourceLocation TEXTURE_OFF = new ResourceLocation(ModularForcefieldSystem.MODID, "textures/models/projector_off.png");
-    public static final ResourceLocation FORCE_CUBE = new ResourceLocation(ModularForcefieldSystem.MODID, "textures/models/force_cube.png");
+    public static final ResourceLocation TEXTURE_ON = new ResourceLocation(ModularForcefieldSystem.DOMAIN, "textures/models/projector_on.png");
+    public static final ResourceLocation TEXTURE_OFF = new ResourceLocation(ModularForcefieldSystem.DOMAIN, "textures/models/projector_off.png");
+    public static final ResourceLocation FORCE_CUBE = new ResourceLocation(ModularForcefieldSystem.DOMAIN, "textures/models/force_cube.png");
     public static final ModelForceFieldProjector MODEL = new ModelForceFieldProjector();
 
     @Override

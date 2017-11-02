@@ -23,7 +23,7 @@ public class GuiCoercionDeriver extends MFFSGui
 
     public GuiCoercionDeriver(EntityPlayer player, TileCoercionDeriver tileentity)
     {
-        super(new CoercionDeriverContainer(player, tileentity), tileentity);
+        super(new ContainerCoercionDeriver(player, tileentity), tileentity);
     }
 
     public void initGui()

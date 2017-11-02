@@ -99,11 +99,11 @@ public abstract class MFFSMachine extends Block implements ITileEntityProvider
     public void registerBlockIcons(IIconRegister reg)
     {
         String name = getUnlocalizedName().substring(5);
-        this.blockIcon = reg.registerIcon(ModularForcefieldSystem.MODID + ":" + name);
+        this.blockIcon = reg.registerIcon(ModularForcefieldSystem.DOMAIN + ":" + name);
         side_textures = new IIcon[]{
-                reg.registerIcon(ModularForcefieldSystem.MODID + ":" + name + "_top"),
-                reg.registerIcon(ModularForcefieldSystem.MODID + ":" + name + "_top_on"),
-                reg.registerIcon(ModularForcefieldSystem.MODID + ":" + name + "_on")
+                reg.registerIcon(ModularForcefieldSystem.DOMAIN + ":" + name + "_top"),
+                reg.registerIcon(ModularForcefieldSystem.DOMAIN + ":" + name + "_top_on"),
+                reg.registerIcon(ModularForcefieldSystem.DOMAIN + ":" + name + "_on")
         };
     }
 

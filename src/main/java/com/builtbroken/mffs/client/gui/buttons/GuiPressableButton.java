@@ -16,7 +16,7 @@ import org.lwjgl.opengl.GL11;
 public class GuiPressableButton extends GuiButton
 {
 
-    public static final ResourceLocation GUI_BUTTON = new ResourceLocation(ModularForcefieldSystem.MODID, "textures/gui/gui_button.png");
+    public static final ResourceLocation GUI_BUTTON = new ResourceLocation(ModularForcefieldSystem.DOMAIN, "textures/gui/gui_button.png");
 
     public boolean stuck = false;
     protected Point offset = new Point();

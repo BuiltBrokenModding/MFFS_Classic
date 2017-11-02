@@ -86,7 +86,7 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
 
                 if (this.ticks % 40 == 0 && getModuleCount(ItemModuleSilence.class) <= 0)
                 {
-                    this.worldObj.playSoundEffect(this.xCoord + 0.5, this.yCoord + 0.5, this.zCoord + 0.5, ModularForcefieldSystem.MODID + ":field", 0.6F, 1.0F - this.worldObj.rand.nextFloat() * 0.1F);
+                    this.worldObj.playSoundEffect(this.xCoord + 0.5, this.yCoord + 0.5, this.zCoord + 0.5, ModularForcefieldSystem.DOMAIN + ":field", 0.6F, 1.0F - this.worldObj.rand.nextFloat() * 0.1F);
                 }
             }
         }

@@ -9,14 +9,14 @@ import net.minecraft.entity.player.EntityPlayer;
 /**
  * @author Calclavia
  */
-public class CoercionDeriverContainer extends PlayerContainer
+public class ContainerCoercionDeriver extends PlayerContainer
 {
 
     /**
      * @param player
      * @param driver
      */
-    public CoercionDeriverContainer(EntityPlayer player, TileCoercionDeriver driver)
+    public ContainerCoercionDeriver(EntityPlayer player, TileCoercionDeriver driver)
     {
         super(player, driver);
         //Add slots

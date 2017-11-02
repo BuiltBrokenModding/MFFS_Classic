@@ -14,6 +14,7 @@ import java.util.Set;
  *
  * @author Calclavia
  */
+@Deprecated //Being replaced by IInventoryProvider
 public abstract class TileModuleAcceptor extends TileFortron implements IModuleAcceptor
 {
     /** Amount of fortron to store */

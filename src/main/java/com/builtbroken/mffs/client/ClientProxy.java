@@ -47,7 +47,7 @@ public class ClientProxy extends CommonProxy
     {
         RenderingRegistry.registerBlockHandler(new RenderBlockHandler());
         RenderingRegistry.registerBlockHandler(new RenderForceFieldHandler());
-        MinecraftForgeClient.registerItemRenderer((Item) Item.itemRegistry.getObject(ModularForcefieldSystem.MODID + ":cardID"), new RenderIDCard());
+        MinecraftForgeClient.registerItemRenderer((Item) Item.itemRegistry.getObject(ModularForcefieldSystem.DOMAIN + ":cardID"), new RenderIDCard());
         ClientRegistry.bindTileEntitySpecialRenderer(TileCoercionDeriver.class, new RenderCoercionDeriver());
         ClientRegistry.bindTileEntitySpecialRenderer(TileForceFieldProjector.class, new RenderForceFieldProjector());
         ClientRegistry.bindTileEntitySpecialRenderer(TileFortronCapacitor.class, new RenderFortronCapacitor());

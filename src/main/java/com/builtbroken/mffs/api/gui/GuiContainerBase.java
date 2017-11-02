@@ -34,10 +34,10 @@ public class GuiContainerBase extends GuiContainer
 {
 
     @SideOnly(Side.CLIENT)
-    public static final ResourceLocation GUI_COMPONENTS = new ResourceLocation(ModularForcefieldSystem.MODID, "textures/gui/gui_components.png");
+    public static final ResourceLocation GUI_COMPONENTS = new ResourceLocation(ModularForcefieldSystem.DOMAIN, "textures/gui/gui_components.png");
 
     @SideOnly(Side.CLIENT)
-    public static final ResourceLocation baseTexture = new ResourceLocation(ModularForcefieldSystem.MODID, "textures/gui/gui_base.png");
+    public static final ResourceLocation baseTexture = new ResourceLocation(ModularForcefieldSystem.DOMAIN, "textures/gui/gui_base.png");
 
     public String tooltip = "";
     protected int meterHeight = 49;

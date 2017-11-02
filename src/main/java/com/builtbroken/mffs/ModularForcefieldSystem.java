@@ -41,10 +41,10 @@ import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.FluidRegistry;
 
-@Mod(modid = ModularForcefieldSystem.MODID, name = ModularForcefieldSystem.MOD_NAME, version = ModularForcefieldSystem.VERSION, dependencies = "required-after:voltzengine")
+@Mod(modid = ModularForcefieldSystem.DOMAIN, name = ModularForcefieldSystem.MOD_NAME, version = ModularForcefieldSystem.VERSION, dependencies = "required-after:voltzengine")
 public class ModularForcefieldSystem extends AbstractMod
 {
-    public static final String MODID = "mffs";
+    public static final String DOMAIN = "mffs";
     public static final String VERSION = "0.50";
     public static final String MOD_NAME = "Modular Forcefield System";
 
@@ -63,8 +63,8 @@ public class ModularForcefieldSystem extends AbstractMod
      */
     public ModularForcefieldSystem()
     {
-        super(MODID, MODID + "/main");
-        manager.defaultTab = new CreativeTabs(ModularForcefieldSystem.MODID)
+        super(DOMAIN, DOMAIN + "/main");
+        manager.defaultTab = new CreativeTabs(ModularForcefieldSystem.DOMAIN)
         {
 
             @Override
@@ -162,7 +162,7 @@ public class ModularForcefieldSystem extends AbstractMod
     public void preInit(FMLPreInitializationEvent event)
     {
         super.preInit(event);
-        channel = new SimpleNetworkWrapper(MODID);
+        channel = new SimpleNetworkWrapper(DOMAIN);
 
         MFFSSettings.load(getConfig());
 

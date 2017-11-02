@@ -1,0 +1,16 @@
+{
+  "craftingGridRecipe": {
+    "type": "shaped",
+    "output": "mffs:coercionDeriver",
+    "grid": [
+      "S S",
+      "SFS",
+      "SBS"
+    ],
+    "items": {
+      "F": "mffs:focusMatrix",
+      "S": "ore@plateSteel",
+      "B": "ore@circuitElite"
+    }
+  }
+}

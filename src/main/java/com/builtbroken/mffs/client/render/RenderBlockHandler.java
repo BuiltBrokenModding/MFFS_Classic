@@ -17,6 +17,7 @@ import org.lwjgl.opengl.GL11;
 /**
  * @author Calclavia
  */
+@Deprecated //Replace with JSON render handler
 @SideOnly(Side.CLIENT)
 public class RenderBlockHandler implements ISimpleBlockRenderingHandler
 {
@@ -32,6 +33,7 @@ public class RenderBlockHandler implements ISimpleBlockRenderingHandler
         renderer.setRenderBoundsFromBlock(block);
         GL11.glRotatef(90.0F, 0.0F, 1.0F, 0.0F);
         GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
+
         tessellator.startDrawingQuads();
         tessellator.setNormal(0.0F, -1.0F, 0.0F);
         renderer.renderFaceYNeg(block, 0.0D, 0.0D, 0.0D, renderer.getBlockIconFromSideAndMetadata(block, 0, metadata));
@@ -46,18 +48,22 @@ public class RenderBlockHandler implements ISimpleBlockRenderingHandler
         tessellator.setNormal(0.0F, 0.0F, -1.0F);
         renderer.renderFaceZNeg(block, 0.0D, 0.0D, 0.0D, renderer.getBlockIconFromSideAndMetadata(block, 2, metadata));
         tessellator.draw();
+
         tessellator.startDrawingQuads();
         tessellator.setNormal(0.0F, 0.0F, 1.0F);
         renderer.renderFaceZPos(block, 0.0D, 0.0D, 0.0D, renderer.getBlockIconFromSideAndMetadata(block, 3, metadata));
         tessellator.draw();
+
         tessellator.startDrawingQuads();
         tessellator.setNormal(-1.0F, 0.0F, 0.0F);
         renderer.renderFaceXNeg(block, 0.0D, 0.0D, 0.0D, renderer.getBlockIconFromSideAndMetadata(block, 4, metadata));
         tessellator.draw();
+
         tessellator.startDrawingQuads();
         tessellator.setNormal(1.0F, 0.0F, 0.0F);
         renderer.renderFaceXPos(block, 0.0D, 0.0D, 0.0D, renderer.getBlockIconFromSideAndMetadata(block, 5, metadata));
         tessellator.draw();
+
         GL11.glTranslatef(0.5F, 0.5F, 0.5F);
     }
 

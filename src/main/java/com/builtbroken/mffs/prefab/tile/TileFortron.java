@@ -1,16 +1,15 @@
 package com.builtbroken.mffs.prefab.tile;
 
-import com.builtbroken.mffs.ModularForcefieldSystem;
 import com.builtbroken.mffs.MFFSSettings;
+import com.builtbroken.mffs.ModularForcefieldSystem;
 import com.builtbroken.mffs.api.card.ICard;
 import com.builtbroken.mffs.api.fortron.FrequencyGrid;
 import com.builtbroken.mffs.api.fortron.IFortronFrequency;
 import com.builtbroken.mffs.api.utils.FortronHelper;
-import com.builtbroken.mffs.api.vector.Matrix2d;
 import com.builtbroken.mffs.api.vector.Vector3D;
 import com.builtbroken.mffs.common.TransferMode;
-import com.builtbroken.mffs.content.fluids.Fortron;
 import com.builtbroken.mffs.common.net.packet.FortronSync;
+import com.builtbroken.mffs.content.fluids.Fortron;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import net.minecraft.item.ItemStack;
@@ -21,11 +20,9 @@ import net.minecraftforge.fluids.*;
 /**
  * @author Calclavia
  */
+@Deprecated //Being converted to node system and replaced with ITankProvider
 public abstract class TileFortron extends TileFrequency implements IFluidHandler, IFortronFrequency
 {
-
-    /* Bounds of the force box */
-    public static final Matrix2d FORCE_BOUNDS = new Matrix2d(new Vector3D(175, 0, 0), new Vector3D(186, 107, 0));
     /* Deteremines if we can export fortron */
     public boolean sendFortron = true;
 
@@ -133,9 +130,8 @@ public abstract class TileFortron extends TileFrequency implements IFluidHandler
     @Override
     public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain)
     {
-        if ((resource == null) || (!resource.isFluidEqual(this.tank.getFluid())))
+        if (resource == null || !resource.isFluidEqual(this.tank.getFluid()))
         {
-            System.out.println("NULL");
             return null;
         }
         return this.tank.drain(resource.amount, doDrain);

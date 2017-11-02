@@ -21,7 +21,7 @@ import java.util.Set;
 /**
  * @author Calclavia
  */
-//TODO: Convert inventory entity to use IInventoryProvider and extend TileModuleMachine
+@Deprecated //Being replaed by node framework and IInventoryProvider
 public abstract class TileMFFSInventory extends TileMFFS implements IInventory
 {
 

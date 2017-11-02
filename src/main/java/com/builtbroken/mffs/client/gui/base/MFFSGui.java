@@ -23,6 +23,7 @@ import org.lwjgl.input.Keyboard;
 /**
  * @author Calclavia
  */
+@Deprecated //Each GUI is going to get a custom implemen
 @SideOnly(Side.CLIENT)
 public class MFFSGui extends GuiContainerBase
 {

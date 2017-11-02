@@ -53,7 +53,7 @@ public class BlockForceFieldProjector extends MFFSMachine implements IPostInit
     @Override
     public void registerBlockIcons(IIconRegister reg)
     {
-        this.blockIcon = reg.registerIcon(ModularForcefieldSystem.MODID + ":machine");
+        this.blockIcon = reg.registerIcon(ModularForcefieldSystem.DOMAIN + ":machine");
     }
 
     @Override

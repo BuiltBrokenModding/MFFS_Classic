@@ -3,8 +3,8 @@ package com.builtbroken.mffs.client.gui.base;
 import com.builtbroken.mffs.api.gui.GuiSlotType;
 import com.builtbroken.mffs.api.utils.UnitDisplay;
 import com.builtbroken.mffs.api.vector.Matrix2d;
+import com.builtbroken.mffs.api.vector.Vector3D;
 import com.builtbroken.mffs.prefab.tile.TileFieldMatrix;
-import com.builtbroken.mffs.prefab.tile.TileFortron;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -16,7 +16,7 @@ import net.minecraft.inventory.Container;
 @SideOnly(Side.CLIENT)
 public abstract class GuiMatrix extends MFFSGui
 {
-
+    public static final Matrix2d FORCE_BOUNDS = new Matrix2d(new Vector3D(175, 0, 0), new Vector3D(186, 107, 0));
     /**
      * @param container
      * @param matrix
@@ -124,7 +124,7 @@ public abstract class GuiMatrix extends MFFSGui
     {
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
         TileFieldMatrix proj = getMatrix();
-        if (TileFortron.FORCE_BOUNDS.isIn(mouseX - this.guiLeft, mouseY - this.guiTop))
+        if (FORCE_BOUNDS.isIn(mouseX - this.guiLeft, mouseY - this.guiTop))
         {
             drawTooltip(mouseX - this.guiLeft, mouseY - this.guiTop, UnitDisplay.getDisplayShort(proj.getFortronEnergy(), UnitDisplay.Unit.LITER));
         }

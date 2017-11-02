@@ -341,7 +341,7 @@ public class BlockForceField extends Block implements ITileEntityProvider, IForc
     @Override
     public void registerBlockIcons(IIconRegister reg)
     {
-        this.blockIcon = reg.registerIcon(ModularForcefieldSystem.MODID + ":forceField");
+        this.blockIcon = reg.registerIcon(ModularForcefieldSystem.DOMAIN + ":forceField");
     }
 
     /**
