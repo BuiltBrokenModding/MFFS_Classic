@@ -1,7 +1,7 @@
 package com.builtbroken.mffs.client.gui.buttons;
 
 import com.builtbroken.mc.imp.transform.vector.Point;
-import com.builtbroken.mffs.ModularForcefieldSystem;
+import com.builtbroken.mffs.ModularForceFieldSystem;
 import com.builtbroken.mffs.client.gui.base.MFFSGui;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.registry.LanguageRegistry;
@@ -16,7 +16,7 @@ import org.lwjgl.opengl.GL11;
 public class GuiPressableButton extends GuiButton
 {
 
-    public static final ResourceLocation GUI_BUTTON = new ResourceLocation(ModularForcefieldSystem.DOMAIN, "textures/gui/gui_button.png");
+    public static final ResourceLocation GUI_BUTTON = new ResourceLocation(ModularForceFieldSystem.DOMAIN, "textures/gui/gui_button.png");
 
     public boolean stuck = false;
     protected Point offset = new Point();

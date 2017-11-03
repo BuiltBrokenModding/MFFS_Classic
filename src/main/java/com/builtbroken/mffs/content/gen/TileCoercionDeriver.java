@@ -6,7 +6,7 @@ import com.builtbroken.mc.api.energy.IEnergyBufferProvider;
 import com.builtbroken.mc.framework.energy.UniversalEnergySystem;
 import com.builtbroken.mc.framework.energy.data.AbstractEnergyBuffer;
 import com.builtbroken.mffs.MFFSSettings;
-import com.builtbroken.mffs.ModularForcefieldSystem;
+import com.builtbroken.mffs.ModularForceFieldSystem;
 import com.builtbroken.mffs.api.modules.IFieldModule;
 import com.builtbroken.mffs.common.items.card.ItemCardFrequency;
 import com.builtbroken.mffs.common.items.modules.upgrades.ItemModuleScale;
@@ -142,7 +142,7 @@ public final class TileCoercionDeriver extends TileModuleAcceptor implements IEn
     public List<ItemStack> getRemovedItems(EntityPlayer entityPlayer)
     {
         List<ItemStack> stack = super.getRemovedItems(entityPlayer);
-        stack.add(new ItemStack(ModularForcefieldSystem.coercionDeriver));
+        stack.add(new ItemStack(ModularForceFieldSystem.coercionDeriver));
         return stack;
     }
 

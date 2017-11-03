@@ -1,6 +1,6 @@
 package com.builtbroken.mffs.client.render;
 
-import com.builtbroken.mffs.ModularForcefieldSystem;
+import com.builtbroken.mffs.ModularForceFieldSystem;
 import com.builtbroken.mffs.client.render.model.ModelForceFieldProjector;
 import com.builtbroken.mffs.content.projector.TileForceFieldProjector;
 import cpw.mods.fml.client.FMLClientHandler;
@@ -22,9 +22,9 @@ import org.lwjgl.opengl.GL11;
 public class RenderForceFieldProjector extends TileEntitySpecialRenderer
 {
 
-    public static final ResourceLocation TEXTURE_ON = new ResourceLocation(ModularForcefieldSystem.DOMAIN, "textures/models/projector_on.png");
-    public static final ResourceLocation TEXTURE_OFF = new ResourceLocation(ModularForcefieldSystem.DOMAIN, "textures/models/projector_off.png");
-    public static final ResourceLocation FORCE_CUBE = new ResourceLocation(ModularForcefieldSystem.DOMAIN, "textures/models/force_cube.png");
+    public static final ResourceLocation TEXTURE_ON = new ResourceLocation(ModularForceFieldSystem.DOMAIN, "textures/models/projector_on.png");
+    public static final ResourceLocation TEXTURE_OFF = new ResourceLocation(ModularForceFieldSystem.DOMAIN, "textures/models/projector_off.png");
+    public static final ResourceLocation FORCE_CUBE = new ResourceLocation(ModularForceFieldSystem.DOMAIN, "textures/models/force_cube.png");
     public static final ModelForceFieldProjector MODEL = new ModelForceFieldProjector();
 
     @Override

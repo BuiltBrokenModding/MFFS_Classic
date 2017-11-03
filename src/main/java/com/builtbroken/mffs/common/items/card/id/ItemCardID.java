@@ -4,7 +4,7 @@ import com.builtbroken.mc.core.Engine;
 import com.builtbroken.mc.core.network.IPacketIDReceiver;
 import com.builtbroken.mc.core.network.packet.PacketPlayerItem;
 import com.builtbroken.mc.core.network.packet.PacketType;
-import com.builtbroken.mffs.ModularForcefieldSystem;
+import com.builtbroken.mffs.ModularForceFieldSystem;
 import com.builtbroken.mffs.api.card.ICardIdentification;
 import com.builtbroken.mffs.api.security.Permission;
 import com.builtbroken.mffs.api.utils.Util;
@@ -96,7 +96,7 @@ public class ItemCardID extends ItemCardBlank implements ICardIdentification, IP
             }
             else
             {
-                player.openGui(ModularForcefieldSystem.modularForcefieldSystem_mod, 1, world, player.inventory.currentItem, 0, 0);
+                player.openGui(ModularForceFieldSystem.INSTANCE, 1, world, player.inventory.currentItem, 0, 0);
             }
         }
         return stack;

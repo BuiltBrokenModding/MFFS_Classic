@@ -1,6 +1,6 @@
 package com.builtbroken.mffs.client.render;
 
-import com.builtbroken.mffs.ModularForcefieldSystem;
+import com.builtbroken.mffs.ModularForceFieldSystem;
 import com.builtbroken.mffs.client.render.model.ModelFortronCapacitor;
 import com.builtbroken.mffs.prefab.tile.TileMFFS;
 import cpw.mods.fml.client.FMLClientHandler;
@@ -22,8 +22,8 @@ public class RenderFortronCapacitor extends TileEntitySpecialRenderer
      * Resources that will be used.
      */
     public static final ResourceLocation
-            TEXTURE_ON = new ResourceLocation(ModularForcefieldSystem.DOMAIN, "textures/models/coercionDeriver_on.png"),
-            TEXTURE_OFF = new ResourceLocation(ModularForcefieldSystem.DOMAIN, "textures/models/coercionDeriver_off.png");
+            TEXTURE_ON = new ResourceLocation(ModularForceFieldSystem.DOMAIN, "textures/models/coercionDeriver_on.png"),
+            TEXTURE_OFF = new ResourceLocation(ModularForceFieldSystem.DOMAIN, "textures/models/coercionDeriver_off.png");
 
     public static final ModelFortronCapacitor MODEL = new ModelFortronCapacitor();
 

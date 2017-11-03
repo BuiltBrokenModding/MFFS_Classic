@@ -1,6 +1,6 @@
 package com.builtbroken.mffs.api.gui;
 
-import com.builtbroken.mffs.ModularForcefieldSystem;
+import com.builtbroken.mffs.ModularForceFieldSystem;
 import com.builtbroken.mffs.api.utils.CompatibilityType;
 import com.builtbroken.mffs.api.utils.UnitDisplay;
 import com.builtbroken.mffs.api.utils.Util;
@@ -34,10 +34,10 @@ public class GuiContainerBase extends GuiContainer
 {
 
     @SideOnly(Side.CLIENT)
-    public static final ResourceLocation GUI_COMPONENTS = new ResourceLocation(ModularForcefieldSystem.DOMAIN, "textures/gui/gui_components.png");
+    public static final ResourceLocation GUI_COMPONENTS = new ResourceLocation(ModularForceFieldSystem.DOMAIN, "textures/gui/gui_components.png");
 
     @SideOnly(Side.CLIENT)
-    public static final ResourceLocation baseTexture = new ResourceLocation(ModularForcefieldSystem.DOMAIN, "textures/gui/gui_base.png");
+    public static final ResourceLocation baseTexture = new ResourceLocation(ModularForceFieldSystem.DOMAIN, "textures/gui/gui_base.png");
 
     public String tooltip = "";
     protected int meterHeight = 49;

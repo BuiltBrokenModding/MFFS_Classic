@@ -3,7 +3,7 @@ package com.builtbroken.mffs.content.interdiction;
 import com.builtbroken.mc.imp.transform.region.Cube;
 import com.builtbroken.mc.imp.transform.vector.Pos;
 import com.builtbroken.mc.lib.helper.LanguageUtility;
-import com.builtbroken.mffs.ModularForcefieldSystem;
+import com.builtbroken.mffs.ModularForceFieldSystem;
 import com.builtbroken.mffs.MFFSSettings;
 import com.builtbroken.mffs.api.card.ICardInfinite;
 import com.builtbroken.mffs.api.modules.IInterdictionModule;
@@ -318,7 +318,7 @@ public final class TileInterdictionMatrix extends TileModuleAcceptor implements 
     public List<ItemStack> getRemovedItems(EntityPlayer entityPlayer)
     {
         List<ItemStack> stack = super.getRemovedItems(entityPlayer);
-        stack.add(new ItemStack(ModularForcefieldSystem.interdictionMatrix));
+        stack.add(new ItemStack(ModularForceFieldSystem.interdictionMatrix));
         return stack;
     }
 }

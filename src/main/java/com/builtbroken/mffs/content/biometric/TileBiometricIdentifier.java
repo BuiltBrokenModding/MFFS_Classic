@@ -1,6 +1,6 @@
 package com.builtbroken.mffs.content.biometric;
 
-import com.builtbroken.mffs.ModularForcefieldSystem;
+import com.builtbroken.mffs.ModularForceFieldSystem;
 import com.builtbroken.mffs.api.IItemFrequency;
 import com.builtbroken.mffs.api.card.ICardIdentification;
 import com.builtbroken.mffs.api.security.IBiometricIdentifier;
@@ -82,7 +82,7 @@ public class TileBiometricIdentifier extends TileFrequency implements IBiometric
     public List<ItemStack> getRemovedItems(EntityPlayer entityPlayer)
     {
         List<ItemStack> stack = super.getRemovedItems(entityPlayer);
-        stack.add(new ItemStack(ModularForcefieldSystem.biometricIdentifier));
+        stack.add(new ItemStack(ModularForceFieldSystem.biometricIdentifier));
         return stack;
     }
 }

@@ -1,7 +1,7 @@
 package com.builtbroken.mffs.content.gen;
 
 import com.builtbroken.mc.lib.helper.recipe.UniversalRecipe;
-import com.builtbroken.mffs.ModularForcefieldSystem;
+import com.builtbroken.mffs.ModularForceFieldSystem;
 import com.builtbroken.mffs.client.render.RenderBlockHandler;
 import com.builtbroken.mffs.prefab.blocks.MFFSMachine;
 import cpw.mods.fml.relauncher.Side;
@@ -35,7 +35,7 @@ public final class BlockCoercionDeriver extends MFFSMachine
     @Override
     public void registerBlockIcons(IIconRegister reg)
     {
-        this.blockIcon = reg.registerIcon(ModularForcefieldSystem.DOMAIN + ":machine");
+        this.blockIcon = reg.registerIcon(ModularForceFieldSystem.DOMAIN + ":machine");
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.builtbroken.mffs.client.gui.base;
 
 import com.builtbroken.mc.imp.transform.vector.Point;
-import com.builtbroken.mffs.ModularForcefieldSystem;
+import com.builtbroken.mffs.ModularForceFieldSystem;
 import com.builtbroken.mffs.api.IBiometricIdentifierLink;
 import com.builtbroken.mffs.api.IBlockFrequency;
 import com.builtbroken.mffs.api.gui.GuiContainerBase;
@@ -85,7 +85,7 @@ public class MFFSGui extends GuiContainerBase
                 int newFrequency = this.textFieldFrequency.getText().isEmpty() ? 0 : Integer.parseInt(this.textFieldFrequency.getText());
                 this.frequencyTile.setFrequency(newFrequency);
                 this.textFieldFrequency.setText(this.frequencyTile.getFrequency() + "");
-                ModularForcefieldSystem.channel.sendToServer(new ChangeFrequency(((TileEntity) this.frequencyTile), newFrequency));
+                ModularForceFieldSystem.channel.sendToServer(new ChangeFrequency(((TileEntity) this.frequencyTile), newFrequency));
             }
             catch (NumberFormatException e)
             {
@@ -102,7 +102,7 @@ public class MFFSGui extends GuiContainerBase
 
         if ((this.frequencyTile != null) && (guiButton.id == 0))
         {
-            ModularForcefieldSystem.channel.sendToServer(new EntityToggle((TileEntity) frequencyTile, EntityToggle.REDSTONE_TOGGLE));
+            ModularForceFieldSystem.channel.sendToServer(new EntityToggle((TileEntity) frequencyTile, EntityToggle.REDSTONE_TOGGLE));
         }
     }
 

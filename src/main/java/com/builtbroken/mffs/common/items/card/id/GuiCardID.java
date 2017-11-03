@@ -2,7 +2,7 @@ package com.builtbroken.mffs.common.items.card.id;
 
 import com.builtbroken.mc.client.SharedAssets;
 import com.builtbroken.mc.prefab.gui.GuiContainerBase;
-import com.builtbroken.mffs.ModularForcefieldSystem;
+import com.builtbroken.mffs.ModularForceFieldSystem;
 import com.builtbroken.mffs.api.card.ICardIdentification;
 import com.builtbroken.mffs.api.security.Permission;
 import com.builtbroken.mffs.client.gui.components.GuiScroll;
@@ -77,7 +77,7 @@ public class GuiCardID extends GuiContainerBase
         final ItemStack stack = player.getCurrentEquippedItem();
 
         //Exit screen if we are no longer holding an item, solves for player death or inventory clear actions
-        if (stack == null || stack.getItem() != ModularForcefieldSystem.itemCardID)
+        if (stack == null || stack.getItem() != ModularForceFieldSystem.itemCardID)
         {
             player.closeScreen();
             return;
@@ -169,12 +169,12 @@ public class GuiCardID extends GuiContainerBase
     {
         super.actionPerformed(button);
         ItemStack stack = Minecraft.getMinecraft().thePlayer.getHeldItem();
-        if (stack != null && stack.getItem() == ModularForcefieldSystem.itemCardID)
+        if (stack != null && stack.getItem() == ModularForceFieldSystem.itemCardID)
         {
             if (button.id >= 0 && button.id < Permission.values().length)
             {
-                boolean state = ModularForcefieldSystem.itemCardID.hasPermission(stack, Permission.values()[button.id]);
-                ModularForcefieldSystem.itemCardID.sendPermPacket(Minecraft.getMinecraft().thePlayer, button.id, !state);
+                boolean state = ModularForceFieldSystem.itemCardID.hasPermission(stack, Permission.values()[button.id]);
+                ModularForceFieldSystem.itemCardID.sendPermPacket(Minecraft.getMinecraft().thePlayer, button.id, !state);
             }
         }
     }
@@ -200,7 +200,7 @@ public class GuiCardID extends GuiContainerBase
     protected void sendUsernamePacket()
     {
         ItemStack stack = Minecraft.getMinecraft().thePlayer.getHeldItem();
-        if (stack != null && stack.getItem() == ModularForcefieldSystem.itemCardID)
+        if (stack != null && stack.getItem() == ModularForceFieldSystem.itemCardID)
         {
             String text = textField.getText();
             if (text == null)
@@ -213,7 +213,7 @@ public class GuiCardID extends GuiContainerBase
                 text = text.trim();
                 textField.setText(text);
             }
-            ModularForcefieldSystem.itemCardID.sendUserNamePacket(Minecraft.getMinecraft().thePlayer, text);
+            ModularForceFieldSystem.itemCardID.sendUserNamePacket(Minecraft.getMinecraft().thePlayer, text);
         }
     }
 

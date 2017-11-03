@@ -24,7 +24,6 @@ import java.util.Set;
 @Deprecated //Being converted to node system
 public abstract class TileFrequency extends TileMFFSInventory implements IBlockFrequency, IBiometricIdentifierLink
 {
-
     /* Frequency of this tile */
     private int frequency;
 
@@ -44,7 +43,6 @@ public abstract class TileFrequency extends TileMFFSInventory implements IBlockF
     @Override
     public IBiometricIdentifier getBiometricIdentifier()
     {
-
         if (getBiometricIdentifiers().size() > 0)
         {
             return (IBiometricIdentifier) getBiometricIdentifiers().toArray()[0];
@@ -64,7 +62,7 @@ public abstract class TileFrequency extends TileMFFSInventory implements IBlockF
     {
         Set<IBiometricIdentifier> list = new HashSet();
 
-
+        //Collect locations from link cards
         ItemStack itemStack = getStackInSlot(0);
         if (itemStack != null && itemStack.getItem() instanceof ICoordLink)
         {
@@ -81,6 +79,7 @@ public abstract class TileFrequency extends TileMFFSInventory implements IBlockF
             }
         }
 
+        //Collect locations from grid
         for (IBlockFrequency tileEntity : FrequencyGrid.instance().get(getFrequency()))
         {
             if ((tileEntity instanceof IBiometricIdentifier))
@@ -132,14 +131,14 @@ public abstract class TileFrequency extends TileMFFSInventory implements IBlockF
     public void writeToNBT(NBTTagCompound nbt)
     {
         super.writeToNBT(nbt);
-        nbt.setInteger("mffs_freq", frequency);
+        nbt.setInteger("frequency", frequency);
     }
 
     @Override
     public void readFromNBT(NBTTagCompound nbt)
     {
         super.readFromNBT(nbt);
-        this.frequency = nbt.getInteger("mffs_freq");
+        this.frequency = nbt.getInteger("frequency");
     }
 
     @Override

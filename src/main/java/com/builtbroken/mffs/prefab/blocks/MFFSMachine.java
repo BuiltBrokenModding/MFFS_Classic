@@ -1,7 +1,7 @@
 package com.builtbroken.mffs.prefab.blocks;
 
 import com.builtbroken.mc.lib.helper.WrenchUtility;
-import com.builtbroken.mffs.ModularForcefieldSystem;
+import com.builtbroken.mffs.ModularForceFieldSystem;
 import com.builtbroken.mffs.api.IBiometricIdentifierLink;
 import com.builtbroken.mffs.api.security.IBiometricIdentifier;
 import com.builtbroken.mffs.api.security.Permission;
@@ -99,11 +99,11 @@ public abstract class MFFSMachine extends Block implements ITileEntityProvider
     public void registerBlockIcons(IIconRegister reg)
     {
         String name = getUnlocalizedName().substring(5);
-        this.blockIcon = reg.registerIcon(ModularForcefieldSystem.DOMAIN + ":" + name);
+        this.blockIcon = reg.registerIcon(ModularForceFieldSystem.DOMAIN + ":" + name);
         side_textures = new IIcon[]{
-                reg.registerIcon(ModularForcefieldSystem.DOMAIN + ":" + name + "_top"),
-                reg.registerIcon(ModularForcefieldSystem.DOMAIN + ":" + name + "_top_on"),
-                reg.registerIcon(ModularForcefieldSystem.DOMAIN + ":" + name + "_on")
+                reg.registerIcon(ModularForceFieldSystem.DOMAIN + ":" + name + "_top"),
+                reg.registerIcon(ModularForceFieldSystem.DOMAIN + ":" + name + "_top_on"),
+                reg.registerIcon(ModularForceFieldSystem.DOMAIN + ":" + name + "_on")
         };
     }
 
@@ -128,7 +128,7 @@ public abstract class MFFSMachine extends Block implements ITileEntityProvider
                 return false;
             }
         }
-        player.openGui(ModularForcefieldSystem.modularForcefieldSystem_mod, 0, world, x, y, z);
+        player.openGui(ModularForceFieldSystem.INSTANCE, 0, world, x, y, z);
         return true;
     }
 

@@ -2,7 +2,7 @@ package com.builtbroken.mffs.content.projector;
 
 import com.builtbroken.mc.core.registry.implement.IPostInit;
 import com.builtbroken.mc.lib.helper.recipe.UniversalRecipe;
-import com.builtbroken.mffs.ModularForcefieldSystem;
+import com.builtbroken.mffs.ModularForceFieldSystem;
 import com.builtbroken.mffs.client.render.RenderBlockHandler;
 import com.builtbroken.mffs.prefab.blocks.MFFSMachine;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -53,7 +53,7 @@ public class BlockForceFieldProjector extends MFFSMachine implements IPostInit
     @Override
     public void registerBlockIcons(IIconRegister reg)
     {
-        this.blockIcon = reg.registerIcon(ModularForcefieldSystem.DOMAIN + ":machine");
+        this.blockIcon = reg.registerIcon(ModularForceFieldSystem.DOMAIN + ":machine");
     }
 
     @Override

@@ -35,7 +35,7 @@ public class ForgeSubscribeHandler
     {
         if (event.map.getTextureType() == 0)
         {
-            FluidRegistry.getFluid(Fortron.FLUID_ID).setIcons(event.map.registerIcon(ModularForcefieldSystem.DOMAIN + ":fortron"));
+            FluidRegistry.getFluid(Fortron.FLUID_ID).setIcons(event.map.registerIcon(ModularForceFieldSystem.DOMAIN + ":fortron"));
         }
     }
 

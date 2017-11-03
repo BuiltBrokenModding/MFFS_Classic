@@ -2,7 +2,7 @@ package com.builtbroken.mffs.common.items.modules.projector;
 
 import com.builtbroken.mc.core.registry.implement.IRecipeContainer;
 import com.builtbroken.mc.lib.helper.recipe.UniversalRecipe;
-import com.builtbroken.mffs.ModularForcefieldSystem;
+import com.builtbroken.mffs.ModularForceFieldSystem;
 import com.builtbroken.mffs.api.Blacklist;
 import com.builtbroken.mffs.api.IProjector;
 import com.builtbroken.mffs.api.vector.Vector3D;
@@ -119,7 +119,7 @@ public class ItemModuleDisintegration extends BaseModule implements IRecipeConta
                     return 2;
                 }
 
-                ModularForcefieldSystem.channel.sendToAll(new BeamRequest(entity, position));
+                ModularForceFieldSystem.channel.sendToAll(new BeamRequest(entity, position));
                 return 1;
             }
         }

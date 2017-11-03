@@ -44,13 +44,19 @@ import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.FluidRegistry;
 
-@Mod(modid = ModularForcefieldSystem.DOMAIN, name = ModularForcefieldSystem.MOD_NAME, version = ModularForcefieldSystem.VERSION, dependencies = "required-after:voltzengine")
-public class ModularForcefieldSystem extends AbstractMod
+@Mod(modid = ModularForceFieldSystem.DOMAIN, name = ModularForceFieldSystem.MOD_NAME, version = ModularForceFieldSystem.VERSION, dependencies = ModularForceFieldSystem.DEPENDENCIES)
+public class ModularForceFieldSystem extends AbstractMod
 {
     public static final String DOMAIN = "mffs";
-    public static final String VERSION = "0.50";
-    public static final String MOD_NAME = "Modular Forcefield System";
+    public static final String MOD_NAME = "Modular Force Field System";
 
+    public static final String MAJOR_VERSION = "@MAJOR@";
+    public static final String MINOR_VERSION = "@MINOR@";
+    public static final String REVISION_VERSION = "@REVIS@";
+    public static final String BUILD_VERSION = "@BUILD@";
+    public static final String VERSION = MAJOR_VERSION + "." + MINOR_VERSION + "." + REVISION_VERSION + "." + BUILD_VERSION;
+    //http://www.minecraftforge.net/wiki/Developing_Addons_for_Existing_Mods
+    public static final String DEPENDENCIES = "required-after:voltzengine;after:OpenComputers";
 
     //Blocks
     public static Block biometricIdentifier;
@@ -65,10 +71,10 @@ public class ModularForcefieldSystem extends AbstractMod
     /**
      * Constructor.
      */
-    public ModularForcefieldSystem()
+    public ModularForceFieldSystem()
     {
         super(DOMAIN, DOMAIN + "/main");
-        manager.defaultTab = new CreativeTabs(ModularForcefieldSystem.DOMAIN)
+        manager.defaultTab = new CreativeTabs(ModularForceFieldSystem.DOMAIN)
         {
 
             @Override
@@ -81,7 +87,7 @@ public class ModularForcefieldSystem extends AbstractMod
     }
 
     @Mod.Instance
-    public static ModularForcefieldSystem modularForcefieldSystem_mod;
+    public static ModularForceFieldSystem INSTANCE;
 
     @SidedProxy(clientSide = "com.builtbroken.mffs.client.ClientProxy", serverSide = "com.builtbroken.mffs.CommonProxy")
     public static CommonProxy proxy;
@@ -176,13 +182,13 @@ public class ModularForcefieldSystem extends AbstractMod
         MinecraftForge.EVENT_BUS.register(new ForgeSubscribeHandler());
 
         //TODO move to VoltzEngine packet system
-        ModularForcefieldSystem.channel.registerMessage(EntityToggle.ServerHandler.class, EntityToggle.class, 0, Side.SERVER);
+        ModularForceFieldSystem.channel.registerMessage(EntityToggle.ServerHandler.class, EntityToggle.class, 0, Side.SERVER);
         channel.registerMessage(FortronSync.ClientHandler.class, FortronSync.class, 1, Side.CLIENT);
-        ModularForcefieldSystem.channel.registerMessage(ChangeFrequency.ServerHandler.class, ChangeFrequency.class, 2, Side.SERVER);
-        ModularForcefieldSystem.channel.registerMessage(ForcefieldCalculation.ClientHandler.class, ForcefieldCalculation.class, 3, Side.CLIENT);
-        ModularForcefieldSystem.channel.registerMessage(BeamRequest.ClientHandler.class, BeamRequest.class, 4, Side.CLIENT);
-        ModularForcefieldSystem.channel.registerMessage(ItemByteToggle.ServerHandler.class, ItemByteToggle.class, 5, Side.SERVER);
-        ModularForcefieldSystem.channel.registerMessage(ItemStringToggle.ServerHandler.class, ItemStringToggle.class, 6, Side.SERVER);
+        ModularForceFieldSystem.channel.registerMessage(ChangeFrequency.ServerHandler.class, ChangeFrequency.class, 2, Side.SERVER);
+        ModularForceFieldSystem.channel.registerMessage(ForcefieldCalculation.ClientHandler.class, ForcefieldCalculation.class, 3, Side.CLIENT);
+        ModularForceFieldSystem.channel.registerMessage(BeamRequest.ClientHandler.class, BeamRequest.class, 4, Side.CLIENT);
+        ModularForceFieldSystem.channel.registerMessage(ItemByteToggle.ServerHandler.class, ItemByteToggle.class, 5, Side.SERVER);
+        ModularForceFieldSystem.channel.registerMessage(ItemStringToggle.ServerHandler.class, ItemStringToggle.class, 6, Side.SERVER);
 
         proxy.preInit();
     }
