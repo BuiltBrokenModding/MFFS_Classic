@@ -7,10 +7,11 @@ import com.builtbroken.mc.framework.energy.UniversalEnergySystem;
 import com.builtbroken.mc.framework.energy.data.AbstractEnergyBuffer;
 import com.builtbroken.mffs.MFFSSettings;
 import com.builtbroken.mffs.ModularForcefieldSystem;
-import com.builtbroken.mffs.api.modules.IModule;
+import com.builtbroken.mffs.api.modules.IFieldModule;
 import com.builtbroken.mffs.common.items.card.ItemCardFrequency;
 import com.builtbroken.mffs.common.items.modules.upgrades.ItemModuleScale;
 import com.builtbroken.mffs.common.items.modules.upgrades.ItemModuleSpeed;
+import com.builtbroken.mffs.prefab.ModuleInventory;
 import com.builtbroken.mffs.prefab.tile.TileModuleAcceptor;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -44,7 +45,7 @@ public final class TileCoercionDeriver extends TileModuleAcceptor implements IEn
     public TileCoercionDeriver()
     {
         this.fortronCapacity = MFFSSettings.COERCION_FORTRON_TANK_SIZE;
-        this.module_inventory_start = 3;
+        this.moduleInventory = new ModuleInventory(this, 3, getSizeInventory());
     }
 
     @Override
@@ -150,9 +151,9 @@ public final class TileCoercionDeriver extends TileModuleAcceptor implements IEn
     {
         if (itemStack != null)
         {
-            if (slotID >= this.module_inventory_start)
+            if (slotID >= moduleInventory.start)
             {
-                return itemStack.getItem() instanceof IModule;
+                return itemStack.getItem() instanceof IFieldModule;
             }
             switch (slotID)
             {

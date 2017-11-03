@@ -10,7 +10,7 @@ import net.minecraft.entity.Entity;
  *
  * @author Calclavia
  */
-public interface IInterdictionModule extends IModule
+public interface IInterdictionModule extends IFieldModule
 {
     boolean onDefend(IInterdictionMatrix paramIInterdictionMatrix, Entity paramEntityLivingBase);
 }

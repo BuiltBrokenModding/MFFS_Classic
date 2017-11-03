@@ -3,10 +3,11 @@ package com.builtbroken.mffs.content.projector;
 import com.builtbroken.mffs.ModularForcefieldSystem;
 import com.builtbroken.mffs.MFFSSettings;
 import com.builtbroken.mffs.api.IProjector;
-import com.builtbroken.mffs.api.modules.IModule;
+import com.builtbroken.mffs.api.modules.IFieldModule;
 import com.builtbroken.mffs.api.modules.IProjectorMode;
 import com.builtbroken.mffs.api.vector.Vector3D;
 import com.builtbroken.mffs.content.field.BlockForceField;
+import com.builtbroken.mffs.prefab.ModuleInventory;
 import com.builtbroken.mffs.prefab.item.ItemMode;
 import com.builtbroken.mffs.common.items.card.ItemCardFrequency;
 import com.builtbroken.mffs.common.items.modules.projector.ItemModuleDisintegration;
@@ -42,7 +43,7 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
     public TileForceFieldProjector()
     {
         this.fortronCapacity = 50;
-        this.module_inventory_start = 1;
+        this.moduleInventory = new ModuleInventory(this, 1, getSizeInventory());
     }
 
     @Override
@@ -115,9 +116,9 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
         this.requireTicks = false;
 
         Set<ItemStack> modules = getModuleStacks();
-        for (ItemStack mod : modules)
+        for (ItemStack stack : modules)
         {
-            if (((IModule) mod.getItem()).requireTicks(mod))
+            if (((IFieldModule) stack.getItem()).requireTicks(stack))
             {
                 requireTicks = true;
                 return;
@@ -217,7 +218,7 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
             synchronized (this.calculatedFields)
             {
                 Set<Vector3D> fieldToBeProjected = this.calculatedFields;
-                for (IModule module : getModules(getModuleSlots()))
+                for (IFieldModule module : getModules(getModuleSlots()))
                 {
                     if (module.onProject(this, fieldToBeProjected))
                     {
@@ -238,9 +239,9 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
                     int flag = 0;
                     for (ItemStack stack : getModuleStacks(getModuleSlots()))
                     {
-                        if (flag == 0 && stack != null && stack.getItem() instanceof IModule)
+                        if (flag == 0 && stack != null && stack.getItem() instanceof IFieldModule)
                         {
-                            flag = ((IModule) stack.getItem()).onProject(this, vec);
+                            flag = ((IFieldModule) stack.getItem()).onProject(this, vec);
                             if (flag != 0)
                             {
                                 break;
@@ -279,7 +280,7 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
         {
             synchronized (this.calculatedFields)
             {
-                for (IModule module : getModules(getModuleSlots()))
+                for (IFieldModule module : getModules(getModuleSlots()))
                 {
                     if (module.onDestroy(this, getCalculatedField()))
                     {
@@ -374,7 +375,7 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
 
         if (slot < 26)
         {
-            return stack.getItem() instanceof IModule;
+            return stack.getItem() instanceof IFieldModule;
         }
         return true;
     }

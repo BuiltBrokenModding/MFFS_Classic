@@ -1,7 +1,7 @@
 package com.builtbroken.mffs.api;
 
-import com.builtbroken.mffs.api.modules.IModule;
-import com.builtbroken.mffs.api.modules.IModuleAcceptor;
+import com.builtbroken.mffs.api.modules.IFieldModule;
+import com.builtbroken.mffs.api.modules.IModuleContainer;
 import com.builtbroken.mffs.api.modules.IProjectorMode;
 import com.builtbroken.mffs.api.vector.Vector3D;
 import net.minecraft.item.ItemStack;
@@ -13,7 +13,7 @@ import java.util.Set;
  * @author Calclavia
  */
 public interface IFieldInteraction
-        extends IModuleAcceptor, IActivatable
+        extends IModuleContainer, IActivatable
 {
     IProjectorMode getMode();
 
@@ -23,7 +23,7 @@ public interface IFieldInteraction
 
     int[] getModuleSlots();
 
-    int getSidedModuleCount(Class<? extends IModule> module, ForgeDirection... paramVarArgs);
+    int getSidedModuleCount(Class<? extends IFieldModule> module, ForgeDirection... paramVarArgs);
 
     Vector3D getTranslation();
 

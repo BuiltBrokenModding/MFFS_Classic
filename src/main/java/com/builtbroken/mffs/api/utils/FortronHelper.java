@@ -2,7 +2,7 @@ package com.builtbroken.mffs.api.utils;
 
 import com.builtbroken.mffs.ModularForcefieldSystem;
 import com.builtbroken.mffs.api.fortron.IFortronFrequency;
-import com.builtbroken.mffs.api.modules.IModuleAcceptor;
+import com.builtbroken.mffs.api.modules.IModuleContainer;
 import com.builtbroken.mffs.api.vector.Vector3D;
 import com.builtbroken.mffs.common.TransferMode;
 import com.builtbroken.mffs.common.items.modules.projector.ItemModuleCamouflage;
@@ -15,6 +15,7 @@ import java.util.Set;
 /**
  * @author Calclavia
  */
+@Deprecated //Either will be moved or phased out
 public class FortronHelper
 {
 
@@ -103,7 +104,6 @@ public class FortronHelper
     {
         TileEntity entity = (TileEntity) freq;
         World world = entity.getWorldObj();
-        boolean camo = (freq instanceof IModuleAcceptor && ((IModuleAcceptor) freq).getModuleCount(ItemModuleCamouflage.class) > 0);
 
         if (joul < 0)
         { //we switch the frequencies! Means they have less than the receiver
@@ -116,9 +116,13 @@ public class FortronHelper
         int toBeInject = rec.provideFortron(freq.requestFortron(joul, false), false);
         toBeInject = freq.requestFortron(rec.provideFortron(toBeInject, true), true);
 
-        if (world.isRemote && toBeInject > 0 && !camo)
+
+        boolean camo = (freq instanceof IModuleContainer && ((IModuleContainer) freq).getModuleCount(ItemModuleCamouflage.class) > 0);
+
+        if (world.isRemote && toBeInject > 0 && !camo) //TODO should be handled by the device
         {
-            ModularForcefieldSystem.proxy.registerBeamEffect(world, new Vector3D((TileEntity) freq).translate(.5), new Vector3D((TileEntity) rec).translate(.5), 0.6F, 0.6F, 1, 20);
+            ModularForcefieldSystem.proxy.registerBeamEffect(world, new Vector3D((TileEntity) freq).translate(.5),
+                    new Vector3D((TileEntity) rec).translate(.5), 0.6F, 0.6F, 1, 20); //TODO move to effect system
         }
     }
 }

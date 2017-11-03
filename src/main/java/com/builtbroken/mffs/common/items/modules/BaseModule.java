@@ -4,7 +4,7 @@ import com.builtbroken.mc.core.registry.implement.IRecipeContainer;
 import com.builtbroken.mc.prefab.inventory.InventoryUtility;
 import com.builtbroken.mffs.api.IFieldInteraction;
 import com.builtbroken.mffs.api.IProjector;
-import com.builtbroken.mffs.api.modules.IModule;
+import com.builtbroken.mffs.api.modules.IFieldModule;
 import com.builtbroken.mffs.api.utils.UnitDisplay;
 import com.builtbroken.mffs.api.utils.Util;
 import com.builtbroken.mffs.api.vector.Vector3D;
@@ -23,7 +23,7 @@ import java.util.Set;
 /**
  * @author Calclavia
  */
-public abstract class BaseModule extends Item implements IModule, IRecipeContainer
+public abstract class BaseModule extends Item implements IFieldModule, IRecipeContainer
 {
 
     /* Current fortronCost */

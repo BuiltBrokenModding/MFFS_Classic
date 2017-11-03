@@ -8,7 +8,7 @@ import com.builtbroken.mffs.api.card.ICoordLink;
 import com.builtbroken.mffs.api.fortron.FrequencyGrid;
 import com.builtbroken.mffs.api.fortron.IFortronCapacitor;
 import com.builtbroken.mffs.api.fortron.IFortronFrequency;
-import com.builtbroken.mffs.api.modules.IModule;
+import com.builtbroken.mffs.api.modules.IFieldModule;
 import com.builtbroken.mffs.api.utils.FortronHelper;
 import com.builtbroken.mffs.api.vector.Vector3D;
 import com.builtbroken.mffs.common.TransferMode;
@@ -17,6 +17,7 @@ import com.builtbroken.mffs.common.items.card.ItemCardLink;
 import com.builtbroken.mffs.common.items.modules.upgrades.ItemModuleScale;
 import com.builtbroken.mffs.common.items.modules.upgrades.ItemModuleSpeed;
 import com.builtbroken.mffs.common.net.packet.EntityToggle;
+import com.builtbroken.mffs.prefab.ModuleInventory;
 import com.builtbroken.mffs.prefab.tile.TileModuleAcceptor;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import net.minecraft.entity.player.EntityPlayer;
@@ -44,7 +45,7 @@ public class TileFortronCapacitor extends TileModuleAcceptor implements IFortron
     {
         this.fortronCapacity = 700;
         this.fortronCapacityBoostPerCard = 10;
-        this.module_inventory_start = 2;
+        this.moduleInventory = new ModuleInventory(this, 2, getSizeInventory());
     }
 
     @Override
@@ -116,7 +117,7 @@ public class TileFortronCapacitor extends TileModuleAcceptor implements IFortron
         {
             return stack.getItem() instanceof ItemCardFrequency || stack.getItem() instanceof ItemCardLink;
         }
-        return stack.getItem() instanceof IModule;
+        return stack.getItem() instanceof IFieldModule;
     }
 
     /**

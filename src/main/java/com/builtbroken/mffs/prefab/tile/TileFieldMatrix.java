@@ -3,7 +3,7 @@ package com.builtbroken.mffs.prefab.tile;
 import com.builtbroken.mc.imp.transform.vector.Point;
 import com.builtbroken.mffs.api.IFieldInteraction;
 import com.builtbroken.mffs.api.event.EventTimedTask;
-import com.builtbroken.mffs.api.modules.IModule;
+import com.builtbroken.mffs.api.modules.IFieldModule;
 import com.builtbroken.mffs.api.modules.IProjectorMode;
 import com.builtbroken.mffs.api.vector.Vector3D;
 import com.builtbroken.mffs.common.items.modules.projector.ItemModuleInvert;
@@ -101,7 +101,7 @@ public abstract class TileFieldMatrix extends TileModuleAcceptor implements IFie
                                 int rotationYaw = entity.getRotationYaw();
                                 int rotationPitch = entity.getRotationPitch();
 
-                                for (IModule module : entity.getModules())
+                                for (IFieldModule module : entity.getModules())
                                 {
                                     blocks = module.onPreCalculate(entity, blocks);
                                 }
@@ -122,7 +122,7 @@ public abstract class TileFieldMatrix extends TileModuleAcceptor implements IFie
                                     }
                                 }
 
-                                for (IModule module : entity.getModules())
+                                for (IFieldModule module : entity.getModules())
                                 {
                                     module.onCalculate(entity, entity.getCalculatedField());
                                 }
@@ -185,7 +185,7 @@ public abstract class TileFieldMatrix extends TileModuleAcceptor implements IFie
     }
 
     @Override
-    public int getSidedModuleCount(Class<? extends IModule> module, ForgeDirection... paramVarArgs)
+    public int getSidedModuleCount(Class<? extends IFieldModule> module, ForgeDirection... paramVarArgs)
     {
         int count = 0;
         ForgeDirection[] dirs = (paramVarArgs != null && paramVarArgs.length > 0) ? paramVarArgs : ForgeDirection.VALID_DIRECTIONS;

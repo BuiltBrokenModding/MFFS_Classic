@@ -10,9 +10,11 @@ import net.minecraft.world.World;
 import java.util.Set;
 
 /**
+ * Modules used with MFFS machines
+ *
  * @author Calclavia
  */
-public interface IModule
+public interface IFieldModule
         extends IFortronCost
 {
 

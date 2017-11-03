@@ -4,7 +4,7 @@ import com.builtbroken.mc.imp.transform.region.Cube;
 import com.builtbroken.mffs.api.IActivatable;
 import com.builtbroken.mffs.api.IBiometricIdentifierLink;
 import com.builtbroken.mffs.api.fortron.IFortronFrequency;
-import com.builtbroken.mffs.api.modules.IModuleAcceptor;
+import com.builtbroken.mffs.api.modules.IModuleContainer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 
@@ -13,7 +13,7 @@ import java.util.Set;
 /**
  * @author Calclavia
  */
-public interface IInterdictionMatrix extends IInventory, IFortronFrequency, IModuleAcceptor, IBiometricIdentifierLink, IActivatable
+public interface IInterdictionMatrix extends IInventory, IFortronFrequency, IModuleContainer, IBiometricIdentifierLink, IActivatable
 {
     Cube getWarningRange();
 

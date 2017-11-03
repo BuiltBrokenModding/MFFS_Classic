@@ -4,7 +4,7 @@ import com.builtbroken.mffs.ModularForcefieldSystem;
 import com.builtbroken.mffs.api.IForceFieldBlock;
 import com.builtbroken.mffs.api.IProjector;
 import com.builtbroken.mffs.api.fortron.IFortronStorage;
-import com.builtbroken.mffs.api.modules.IModule;
+import com.builtbroken.mffs.api.modules.IFieldModule;
 import com.builtbroken.mffs.api.security.IBiometricIdentifier;
 import com.builtbroken.mffs.api.security.Permission;
 import com.builtbroken.mffs.api.vector.Vector3D;
@@ -178,7 +178,7 @@ public class BlockForceField extends Block implements ITileEntityProvider, IForc
         {
             for (ItemStack stack : proj.getModuleStacks(proj.getModuleSlots()))
             {
-                if (((IModule) stack.getItem()).onCollideWithForcefield(world, x, y, z, entity, stack))
+                if (((IFieldModule) stack.getItem()).onCollideWithForcefield(world, x, y, z, entity, stack))
                 {
                     return;
                 }
@@ -214,7 +214,7 @@ public class BlockForceField extends Block implements ITileEntityProvider, IForc
 
             for (ItemStack module : proj.getModuleStacks(proj.getModuleSlots()))
             {
-                if (((IModule) module.getItem()).onCollideWithForcefield(world, x, y, z, entity, module))
+                if (((IFieldModule) module.getItem()).onCollideWithForcefield(world, x, y, z, entity, module))
                 {
                     return;
                 }

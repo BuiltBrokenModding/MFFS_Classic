@@ -154,7 +154,7 @@ public class ModularForcefieldSystem extends AbstractMod
     @Override
     public void loadEntities(ModManager manager)
     {
-        GameRegistry.registerTileEntity(TileBiometricIdentifier.class, "biometricIdentifier");
+        GameRegistry.registerTileEntity(TileBiometricIdentifier.class, "biometricIdentifier"); //TODO replace with node system
         GameRegistry.registerTileEntity(TileCoercionDeriver.class, "coercionDeriver");
         GameRegistry.registerTileEntity(TileForceField.class, "forceField");
         GameRegistry.registerTileEntity(TileForceFieldProjector.class, "forceFieldProjector");

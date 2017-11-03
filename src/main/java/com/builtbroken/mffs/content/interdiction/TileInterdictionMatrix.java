@@ -7,7 +7,7 @@ import com.builtbroken.mffs.ModularForcefieldSystem;
 import com.builtbroken.mffs.MFFSSettings;
 import com.builtbroken.mffs.api.card.ICardInfinite;
 import com.builtbroken.mffs.api.modules.IInterdictionModule;
-import com.builtbroken.mffs.api.modules.IModule;
+import com.builtbroken.mffs.api.modules.IFieldModule;
 import com.builtbroken.mffs.api.security.IBiometricIdentifier;
 import com.builtbroken.mffs.api.security.IInterdictionMatrix;
 import com.builtbroken.mffs.api.security.Permission;
@@ -16,6 +16,7 @@ import com.builtbroken.mffs.common.items.card.ItemCardFrequency;
 import com.builtbroken.mffs.common.items.modules.interdiction.ItemModuleWarn;
 import com.builtbroken.mffs.common.items.modules.upgrades.ItemModuleScale;
 import com.builtbroken.mffs.common.net.packet.EntityToggle;
+import com.builtbroken.mffs.prefab.ModuleInventory;
 import com.builtbroken.mffs.prefab.tile.TileModuleAcceptor;
 import com.builtbroken.mffs.content.projector.TileForceFieldProjector;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
@@ -48,8 +49,7 @@ public final class TileInterdictionMatrix extends TileModuleAcceptor implements 
     public TileInterdictionMatrix()
     {
         this.fortronCapacity = 30;
-        this.module_inventory_start = 2;
-        this.module_inventory_end = 9;
+        this.moduleInventory = new ModuleInventory(this, 2, 9);
     }
 
     @Override
@@ -235,7 +235,7 @@ public final class TileInterdictionMatrix extends TileModuleAcceptor implements 
     public Set<ItemStack> getFilteredItems()
     {
         Set<ItemStack> stacks = new HashSet();
-        for (int i = module_inventory_end; i < getSizeInventory() - 1; i++)
+        for (int i = moduleInventory.end; i < getSizeInventory() - 1; i++)
         {
             if (getStackInSlot(i) != null)
             {
@@ -307,11 +307,11 @@ public final class TileInterdictionMatrix extends TileModuleAcceptor implements 
             return item.getItem() instanceof ItemCardFrequency;
         }
 
-        if (slot > this.module_inventory_end)
+        if (slot > moduleInventory.end)
         {
             return true;
         }
-        return item.getItem() instanceof IModule;
+        return item.getItem() instanceof IFieldModule;
     }
 
     @Override
