@@ -16,7 +16,8 @@ public class MFFSSettings
 
     //Projector settings
     public static int PROJECTOR_BLOCKS_PER_TICK = 1000;
-    public static int PROJECTOR_COST_PER_FIELD = 1;
+    public static float PROJECTOR_COST_PER_FIELD = 0.01f;
+    public static int PROJECTOR_COST_PER_FIELD_CREATION = 1;
 
     //Interdiction matrix
     public static int INTERDICTION_ATTACK_ENERGY = 10000;

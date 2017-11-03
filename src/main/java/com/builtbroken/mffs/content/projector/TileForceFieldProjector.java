@@ -25,7 +25,10 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -42,7 +45,6 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
 
     public TileForceFieldProjector()
     {
-        this.fortronCapacity = 50;
         this.moduleInventory = new ModuleInventory(this, 1, getSizeInventory());
     }
 
@@ -66,7 +68,8 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
         super.updateEntity();
         if (isActive() && getMode() != null && requestFortron(getFortronCost(), false) >= getFortronCost())
         {
-            requestFortron(getFortronCost(), true);
+            int cost = getFortronCost();
+            requestFortron(cost, true);
             if (!this.worldObj.isRemote)
             {
                 if (this.ticks % 10 == 0 || markFieldUpdate || requireTicks)
@@ -162,7 +165,7 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
         IProjectorMode mode = getMode();
         if (mode != null)
         {
-            int costForBlocks = MFFSSettings.PROJECTOR_COST_PER_FIELD * getForceFields().size();
+            int costForBlocks = Math.round(MFFSSettings.PROJECTOR_COST_PER_FIELD * getForceFields().size());
             int moduleCost = super.calculateFortronCost() + mode.getFortronCost(getAmplifier());
             return Math.round(costForBlocks + moduleCost);
         }
@@ -209,10 +212,13 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
         if (this.isFinished && !this.isCalc && (!this.isComplete || this.markFieldUpdate || this.requireTicks))
         {
             this.markFieldUpdate = false;
-            int constructSpeed = Math.min(getProjectionSpeed(), MFFSSettings.PROJECTOR_BLOCKS_PER_TICK);
-            rebuild:
+
+            //Get number of blocks we can place this cycle
+            int placementLimit = Math.min(getProjectionSpeed(), MFFSSettings.PROJECTOR_BLOCKS_PER_TICK);
+
             synchronized (this.calculatedFields)
             {
+                //Allow modules to modify list
                 Set<Vector3D> fieldToBeProjected = this.calculatedFields;
                 for (IFieldModule module : getModules(getModuleSlots()))
                 {
@@ -221,39 +227,54 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
                         return;
                     }
                 }
+                //TODO sort list to improve placement visual
+
 
                 //Get force field blocks
                 Vector3D projector = new Vector3D(this);
+
+                //Collect blocks to place
                 fieldToBeProjected = fieldToBeProjected.stream()
                         .filter(x -> !x.equals(projector) && canReplace(x))
                         .filter(w -> getWorldObj().getChunkFromBlockCoords(w.intX(), w.intZ()).isChunkLoaded)
-                        .limit(constructSpeed).collect(Collectors.toSet());
+                        .limit(placementLimit).collect(Collectors.toSet());
 
                 //Place force field blocks
                 for (Vector3D vec : fieldToBeProjected)
                 {
-                    int flag = 0;
-                    for (ItemStack stack : getModuleStacks(getModuleSlots()))
+                    int flag = 0; //TODO what is this flag?
+
+                    int powerCost = MFFSSettings.PROJECTOR_COST_PER_FIELD_CREATION;
+                    if(requestFortron(powerCost, false) >= powerCost)
                     {
-                        if (flag == 0 && stack != null && stack.getItem() instanceof IFieldModule)
+                        //Check with modules if tile can be placed?
+                        for (ItemStack stack : getModuleStacks(getModuleSlots()))
                         {
-                            flag = ((IFieldModule) stack.getItem()).onProject(this, vec);
-                            if (flag != 0)
+                            if (flag == 0 && stack != null && stack.getItem() instanceof IFieldModule)
                             {
-                                break;
+                                flag = ((IFieldModule) stack.getItem()).onProject(this, vec);
+                                if (flag != 0)
+                                {
+                                    break;
+                                }
                             }
                         }
-                    }
 
-                    if (flag != 1 && flag != 2)
-                    {
-                        worldObj.setBlock(vec.intX(), vec.intY(), vec.intZ(), BlockForceField.BLOCK_FORCE_FIELD, 0, 2);
-                        this.placedBlocks.add(new BlockPos(vec.intX(), vec.intY(), vec.intZ()));
-
-                        TileEntity entity = vec.getTileEntity(worldObj);
-                        if (entity instanceof TileForceField)
+                        if (flag != 1 && flag != 2)
                         {
-                            ((TileForceField) entity).setProjector(projector);
+                            worldObj.setBlock(vec.intX(), vec.intY(), vec.intZ(), BlockForceField.BLOCK_FORCE_FIELD, 0, 2);
+
+                            //Track blocks placed
+                            this.placedBlocks.add(new BlockPos(vec.intX(), vec.intY(), vec.intZ()));
+
+                            TileEntity entity = vec.getTileEntity(worldObj);
+                            if (entity instanceof TileForceField)
+                            {
+                                ((TileForceField) entity).setProjector(projector);
+                            }
+
+                            //Consume power
+                            requestFortron(powerCost, true);
                         }
                     }
                 }
