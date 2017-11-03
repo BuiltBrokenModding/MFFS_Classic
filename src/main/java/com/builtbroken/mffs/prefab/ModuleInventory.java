@@ -29,11 +29,12 @@ public class ModuleInventory implements IModuleContainer
         this.start = start;
         this.end = end;
 
+        int l = end - start;
         //Fill slot array
-        moduleSlots = new int[end - start]; //TODO find a way to cache to save ram
-        for (int i = start; start < end; i++)
+        moduleSlots = new int[l]; //TODO find a way to cache to save ram
+        for (int i = 0; i < l; i++)
         {
-            moduleSlots[i - start] = i;
+            moduleSlots[i] = start + i;
         }
     }
 
@@ -41,7 +42,7 @@ public class ModuleInventory implements IModuleContainer
     public int getModuleCount(Class<? extends IFieldModule> paramIModule, int... slots)
     {
         int count = 0;
-        for (int slot : slots != null ? slots : moduleSlots)
+        for (int slot : slots != null && slots.length > 0 ? slots : moduleSlots)
         {
             //Get slot content and match to class
             ItemStack stack = inventory.getStackInSlot(slot);
@@ -57,7 +58,7 @@ public class ModuleInventory implements IModuleContainer
     public Set<ItemStack> getModuleStacks(int... slots)
     {
         Set<ItemStack> stacks = new HashSet<>();
-        for (int slot : slots != null ? slots : moduleSlots)
+        for (int slot : slots != null && slots.length > 0 ? slots : moduleSlots)
         {
             ItemStack stack = inventory.getStackInSlot(slot);
             if (stack != null && stack.getItem() instanceof IFieldModule)
@@ -72,7 +73,7 @@ public class ModuleInventory implements IModuleContainer
     public Set<IFieldModule> getModules(int... slots)
     {
         Set<IFieldModule> stacks = new HashSet<>();
-        for (int slot : slots != null ? slots : moduleSlots)
+        for (int slot : slots != null && slots.length > 0 ? slots : moduleSlots)
         {
             ItemStack stack = inventory.getStackInSlot(slot);
             if (stack != null && stack.getItem() instanceof IFieldModule)
