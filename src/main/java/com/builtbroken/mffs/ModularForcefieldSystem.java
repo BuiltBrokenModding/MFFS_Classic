@@ -3,10 +3,12 @@ package com.builtbroken.mffs;
 import com.builtbroken.mc.core.registry.ModManager;
 import com.builtbroken.mc.framework.mod.AbstractMod;
 import com.builtbroken.mc.framework.mod.AbstractProxy;
-import com.builtbroken.mffs.content.fluids.Fortron;
 import com.builtbroken.mffs.common.items.ItemFocusMatrix;
 import com.builtbroken.mffs.common.items.RemoteController;
-import com.builtbroken.mffs.common.items.card.*;
+import com.builtbroken.mffs.common.items.card.ItemCardBlank;
+import com.builtbroken.mffs.common.items.card.ItemCardFrequency;
+import com.builtbroken.mffs.common.items.card.ItemCardInfinite;
+import com.builtbroken.mffs.common.items.card.ItemCardLink;
 import com.builtbroken.mffs.common.items.card.id.ItemCardID;
 import com.builtbroken.mffs.common.items.modules.interdiction.*;
 import com.builtbroken.mffs.common.items.modules.projector.*;
@@ -14,14 +16,15 @@ import com.builtbroken.mffs.common.items.modules.projector.mode.*;
 import com.builtbroken.mffs.common.items.modules.upgrades.*;
 import com.builtbroken.mffs.common.net.packet.*;
 import com.builtbroken.mffs.content.biometric.BlockBiometricIdentifier;
-import com.builtbroken.mffs.content.interdiction.BlockInterdictionMatrix;
 import com.builtbroken.mffs.content.biometric.TileBiometricIdentifier;
 import com.builtbroken.mffs.content.cap.BlockFortronCapacitor;
 import com.builtbroken.mffs.content.cap.TileFortronCapacitor;
 import com.builtbroken.mffs.content.field.BlockForceField;
 import com.builtbroken.mffs.content.field.TileForceField;
+import com.builtbroken.mffs.content.fluids.Fortron;
 import com.builtbroken.mffs.content.gen.BlockCoercionDeriver;
 import com.builtbroken.mffs.content.gen.TileCoercionDeriver;
+import com.builtbroken.mffs.content.interdiction.BlockInterdictionMatrix;
 import com.builtbroken.mffs.content.interdiction.TileInterdictionMatrix;
 import com.builtbroken.mffs.content.projector.BlockForceFieldProjector;
 import com.builtbroken.mffs.content.projector.TileForceFieldProjector;
@@ -58,6 +61,7 @@ public class ModularForcefieldSystem extends AbstractMod
 
     //Items
     public static ItemCardID itemCardID;
+
     /**
      * Constructor.
      */
@@ -94,12 +98,12 @@ public class ModularForcefieldSystem extends AbstractMod
     @Override
     protected void loadBlocks(ModManager manager)
     {
-        biometricIdentifier = manager.newBlock(BlockBiometricIdentifier.class).setBlockName("biometricIdentifier");
-        coercionDeriver = manager.newBlock(BlockCoercionDeriver.class).setBlockName("coercionDeriver");
-        BlockForceField.BLOCK_FORCE_FIELD = (BlockForceField) manager.newBlock(BlockForceField.class).setBlockName("forceField").setCreativeTab(null);
-        forcefieldProjector = manager.newBlock(BlockForceFieldProjector.class).setBlockName("forceFieldProjector");
-        fortronCapacitor = manager.newBlock(BlockFortronCapacitor.class).setBlockName("fortronCapacitor");
-        interdictionMatrix = manager.newBlock(BlockInterdictionMatrix.class).setBlockName("interdictionMatrix");
+        biometricIdentifier = manager.newBlock("biometricIdentifier", BlockBiometricIdentifier.class).setBlockName("biometricIdentifier");
+        coercionDeriver = manager.newBlock("coercionDeriver", BlockCoercionDeriver.class).setBlockName("coercionDeriver");
+        BlockForceField.BLOCK_FORCE_FIELD = (BlockForceField) manager.newBlock("forceField", BlockForceField.class).setBlockName("forceField").setCreativeTab(null);
+        forcefieldProjector = manager.newBlock("forceFieldProjector", BlockForceFieldProjector.class).setBlockName("forceFieldProjector");
+        fortronCapacitor = manager.newBlock("fortronCapacitor", BlockFortronCapacitor.class).setBlockName("fortronCapacitor");
+        interdictionMatrix = manager.newBlock("interdictionMatrix", BlockInterdictionMatrix.class).setBlockName("interdictionMatrix");
     }
 
     @Override

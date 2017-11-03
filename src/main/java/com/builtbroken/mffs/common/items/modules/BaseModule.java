@@ -1,6 +1,7 @@
 package com.builtbroken.mffs.common.items.modules;
 
 import com.builtbroken.mc.core.registry.implement.IRecipeContainer;
+import com.builtbroken.mc.prefab.inventory.InventoryUtility;
 import com.builtbroken.mffs.api.IFieldInteraction;
 import com.builtbroken.mffs.api.IProjector;
 import com.builtbroken.mffs.api.modules.IModule;
@@ -12,6 +13,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 
@@ -44,6 +46,25 @@ public abstract class BaseModule extends Item implements IModule, IRecipeContain
         if (tooltip != null && tooltip.length() > 0)
         {
             list.addAll(Util.sepString(tooltip, 30));
+        }
+    }
+
+    @Override
+    public void onUpdate(ItemStack stack, World p_77663_2_, Entity p_77663_3_, int p_77663_4_, boolean p_77663_5_)
+    {
+        //Cache module name so item can be merged into one item at some point
+        if (stack.getTagCompound() == null)
+        {
+            stack.setTagCompound(new NBTTagCompound());
+        }
+        if (!stack.getTagCompound().hasKey("module"))
+        {
+            String key = InventoryUtility.getRegistryName(stack.getItem());
+            if (key != null)
+            {
+                key = key.replace("mffs:", "");
+                stack.getTagCompound().setString("module", key);
+            }
         }
     }
 
