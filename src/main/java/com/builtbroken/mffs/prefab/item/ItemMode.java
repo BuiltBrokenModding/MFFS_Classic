@@ -49,8 +49,8 @@ public abstract class ItemMode extends Item implements IProjectorMode
      * @return
      */
     @Override
-    public float getFortronCost(float amplifier)
+    public int getFortronCost(float amplifier)
     {
-        return 8.0F;
+        return 8;
     }
 }

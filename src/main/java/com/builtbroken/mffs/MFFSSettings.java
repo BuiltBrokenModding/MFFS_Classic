@@ -16,6 +16,7 @@ public class MFFSSettings
 
     //Projector settings
     public static int PROJECTOR_BLOCKS_PER_TICK = 1000;
+    public static int PROJECTOR_COST_PER_FIELD = 1;
 
     //Interdiction matrix
     public static int INTERDICTION_ATTACK_ENERGY = 10000;
@@ -36,6 +37,7 @@ public class MFFSSettings
 
     //Capacitor settings
     public static int CAPACITOR_POWER_DRAIN = 0;
+
 
     protected static void loadCoercionDeriverSettings(Configuration config)
     {

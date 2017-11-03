@@ -28,6 +28,6 @@ public class ItemModuleCapacity extends BaseModule
     public ItemModuleCapacity()
     {
         //setMaxStackSize(1);
-        setCost(1F);
+        setCost(0);
     }
 }

@@ -130,9 +130,9 @@ public abstract class BaseModule extends Item implements IFieldModule, IRecipeCo
     }
 
     @Override
-    public float getFortronCost(float amplifier)
+    public int getFortronCost(float amplifier)
     {
-        return this.fortronCost;
+        return Math.round(this.fortronCost);
     }
 
     @Override

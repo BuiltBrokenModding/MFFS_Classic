@@ -18,7 +18,7 @@ Changed: Power cost of field to be massively cheaper
 Changed: Coercion deriver recipe to include electronics
 
 
-### Develoment Changes
+### Development Changes
 Moved: Everything around to be easier to find (no package names are the same)
 Deprecated: half of the API and all prefabs (Everything is being rewritten)
 Implemented: Module inventory, replaces IModuleAccessor

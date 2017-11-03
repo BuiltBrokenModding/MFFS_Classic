@@ -1,25 +1,25 @@
 package com.builtbroken.mffs.content.projector;
 
+import com.builtbroken.mc.imp.transform.vector.BlockPos;
 import com.builtbroken.mffs.MFFS;
 import com.builtbroken.mffs.MFFSSettings;
 import com.builtbroken.mffs.api.IProjector;
 import com.builtbroken.mffs.api.modules.IFieldModule;
 import com.builtbroken.mffs.api.modules.IProjectorMode;
 import com.builtbroken.mffs.api.vector.Vector3D;
-import com.builtbroken.mffs.content.field.BlockForceField;
-import com.builtbroken.mffs.prefab.ModuleInventory;
-import com.builtbroken.mffs.prefab.item.ItemMode;
 import com.builtbroken.mffs.common.items.card.ItemCardFrequency;
 import com.builtbroken.mffs.common.items.modules.projector.ItemModuleDisintegration;
 import com.builtbroken.mffs.common.items.modules.projector.ItemModuleSilence;
-import com.builtbroken.mffs.common.items.modules.projector.mode.ItemModeCustom;
 import com.builtbroken.mffs.common.items.modules.upgrades.ItemModuleSpeed;
 import com.builtbroken.mffs.common.net.packet.BeamRequest;
 import com.builtbroken.mffs.common.net.packet.ForcefieldCalculation;
-import com.builtbroken.mffs.prefab.tile.TileFieldMatrix;
+import com.builtbroken.mffs.content.field.BlockForceField;
 import com.builtbroken.mffs.content.field.TileForceField;
+import com.builtbroken.mffs.prefab.ModuleInventory;
+import com.builtbroken.mffs.prefab.item.ItemMode;
+import com.builtbroken.mffs.prefab.tile.TileFieldMatrix;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -35,7 +35,7 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
 {
 
     /* Set of all forceFields by this entity */
-    protected final Set<Vector3D> blocks = new HashSet<>();
+    protected final Set<BlockPos> placedBlocks = new HashSet();
     public boolean requireTicks, markFieldUpdate = true;
     /* Flag indicating if this entity has finished */
     private boolean isComplete;
@@ -108,7 +108,7 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
             IProjectorMode stack = getMode();
             if (stack != null)
             {
-                this.blocks.clear();
+                this.placedBlocks.clear();
             }
         }
         super.calculatedForceField();
@@ -162,27 +162,23 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
         IProjectorMode mode = getMode();
         if (mode != null)
         {
-            return Math.round(super.calculateFortronCost() + mode.getFortronCost(getAmplifier()));
+            int costForBlocks = MFFSSettings.PROJECTOR_COST_PER_FIELD * getForceFields().size();
+            int moduleCost = super.calculateFortronCost() + mode.getFortronCost(getAmplifier());
+            return Math.round(costForBlocks + moduleCost);
         }
-
         return 0;
     }
 
     @Override
     public float getAmplifier()
     {
-        IProjectorMode mode = getMode();
-        if (mode instanceof ItemModeCustom)
-        {
-            //TODO: Custom mode
-        }
-        return Math.max(Math.min(getCalculatedField().size() / 1000, 10), 1);
+        return 1;
     }
 
     @Override
-    public Set<Vector3D> getForceFields()
+    public Set<BlockPos> getForceFields()
     {
-        return blocks;
+        return placedBlocks;
     }
 
     /**
@@ -252,7 +248,7 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
                     if (flag != 1 && flag != 2)
                     {
                         worldObj.setBlock(vec.intX(), vec.intY(), vec.intZ(), BlockForceField.BLOCK_FORCE_FIELD, 0, 2);
-                        this.blocks.add(vec);
+                        this.placedBlocks.add(new BlockPos(vec.intX(), vec.intY(), vec.intZ()));
 
                         TileEntity entity = vec.getTileEntity(worldObj);
                         if (entity instanceof TileForceField)
@@ -278,7 +274,7 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
     {
         if (!this.isCalc && isFinished)
         {
-            synchronized (this.calculatedFields)
+            synchronized (placedBlocks) //TODO check if needed
             {
                 for (IFieldModule module : getModules(getModuleSlots()))
                 {
@@ -287,22 +283,21 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
                         break;
                     }
                 }
-                for (Iterator<Vector3D> it$ = new HashSet<>(this.calculatedFields).iterator(); it$.hasNext(); )
+                for (BlockPos pos : placedBlocks)
                 {
-                    Vector3D vec = it$.next();
-                    Block block = worldObj.getBlock(vec.intX(), vec.intY(), vec.intZ());
+                    Block block = pos.getBlock(worldObj);
                     if (block instanceof BlockForceField)
                     {
-                        worldObj.setBlockToAir(vec.intX(), vec.intY(), vec.intZ());
+                        worldObj.setBlockToAir(pos.xi(), pos.yi(), pos.zi());
                     }
                 }
             }
+            this.placedBlocks.clear();
+            this.calculatedFields.clear();
+            this.isComplete = false;
+            this.isFinished = false;
+            this.requireTicks = false;
         }
-        this.blocks.clear();
-        this.calculatedFields.clear();
-        this.isComplete = false;
-        this.isFinished = false;
-        this.requireTicks = false;
     }
 
     /**

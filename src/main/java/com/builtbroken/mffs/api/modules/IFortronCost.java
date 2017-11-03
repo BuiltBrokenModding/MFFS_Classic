@@ -8,5 +8,5 @@ package com.builtbroken.mffs.api.modules;
  */
 public interface IFortronCost
 {
-    float getFortronCost(float paramFloat);
+    int getFortronCost(float paramFloat);
 }

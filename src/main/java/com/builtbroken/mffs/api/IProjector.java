@@ -1,6 +1,6 @@
 package com.builtbroken.mffs.api;
 
-import com.builtbroken.mffs.api.vector.Vector3D;
+import com.builtbroken.mc.imp.transform.vector.BlockPos;
 import net.minecraft.inventory.IInventory;
 
 import java.util.Set;
@@ -19,5 +19,5 @@ public interface IProjector
 
     long getTicks();
 
-    Set<Vector3D> getForceFields();
+    Set<BlockPos> getForceFields();
 }

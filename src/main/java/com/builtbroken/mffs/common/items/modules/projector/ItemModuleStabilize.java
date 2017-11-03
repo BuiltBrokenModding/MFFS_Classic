@@ -117,8 +117,8 @@ public class ItemModuleStabilize extends BaseModule implements IRecipeContainer
     }
 
     @Override
-    public float getFortronCost(float amplifier)
+    public int getFortronCost(float amplifier)
     {
-        return super.getFortronCost(amplifier) + super.getFortronCost(amplifier) * amplifier;
+        return Math.round(super.getFortronCost(amplifier) + super.getFortronCost(amplifier) * amplifier);
     }
 }
