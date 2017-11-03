@@ -2,7 +2,7 @@ package com.builtbroken.mffs.common.items;
 
 import com.builtbroken.mc.imp.transform.vector.Location;
 import com.builtbroken.mc.lib.helper.recipe.UniversalRecipe;
-import com.builtbroken.mffs.ModularForceFieldSystem;
+import com.builtbroken.mffs.MFFS;
 import com.builtbroken.mffs.api.IBlockFrequency;
 import com.builtbroken.mffs.api.card.ICoordLink;
 import com.builtbroken.mffs.api.fortron.FrequencyGrid;
@@ -189,7 +189,7 @@ public class RemoteController extends ItemCardFrequency implements ICoordLink
 
                             if (consumedEnergy > 0)
                             {
-                                ModularForceFieldSystem.proxy.registerBeamEffect(world, center, new Vector3D((TileEntity) fortronTile).add(0.5), 0.6F, 0.6F, 1.0F, 20);
+                                MFFS.proxy.registerBeamEffect(world, center, new Vector3D((TileEntity) fortronTile).add(0.5), 0.6F, 0.6F, 1.0F, 20);
                                 receivedEnergy += consumedEnergy;
                             }
 

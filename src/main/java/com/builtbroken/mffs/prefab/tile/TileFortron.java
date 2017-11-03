@@ -1,7 +1,7 @@
 package com.builtbroken.mffs.prefab.tile;
 
 import com.builtbroken.mffs.MFFSSettings;
-import com.builtbroken.mffs.ModularForceFieldSystem;
+import com.builtbroken.mffs.MFFS;
 import com.builtbroken.mffs.api.card.ICard;
 import com.builtbroken.mffs.api.fortron.FrequencyGrid;
 import com.builtbroken.mffs.api.fortron.IFortronFrequency;
@@ -37,7 +37,7 @@ public abstract class TileFortron extends TileFrequency implements IFluidHandler
         if (this.ticks % MFFSSettings.FORTRON_SYNC_TICKS == 0 && !worldObj.isRemote)
         {//We do not need to send by client!
             //TODO: Send fortron only to people in the interface!
-            ModularForceFieldSystem.channel.sendToAllAround(new FortronSync(this), new NetworkRegistry.TargetPoint(this.worldObj.provider.dimensionId, xCoord, yCoord, zCoord, 25));
+            MFFS.channel.sendToAllAround(new FortronSync(this), new NetworkRegistry.TargetPoint(this.worldObj.provider.dimensionId, xCoord, yCoord, zCoord, 25));
         }
     }
 

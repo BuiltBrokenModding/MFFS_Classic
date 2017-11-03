@@ -1,7 +1,7 @@
 package com.builtbroken.mffs.content.gen;
 
 import com.builtbroken.mc.imp.transform.vector.Point;
-import com.builtbroken.mffs.ModularForceFieldSystem;
+import com.builtbroken.mffs.MFFS;
 import com.builtbroken.mffs.api.gui.GuiSlotType;
 import com.builtbroken.mffs.api.utils.UnitDisplay;
 import com.builtbroken.mffs.client.gui.base.MFFSGui;
@@ -109,7 +109,7 @@ public class GuiCoercionDeriver extends MFFSGui
         super.actionPerformed(guibutton);
         if (guibutton.id == 1)
         {
-            ModularForceFieldSystem.channel.sendToServer(new EntityToggle(getEntity(), EntityToggle.TOGGLE_STATE));
+            MFFS.channel.sendToServer(new EntityToggle(getEntity(), EntityToggle.TOGGLE_STATE));
         }
     }
 }

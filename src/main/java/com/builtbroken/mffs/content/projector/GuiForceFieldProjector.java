@@ -1,7 +1,7 @@
 package com.builtbroken.mffs.content.projector;
 
 import com.builtbroken.mc.imp.transform.vector.Point;
-import com.builtbroken.mffs.ModularForceFieldSystem;
+import com.builtbroken.mffs.MFFS;
 import com.builtbroken.mffs.api.utils.UnitDisplay;
 import com.builtbroken.mffs.client.gui.buttons.GuiIcon;
 import com.builtbroken.mffs.client.gui.base.GuiMatrix;
@@ -81,7 +81,7 @@ public class GuiForceFieldProjector extends GuiMatrix
         super.actionPerformed(guiButton);
         if (guiButton.id == 1)
         {
-            ModularForceFieldSystem.channel.sendToServer(new EntityToggle(getMatrix(), EntityToggle.ABSOLUTE_TOGGLE));
+            MFFS.channel.sendToServer(new EntityToggle(getMatrix(), EntityToggle.ABSOLUTE_TOGGLE));
         }
     }
 

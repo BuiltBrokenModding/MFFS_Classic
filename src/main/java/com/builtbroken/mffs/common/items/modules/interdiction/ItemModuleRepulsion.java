@@ -1,6 +1,6 @@
 package com.builtbroken.mffs.common.items.modules.interdiction;
 
-import com.builtbroken.mffs.ModularForceFieldSystem;
+import com.builtbroken.mffs.MFFS;
 import com.builtbroken.mffs.api.IProjector;
 import com.builtbroken.mffs.api.security.IBiometricIdentifier;
 import com.builtbroken.mffs.api.security.Permission;
@@ -92,7 +92,7 @@ public final class ItemModuleRepulsion extends BaseModule
     @Override
     public boolean onDestroy(IProjector projector, Set<Vector3D> field)
     {
-        ModularForceFieldSystem.channel.sendToAll(new ForcefieldCalculation((TileForceFieldProjector) projector));
+        MFFS.channel.sendToAll(new ForcefieldCalculation((TileForceFieldProjector) projector));
         return false;
     }
 

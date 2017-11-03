@@ -44,8 +44,8 @@ import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.FluidRegistry;
 
-@Mod(modid = ModularForceFieldSystem.DOMAIN, name = ModularForceFieldSystem.MOD_NAME, version = ModularForceFieldSystem.VERSION, dependencies = ModularForceFieldSystem.DEPENDENCIES)
-public class ModularForceFieldSystem extends AbstractMod
+@Mod(modid = MFFS.DOMAIN, name = MFFS.MOD_NAME, version = MFFS.VERSION, dependencies = MFFS.DEPENDENCIES)
+public class MFFS extends AbstractMod
 {
     public static final String DOMAIN = "mffs";
     public static final String MOD_NAME = "Modular Force Field System";
@@ -71,12 +71,11 @@ public class ModularForceFieldSystem extends AbstractMod
     /**
      * Constructor.
      */
-    public ModularForceFieldSystem()
+    public MFFS()
     {
         super(DOMAIN, DOMAIN + "/main");
-        manager.defaultTab = new CreativeTabs(ModularForceFieldSystem.DOMAIN)
+        manager.defaultTab = new CreativeTabs(MFFS.DOMAIN)
         {
-
             @Override
             @SideOnly(Side.CLIENT)
             public Item getTabIconItem()
@@ -87,7 +86,7 @@ public class ModularForceFieldSystem extends AbstractMod
     }
 
     @Mod.Instance
-    public static ModularForceFieldSystem INSTANCE;
+    public static MFFS INSTANCE;
 
     @SidedProxy(clientSide = "com.builtbroken.mffs.client.ClientProxy", serverSide = "com.builtbroken.mffs.CommonProxy")
     public static CommonProxy proxy;
@@ -182,13 +181,13 @@ public class ModularForceFieldSystem extends AbstractMod
         MinecraftForge.EVENT_BUS.register(new ForgeSubscribeHandler());
 
         //TODO move to VoltzEngine packet system
-        ModularForceFieldSystem.channel.registerMessage(EntityToggle.ServerHandler.class, EntityToggle.class, 0, Side.SERVER);
+        MFFS.channel.registerMessage(EntityToggle.ServerHandler.class, EntityToggle.class, 0, Side.SERVER);
         channel.registerMessage(FortronSync.ClientHandler.class, FortronSync.class, 1, Side.CLIENT);
-        ModularForceFieldSystem.channel.registerMessage(ChangeFrequency.ServerHandler.class, ChangeFrequency.class, 2, Side.SERVER);
-        ModularForceFieldSystem.channel.registerMessage(ForcefieldCalculation.ClientHandler.class, ForcefieldCalculation.class, 3, Side.CLIENT);
-        ModularForceFieldSystem.channel.registerMessage(BeamRequest.ClientHandler.class, BeamRequest.class, 4, Side.CLIENT);
-        ModularForceFieldSystem.channel.registerMessage(ItemByteToggle.ServerHandler.class, ItemByteToggle.class, 5, Side.SERVER);
-        ModularForceFieldSystem.channel.registerMessage(ItemStringToggle.ServerHandler.class, ItemStringToggle.class, 6, Side.SERVER);
+        MFFS.channel.registerMessage(ChangeFrequency.ServerHandler.class, ChangeFrequency.class, 2, Side.SERVER);
+        MFFS.channel.registerMessage(ForcefieldCalculation.ClientHandler.class, ForcefieldCalculation.class, 3, Side.CLIENT);
+        MFFS.channel.registerMessage(BeamRequest.ClientHandler.class, BeamRequest.class, 4, Side.CLIENT);
+        MFFS.channel.registerMessage(ItemByteToggle.ServerHandler.class, ItemByteToggle.class, 5, Side.SERVER);
+        MFFS.channel.registerMessage(ItemStringToggle.ServerHandler.class, ItemStringToggle.class, 6, Side.SERVER);
 
         proxy.preInit();
     }

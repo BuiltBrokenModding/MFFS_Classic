@@ -2,7 +2,7 @@ package com.builtbroken.mffs.content.interdiction;
 
 import com.builtbroken.mc.imp.transform.vector.Point;
 import com.builtbroken.mc.lib.helper.LanguageUtility;
-import com.builtbroken.mffs.ModularForceFieldSystem;
+import com.builtbroken.mffs.MFFS;
 import com.builtbroken.mffs.api.gui.GuiSlotType;
 import com.builtbroken.mffs.client.gui.base.MFFSGui;
 import com.builtbroken.mffs.common.net.packet.EntityToggle;
@@ -38,7 +38,7 @@ public class GuiInterdictionMatrix extends MFFSGui
         super.actionPerformed(guiButton);
         if (guiButton.id == 1)
         {
-            ModularForceFieldSystem.channel.sendToServer(new EntityToggle((TileInterdictionMatrix) this.frequencyTile, EntityToggle.FILTER_TOGGLE));
+            MFFS.channel.sendToServer(new EntityToggle((TileInterdictionMatrix) this.frequencyTile, EntityToggle.FILTER_TOGGLE));
         }
     }
 

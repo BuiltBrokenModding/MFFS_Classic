@@ -1,6 +1,6 @@
 package com.builtbroken.mffs.api.utils;
 
-import com.builtbroken.mffs.ModularForceFieldSystem;
+import com.builtbroken.mffs.MFFS;
 import com.builtbroken.mffs.api.fortron.IFortronFrequency;
 import com.builtbroken.mffs.api.modules.IModuleContainer;
 import com.builtbroken.mffs.api.vector.Vector3D;
@@ -121,7 +121,7 @@ public class FortronHelper
 
         if (world.isRemote && toBeInject > 0 && !camo) //TODO should be handled by the device
         {
-            ModularForceFieldSystem.proxy.registerBeamEffect(world, new Vector3D((TileEntity) freq).translate(.5),
+            MFFS.proxy.registerBeamEffect(world, new Vector3D((TileEntity) freq).translate(.5),
                     new Vector3D((TileEntity) rec).translate(.5), 0.6F, 0.6F, 1, 20); //TODO move to effect system
         }
     }

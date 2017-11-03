@@ -1,6 +1,6 @@
 package com.builtbroken.mffs.content.field;
 
-import com.builtbroken.mffs.ModularForceFieldSystem;
+import com.builtbroken.mffs.MFFS;
 import com.builtbroken.mffs.api.IForceFieldBlock;
 import com.builtbroken.mffs.api.IProjector;
 import com.builtbroken.mffs.api.fortron.IFortronStorage;
@@ -341,7 +341,7 @@ public class BlockForceField extends Block implements ITileEntityProvider, IForc
     @Override
     public void registerBlockIcons(IIconRegister reg)
     {
-        this.blockIcon = reg.registerIcon(ModularForceFieldSystem.DOMAIN + ":forceField");
+        this.blockIcon = reg.registerIcon(MFFS.DOMAIN + ":forceField");
     }
 
     /**

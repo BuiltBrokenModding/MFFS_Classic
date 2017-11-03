@@ -1,7 +1,7 @@
 package com.builtbroken.mffs.content.cap;
 
 import com.builtbroken.mc.imp.transform.vector.Point;
-import com.builtbroken.mffs.ModularForceFieldSystem;
+import com.builtbroken.mffs.MFFS;
 import com.builtbroken.mffs.api.fortron.IFortronFrequency;
 import com.builtbroken.mffs.api.utils.UnitDisplay;
 import com.builtbroken.mffs.client.gui.buttons.TransferModeButton;
@@ -51,7 +51,7 @@ public class GuiFortronCapacitor extends MFFSGui
         super.actionPerformed(guiButton);
         if (guiButton.id == 1)
         {
-            ModularForceFieldSystem.channel.sendToServer(new EntityToggle(getCapacitor(), EntityToggle.TRANSFER_TOGGLE));
+            MFFS.channel.sendToServer(new EntityToggle(getCapacitor(), EntityToggle.TRANSFER_TOGGLE));
         }
 
     }

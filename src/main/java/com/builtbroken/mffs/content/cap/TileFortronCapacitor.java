@@ -1,7 +1,7 @@
 package com.builtbroken.mffs.content.cap;
 
 import com.builtbroken.mc.imp.transform.vector.Location;
-import com.builtbroken.mffs.ModularForceFieldSystem;
+import com.builtbroken.mffs.MFFS;
 import com.builtbroken.mffs.MFFSSettings;
 import com.builtbroken.mffs.api.card.ICardInfinite;
 import com.builtbroken.mffs.api.card.ICoordLink;
@@ -206,7 +206,7 @@ public class TileFortronCapacitor extends TileModuleAcceptor implements IFortron
     public List<ItemStack> getRemovedItems(EntityPlayer entityPlayer)
     {
         List<ItemStack> stack = super.getRemovedItems(entityPlayer);
-        stack.add(new ItemStack(ModularForceFieldSystem.fortronCapacitor));
+        stack.add(new ItemStack(MFFS.fortronCapacitor));
         return stack;
     }
 }

@@ -2,7 +2,7 @@ package com.builtbroken.mffs.prefab.node;
 
 import com.builtbroken.mc.api.tile.access.IRotation;
 import com.builtbroken.mc.framework.logic.TileNode;
-import com.builtbroken.mffs.ModularForceFieldSystem;
+import com.builtbroken.mffs.MFFS;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -23,7 +23,7 @@ public abstract class NodeMFFS extends TileNode implements IRotation
 
     public NodeMFFS(String id)
     {
-        super(id, ModularForceFieldSystem.DOMAIN);
+        super(id, MFFS.DOMAIN);
     }
 
     @Override
