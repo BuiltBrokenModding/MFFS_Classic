@@ -10,14 +10,13 @@ import net.minecraftforge.common.config.Property;
  */
 public class MFFSSettings
 {
-    //TODO clean up this F###ing mess
     //TODO move settings to content/components they are used by
     //TODO move settings to JSON system, aka I want this class gone
 
     //Projector settings
     public static int PROJECTOR_BLOCKS_PER_TICK = 1000;
-    public static float PROJECTOR_COST_PER_FIELD = 0.01f;
-    public static int PROJECTOR_COST_PER_FIELD_CREATION = 1;
+    public static float PROJECTOR_UPKEEP_COST = 0.01f;
+    public static int PROJECTOR_CREATION_COST = 1;
 
     //Interdiction matrix
     public static int INTERDICTION_ATTACK_ENERGY = 10000;

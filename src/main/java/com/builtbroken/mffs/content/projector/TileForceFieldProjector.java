@@ -66,10 +66,14 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
     public void updateEntity()
     {
         super.updateEntity();
-        if (isActive() && getMode() != null && requestFortron(getFortronCost(), false) >= getFortronCost())
+        if (isActive() && getMode() != null && requestFortron(getFortronCost(), false) >= getFortronCost()) //TODO instead of failing start removing blocks randomly
         {
             int cost = getFortronCost();
+            //TODO separate out field cost from module cost
+            //TODO if fail module cost, field should die slowly (decay vs instant death)
+            //TODO if field cost fails, blocks should decay randomly
             requestFortron(cost, true);
+
             if (!this.worldObj.isRemote)
             {
                 if (this.ticks % 10 == 0 || markFieldUpdate || requireTicks)
@@ -165,7 +169,7 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
         IProjectorMode mode = getMode();
         if (mode != null)
         {
-            int costForBlocks = Math.round(MFFSSettings.PROJECTOR_COST_PER_FIELD * getForceFields().size());
+            int costForBlocks = Math.round(MFFSSettings.PROJECTOR_UPKEEP_COST * getForceFields().size());
             int moduleCost = super.calculateFortronCost() + mode.getFortronCost(getAmplifier());
             return Math.round(costForBlocks + moduleCost);
         }
@@ -191,7 +195,7 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
     private boolean canReplace(Vector3D vec)
     {
         Block block = vec.getBlock(this.worldObj);
-        if(!(block instanceof BlockForceField))
+        if (!(block instanceof BlockForceField))
         {
             final int disintegrationModule = getModuleCount(ItemModuleDisintegration.class); //TODO cache, do not recalc each tick
             if (block != null)
@@ -244,8 +248,8 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
                 {
                     int flag = 0; //TODO what is this flag?
 
-                    int powerCost = MFFSSettings.PROJECTOR_COST_PER_FIELD_CREATION;
-                    if(requestFortron(powerCost, false) >= powerCost)
+                    int powerCost = MFFSSettings.PROJECTOR_CREATION_COST;
+                    if (requestFortron(powerCost, false) >= powerCost)
                     {
                         //Check with modules if tile can be placed?
                         for (ItemStack stack : getModuleStacks(getModuleSlots()))
@@ -276,6 +280,10 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
                             //Consume power
                             requestFortron(powerCost, true);
                         }
+                    }
+                    else
+                    {
+                        break;
                     }
                 }
                 this.isComplete = (fieldToBeProjected.size() == 0);
