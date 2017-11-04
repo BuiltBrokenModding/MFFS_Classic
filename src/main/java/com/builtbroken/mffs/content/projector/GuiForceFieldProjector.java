@@ -89,6 +89,6 @@ public class GuiForceFieldProjector extends GuiMatrix
     public void updateScreen()
     {
         super.updateScreen();
-        ((GuiIcon) this.buttonList.get(1)).setIndex(getMatrix().isAbs ? 1 : 0);
+        ((GuiIcon) this.buttonList.get(1)).setIndex(getMatrix().useAbsoluteDirection ? 1 : 0);
     }
 }

@@ -17,28 +17,36 @@ import java.util.Set;
 public interface IFieldInteraction
         extends IModuleContainer, IActivatable, IWorldPosition
 {
-    IProjectorMode getMode();
+    IProjectorMode getMode(); //TODO turn into a default method?
 
     ItemStack getModeStack();
 
+    @Deprecated //TODO phase out
     int[] getSlotsBasedOnDirection(ForgeDirection paramForgeDirection);
 
+    @Deprecated //TODO replace with inventory object
     int[] getModuleSlots();
 
     int getSidedModuleCount(Class<? extends IFieldModule> module, ForgeDirection... paramVarArgs);
 
     IPos3D getTranslation();
 
+    @Deprecated //TODO replace with cube object
     IPos3D getPositiveScale();
 
+    @Deprecated //TODO replace with cube object
     IPos3D getNegativeScale();
 
+    @Deprecated //Convert to field object
     Set<Vector3D> getCalculatedField();
 
+    @Deprecated //Convert to field object
     Set<Vector3D> getInteriorPoints();
 
+    @Deprecated //Shouldn't expose
     void setCalculating(boolean paramBoolean);
 
+    @Deprecated //Shouldn't expose
     void setCalculated(boolean paramBoolean);
 
     ForgeDirection getDirection();

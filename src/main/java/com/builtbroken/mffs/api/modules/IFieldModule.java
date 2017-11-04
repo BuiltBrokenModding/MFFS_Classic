@@ -14,7 +14,7 @@ import java.util.Set;
  *
  * @author Calclavia
  */
-public interface IFieldModule
+public interface IFieldModule //TODO rework, separate out methods into different interfaces
         extends IFortronCost
 {
 
@@ -25,17 +25,31 @@ public interface IFieldModule
      * @param paramSet        A set of fields that are projected.
      * @return
      */
-    boolean onProject(IProjector paramIProjector, Set<Vector3D> paramSet);
+    @Deprecated
+    //Being moved to an event/listener system
+    boolean prePlaceFieldBlock(IProjector paramIProjector, Set<Vector3D> paramSet);
 
+    @Deprecated
+        //Being moved to an event/listener system
     boolean onDestroy(IProjector paramIProjector, Set<Vector3D> paramSet);
 
-    int onProject(IProjector paramIProjector, Vector3D paramVector3);
+    @Deprecated
+        //Being moved to an event/listener system
+    int prePlaceFieldBlock(IProjector paramIProjector, Vector3D paramVector3);
 
+    @Deprecated
+        //Being moved to an event/listener system
     boolean onCollideWithForcefield(World paramWorld, int paramInt1, int paramInt2, int paramInt3, Entity paramEntity, ItemStack paramItemStack);
 
     Set<Vector3D> onPreCalculate(IFieldInteraction paramIFieldInteraction, Set<Vector3D> paramSet);
 
     void onCalculate(IFieldInteraction paramIFieldInteraction, Set<Vector3D> paramSet);
 
-    boolean requireTicks(ItemStack paramItemStack);
+    /**
+     * Checks it the module needs to be updated
+     *
+     * @param paramItemStack
+     * @return
+     */
+    boolean doesRequireUpdate(ItemStack paramItemStack); //TODO seem to be missing an update method?
 }

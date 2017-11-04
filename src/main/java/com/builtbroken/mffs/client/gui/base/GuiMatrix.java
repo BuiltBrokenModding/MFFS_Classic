@@ -39,10 +39,10 @@ public abstract class GuiMatrix extends MFFSGui
     {
         super.initGui();
         TileFieldMatrix proj = getMatrix();
-        String north = LanguageRegistry.instance().getStringLocalization("gui.projector." + (proj.isAbs ? "north" : "front"));
-        String south = LanguageRegistry.instance().getStringLocalization("gui.projector." + (proj.isAbs ? "south" : "back"));
-        String west = LanguageRegistry.instance().getStringLocalization("gui.projector." + (proj.isAbs ? "west" : "left"));
-        String east = LanguageRegistry.instance().getStringLocalization("gui.projector." + (proj.isAbs ? "east" : "right"));
+        String north = LanguageRegistry.instance().getStringLocalization("gui.projector." + (proj.useAbsoluteDirection ? "north" : "front"));
+        String south = LanguageRegistry.instance().getStringLocalization("gui.projector." + (proj.useAbsoluteDirection ? "south" : "back"));
+        String west = LanguageRegistry.instance().getStringLocalization("gui.projector." + (proj.useAbsoluteDirection ? "west" : "left"));
+        String east = LanguageRegistry.instance().getStringLocalization("gui.projector." + (proj.useAbsoluteDirection ? "east" : "right"));
 
         for (int i = 1; i <= 2; i++)
         {

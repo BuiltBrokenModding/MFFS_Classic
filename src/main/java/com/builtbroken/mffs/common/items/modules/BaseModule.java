@@ -101,14 +101,14 @@ public abstract class BaseModule extends Item implements IFieldModule, IRecipeCo
      * @return
      */
     @Override
-    public boolean onProject(IProjector projector, Set<Vector3D> fields)
+    public boolean prePlaceFieldBlock(IProjector projector, Set<Vector3D> fields)
     {
         return false;
     }
 
 
     @Override
-    public int onProject(IProjector projector, Vector3D position)
+    public int prePlaceFieldBlock(IProjector projector, Vector3D position)
     {
         return 0;
     }
@@ -142,7 +142,7 @@ public abstract class BaseModule extends Item implements IFieldModule, IRecipeCo
     }
 
     @Override
-    public boolean requireTicks(ItemStack moduleStack)
+    public boolean doesRequireUpdate(ItemStack moduleStack)
     {
         return false;
     }

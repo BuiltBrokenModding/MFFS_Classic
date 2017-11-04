@@ -57,14 +57,14 @@ public class ItemModuleStabilize extends BaseModule implements IRecipeContainer
      * @return
      */
     @Override
-    public boolean onProject(IProjector projector, Set<Vector3D> fields)
+    public boolean prePlaceFieldBlock(IProjector projector, Set<Vector3D> fields)
     {
         this.blockCount = 0;
         return false;
     }
 
     @Override
-    public int onProject(IProjector projector, Vector3D position)
+    public int prePlaceFieldBlock(IProjector projector, Vector3D position)
     {
         if (projector.getTicks() % 40 == 0)
         {

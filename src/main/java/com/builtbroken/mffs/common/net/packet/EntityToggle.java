@@ -7,6 +7,7 @@ import net.minecraft.tileentity.TileEntity;
 /**
  * Created by pwaln on 6/14/2016.
  */
+@Deprecated
 public class EntityToggle extends TileEntityMessage
 {
 

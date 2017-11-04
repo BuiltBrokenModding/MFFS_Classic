@@ -10,6 +10,7 @@ import net.minecraft.tileentity.TileEntity;
 /**
  * Created by pwaln on 6/16/2016.
  */
+@Deprecated
 public abstract class TileEntityMessage implements IMessage
 {
 

@@ -19,7 +19,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import java.util.*;
 
 /**
- * @author Calclavia
+ * @author Calclavia, DarkCow
  */
 public abstract class TileFieldMatrix extends TileModuleAcceptor implements IFieldInteraction
 {
@@ -49,27 +49,35 @@ public abstract class TileFieldMatrix extends TileModuleAcceptor implements IFie
     /* Holds information on positions that have been finished */
     protected final Set<Vector3D> calculatedFields = Collections.synchronizedSet(new HashSet<Vector3D>());
     /* Tasks that have been stored */
-    private final List<EventTimedTask> eventsQueued = new LinkedList<>();
-    /* Deteremines if the machine is absolute */
-    public boolean isAbs = true;
-    /* Holds the state of this machine */
-    protected boolean isCalc, isFinished;
+    private final List<EventTimedTask> eventsQueued = new LinkedList<>();  //TODO implement as QUEUE instead
+    /** Ignores machine rotation when set to true */
+    public boolean useAbsoluteDirection = true;
+    /** Are we calculating the blocks for the field */
+    protected boolean isCalculatingField;
+    /** Are we done calculating the field shape */
+    protected boolean isFinishedCalculatingField;
 
     @Override
     public void updateEntity()
     {
         super.updateEntity();
-        if (this.worldObj.isRemote)
+        if (!this.worldObj.isRemote)
         {
-            return; //events only need to process serverside!
-        }
-        for (Iterator<EventTimedTask> it$ = eventsQueued.iterator(); it$.hasNext(); )
-        {
-            EventTimedTask task = it$.next();
-            task.tick();
-            if (!task.isActive())
+            //Handle events TODO phase out for delay action system, maybe?
+            Iterator<EventTimedTask> iterator = eventsQueued.iterator();
+            while (iterator.hasNext())
             {
-                it$.remove();
+                //Next
+                EventTimedTask task = iterator.next();
+
+                //Do event
+                task.tick();
+
+                //Remove
+                if (!task.isActive())
+                {
+                    iterator.remove();
+                }
             }
         }
     }
@@ -77,43 +85,61 @@ public abstract class TileFieldMatrix extends TileModuleAcceptor implements IFie
     /**
      * Calculates the forcefield locations.
      */
-    public void calculatedForceField()
+    public void triggerFieldCalculation()
     {
-        if (!isCalc && !getWorldObj().isRemote)
+        if (!isCalculatingField && !getWorldObj().isRemote)
         {
-            synchronized (this.calculatedFields)
+            synchronized (this.calculatedFields) //TODO move to worker thread?
             {
                 if (getMode() != null)
                 {
+                    //Reset
                     this.calculatedFields.clear();
+
+                    //TODO phase this out, we should not create a new thread each time we want to do work
                     new Thread(() -> {
-                        TileFieldMatrix entity = TileFieldMatrix.this;
+
+                        final TileFieldMatrix entity = TileFieldMatrix.this;
+
+                        //Start
                         entity.setCalculating(true);
+
+                        //DO work
                         try
                         {
                             IProjectorMode mode = entity.getMode();
                             if (mode != null)
                             {
+                                //Generate data
+                                Set<Vector3D> positions = entity.getModuleCount(ItemModuleInvert.class) > 0 ? mode.getInteriorPoints(entity) : mode.getExteriorPoints(entity);
 
-                                Set<Vector3D> blocks = entity.getModuleCount(ItemModuleInvert.class) > 0 ? mode.getInteriorPoints(entity) : mode.getExteriorPoints(entity);
+                                //Get translation point
                                 Vector3D translation = entity.getTranslation();
 
+                                //Trigger modules pre
                                 for (IFieldModule module : entity.getModules())
                                 {
-                                    blocks = module.onPreCalculate(entity, blocks);
+                                    positions = module.onPreCalculate(entity, positions);
                                 }
 
-                                for (Vector3D position : blocks)
+                                //Merge data, and translate based on position
+                                for (Vector3D position : positions)
                                 {
-                                    position.translate(new Vector3D((IPos3D)entity));
+                                    //Offset by projector
+                                    position.translate(new Vector3D((IPos3D) entity));
+
+                                    //Offset by translation
                                     position.translate(translation);
 
+                                    //Ensure is inside world
                                     if (position.intY() <= entity.getWorldObj().getHeight())
                                     {
+                                        //Add to calculated list
                                         entity.getCalculatedField().add(position.round());
                                     }
                                 }
 
+                                //Trigger modules post
                                 for (IFieldModule module : entity.getModules())
                                 {
                                     module.onCalculate(entity, entity.getCalculatedField());
@@ -124,10 +150,20 @@ public abstract class TileFieldMatrix extends TileModuleAcceptor implements IFie
                         {
                             e.printStackTrace();
                         }
-                        entity.getCalculatedField().remove(new Vector3D((IPos3D)entity)); //we do not want to overplace this
+
+
+                        //Prevent editing self
+                        entity.getCalculatedField().remove(new Vector3D((IPos3D) entity));
+
+                        //Stop
                         entity.setCalculating(false);
+
+                        //Mark field is ready to generate
                         entity.setCalculated(true);
+
+                        //Complete
                         entity.onCalculationCompletion();
+
                     }).start();
                 }
             }
@@ -196,10 +232,10 @@ public abstract class TileFieldMatrix extends TileModuleAcceptor implements IFie
         {
             dir = ForgeDirection.NORTH;
         }
-        int zNeg = getModuleCount(ItemModuleTranslate.class, getSlotsBasedOnDirection(isAbs ? ForgeDirection.NORTH : getOrient(dir, ForgeDirection.NORTH)));
-        int zPos = getModuleCount(ItemModuleTranslate.class, getSlotsBasedOnDirection(isAbs ? ForgeDirection.SOUTH : getOrient(dir, ForgeDirection.SOUTH)));
-        int xNeg = getModuleCount(ItemModuleTranslate.class, getSlotsBasedOnDirection(isAbs ? ForgeDirection.WEST : getOrient(dir, ForgeDirection.WEST)));
-        int xPos = getModuleCount(ItemModuleTranslate.class, getSlotsBasedOnDirection(isAbs ? ForgeDirection.EAST : getOrient(dir, ForgeDirection.EAST)));
+        int zNeg = getModuleCount(ItemModuleTranslate.class, getSlotsBasedOnDirection(useAbsoluteDirection ? ForgeDirection.NORTH : getOrient(dir, ForgeDirection.NORTH)));
+        int zPos = getModuleCount(ItemModuleTranslate.class, getSlotsBasedOnDirection(useAbsoluteDirection ? ForgeDirection.SOUTH : getOrient(dir, ForgeDirection.SOUTH)));
+        int xNeg = getModuleCount(ItemModuleTranslate.class, getSlotsBasedOnDirection(useAbsoluteDirection ? ForgeDirection.WEST : getOrient(dir, ForgeDirection.WEST)));
+        int xPos = getModuleCount(ItemModuleTranslate.class, getSlotsBasedOnDirection(useAbsoluteDirection ? ForgeDirection.EAST : getOrient(dir, ForgeDirection.EAST)));
         int yNeg = getModuleCount(ItemModuleTranslate.class, getSlotsBasedOnDirection(ForgeDirection.DOWN));
         int yPos = getModuleCount(ItemModuleTranslate.class, getSlotsBasedOnDirection(ForgeDirection.UP));
         return new Vector3D(xPos - xNeg, yPos - yNeg, zPos - zNeg);
@@ -214,14 +250,14 @@ public abstract class TileFieldMatrix extends TileModuleAcceptor implements IFie
     public Vector3D getPositiveScale()
     {
         ForgeDirection direction = getDirection();
-        if (!isAbs && (direction == ForgeDirection.UP || direction == ForgeDirection.DOWN))
+        if (!useAbsoluteDirection && (direction == ForgeDirection.UP || direction == ForgeDirection.DOWN))
         {
             direction = ForgeDirection.NORTH;
         }
 
         //Gets scale in position directions, combined with negative direction for full size
-        int zScalePos = getModuleCount(ItemModuleScale.class, getSlotsBasedOnDirection(isAbs ? ForgeDirection.SOUTH : getOrient(direction, ForgeDirection.SOUTH)));
-        int xScalePos = getModuleCount(ItemModuleScale.class, getSlotsBasedOnDirection(isAbs ? ForgeDirection.EAST : getOrient(direction, ForgeDirection.EAST)));
+        int zScalePos = getModuleCount(ItemModuleScale.class, getSlotsBasedOnDirection(useAbsoluteDirection ? ForgeDirection.SOUTH : getOrient(direction, ForgeDirection.SOUTH)));
+        int xScalePos = getModuleCount(ItemModuleScale.class, getSlotsBasedOnDirection(useAbsoluteDirection ? ForgeDirection.EAST : getOrient(direction, ForgeDirection.EAST)));
         int yScalePos = getModuleCount(ItemModuleScale.class, getSlotsBasedOnDirection(ForgeDirection.UP));
 
         int omnidirectionalScale = getModuleCount(ItemModuleScale.class, getModuleSlots());
@@ -241,8 +277,8 @@ public abstract class TileFieldMatrix extends TileModuleAcceptor implements IFie
         }
 
         //Gets scale in negative directions, combined with positive direction for full size
-        int zNeg = getModuleCount(ItemModuleScale.class, getSlotsBasedOnDirection(isAbs ? ForgeDirection.NORTH : getOrient(direction, ForgeDirection.NORTH)));
-        int xNeg = getModuleCount(ItemModuleScale.class, getSlotsBasedOnDirection(isAbs ? ForgeDirection.WEST : getOrient(direction, ForgeDirection.WEST)));
+        int zNeg = getModuleCount(ItemModuleScale.class, getSlotsBasedOnDirection(useAbsoluteDirection ? ForgeDirection.NORTH : getOrient(direction, ForgeDirection.NORTH)));
+        int xNeg = getModuleCount(ItemModuleScale.class, getSlotsBasedOnDirection(useAbsoluteDirection ? ForgeDirection.WEST : getOrient(direction, ForgeDirection.WEST)));
         int yNeg = getModuleCount(ItemModuleScale.class, getSlotsBasedOnDirection(ForgeDirection.DOWN));
 
         int omnidirectionalScale = getModuleCount(ItemModuleScale.class, getModuleSlots());
@@ -266,7 +302,7 @@ public abstract class TileFieldMatrix extends TileModuleAcceptor implements IFie
 
         Vector3D translation = getTranslation();
 
-        Vector3D thisField = new Vector3D((IPos3D)this);
+        Vector3D thisField = new Vector3D((IPos3D) this);
         for (Vector3D position : newField)
         {
             Vector3D newPosition = position.clone();
@@ -283,27 +319,27 @@ public abstract class TileFieldMatrix extends TileModuleAcceptor implements IFie
     @Override
     public void setCalculating(boolean paramBoolean)
     {
-        this.isCalc = paramBoolean;
+        this.isCalculatingField = paramBoolean;
     }
 
     @Override
     public void setCalculated(boolean paramBoolean)
     {
-        this.isFinished = paramBoolean;
+        this.isFinishedCalculatingField = paramBoolean;
     }
 
     @Override
     public void writeToNBT(NBTTagCompound nbt)
     {
         super.writeToNBT(nbt);
-        nbt.setBoolean("isAbs", isAbs);
+        nbt.setBoolean("isAbs", useAbsoluteDirection);
     }
 
     @Override
     public void readFromNBT(NBTTagCompound nbt)
     {
         super.readFromNBT(nbt);
-        this.isAbs = nbt.getBoolean("isAbs");
+        this.useAbsoluteDirection = nbt.getBoolean("isAbs");
     }
 
     /**
@@ -319,7 +355,7 @@ public abstract class TileFieldMatrix extends TileModuleAcceptor implements IFie
             EntityToggle pkt = (EntityToggle) imessage;
             if (pkt.toggle_opcode == EntityToggle.ABSOLUTE_TOGGLE)
             {
-                this.isAbs = !this.isAbs;
+                this.useAbsoluteDirection = !this.useAbsoluteDirection;
                 worldObj.markBlockForUpdate(xCoord, yCoord, zCoord); //we need to signal that this entity has been changed serverside!
                 return null;
             }

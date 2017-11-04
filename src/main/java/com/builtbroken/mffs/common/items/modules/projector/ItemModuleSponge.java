@@ -50,7 +50,7 @@ public class ItemModuleSponge extends BaseModule
      * @return
      */
     @Override
-    public boolean onProject(IProjector projector, Set<Vector3D> fields)
+    public boolean prePlaceFieldBlock(IProjector projector, Set<Vector3D> fields)
     {
         if (projector.getTicks() % 60L == 0L)
         {
@@ -69,11 +69,11 @@ public class ItemModuleSponge extends BaseModule
                 }
             }
         }
-        return super.onProject(projector, fields);
+        return super.prePlaceFieldBlock(projector, fields);
     }
 
     @Override
-    public boolean requireTicks(ItemStack moduleStack)
+    public boolean doesRequireUpdate(ItemStack moduleStack)
     {
         return true;
     }

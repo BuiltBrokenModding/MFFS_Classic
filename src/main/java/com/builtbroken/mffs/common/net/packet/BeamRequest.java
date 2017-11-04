@@ -8,6 +8,7 @@ import net.minecraft.tileentity.TileEntity;
 /**
  * Created by pwaln on 7/6/2016.
  */
+@Deprecated
 public class BeamRequest extends TileEntityMessage
 {
 

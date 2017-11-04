@@ -46,7 +46,7 @@ public final class ItemModuleRepulsion extends BaseModule
      * @return
      */
     @Override
-    public boolean onProject(IProjector projector, Set<Vector3D> fields)
+    public boolean prePlaceFieldBlock(IProjector projector, Set<Vector3D> fields)
     {
         double velocity = Math.max(projector.getModuleCount(ItemModuleRepulsion.class) / 20, 1.2);
         projector.getCalculatedField().forEach(vec -> {
@@ -97,7 +97,7 @@ public final class ItemModuleRepulsion extends BaseModule
     }
 
     @Override
-    public boolean requireTicks(ItemStack moduleStack)
+    public boolean doesRequireUpdate(ItemStack moduleStack)
     {
         return true;
     }

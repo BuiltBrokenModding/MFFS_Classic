@@ -37,15 +37,15 @@ public class TileFortronCapacitor extends TileModuleAcceptor implements IFortron
 {
 
     /* Current distribution method */
-    private TransferMode mode = TransferMode.EQUALIZE;
+    private TransferMode mode = TransferMode.EQUALIZE; //TODO phase out transfer mode
 
     /**
      * Constructor.
      */
     public TileFortronCapacitor()
     {
-        this.fortronCapacity = 700;
-        this.fortronCapacityBoostPerCard = 10;
+        this.fortronCapacity = 700; //TODO move to config
+        this.fortronCapacityBoostPerCard = 10; //TODO move to config
         this.moduleInventory = new ModuleInventory(this, 2, getSizeInventory());
     }
 
@@ -56,7 +56,7 @@ public class TileFortronCapacitor extends TileModuleAcceptor implements IFortron
 
         if (this.isActive())
         {
-            int cost = getFortronCost() + MFFSSettings.CAPACITOR_POWER_DRAIN;
+            int cost = getFortronCost() + MFFSSettings.CAPACITOR_POWER_DRAIN; //TODO remove, storage shouldn't cost energy
             if (cost > 0)
             {
                 requestFortron(cost, true);
@@ -66,18 +66,18 @@ public class TileFortronCapacitor extends TileModuleAcceptor implements IFortron
             if (this.ticks % 10 == 0)
             { //cannot run if there is 0 energy!
                 Set<IFortronFrequency> connected = new HashSet<>();
-                for (ItemStack stack : getCards())
+                for (ItemStack stack : getCards()) //TODO replace with iterator
                 {
                     if (stack == null)
                     {
                         continue;
                     }
 
-                    if (stack.getItem() instanceof ICardInfinite)
+                    if (stack.getItem() instanceof ICardInfinite) //TODO change card to add energy to machine or for getEnergy() to return infinite
                     {
                         setFortronEnergy(getFortronCapacity());
                     }
-                    else if (stack.getItem() instanceof ICoordLink)
+                    else if (stack.getItem() instanceof ICoordLink) //TODO phase out
                     {
                         Location link = ((ICoordLink) stack.getItem()).getLink(stack);
                         if (link != null)
@@ -96,7 +96,7 @@ public class TileFortronCapacitor extends TileModuleAcceptor implements IFortron
                     getLinkedDevices(connected);
                 }
 
-                FortronHelper.transfer(this, connected, mode, getTransmissionRate());
+                FortronHelper.transfer(this, connected, mode, getTransmissionRate()); //TODO replace with internal method
             }
         }
     }
@@ -108,7 +108,7 @@ public class TileFortronCapacitor extends TileModuleAcceptor implements IFortron
      * @param stack
      */
     @Override
-    public boolean isItemValidForSlot(int slot, ItemStack stack)
+    public boolean isItemValidForSlot(int slot, ItemStack stack) //TODO phase out for inventory object
     {
         if (slot == 0)
         {
@@ -125,7 +125,7 @@ public class TileFortronCapacitor extends TileModuleAcceptor implements IFortron
      * @return
      */
     @Override
-    public Set<ItemStack> getCards()
+    public Set<ItemStack> getCards() //TODO phase out for inventory object
     {
         Set<ItemStack> set = new HashSet<>();
         set.add(super.getCard());
@@ -142,13 +142,13 @@ public class TileFortronCapacitor extends TileModuleAcceptor implements IFortron
     @Override
     public int getTransmissionRange()
     {
-        return 15 + getModuleCount(ItemModuleScale.class);
+        return 15 + getModuleCount(ItemModuleScale.class); //TODO move magic number to config
     }
 
     @Override
     public int getTransmissionRate()
     {
-        return 250 + 50 * getModuleCount(ItemModuleSpeed.class);
+        return 250 + 50 * getModuleCount(ItemModuleSpeed.class); //TODO move magic number to config
     }
 
     @Override
@@ -179,7 +179,7 @@ public class TileFortronCapacitor extends TileModuleAcceptor implements IFortron
     @Override
     public float getAmplifier()
     {
-        return .001F;
+        return .001F; //TODO why so low?
     }
 
     /**
@@ -188,7 +188,7 @@ public class TileFortronCapacitor extends TileModuleAcceptor implements IFortron
      * @param imessage The message.
      */
     @Override
-    public IMessage handleMessage(IMessage imessage)
+    public IMessage handleMessage(IMessage imessage) //TODO replace with VE packet system
     {
         if (imessage instanceof EntityToggle)
         {

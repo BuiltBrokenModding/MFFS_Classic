@@ -41,7 +41,7 @@ public class ItemModeCylinder extends ItemMode implements IRecipeContainer
         int radius = (posScale.xi() + negScale.xi() + posScale.zi() + negScale.zi()) / 2;
         int height = posScale.yi() + negScale.yi();
 
-        for (float x = -radius; x <= radius; x += 1.0F)
+        for (float x = -radius; x <= radius; x += 1.0F) //TODO optimize to not use a box iterator
         {
             for (float z = -radius; z <= radius; z += 1.0F)
             {
@@ -75,7 +75,7 @@ public class ItemModeCylinder extends ItemMode implements IRecipeContainer
         int radius = (posScale.xi() + negScale.xi() + posScale.zi() + negScale.zi()) / 2;
         int height = posScale.yi() + negScale.yi();
 
-        for (int x = -radius; x <= radius; x++)
+        for (int x = -radius; x <= radius; x++) //TODO optimize to not use a box iterator
         {
             for (int z = -radius; z <= radius; z++)
             {
@@ -103,9 +103,9 @@ public class ItemModeCylinder extends ItemMode implements IRecipeContainer
         int radius = (posScale.xi() + negScale.xi() + posScale.zi() + negScale.zi()) / 2;
 
         Vector3D projectorPos = new Vector3D((TileEntity) projector);
-        projectorPos.add(projector.getTranslation());
+        projectorPos.add(projector.getTranslation()); //TODO ?
 
-        Vector3D relativePosition = position.clone().subtract(projectorPos);
+        Vector3D relativePosition = position.clone().subtract(projectorPos); //TODO rework to not use relative position
 
         if (relativePosition.x * relativePosition.x + relativePosition.z * relativePosition.z <= radius * radius)
         {
@@ -126,7 +126,7 @@ public class ItemModeCylinder extends ItemMode implements IRecipeContainer
 
         int i = 0;
 
-        for (float renderX = -radius; renderX <= radius; renderX += detail)
+        for (float renderX = -radius; renderX <= radius; renderX += detail) //TODO use a shape object *face palm* this has to be eating FPS
         {
             for (float renderZ = -radius; renderZ <= radius; renderZ += detail)
             {
@@ -141,7 +141,6 @@ public class ItemModeCylinder extends ItemMode implements IRecipeContainer
                             ModelCube.INSTNACE.render();
                             GL11.glTranslated(-vector.x, -vector.y, -vector.z);
                         }
-
                         i++;
                     }
                 }

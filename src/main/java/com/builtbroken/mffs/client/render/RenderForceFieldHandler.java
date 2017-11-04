@@ -38,7 +38,7 @@ public class RenderForceFieldHandler implements ISimpleBlockRenderingHandler
 
         if ((tileEntity instanceof TileForceField))
         {
-            camoStack = ((TileForceField) tileEntity).camo;
+            camoStack = ((TileForceField) tileEntity).camouflageMaterial;
 
             if (camoStack != null)
             {

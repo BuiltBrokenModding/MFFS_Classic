@@ -33,16 +33,17 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * @author Calclavia
+ * @author Calclavia, DarkCow
  */
 public class TileForceFieldProjector extends TileFieldMatrix implements IProjector
 {
-
-    /* Set of all forceFields by this entity */
+    /** List of field blocks placed into the world */
     protected final Set<BlockPos> placedBlocks = new HashSet();
-    public boolean requireTicks, markFieldUpdate = true;
-    /* Flag indicating if this entity has finished */
-    private boolean isComplete;
+
+    public boolean modulesRequireTick; //TODO document
+    public boolean markFieldUpdate = true; //TODO document
+    /* Flag indicating if this entity has finished */ //TODO finished what?
+    private boolean isFieldCompleted;
 
     public TileForceFieldProjector()
     {
@@ -53,7 +54,7 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
     public void start()
     {
         super.start();
-        calculatedForceField();
+        triggerFieldCalculation();
     }
 
     @Override
@@ -67,21 +68,24 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
     public void updateEntity()
     {
         super.updateEntity();
-        if (isActive() && getMode() != null && requestFortron(getFortronCost(), false) >= getFortronCost()) //TODO instead of failing start removing blocks randomly
+        if (isActive() && getMode() != null && (!MFFSSettings.PROJECTOR_USE_POWER || requestFortron(getFortronCost(), false) >= getFortronCost())) //TODO instead of failing start removing blocks randomly
         {
-            int cost = getFortronCost();
-            //TODO separate out field cost from module cost
-            //TODO if fail module cost, field should die slowly (decay vs instant death)
-            //TODO if field cost fails, blocks should decay randomly
-            requestFortron(cost, true);
+            if (MFFSSettings.PROJECTOR_USE_POWER)
+            {
+                int cost = getFortronCost();
+                //TODO separate out field cost from module cost
+                //TODO if fail module cost, field should die slowly (decay vs instant death)
+                //TODO if field cost fails, blocks should decay randomly
+                requestFortron(cost, true);
+            }
 
             if (!this.worldObj.isRemote)
             {
-                if (this.ticks % 10 == 0 || markFieldUpdate || requireTicks)
+                if (this.ticks % 10 == 0 || markFieldUpdate || modulesRequireTick)
                 {
-                    if (!this.isFinished)
+                    if (!this.isFinishedCalculatingField)
                     {
-                        calculatedForceField();
+                        triggerFieldCalculation();
                     }
                     else
                     {
@@ -91,9 +95,9 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
             }
             else
             {
-                this.animation += getFortronCost() / 10;
+                this.animation += getFortronCost() / 10; //TODO why is this based on cost?
 
-                if (this.ticks % 40 == 0 && getModuleCount(ItemModuleSilence.class) <= 0)
+                if (this.ticks % 40 == 0 && getModuleCount(ItemModuleSilence.class) <= 0) //TODO move to event that can trigger audio and effects
                 {
                     this.worldObj.playSoundEffect(this.xCoord + 0.5, this.yCoord + 0.5, this.zCoord + 0.5, MFFS.DOMAIN + ":field", 0.6F, 1.0F - this.worldObj.rand.nextFloat() * 0.1F);
                 }
@@ -109,26 +113,18 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
      * Calculates the forcefield locations.
      */
     @Override
-    public void calculatedForceField()
+    public void triggerFieldCalculation()
     {
-        if (!isCalc)
-        {
-            IProjectorMode stack = getMode();
-            if (stack != null)
-            {
-                this.placedBlocks.clear();
-            }
-        }
-        super.calculatedForceField();
-        this.isComplete = false;
-        this.requireTicks = false;
+        super.triggerFieldCalculation();
+        this.isFieldCompleted = false;
+        this.modulesRequireTick = false;
 
         Set<ItemStack> modules = getModuleStacks();
         for (ItemStack stack : modules)
         {
-            if (((IFieldModule) stack.getItem()).requireTicks(stack))
+            if (((IFieldModule) stack.getItem()).doesRequireUpdate(stack)) //TODO seems to be unused?
             {
-                requireTicks = true;
+                modulesRequireTick = true;
                 return;
             }
         }
@@ -137,10 +133,6 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
     @Override
     public void onCalculationCompletion()
     {
-        //TODO: Send field to client
-        //Check if repulsion
-        //if(getModuleCount())
-        //ModularForcefieldSystem.channel.sendToAll(new ForcefieldCalculation(TileForceFieldProjector.this));
     }
 
     @Override
@@ -152,7 +144,7 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
     @Override
     public int getProjectionSpeed()
     {
-        return 28 + 28 * getModuleCount(ItemModuleSpeed.class, getModuleSlots());
+        return 28 + 28 * getModuleCount(ItemModuleSpeed.class, getModuleSlots()); //TODO add configs
     }
 
     @Override
@@ -170,8 +162,13 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
         IProjectorMode mode = getMode();
         if (mode != null)
         {
+            //Cost just for the blocks
             int costForBlocks = Math.round(MFFSSettings.PROJECTOR_UPKEEP_COST * getForceFields().size());
+
+            //Cost for the modules
             int moduleCost = super.calculateFortronCost() + mode.getFortronCost(getAmplifier());
+
+            //Total
             return Math.round(costForBlocks + moduleCost);
         }
         return 0;
@@ -195,26 +192,23 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
      */
     private boolean canReplace(Vector3D vec)
     {
-        Block block = vec.getBlock(this.worldObj);
+        final Block block = vec.getBlock(this.worldObj);
         if (!(block instanceof BlockForceField))
         {
-            final int disintegrationModule = getModuleCount(ItemModuleDisintegration.class); //TODO cache, do not recalc each tick
             if (block != null)
             {
-                if (disintegrationModule > 0 && block.getBlockHardness(worldObj, vec.intX(), vec.intY(), vec.intZ()) >= 0)
-                {
-                    return true;
-                }
-                return block.isReplaceable(worldObj, vec.intX(), vec.intY(), vec.intZ());
+                return block.isReplaceable(worldObj, vec.intX(), vec.intY(), vec.intZ())
+                        || getModuleCount(ItemModuleDisintegration.class) > 0 && block.getBlockHardness(worldObj, vec.intX(), vec.intY(), vec.intZ()) >= 0;
             }
-            return disintegrationModule > 0;
+            return true; //No block, can place
         }
         return false;
     }
 
+    @Override
     public void projectField()
     {
-        if (this.isFinished && !this.isCalc && (!this.isComplete || this.markFieldUpdate || this.requireTicks))
+        if (this.isFinishedCalculatingField && !this.isCalculatingField && (!this.isFieldCompleted || this.markFieldUpdate || this.modulesRequireTick))
         {
             this.markFieldUpdate = false;
 
@@ -227,7 +221,7 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
                 Set<Vector3D> fieldToBeProjected = this.calculatedFields;
                 for (IFieldModule module : getModules(getModuleSlots()))
                 {
-                    if (module.onProject(this, fieldToBeProjected))
+                    if (module.prePlaceFieldBlock(this, fieldToBeProjected))
                     {
                         return;
                     }
@@ -236,28 +230,30 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
 
 
                 //Get force field blocks
-                Vector3D projector = new Vector3D((IPos3D)this);
+                Vector3D projector = new Vector3D((IPos3D) this); //TODO convert to block pos
 
-                //Collect blocks to place
+                //Collect blocks to place TODO convert to queue, store as blocks left to place
                 fieldToBeProjected = fieldToBeProjected.stream()
                         .filter(x -> !x.equals(projector) && canReplace(x))
-                        .filter(w -> getWorldObj().getChunkFromBlockCoords(w.intX(), w.intZ()).isChunkLoaded)
-                        .limit(placementLimit).collect(Collectors.toSet());
+                        .filter(w -> getWorldObj().getChunkFromBlockCoords(w.intX(), w.intZ()).isChunkLoaded) //TODO Chunk loading check likely doesn't work
+                        .limit(placementLimit).collect(Collectors.toSet()); //TODO remove stream system, just iterate normally
 
                 //Place force field blocks
                 for (Vector3D vec : fieldToBeProjected)
                 {
                     int flag = 0; //TODO what is this flag?
 
-                    int powerCost = MFFSSettings.PROJECTOR_CREATION_COST;
-                    if (requestFortron(powerCost, false) >= powerCost)
+                    final int powerCost = MFFSSettings.PROJECTOR_CREATION_COST; //TODO maybe allow modules to change?
+
+                    //Only place block if we have enough power
+                    if (consumeFortron(powerCost, false))
                     {
                         //Check with modules if tile can be placed?
                         for (ItemStack stack : getModuleStacks(getModuleSlots()))
                         {
-                            if (flag == 0 && stack != null && stack.getItem() instanceof IFieldModule)
+                            if (flag == 0 && stack != null && stack.getItem() instanceof IFieldModule) //TODO why check for zero if there is already a break?
                             {
-                                flag = ((IFieldModule) stack.getItem()).onProject(this, vec);
+                                flag = ((IFieldModule) stack.getItem()).prePlaceFieldBlock(this, vec);
                                 if (flag != 0)
                                 {
                                     break;
@@ -265,69 +261,139 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
                             }
                         }
 
-                        if (flag != 1 && flag != 2)
+                        if (flag != 1 && flag != 2) //TODO what do these flags do?
                         {
-                            worldObj.setBlock(vec.intX(), vec.intY(), vec.intZ(), BlockForceField.BLOCK_FORCE_FIELD, 0, 2);
-
-                            //Track blocks placed
-                            this.placedBlocks.add(new BlockPos(vec.intX(), vec.intY(), vec.intZ()));
-
-                            TileEntity entity = vec.getTileEntity(worldObj);
-                            if (entity instanceof TileForceField)
-                            {
-                                ((TileForceField) entity).setProjector(projector);
-                            }
+                            //Place block
+                            placeFieldBlock(vec.intX(), vec.intY(), vec.intZ());
 
                             //Consume power
-                            requestFortron(powerCost, true);
+                            consumeFortron(powerCost, true);
                         }
                     }
                     else
                     {
+                        //No power, stop trying to place blocks
                         break;
                     }
                 }
-                this.isComplete = (fieldToBeProjected.size() == 0);
+
+                //Update completed check
+                this.isFieldCompleted = (fieldToBeProjected.size() == 0);
             }
         }
+    }
+
+    protected boolean consumeFortron(int amount, boolean doAction)
+    {
+        return !MFFSSettings.PROJECTOR_USE_POWER || requestFortron(amount, doAction) >= amount;
+    }
+
+    /**
+     * Places a field block at the location
+     * <p>
+     * Only ckecks if a block is already placed of same type
+     *
+     * @param x
+     * @param y
+     * @param z
+     */
+    protected void placeFieldBlock(int x, int y, int z)
+    {
+        BlockPos pos = new BlockPos(x, y, z);
+        Block block = pos.getBlock(worldObj);
+
+        //Only place if not a field block
+        if (!(block instanceof BlockForceField))
+        {
+            //Place block
+            if (worldObj.setBlock(x, y, z, BlockForceField.BLOCK_FORCE_FIELD, 0, 2))
+            {
+                //Track blocks placed
+                if (!placedBlocks.contains(pos))
+                {
+                    this.placedBlocks.add(pos);
+                }
+
+                //Update data
+                TileEntity entity = worldObj.getTileEntity(x, y, z);
+                if (entity instanceof TileForceField)
+                {
+                    ((TileForceField) entity).setProjectorPosition(this);
+                }
+            }
+        }
+        //is field block, check if we own the block but forgot about it
+        else
+        {
+            TileEntity tile = worldObj.getTileEntity(x, y, z);
+            if (tile instanceof TileForceField)
+            {
+                IPos3D projectorPosition = ((TileForceField) tile).getProjectorPosition();
+
+                //No position == free block
+                if (projectorPosition == null)
+                {
+                    ((TileForceField) tile).setProjectorPosition(this);
+                }
+                //If position results in use, claim the block
+                else if (((TileForceField) tile).getProjector() == this)
+                {
+                    //Track blocks placed
+                    if (!placedBlocks.contains(pos))
+                    {
+                        this.placedBlocks.add(pos);
+                    }
+                }
+            }
+        }
+    }
+
+    public void destroyFieldBlock(int x, int y, int z)
+    {
+        //TODO remove block
+        queueFieldForPlacement(x, y, z);
+    }
+
+    public void queueFieldForPlacement(int x, int y, int z)
+    {
+        //TODO add to placement queue
+        //TODO trigger field to generate
     }
 
     @Override
     public void markDirty()
     {
         super.markDirty();
-        destroyField();
+        destroyField(); //TODO no, field should not destroy each time the tile changes
     }
 
     @Override
     public void destroyField()
     {
-        if (!this.isCalc && isFinished)
+        synchronized (placedBlocks) //TODO check if needed
         {
-            synchronized (placedBlocks) //TODO check if needed
+            //Trigger event on modules
+            for (IFieldModule module : getModules(getModuleSlots()))
             {
-                for (IFieldModule module : getModules(getModuleSlots()))
+                if (module.onDestroy(this, getCalculatedField()))
                 {
-                    if (module.onDestroy(this, getCalculatedField()))
-                    {
-                        break;
-                    }
-                }
-                for (BlockPos pos : placedBlocks)
-                {
-                    Block block = pos.getBlock(worldObj);
-                    if (block instanceof BlockForceField)
-                    {
-                        worldObj.setBlockToAir(pos.xi(), pos.yi(), pos.zi());
-                    }
+                    break;
                 }
             }
-            this.placedBlocks.clear();
-            this.calculatedFields.clear();
-            this.isComplete = false;
-            this.isFinished = false;
-            this.requireTicks = false;
+            for (BlockPos pos : placedBlocks)
+            {
+                Block block = pos.getBlock(worldObj);
+                if (block instanceof BlockForceField)
+                {
+                    worldObj.setBlockToAir(pos.xi(), pos.yi(), pos.zi());
+                }
+            }
         }
+        this.placedBlocks.clear();
+        this.calculatedFields.clear();
+        this.isFieldCompleted = false;
+        this.isFinishedCalculatingField = false;
+        this.modulesRequireTick = false;
     }
 
     /**
@@ -335,10 +401,10 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
      *
      * @return
      */
-    public List<Item> getFilterItems()
+    public List<Item> getFilterItems() //TODO is this used? if so what for?
     {
         List<Item> stacks = new ArrayList<>();
-        for (int slot = 26; slot < 32; slot++)
+        for (int slot = 26; slot < 32; slot++) //TODO remove hard coded numbers
         {
             ItemStack stack = getStackInSlot(slot);
             if (stack != null)
@@ -354,10 +420,10 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
      *
      * @return
      */
-    public List<ItemStack> getFilterStacks()
+    public List<ItemStack> getFilterStacks() //TODO what is this used for?
     {
         List<ItemStack> stacks = new ArrayList<>();
-        for (int slot = 26; slot < 32; slot++)
+        for (int slot = 26; slot < 32; slot++) //TODO remove hard coded numbers
         {
             ItemStack stack = getStackInSlot(slot);
             if (stack != null)
@@ -398,7 +464,7 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
                 return stack.getItem() instanceof ItemMode;
         }
 
-        if (slot < 26)
+        if (slot < 26) //TODO remove hard coded numbers
         {
             return stack.getItem() instanceof IFieldModule;
         }
@@ -413,18 +479,18 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
     @Override
     public IMessage handleMessage(IMessage imessage)
     {
-        if (imessage instanceof ForcefieldCalculation)
+        if (imessage instanceof ForcefieldCalculation) //TODO why does the client need to understand the field?
         {
             ForcefieldCalculation calc = (ForcefieldCalculation) imessage;
             getCalculatedField().clear();
             getCalculatedField().addAll(calc.getBlocks());
-            this.isCalc = true;
+            this.isCalculatingField = true;
             return null; //we are done!
         }
         else if (imessage instanceof BeamRequest)
         {
-            BeamRequest req = (BeamRequest) imessage;
-            MFFS.proxy.registerBeamEffect(worldObj, req.destination.translate(.5), new Vector3D((IPos3D)this).translate(.5), 1.0F, 0.0F, 0.0F, 40);
+            BeamRequest req = (BeamRequest) imessage;  //TODO move to event system
+            MFFS.proxy.registerBeamEffect(worldObj, req.destination.translate(.5), new Vector3D((IPos3D) this).translate(.5), 1.0F, 0.0F, 0.0F, 40);
             MFFS.proxy.animateFortron(worldObj, req.destination, 1.0F, 0.0F, 0.0F, 60);
             return null;
         }

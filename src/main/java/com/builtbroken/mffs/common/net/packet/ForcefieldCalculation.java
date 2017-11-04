@@ -11,6 +11,7 @@ import java.util.Set;
 /**
  * Created by pwaln on 7/3/2016.
  */
+@Deprecated
 public class ForcefieldCalculation extends TileEntityMessage
 {
 

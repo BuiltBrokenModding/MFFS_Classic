@@ -49,7 +49,7 @@ public class ItemModuleFusion extends BaseModule implements IRecipeContainer
      * @return
      */
     @Override
-    public boolean onProject(IProjector projector, Set<Vector3D> fieldBlocks)
+    public boolean prePlaceFieldBlock(IProjector projector, Set<Vector3D> fieldBlocks)
     {
         Set<IBlockFrequency> machines = FrequencyGrid.instance().get(((IFortronFrequency) projector).getFrequency());
 

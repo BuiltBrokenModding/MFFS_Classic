@@ -14,7 +14,7 @@ import java.util.Set;
 /**
  * Created by pwaln on 6/9/2016.
  */
-public class ItemModeCustom extends ItemMode
+public class ItemModeCustom extends ItemMode //TODO implement
 {
 
     private static final String NBT_ID = "id";

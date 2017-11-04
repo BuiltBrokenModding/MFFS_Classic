@@ -115,3 +115,18 @@ How will this be implemented? The first step will be to overhaul the existing fu
 * Usage per content
 * All equations/math per content
 * Relationship map per content
+
+## Rendering
+
+* Convert machine renders to JSON system
+* Convert active render of static content to static renders
+* Replace shape renders to cards to actual model objects (stop rendering 100+ micro cubes)
+* Add configs and GUI option to disable active renders
+* Add GUY option to disable projector card model render (honest its annoying sometimes)
+* Add opaque renders options for some machines (mainly for map builders to hide machines)
+* Allow color coding beam transfers (mainly for map builders)
+
+## Textures
+
+* Redo all of the card icons (there confusing, all looking roughly the same)
+* Use color codes for card types (upgrade vs projector vs field property)

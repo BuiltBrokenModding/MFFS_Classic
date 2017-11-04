@@ -1,9 +1,9 @@
 package com.builtbroken.mffs.content.field;
 
+import com.builtbroken.jlib.data.vector.IPos3D;
+import com.builtbroken.mc.imp.transform.vector.BlockPos;
 import com.builtbroken.mffs.api.vector.Vector3D;
-import com.builtbroken.mffs.common.items.modules.projector.ItemModuleCamouflage;
 import com.builtbroken.mffs.content.projector.TileForceFieldProjector;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -12,16 +12,18 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 
 /**
- * @author Calclavia
+ * @author Calclavia, DarkCow
  */
-public final class TileForceField extends TileEntity
+public final class TileForceField extends TileEntity //TODO find a way to remove the need for a tile entity
 {
+    public static final String NBT_PROJECTOR_POSITION = "projectorPosition";
+    public static final String NBT_CAMOUFLAGE = "camouflage";
 
-    /* Represents the item that is this block */
-    public ItemStack camo;
+    /** Material to render in place of the default block */
+    public ItemStack camouflageMaterial;
 
     /* Location of the projector */
-    private Vector3D projector;
+    private BlockPos projectorPosition;
 
     /**
      * Determines if this TileEntity requires update calls.
@@ -41,14 +43,13 @@ public final class TileForceField extends TileEntity
     public Packet getDescriptionPacket()
     {
         NBTTagCompound tag = new NBTTagCompound();
-        writeToNBT(tag);
-        if (getProj() != null)
+        if (this.camouflageMaterial != null)
         {
-            if (this.camo != null)
-            {
-                tag.setTag("camo", camo.writeToNBT(new NBTTagCompound()));
-            }
-            tag.setTag("proj", projector.writeToNBT(new NBTTagCompound()));
+            tag.setTag(NBT_CAMOUFLAGE, camouflageMaterial.writeToNBT(new NBTTagCompound()));
+        }
+        if (projectorPosition != null)
+        {
+            tag.setTag(NBT_PROJECTOR_POSITION, projectorPosition.save());
         }
         return new S35PacketUpdateTileEntity(this.xCoord, this.yCoord, this.zCoord, 0, tag);
     }
@@ -65,35 +66,28 @@ public final class TileForceField extends TileEntity
     @Override
     public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
     {
-        if (pkt.func_148857_g().hasKey("camo"))
+        if (pkt.func_148857_g().hasKey(NBT_CAMOUFLAGE))
         {
-            camo = ItemStack.loadItemStackFromNBT(pkt.func_148857_g().getCompoundTag("camo"));
+            camouflageMaterial = ItemStack.loadItemStackFromNBT(pkt.func_148857_g().getCompoundTag(NBT_CAMOUFLAGE));
         }
-        if (pkt.func_148857_g().hasKey("proj"))
+        if (pkt.func_148857_g().hasKey(NBT_PROJECTOR_POSITION))
         {
-            NBTTagCompound tag = pkt.func_148857_g().getCompoundTag("proj");
-            if (projector != null)
-            {
-                projector.x = tag.getDouble("x");
-                projector.y = tag.getDouble("y");
-                projector.z = tag.getDouble("z");
-            }
-            else
-            {
-                setProjector(new Vector3D(tag));
-            }
+            projectorPosition = new BlockPos(pkt.func_148857_g().getCompoundTag(NBT_PROJECTOR_POSITION));
             worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
         }
-        super.onDataPacket(net, pkt);
     }
 
     @Override
     public void writeToNBT(NBTTagCompound nbt)
     {
         super.writeToNBT(nbt);
-        if (getProj() != null)
+        if (projectorPosition != null)
         {
-            nbt.setTag("proj", projector.writeToNBT(new NBTTagCompound()));
+            nbt.setTag(NBT_PROJECTOR_POSITION, projectorPosition.save());
+        }
+        if (camouflageMaterial != null)
+        {
+            nbt.setTag(NBT_CAMOUFLAGE, camouflageMaterial.writeToNBT(new NBTTagCompound()));
         }
     }
 
@@ -101,7 +95,14 @@ public final class TileForceField extends TileEntity
     public void readFromNBT(NBTTagCompound nbt)
     {
         super.readFromNBT(nbt);
-        projector = new Vector3D(nbt.getCompoundTag("proj"));
+        if (nbt.hasKey(NBT_PROJECTOR_POSITION))
+        {
+            projectorPosition = new BlockPos(nbt.getCompoundTag(NBT_PROJECTOR_POSITION));
+        }
+        if (nbt.hasKey(NBT_CAMOUFLAGE))
+        {
+            camouflageMaterial = ItemStack.loadItemStackFromNBT(nbt.getCompoundTag(NBT_CAMOUFLAGE));
+        }
     }
 
     /**
@@ -109,13 +110,14 @@ public final class TileForceField extends TileEntity
      *
      * @param vec
      */
-    public void setProjector(Vector3D vec)
+    public void setProjectorPosition(IPos3D vec)
     {
-        this.projector = vec;
-        if (!this.worldObj.isRemote)
-        {
-            refresh();
-        }
+        this.projectorPosition = vec instanceof BlockPos ? (BlockPos) vec : new BlockPos(vec);
+    }
+
+    public IPos3D getProjectorPosition()
+    {
+        return projectorPosition;
     }
 
     /**
@@ -123,34 +125,15 @@ public final class TileForceField extends TileEntity
      *
      * @return
      */
-    public TileForceFieldProjector getProj()
+    public TileForceFieldProjector getProjector()
     {
-        TileForceFieldProjector proj = findProj();
-        if (proj != null)
+        if (this.projectorPosition != null)
         {
-            return proj;
-        }
-
-        if (!worldObj.isRemote)
-        {
-            worldObj.setBlockToAir(xCoord, yCoord, zCoord);
-        }
-        return null;
-    }
-
-    /**
-     * Gets the projector located at the given location.
-     *
-     * @return
-     */
-    public TileForceFieldProjector findProj()
-    {
-        if (this.projector != null)
-        {
-            TileEntity entity = projector.getTileEntity(getWorldObj());
+            //TODO check if chunk is loaded first
+            TileEntity entity = projectorPosition.getTileEntity(getWorldObj());
             if (entity != null && entity instanceof TileForceFieldProjector)
             {
-                if (worldObj.isRemote || ((TileForceFieldProjector) entity).getCalculatedField().contains(new Vector3D(this)))
+                if (worldObj.isRemote || ((TileForceFieldProjector) entity).getCalculatedField().contains(new Vector3D(this))) //TODO change to block pos
                 {
                     return (TileForceFieldProjector) entity;
                 }
@@ -159,31 +142,8 @@ public final class TileForceField extends TileEntity
         return null;
     }
 
-    public Vector3D getProjLoc()
+    public boolean shouldDestroy()
     {
-        return this.projector;
-    }
-
-    /**
-     * Refreshes all attributes of this entity.
-     */
-    private void refresh()
-    {
-        TileForceFieldProjector proj = findProj();
-        if (proj != null)
-        {
-            if (proj.getModuleCount(ItemModuleCamouflage.class) > 0)
-            {
-                //TODO: CustomMode
-                for (ItemStack stack : proj.getFilterStacks())
-                {
-                    if (stack != null && stack.getItem() instanceof ItemBlock)
-                    {
-                        this.camo = stack;
-                        return;
-                    }
-                }
-            }
-        }
+        return getProjector() == null;  //TODO check if chunk is loaded first, don't destroy if chunk doesn't exist to avoid lag
     }
 }

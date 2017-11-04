@@ -36,9 +36,8 @@ import java.util.Random;
 /**
  * Created by pwaln on 6/24/2016.
  */
-public class BlockForceField extends Block implements ITileEntityProvider, IForceFieldBlock
+public class BlockForceField extends Block implements ITileEntityProvider, IForceFieldBlock //TODO add waila support to fix camo
 {
-
     /**
      * Force Field Block to reference!
      */
@@ -51,8 +50,33 @@ public class BlockForceField extends Block implements ITileEntityProvider, IForc
     {
         super(Material.glass);
         setResistance(999.0F);
-        this.setBlockUnbreakable();
+        setBlockUnbreakable();
         setCreativeTab(null);
+    }
+
+    @Override
+    public void onBlockAdded(World world, int x, int y, int z)
+    {
+        if (!world.isRemote)
+        {
+            world.scheduleBlockUpdate(x, y, z, this, (x + y + z) % 10);
+        }
+    }
+
+    @Override
+    public void updateTick(World world, int x, int y, int z, Random random)
+    {
+        if (!world.isRemote)
+        {
+            //Schedule next tick, we want blocks to not all update at the same time
+            world.scheduleBlockUpdate(x, y, z, this, (x + y + z) % 10);
+
+            TileEntity tile = world.getTileEntity(x, y, z);
+            if (tile instanceof TileForceField && ((TileForceField) tile).shouldDestroy())
+            {
+                world.setBlockToAir(x, y, z);
+            }
+        }
     }
 
 
@@ -62,7 +86,7 @@ public class BlockForceField extends Block implements ITileEntityProvider, IForc
         TileEntity tile = access.getTileEntity(x, y, z);
         if (tile instanceof TileForceField)
         {
-            return ((TileForceField) tile).getProj();
+            return ((TileForceField) tile).getProjector();
         }
         return null;
     }
@@ -73,10 +97,10 @@ public class BlockForceField extends Block implements ITileEntityProvider, IForc
         IProjector proj = getProjector(world, x, y, z);
         if (proj != null)
         {
-            ((IFortronStorage) proj).provideFortron(joules, true);
+            ((IFortronStorage) proj).provideFortron(joules, true); //TODO scale power
         }
 
-        if (!world.isRemote)
+        if (!world.isRemote) //TODO ask field if should break
         {
             world.setBlockToAir(x, y, z);
         }
@@ -127,7 +151,7 @@ public class BlockForceField extends Block implements ITileEntityProvider, IForc
         TileEntity tile = access.getTileEntity(x, y, z);
         if (tile instanceof TileForceField)
         {
-            ItemStack camo = ((TileForceField) tile).camo;
+            ItemStack camo = ((TileForceField) tile).camouflageMaterial;
             if (camo != null && camo.getItem() instanceof ItemBlock)
             {
                 ItemBlock block = (ItemBlock) camo.getItem();
@@ -152,7 +176,7 @@ public class BlockForceField extends Block implements ITileEntityProvider, IForc
         TileEntity tile = world.getTileEntity(x, y, z);
         if (tile instanceof TileForceField)
         {
-            ItemStack stack = ((TileForceField) tile).camo;
+            ItemStack stack = ((TileForceField) tile).camouflageMaterial;
             if (stack != null && stack.getItem() instanceof ItemBlock)
             {
                 return ((ItemBlock) stack.getItem()).field_150939_a.colorMultiplier(world, x, y, z);
@@ -261,7 +285,7 @@ public class BlockForceField extends Block implements ITileEntityProvider, IForc
      * @param z
      */
     @Override
-    public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z)
+    public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z) //TODO change to not need sneaking
     {
         IProjector proj = getProjector(world, x, y, z);
         if (proj != null)
@@ -300,7 +324,7 @@ public class BlockForceField extends Block implements ITileEntityProvider, IForc
         TileEntity tile = world.getTileEntity(x, y, z);
         if (tile instanceof TileForceField)
         {
-            IProjector proj = ((TileForceField) tile).findProj();
+            IProjector proj = ((TileForceField) tile).getProjector();
             if (proj != null)
             {
                 return Math.min(proj.getModuleCount(ItemModuleGlow.class), 64) / 64 * 15;
@@ -316,7 +340,7 @@ public class BlockForceField extends Block implements ITileEntityProvider, IForc
         TileEntity tile = world.getTileEntity(x, y, z);
         if (tile instanceof TileForceField)
         {
-            ItemStack stack = ((TileForceField) tile).camo;
+            ItemStack stack = ((TileForceField) tile).camouflageMaterial;
             try
             {
                 return stack != null && ((ItemBlock) stack.getItem()).field_150939_a.shouldSideBeRendered(world, x, y, z, p_149646_5_);
