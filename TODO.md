@@ -1,5 +1,40 @@
 List of changes that need to be made to the mod
 
+## Power
+* Balance power cost
+* Mod should be accessible mid game instead of end game
+* Reactors should only be required for larger fields (200m radius+)
+* Small should only require coal generators for power scale (10-20 coal generators as 40RF/t for 16 scale sphere field)
+* Module cards should only cost power if they do work or modify the field
+* Module cards should have a flat power cost unless they modify field behavior
+
+## Configs
+* Everything should have a config
+* Server configs should be seperate from client configs
+* All audio needs a config with GUI in game controls
+
+## Power cards
+* Sponge - power cost per block removed
+* Camo - per block upkeep increase
+* Disintegration - cost per block removed
+* Glow - upkeep cost increase
+* Projector types (cube, sphere, etc) - should all cost the same as long as the shape is simple
+* Silence - no power cost by default, with config to enable power cost
+* Stabilize - cost per block placed
+* Invert - no cost, thing basicly spikes power cost by default
+* Shock - power per attack
+
+
+## Power grid
+Right now the power systems work just like any other power system. We have generators, storage, inputs, and exports. This heavily reduces the effectiveness of the fields, limits power movement, and causes lag. To improve this we have two options. We can continue to use said system with tweaks to control behavior. OR, the system can be replaced with a graph of nodes that all act as one large machine. Effectively this would make the system highly passive with very few updates. 
+
+How would this work? A network object would be created and machines would connect to the network. Each machine would supply a list of connections to other machines. The network object would then build a graph of inputs to outputs. Then map out how power flows through the network and is used by the network. 
+
+The network would take full control over power balance and storage. If the network produces more power than used it will store power in each machine alonge the path. If the network is full it will go on silent mode until a change is made. 
+
+How will a user handle this change? From the user point of view nothing should change. They will setup the machines the same way. The only difference will be the backend functionality. 
+
+How will this be implemented? The first step will be to overhaul the existing functionality. Add in all the behavior changes to improve how the user can manage there network of connections. Once this is done then the network object can be created to start mapping connections and testing logic. After everything is shown to work then machine functionality can be replaced with network logic. 
 
 ## JSON port
 
@@ -40,7 +75,24 @@ List of changes that need to be made to the mod
 * Add upgrade GUI
 * Add info GUI
 * Add details information (input rate, output rate, upgrade bonus applied)
- 
+
+## Missing content
+* Add block mover
+* Add custom module (with very limited setup or custom save format [nbt doesn't like a lot of data])
+
+## New Content
+* Add entity projector
+* Create merged but weaker version of projector + fortron genertor (Used for simple doors)
+* Add tiered versions of all tiles (limit abilities by tiers)
+* Add remote control station to manage projectors over a large base
+* Add redstone block to control fields remotely (allows for automated doors)
+* Add block protector, can be a card or block (generates a protective field to prevent block breaking, only renders field when blocks are attacked)
+* Add wall projector card (creates flat wall, for use in doors, GUI settings to change direction)
+* Add box projector card (generates 4 walls, for use as a fence)
+
+## Biometric Identifier
+* Implement global permission system
+* Phase ID cards out for GUI system
 
 ## Tiles 
 
