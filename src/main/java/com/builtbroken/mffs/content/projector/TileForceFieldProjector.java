@@ -86,6 +86,8 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
                     if (!this.isFinishedCalculatingField)
                     {
                         triggerFieldCalculation();
+                        //TODO add a massive delay on re-scan if modules have changed in case user is still editing
+                        //TODO maybe add a lock to inserting upgrades while running?
                     }
                     else
                     {

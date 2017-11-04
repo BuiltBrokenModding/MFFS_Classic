@@ -21,7 +21,6 @@ import org.lwjgl.opengl.GL11;
 @SideOnly(Side.CLIENT)
 public class RenderForceFieldProjector extends TileEntitySpecialRenderer
 {
-
     public static final ResourceLocation TEXTURE_ON = new ResourceLocation(MFFS.DOMAIN, "textures/models/projector_on.png");
     public static final ResourceLocation TEXTURE_OFF = new ResourceLocation(MFFS.DOMAIN, "textures/models/projector_off.png");
     public static final ResourceLocation FORCE_CUBE = new ResourceLocation(MFFS.DOMAIN, "textures/models/force_cube.png");
@@ -33,6 +32,7 @@ public class RenderForceFieldProjector extends TileEntitySpecialRenderer
         TileForceFieldProjector tileEntity = (TileForceFieldProjector) t;
 
 
+        //--------------------------------
         GL11.glPushMatrix();
         GL11.glTranslated(x + 0.5D, y + 1.5D, z + 0.5D);
         FMLClientHandler.instance().getClient().renderEngine.bindTexture(tileEntity.isActive() ? TEXTURE_ON : TEXTURE_OFF);
@@ -42,11 +42,10 @@ public class RenderForceFieldProjector extends TileEntitySpecialRenderer
         MODEL.render(tileEntity.animation, 0.0625F);
 
         GL11.glPopMatrix();
+        //--------------------------------
 
         if (tileEntity.getMode() != null)
         {
-
-
             Tessellator tessellator = Tessellator.instance;
 
             RenderHelper.disableStandardItemLighting();
@@ -57,6 +56,7 @@ public class RenderForceFieldProjector extends TileEntitySpecialRenderer
             double zDifference = Minecraft.getMinecraft().thePlayer.posZ - (tileEntity.zCoord + 0.5D);
             float rotatation = (float) Math.toDegrees(Math.atan2(zDifference, xDifference));
             GL11.glRotatef(-rotatation + 27.0F, 0.0F, 1.0F, 0.0F);
+
             GL11.glDisable(3553);
             GL11.glShadeModel(7425);
             GL11.glEnable(3042);
@@ -64,11 +64,12 @@ public class RenderForceFieldProjector extends TileEntitySpecialRenderer
             GL11.glDisable(3008);
             GL11.glEnable(2884);
             GL11.glDepthMask(false);
-            GL11.glPushMatrix();
 
+            //Render pyramid shape?
+            GL11.glPushMatrix();
             tessellator.startDrawing(6);
-            float height = 2.0F;
-            float width = 2.0F;
+            final float height = 2.0F;
+            final float width = 2.0F;
             tessellator.setColorRGBA(72, 198, 255, 255);
             tessellator.addVertex(0.0D, 0.0D, 0.0D);
             tessellator.setColorRGBA_I(0, 0);
@@ -77,8 +78,8 @@ public class RenderForceFieldProjector extends TileEntitySpecialRenderer
             tessellator.addVertex(0.0D, height, 1.0F * width);
             tessellator.addVertex(-0.866D * width, height, -0.5F * width);
             tessellator.draw();
-
             GL11.glPopMatrix();
+
             GL11.glDepthMask(true);
             GL11.glDisable(2884);
             GL11.glDisable(3042);
@@ -89,9 +90,10 @@ public class RenderForceFieldProjector extends TileEntitySpecialRenderer
             RenderHelper.enableStandardItemLighting();
             GL11.glPopMatrix();
 
-            //if (Settings.HIGH_GRAPHICS)
-            //{
 
+            //--------------------------------
+            //Render shape
+            //--------------------------------
 
             GL11.glPushMatrix();
             GL11.glTranslated(x + 0.5D, y + 1.35D, z + 0.5D);
@@ -102,6 +104,8 @@ public class RenderForceFieldProjector extends TileEntitySpecialRenderer
             GL11.glBlendFunc(770, 771);
             RenderHelper.disableStandardItemLighting();
             OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0F, 240.0F);
+
+            //--------------------------------
             GL11.glPushMatrix();
             GL11.glColor4f(1.0F, 1.0F, 1.0F, (float) Math.sin(tileEntity.getTicks() / 10.0D) / 2.0F + 1.0F);
             GL11.glTranslatef(0.0F, (float) Math.sin(Math.toRadians(tileEntity.getTicks() * 3L)) / 7.0F, 0.0F);
@@ -109,6 +113,7 @@ public class RenderForceFieldProjector extends TileEntitySpecialRenderer
             GL11.glRotatef(36.0F + (float) (tileEntity.getTicks() * 4L), 0.0F, 1.0F, 1.0F);
             tileEntity.getMode().render(tileEntity, x, y, z, f, tileEntity.getTicks());
             GL11.glPopMatrix();
+            //--------------------------------
 
 
             GL11.glShadeModel(7424);
@@ -116,7 +121,7 @@ public class RenderForceFieldProjector extends TileEntitySpecialRenderer
             GL11.glDisable(2881);
             GL11.glDisable(3042);
             GL11.glPopMatrix();
-            //}
+            //--------------------------------
 
         }
 

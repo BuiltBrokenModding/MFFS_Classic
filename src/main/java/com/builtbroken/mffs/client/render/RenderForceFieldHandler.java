@@ -1,5 +1,6 @@
 package com.builtbroken.mffs.client.render;
 
+import com.builtbroken.mc.core.Engine;
 import com.builtbroken.mffs.content.field.TileForceField;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
@@ -31,6 +32,7 @@ public class RenderForceFieldHandler implements ISimpleBlockRenderingHandler
     @Override
     public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, Block block, int modelId, RenderBlocks renderer)
     {
+        //TODO fix, something about this code causes the render system in MC to end up with a vertexIndex of 0 crashing the game
         int renderType = 0;
         ItemStack camoStack = null;
         Block camoBlock = null;
@@ -53,8 +55,6 @@ public class RenderForceFieldHandler implements ISimpleBlockRenderingHandler
 
         if (renderType >= 0)
         {
-
-
             try
             {
 
@@ -125,6 +125,10 @@ public class RenderForceFieldHandler implements ISimpleBlockRenderingHandler
             }
             catch (Exception e)
             {
+                if (Engine.runningAsDev)
+                {
+                    e.printStackTrace();
+                }
                 if ((camoStack != null) && (camoBlock != null))
                 {
                     renderer.renderBlockAsItem(camoBlock, camoStack.getItemDamage(), 1.0F);

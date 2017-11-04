@@ -8,7 +8,6 @@ import com.builtbroken.mffs.api.modules.IFieldModule;
 import com.builtbroken.mffs.api.security.IBiometricIdentifier;
 import com.builtbroken.mffs.api.security.Permission;
 import com.builtbroken.mffs.api.vector.Vector3D;
-import com.builtbroken.mffs.client.render.RenderForceFieldHandler;
 import com.builtbroken.mffs.common.items.modules.projector.ItemModuleGlow;
 import com.builtbroken.mffs.common.items.modules.projector.ItemModuleShock;
 import cpw.mods.fml.relauncher.Side;
@@ -366,7 +365,7 @@ public class BlockForceField extends Block implements ITileEntityProvider, IForc
     @SideOnly(Side.CLIENT)
     public int getRenderType()
     {
-        return RenderForceFieldHandler.RENDER_ID;
+        return 0;//RenderForceFieldHandler.RENDER_ID;
     }
 
     @Override

@@ -136,10 +136,9 @@ public class ItemModeCylinder extends ItemMode implements IRecipeContainer
                     {
                         if (i % 2 == 0)
                         {
-                            Vector3D vector = new Vector3D(renderX, renderY, renderZ);
-                            GL11.glTranslated(vector.x, vector.y, vector.z);
+                            GL11.glTranslated(renderX, renderY, renderZ);
                             ModelCube.INSTNACE.render();
-                            GL11.glTranslated(-vector.x, -vector.y, -vector.z);
+                            GL11.glTranslated(-renderX, -renderY, -renderZ);
                         }
                         i++;
                     }
