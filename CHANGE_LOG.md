@@ -3,6 +3,18 @@ This log contains changes made to the project. Each entry contains changed made 
 
 If this is a problem, use exact build numbers to track changes. As each build logs the git-hash it was created from to better understand changes made.
 
+## 4.1.0
+### Runtime Changes
+Fixed: field blocks having no decay setup if host is dead or mising
+Fixed: field not destroying on projector change
+Removed: rotation on fields
+Phased-Out: rotation card (can be converted to recipe cost)
+
+### Development Changes
+Rewrote: internals of code, lot of changes
+Changed: Vector3D usage for IPos3D and BlockPos
+Deprecated: more API methods, mostly in module card interfaces
+
 # Versions
 ## 4.0.0 - 11/3/2017
 ### Runtime Changes

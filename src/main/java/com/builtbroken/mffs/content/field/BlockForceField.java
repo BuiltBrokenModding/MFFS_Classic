@@ -52,6 +52,13 @@ public class BlockForceField extends Block implements ITileEntityProvider, IForc
         setResistance(999.0F);
         setBlockUnbreakable();
         setCreativeTab(null);
+        setTickRandomly(true);
+    }
+
+    @Override
+    public int tickRate(World p_149738_1_)
+    {
+        return 10;
     }
 
     @Override

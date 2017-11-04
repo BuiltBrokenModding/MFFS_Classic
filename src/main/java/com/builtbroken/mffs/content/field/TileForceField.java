@@ -144,6 +144,6 @@ public final class TileForceField extends TileEntity //TODO find a way to remove
 
     public boolean shouldDestroy()
     {
-        return getProjector() == null;  //TODO check if chunk is loaded first, don't destroy if chunk doesn't exist to avoid lag
+        return getProjector() == null || !getProjector().isActive();  //TODO check if chunk is loaded first, don't destroy if chunk doesn't exist to avoid lag
     }
 }
