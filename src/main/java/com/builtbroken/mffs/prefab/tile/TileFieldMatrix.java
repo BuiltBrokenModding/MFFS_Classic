@@ -1,5 +1,6 @@
 package com.builtbroken.mffs.prefab.tile;
 
+import com.builtbroken.jlib.data.vector.IPos3D;
 import com.builtbroken.mc.imp.transform.vector.Point;
 import com.builtbroken.mffs.api.IFieldInteraction;
 import com.builtbroken.mffs.api.event.EventTimedTask;
@@ -7,7 +8,6 @@ import com.builtbroken.mffs.api.modules.IFieldModule;
 import com.builtbroken.mffs.api.modules.IProjectorMode;
 import com.builtbroken.mffs.api.vector.Vector3D;
 import com.builtbroken.mffs.common.items.modules.projector.ItemModuleInvert;
-import com.builtbroken.mffs.common.items.modules.upgrades.ItemModuleRotate;
 import com.builtbroken.mffs.common.items.modules.upgrades.ItemModuleScale;
 import com.builtbroken.mffs.common.items.modules.upgrades.ItemModuleTranslate;
 import com.builtbroken.mffs.common.net.packet.EntityToggle;
@@ -98,9 +98,6 @@ public abstract class TileFieldMatrix extends TileModuleAcceptor implements IFie
                                 Set<Vector3D> blocks = entity.getModuleCount(ItemModuleInvert.class) > 0 ? mode.getInteriorPoints(entity) : mode.getExteriorPoints(entity);
                                 Vector3D translation = entity.getTranslation();
 
-                                int rotationYaw = entity.getRotationYaw();
-                                int rotationPitch = entity.getRotationPitch();
-
                                 for (IFieldModule module : entity.getModules())
                                 {
                                     blocks = module.onPreCalculate(entity, blocks);
@@ -108,12 +105,7 @@ public abstract class TileFieldMatrix extends TileModuleAcceptor implements IFie
 
                                 for (Vector3D position : blocks)
                                 {
-                                    if ((rotationYaw != 0) || (rotationPitch != 0))
-                                    {
-                                        position.rotate(rotationYaw, rotationPitch);
-                                    }
-
-                                    position.translate(new Vector3D(entity));
+                                    position.translate(new Vector3D((IPos3D)entity));
                                     position.translate(translation);
 
                                     if (position.intY() <= entity.getWorldObj().getHeight())
@@ -132,7 +124,7 @@ public abstract class TileFieldMatrix extends TileModuleAcceptor implements IFie
                         {
                             e.printStackTrace();
                         }
-                        entity.getCalculatedField().remove(new Vector3D(entity)); //we do not want to overplace this
+                        entity.getCalculatedField().remove(new Vector3D((IPos3D)entity)); //we do not want to overplace this
                         entity.setCalculating(false);
                         entity.setCalculated(true);
                         entity.onCalculationCompletion();
@@ -261,24 +253,6 @@ public abstract class TileFieldMatrix extends TileModuleAcceptor implements IFie
     }
 
     @Override
-    public int getRotationYaw()
-    {
-        ForgeDirection dir = getDirection();
-        int yawValue;
-        yawValue = getModuleCount(ItemModuleRotate.class, getSlotsBasedOnDirection(isAbs ? ForgeDirection.EAST : getOrient(dir, ForgeDirection.EAST)));
-        yawValue -= getModuleCount(ItemModuleRotate.class, getSlotsBasedOnDirection(isAbs ? ForgeDirection.WEST : getOrient(dir, ForgeDirection.WEST)));
-        yawValue += getModuleCount(ItemModuleRotate.class, getSlotsBasedOnDirection(isAbs ? ForgeDirection.SOUTH : getOrient(dir, ForgeDirection.SOUTH)));
-        yawValue -= getModuleCount(ItemModuleRotate.class, getSlotsBasedOnDirection(isAbs ? ForgeDirection.NORTH : getOrient(dir, ForgeDirection.NORTH)));
-        return yawValue * 2;
-    }
-
-    @Override
-    public int getRotationPitch()
-    {
-        return (getModuleCount(ItemModuleRotate.class, getSlotsBasedOnDirection(ForgeDirection.UP)) - getModuleCount(ItemModuleRotate.class, getSlotsBasedOnDirection(ForgeDirection.DOWN))) * 2;
-    }
-
-    @Override
     public Set<Vector3D> getCalculatedField()
     {
         return this.calculatedFields;
@@ -291,18 +265,11 @@ public abstract class TileFieldMatrix extends TileModuleAcceptor implements IFie
         Set<Vector3D> returnField = new HashSet();
 
         Vector3D translation = getTranslation();
-        int rotationYaw = getRotationYaw();
-        int rotationPitch = getRotationPitch();
 
-        Vector3D thisField = new Vector3D(this);
+        Vector3D thisField = new Vector3D((IPos3D)this);
         for (Vector3D position : newField)
         {
             Vector3D newPosition = position.clone();
-
-            if ((rotationYaw != 0) || (rotationPitch != 0))
-            {
-                newPosition.rotate(rotationYaw, rotationPitch);
-            }
 
             newPosition.translate(thisField);
             newPosition.translate(translation);

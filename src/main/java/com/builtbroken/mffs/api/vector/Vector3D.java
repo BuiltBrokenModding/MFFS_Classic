@@ -1,5 +1,6 @@
 package com.builtbroken.mffs.api.vector;
 
+import com.builtbroken.jlib.data.vector.IPos3D;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
@@ -14,9 +15,9 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.List;
 
-@Deprecated
+@Deprecated //Phased out, will be replaced by IPos3D and its implementation Pos
 public class Vector3D
-        implements Cloneable
+        implements Cloneable, IPos3D
 {
     public double x;
     public double y;
@@ -34,9 +35,9 @@ public class Vector3D
         this(0.0D, 0.0D, 0.0D);
     }
 
-    public Vector3D(Vector3D vector)
+    public Vector3D(IPos3D vector)
     {
-        this(vector.x, vector.y, vector.z);
+        this(vector.x(), vector.y(), vector.z());
     }
 
     public Vector3D(double amount)
@@ -352,11 +353,11 @@ public class Vector3D
         return translate(side);
     }
 
-    public Vector3D translate(Vector3D addition)
+    public Vector3D translate(IPos3D addition)
     {
-        this.x += addition.x;
-        this.y += addition.y;
-        this.z += addition.z;
+        this.x += addition.x();
+        this.y += addition.y();
+        this.z += addition.z();
         return this;
     }
 
@@ -376,7 +377,7 @@ public class Vector3D
         return this;
     }
 
-    public Vector3D add(Vector3D amount)
+    public Vector3D add(IPos3D amount)
     {
         return translate(amount);
     }
@@ -435,11 +436,11 @@ public class Vector3D
         return this;
     }
 
-    public Vector3D scale(Vector3D amount)
+    public Vector3D scale(IPos3D amount)
     {
-        this.x *= amount.x;
-        this.y *= amount.y;
-        this.z *= amount.z;
+        this.x *= amount.x();
+        this.y *= amount.y();
+        this.z *= amount.z();
         return this;
     }
 
@@ -758,5 +759,23 @@ public class Vector3D
     public String toString()
     {
         return "Vector3D [" + this.x + "," + this.y + "," + this.z + "]";
+    }
+
+    @Override
+    public double z()
+    {
+        return z;
+    }
+
+    @Override
+    public double x()
+    {
+        return x;
+    }
+
+    @Override
+    public double y()
+    {
+        return y;
     }
 }

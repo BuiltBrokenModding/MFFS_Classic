@@ -1,7 +1,8 @@
 package com.builtbroken.mffs.prefab.tile;
 
-import com.builtbroken.mffs.MFFSSettings;
+import com.builtbroken.jlib.data.vector.IPos3D;
 import com.builtbroken.mffs.MFFS;
+import com.builtbroken.mffs.MFFSSettings;
 import com.builtbroken.mffs.api.card.ICard;
 import com.builtbroken.mffs.api.fortron.FrequencyGrid;
 import com.builtbroken.mffs.api.fortron.IFortronFrequency;
@@ -46,7 +47,7 @@ public abstract class TileFortron extends TileFrequency implements IFluidHandler
     {
         if (sendFortron)
         {
-            FortronHelper.transfer(this, FrequencyGrid.instance().getFortronTiles(this.worldObj, new Vector3D(this), 100, getFrequency()), TransferMode.DRAIN, Integer.MAX_VALUE);
+            FortronHelper.transfer(this, FrequencyGrid.instance().getFortronTiles(this.worldObj, new Vector3D((IPos3D)this), 100, getFrequency()), TransferMode.DRAIN, Integer.MAX_VALUE);
         }
 
         super.invalidate();

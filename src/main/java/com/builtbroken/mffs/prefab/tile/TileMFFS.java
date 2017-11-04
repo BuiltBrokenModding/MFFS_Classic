@@ -1,5 +1,6 @@
 package com.builtbroken.mffs.prefab.tile;
 
+import com.builtbroken.mc.api.IWorldPosition;
 import com.builtbroken.mc.api.tile.IRemovable;
 import com.builtbroken.mc.lib.helper.WrenchUtility;
 import com.builtbroken.mffs.api.IActivatable;
@@ -12,13 +13,14 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 /**
  * @author Calclavia
  */
 @Deprecated //Has been converted to node framework
-public abstract class TileMFFS extends TileEntity implements IActivatable, IPacketReceiver_Entity, IRemovable.ICustomRemoval
+public abstract class TileMFFS extends TileEntity implements IActivatable, IPacketReceiver_Entity, IRemovable.ICustomRemoval, IWorldPosition
 {
     public float animation;
 
@@ -144,5 +146,29 @@ public abstract class TileMFFS extends TileEntity implements IActivatable, IPack
     public boolean canBeRemoved(EntityPlayer entityPlayer)
     {
         return WrenchUtility.isHoldingWrench(entityPlayer);
+    }
+
+    @Override
+    public double x()
+    {
+        return xCoord;
+    }
+
+    @Override
+    public double y()
+    {
+        return yCoord;
+    }
+
+    @Override
+    public double z()
+    {
+        return zCoord;
+    }
+
+    @Override
+    public World oldWorld()
+    {
+        return worldObj;
     }
 }

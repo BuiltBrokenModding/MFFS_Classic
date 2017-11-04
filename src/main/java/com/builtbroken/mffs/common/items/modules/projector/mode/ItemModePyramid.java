@@ -1,5 +1,6 @@
 package com.builtbroken.mffs.common.items.modules.projector.mode;
 
+import com.builtbroken.jlib.data.vector.IPos3D;
 import com.builtbroken.mc.core.registry.implement.IRecipeContainer;
 import com.builtbroken.mffs.api.IFieldInteraction;
 import com.builtbroken.mffs.api.IProjector;
@@ -35,13 +36,13 @@ public class ItemModePyramid extends ItemMode implements IRecipeContainer
     {
         Set<Vector3D> fieldBlocks = new HashSet();
 
-        Vector3D posScale = projector.getPositiveScale();
-        Vector3D negScale = projector.getNegativeScale();
+        IPos3D posScale = projector.getPositiveScale();
+        IPos3D negScale = projector.getNegativeScale();
 
-        int xStretch = posScale.intX() + negScale.intX();
-        int yStretch = posScale.intY() + negScale.intY();
-        int zStretch = posScale.intZ() + negScale.intZ();
-        Vector3D translation = new Vector3D(0.0D, -negScale.intY(), 0.0D);
+        int xStretch = posScale.xi() + negScale.xi();
+        int yStretch = posScale.yi() + negScale.yi();
+        int zStretch = posScale.zi() + negScale.zi();
+        Vector3D translation = new Vector3D(0.0D, -negScale.yi(), 0.0D);
 
         int inverseThickness = (int) Math.max((yStretch + zStretch) / 4.0F, 1.0F);
 
@@ -86,12 +87,12 @@ public class ItemModePyramid extends ItemMode implements IRecipeContainer
     {
         Set<Vector3D> fieldBlocks = new HashSet();
 
-        Vector3D posScale = projector.getPositiveScale();
-        Vector3D negScale = projector.getNegativeScale();
+        IPos3D posScale = projector.getPositiveScale();
+        IPos3D negScale = projector.getNegativeScale();
 
-        int xStretch = posScale.intX() + negScale.intX();
-        int yStretch = posScale.intY() + negScale.intY();
-        int zStretch = posScale.intZ() + negScale.intZ();
+        int xStretch = posScale.xi() + negScale.xi();
+        int yStretch = posScale.yi() + negScale.yi();
+        int zStretch = posScale.zi() + negScale.zi();
         Vector3D translation = new Vector3D(0.0D, -0.4D, 0.0D);
 
         for (float x = -xStretch; x <= xStretch; x += 1.0F)
@@ -114,23 +115,22 @@ public class ItemModePyramid extends ItemMode implements IRecipeContainer
     }
 
     @Override
-    public boolean isInField(IFieldInteraction projector, Vector3D position)
+    public boolean isInField(IFieldInteraction projector, Vector3D pos)
     {
-        Vector3D posScale = projector.getPositiveScale().clone();
-        Vector3D negScale = projector.getNegativeScale().clone();
+        IPos3D posScale = projector.getPositiveScale();
+        IPos3D negScale = projector.getNegativeScale();
 
-        int xStretch = posScale.intX() + negScale.intX();
-        int yStretch = posScale.intY() + negScale.intY();
-        int zStretch = posScale.intZ() + negScale.intZ();
+        int xStretch = posScale.xi() + negScale.xi();
+        int yStretch = posScale.yi() + negScale.yi();
+        int zStretch = posScale.zi() + negScale.zi();
 
         Vector3D projectorPos = new Vector3D((TileEntity) projector);
         projectorPos.add(projector.getTranslation());
-        projectorPos.add(new Vector3D(0.0D, -negScale.intY() + 1, 0.0D));
+        projectorPos.add(new Vector3D(0.0D, -negScale.yi() + 1, 0.0D));
 
-        Vector3D relativePosition = position.clone().subtract(projectorPos);
-        relativePosition.rotate(-projector.getRotationYaw(), -projector.getRotationPitch());
+        Vector3D relativePosition = pos.clone().subtract(projectorPos);
 
-        Matrix2d region = new Matrix2d(negScale.scale(-1.0D), posScale);
+        Matrix2d region = new Matrix2d(new Vector3D(-1).scale(negScale), posScale); //TODO rewrite to not use a relative position
 
         if ((region.isIn(relativePosition)) && (relativePosition.y > 0.0D))
         {

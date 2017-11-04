@@ -1,5 +1,6 @@
 package com.builtbroken.mffs.api.vector;
 
+import com.builtbroken.jlib.data.vector.IPos3D;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
@@ -31,10 +32,10 @@ public class Matrix2d
         this.max = new Vector3D(min.x + radius, min.y + radius, 0);
     }
 
-    public Matrix2d(Vector3D min, Vector3D max)
+    public Matrix2d(IPos3D min, IPos3D max)
     {
-        this.min = min;
-        this.max = max;
+        this.min = min instanceof Vector3D ? (Vector3D) min : new Vector3D(min);
+        this.max = max instanceof Vector3D ? (Vector3D) max : new Vector3D(max);
     }
 
     public Matrix2d(Vector2d min, Vector2d max)

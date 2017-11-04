@@ -1,5 +1,6 @@
 package com.builtbroken.mffs.common.items.modules.projector.mode;
 
+import com.builtbroken.jlib.data.vector.IPos3D;
 import com.builtbroken.mc.core.registry.implement.IRecipeContainer;
 import com.builtbroken.mffs.api.IFieldInteraction;
 import com.builtbroken.mffs.api.IProjector;
@@ -34,11 +35,11 @@ public class ItemModeCylinder extends ItemMode implements IRecipeContainer
     {
         Set<Vector3D> fieldBlocks = new HashSet();
 
-        Vector3D posScale = projector.getPositiveScale();
-        Vector3D negScale = projector.getNegativeScale();
+        IPos3D posScale = projector.getPositiveScale();
+        IPos3D negScale = projector.getNegativeScale();
 
-        int radius = (posScale.intX() + negScale.intX() + posScale.intZ() + negScale.intZ()) / 2;
-        int height = posScale.intY() + negScale.intY();
+        int radius = (posScale.xi() + negScale.xi() + posScale.zi() + negScale.zi()) / 2;
+        int height = posScale.yi() + negScale.yi();
 
         for (float x = -radius; x <= radius; x += 1.0F)
         {
@@ -66,13 +67,13 @@ public class ItemModeCylinder extends ItemMode implements IRecipeContainer
     {
         Set<Vector3D> fieldBlocks = new HashSet();
 
-        Vector3D translation = projector.getTranslation();
+        IPos3D translation = projector.getTranslation();
 
-        Vector3D posScale = projector.getPositiveScale();
-        Vector3D negScale = projector.getNegativeScale();
+        IPos3D posScale = projector.getPositiveScale();
+        IPos3D negScale = projector.getNegativeScale();
 
-        int radius = (posScale.intX() + negScale.intX() + posScale.intZ() + negScale.intZ()) / 2;
-        int height = posScale.intY() + negScale.intY();
+        int radius = (posScale.xi() + negScale.xi() + posScale.zi() + negScale.zi()) / 2;
+        int height = posScale.yi() + negScale.yi();
 
         for (int x = -radius; x <= radius; x++)
         {
@@ -82,7 +83,7 @@ public class ItemModeCylinder extends ItemMode implements IRecipeContainer
                 {
                     Vector3D position = new Vector3D(x, y, z);
 
-                    if (isInField(projector, Vector3D.translate(position, new Vector3D((TileEntity) projector)).add(translation)))
+                    if (isInField(projector, Vector3D.translate(position, new Vector3D((TileEntity) projector)).add(translation))) //TODO this might need recoded
                     {
                         fieldBlocks.add(position);
                     }
@@ -96,16 +97,15 @@ public class ItemModeCylinder extends ItemMode implements IRecipeContainer
     @Override
     public boolean isInField(IFieldInteraction projector, Vector3D position)
     {
-        Vector3D posScale = projector.getPositiveScale();
-        Vector3D negScale = projector.getNegativeScale();
+        IPos3D posScale = projector.getPositiveScale();
+        IPos3D negScale = projector.getNegativeScale();
 
-        int radius = (posScale.intX() + negScale.intX() + posScale.intZ() + negScale.intZ()) / 2;
+        int radius = (posScale.xi() + negScale.xi() + posScale.zi() + negScale.zi()) / 2;
 
         Vector3D projectorPos = new Vector3D((TileEntity) projector);
         projectorPos.add(projector.getTranslation());
 
         Vector3D relativePosition = position.clone().subtract(projectorPos);
-        relativePosition.rotate(-projector.getRotationYaw(), -projector.getRotationPitch());
 
         if (relativePosition.x * relativePosition.x + relativePosition.z * relativePosition.z <= radius * radius)
         {

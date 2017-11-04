@@ -1,5 +1,6 @@
 package com.builtbroken.mffs.content.projector;
 
+import com.builtbroken.jlib.data.vector.IPos3D;
 import com.builtbroken.mc.imp.transform.vector.BlockPos;
 import com.builtbroken.mffs.MFFS;
 import com.builtbroken.mffs.MFFSSettings;
@@ -235,7 +236,7 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
 
 
                 //Get force field blocks
-                Vector3D projector = new Vector3D(this);
+                Vector3D projector = new Vector3D((IPos3D)this);
 
                 //Collect blocks to place
                 fieldToBeProjected = fieldToBeProjected.stream()
@@ -423,7 +424,7 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
         else if (imessage instanceof BeamRequest)
         {
             BeamRequest req = (BeamRequest) imessage;
-            MFFS.proxy.registerBeamEffect(worldObj, req.destination.translate(.5), new Vector3D(this).translate(.5), 1.0F, 0.0F, 0.0F, 40);
+            MFFS.proxy.registerBeamEffect(worldObj, req.destination.translate(.5), new Vector3D((IPos3D)this).translate(.5), 1.0F, 0.0F, 0.0F, 40);
             MFFS.proxy.animateFortron(worldObj, req.destination, 1.0F, 0.0F, 0.0F, 60);
             return null;
         }

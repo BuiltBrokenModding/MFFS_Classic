@@ -1,5 +1,6 @@
 package com.builtbroken.mffs.common.items.modules.projector.mode;
 
+import com.builtbroken.jlib.data.vector.IPos3D;
 import com.builtbroken.mc.core.registry.implement.IRecipeContainer;
 import com.builtbroken.mffs.api.IFieldInteraction;
 import com.builtbroken.mffs.api.IProjector;
@@ -57,7 +58,7 @@ public class ItemModeSphere extends ItemMode implements IRecipeContainer
     public Set<Vector3D> getInteriorPoints(IFieldInteraction projector)
     {
         Set<Vector3D> fieldBlocks = new HashSet();
-        Vector3D translation = projector.getTranslation();
+        IPos3D translation = projector.getTranslation();
 
         int radius = projector.getModuleCount(ItemModuleScale.class);
 

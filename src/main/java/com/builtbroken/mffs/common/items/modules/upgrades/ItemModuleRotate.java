@@ -1,30 +1,22 @@
 package com.builtbroken.mffs.common.items.modules.upgrades;
 
-import com.builtbroken.mffs.common.items.modules.BaseModule;
+import com.builtbroken.jlib.data.Colors;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
-import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.ItemStack;
 
 import java.util.List;
 
 /**
  * @author Calclavia
  */
-public class ItemModuleRotate extends BaseModule
+@Deprecated //Rotation will be supported via GUI in the future
+public class ItemModuleRotate extends Item
 {
-
     @Override
-    public void genRecipes(List<IRecipe> list)
+    public void addInformation(ItemStack stack, EntityPlayer usr, List list, boolean dummy)
     {
-        list.add(newShapedRecipe(this,
-                "F  ", " F ", "  F",
-                'F', Item.itemRegistry.getObject("mffs:focusMatrix")));
-    }
-
-    /**
-     * Constructor.
-     */
-    public ItemModuleRotate()
-    {
-        setCost(0.5F);
+        list.add(Colors.RED.code + "No longer used");
+        list.add(Colors.RED.code + "Right click to recover item cost");
     }
 }

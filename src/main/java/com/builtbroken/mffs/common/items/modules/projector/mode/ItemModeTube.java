@@ -1,5 +1,6 @@
 package com.builtbroken.mffs.common.items.modules.projector.mode;
 
+import com.builtbroken.jlib.data.vector.IPos3D;
 import com.builtbroken.mc.core.registry.implement.IRecipeContainer;
 import com.builtbroken.mffs.api.IFieldInteraction;
 import com.builtbroken.mffs.api.IProjector;
@@ -35,28 +36,24 @@ public class ItemModeTube extends ItemModeCube implements IRecipeContainer
     {
         Set<Vector3D> fieldBlocks = new HashSet();
         ForgeDirection direction = projector.getDirection();
-        Vector3D posScale = projector.getPositiveScale();
-        Vector3D negScale = projector.getNegativeScale();
+        IPos3D posScale = projector.getPositiveScale();
+        IPos3D negScale = projector.getNegativeScale();
 
-        for (double x = -negScale.x; x <= posScale.x; x += 0.5F)
+        for (double x = -negScale.xi(); x <= posScale.xi(); x += 0.5F)
         {
-            for (double z = -negScale.z; z <= posScale.z; z += 0.5F)
+            for (double z = -negScale.zi(); z <= posScale.zi(); z += 0.5F)
             {
-                for (double y = -negScale.y; y <= posScale.y; y += 0.5F)
+                for (double y = -negScale.yi(); y <= posScale.yi(); y += 0.5F)
                 {
-                    if ((direction != ForgeDirection.UP) && (direction != ForgeDirection.DOWN) && (y == -(int) Math.floor(negScale.y) || (y == (int) Math.floor(posScale.y))))
+                    if ((direction != ForgeDirection.UP) && (direction != ForgeDirection.DOWN) && (y == -negScale.yi() || (y == posScale.yi())))
                     {
                         fieldBlocks.add(new Vector3D(x, y, z));
-
-
                     }
-                    else if ((direction != ForgeDirection.NORTH) && (direction != ForgeDirection.SOUTH) && ((z == -(int) Math.floor(negScale.z)) || (z == (int) Math.floor(posScale.z))))
+                    else if ((direction != ForgeDirection.NORTH) && (direction != ForgeDirection.SOUTH) && ((z == -negScale.zi()) || (z == posScale.zi())))
                     {
                         fieldBlocks.add(new Vector3D(x, y, z));
-
-
                     }
-                    else if ((direction != ForgeDirection.WEST) && (direction != ForgeDirection.EAST) && ((x == -(int) Math.floor(negScale.x)) || (x == (int) Math.floor(posScale.x))))
+                    else if ((direction != ForgeDirection.WEST) && (direction != ForgeDirection.EAST) && ((x == -negScale.xi()) || (x == posScale.xi())))
                     {
                         fieldBlocks.add(new Vector3D(x, y, z));
                     }

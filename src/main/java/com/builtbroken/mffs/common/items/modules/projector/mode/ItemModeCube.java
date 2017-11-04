@@ -1,17 +1,16 @@
 package com.builtbroken.mffs.common.items.modules.projector.mode;
 
+import com.builtbroken.jlib.data.vector.IPos3D;
 import com.builtbroken.mc.core.registry.implement.IRecipeContainer;
 import com.builtbroken.mffs.api.IFieldInteraction;
 import com.builtbroken.mffs.api.IProjector;
 import com.builtbroken.mffs.api.render.ModelCube;
-import com.builtbroken.mffs.api.vector.Matrix2d;
 import com.builtbroken.mffs.api.vector.Vector3D;
 import com.builtbroken.mffs.prefab.item.ItemMode;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.tileentity.TileEntity;
 import org.lwjgl.opengl.GL11;
 
 import java.util.HashSet;
@@ -36,18 +35,18 @@ public class ItemModeCube extends ItemMode implements IRecipeContainer
     public Set<Vector3D> getExteriorPoints(IFieldInteraction projector)
     {
         Set<Vector3D> fieldBlocks = new HashSet();
-        Vector3D posScale = projector.getPositiveScale();
-        Vector3D negScale = projector.getNegativeScale();
+        IPos3D posScale = projector.getPositiveScale();
+        IPos3D negScale = projector.getNegativeScale();
 
-        for (float x = -negScale.intX(); x <= posScale.intX(); x += 0.5F)
+        for (float x = -negScale.xi(); x <= posScale.xi(); x += 0.5F)
         {
-            for (float z = -negScale.intZ(); z <= posScale.intZ(); z += 0.5F)
+            for (float z = -negScale.zi(); z <= posScale.zi(); z += 0.5F)
             {
-                for (float y = -negScale.intY(); y <= posScale.intY(); y += 0.5F)
+                for (float y = -negScale.yi(); y <= posScale.yi(); y += 0.5F)
                 {
-                    if (y == -negScale.intY() || y == posScale.intY()
-                            || x == -negScale.intX() || x == posScale.intX()
-                            || z == -negScale.intZ() || z == posScale.intZ())
+                    if (y == -negScale.yi() || y == posScale.yi()
+                            || x == -negScale.xi() || x == posScale.xi()
+                            || z == -negScale.zi() || z == posScale.zi())
                     {
                         fieldBlocks.add(new Vector3D(x, y, z));
                     }
@@ -62,28 +61,19 @@ public class ItemModeCube extends ItemMode implements IRecipeContainer
     {
         Set<Vector3D> fieldBlocks = new HashSet();
 
-        Vector3D posScale = projector.getPositiveScale();
+        IPos3D posScale = projector.getPositiveScale();
+        IPos3D negScale = projector.getNegativeScale();
 
-        Vector3D negScale = projector.getNegativeScale();
-
-
-        for (int x = -negScale.intX(); x <= posScale.intX(); x++)
+        for (float x = -negScale.xi(); x <= posScale.xi(); x += 0.5F)
         {
-
-            for (int z = -negScale.intZ(); z <= posScale.intZ(); z++)
+            for (float z = -negScale.zi(); z <= posScale.zi(); z += 0.5F)
             {
-
-                for (int y = -negScale.intY(); y <= posScale.intY(); y++)
+                for (float y = -negScale.yi(); y <= posScale.yi(); y += 0.5F)
                 {
-
-                    fieldBlocks.add(new Vector3D(x, y, z));
-
+                    fieldBlocks.add(new Vector3D(x, y, z)); //TODO check if we want to exclude edges
                 }
-
             }
-
         }
-
 
         return fieldBlocks;
     }
@@ -96,13 +86,20 @@ public class ItemModeCube extends ItemMode implements IRecipeContainer
     }
 
     @Override
-    public boolean isInField(IFieldInteraction projector, Vector3D position)
+    public boolean isInField(IFieldInteraction projector, Vector3D pos)
     {
-        Vector3D projectorPos = new Vector3D((TileEntity) projector);
-        projectorPos.add(projector.getTranslation());
-        Vector3D relativePosition = position.clone().subtract(projectorPos);
-        relativePosition.rotate(-projector.getRotationYaw(), projector.getRotationPitch());
-        Matrix2d region = new Matrix2d(projector.getNegativeScale().scale(-1.0D), projector.getPositiveScale());
-        return region.isIn(relativePosition);
+        int sx = projector.xi();
+        int sy = projector.yi();
+        int sz = projector.zi();
+        int ex = projector.xi();
+        int ey = projector.yi();
+        int ez = projector.zi();
+
+        return pos.xi() >= sx
+                && pos.yi() >= sy
+                && pos.zi() >= sz
+                & pos.xi() <= ex
+                && pos.yi() <= ey
+                && pos.zi() <= ez;
     }
 }

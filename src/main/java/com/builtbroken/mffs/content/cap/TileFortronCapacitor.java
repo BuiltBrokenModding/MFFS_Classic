@@ -1,5 +1,6 @@
 package com.builtbroken.mffs.content.cap;
 
+import com.builtbroken.jlib.data.vector.IPos3D;
 import com.builtbroken.mc.imp.transform.vector.Location;
 import com.builtbroken.mffs.MFFS;
 import com.builtbroken.mffs.MFFSSettings;
@@ -135,7 +136,7 @@ public class TileFortronCapacitor extends TileModuleAcceptor implements IFortron
     @Override
     public void getLinkedDevices(Set<IFortronFrequency> list)
     {
-        list.addAll(FrequencyGrid.instance().getFortronTilesExcluding(this, new Vector3D(this), getTransmissionRange(), getFrequency()));
+        list.addAll(FrequencyGrid.instance().getFortronTilesExcluding(this, new Vector3D((IPos3D)this), getTransmissionRange(), getFrequency()));
     }
 
     @Override

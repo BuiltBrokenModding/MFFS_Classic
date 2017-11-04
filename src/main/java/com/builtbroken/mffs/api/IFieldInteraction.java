@@ -1,5 +1,7 @@
 package com.builtbroken.mffs.api;
 
+import com.builtbroken.jlib.data.vector.IPos3D;
+import com.builtbroken.mc.api.IWorldPosition;
 import com.builtbroken.mffs.api.modules.IFieldModule;
 import com.builtbroken.mffs.api.modules.IModuleContainer;
 import com.builtbroken.mffs.api.modules.IProjectorMode;
@@ -13,7 +15,7 @@ import java.util.Set;
  * @author Calclavia
  */
 public interface IFieldInteraction
-        extends IModuleContainer, IActivatable
+        extends IModuleContainer, IActivatable, IWorldPosition
 {
     IProjectorMode getMode();
 
@@ -25,15 +27,11 @@ public interface IFieldInteraction
 
     int getSidedModuleCount(Class<? extends IFieldModule> module, ForgeDirection... paramVarArgs);
 
-    Vector3D getTranslation();
+    IPos3D getTranslation();
 
-    Vector3D getPositiveScale();
+    IPos3D getPositiveScale();
 
-    Vector3D getNegativeScale();
-
-    int getRotationYaw();
-
-    int getRotationPitch();
+    IPos3D getNegativeScale();
 
     Set<Vector3D> getCalculatedField();
 
