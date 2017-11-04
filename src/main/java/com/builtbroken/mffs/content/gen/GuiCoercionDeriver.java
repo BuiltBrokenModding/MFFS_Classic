@@ -67,12 +67,12 @@ public class GuiCoercionDeriver extends MFFSGui
         }*/
 
         renderUniversalDisplay(85, 30, entity.getBattery().getMaxBufferSize(), x, y, UnitDisplay.Unit.WATT);
-        this.fontRendererObj.drawString(UnitDisplay.getDisplayShort(240L, UnitDisplay.Unit.VOLTAGE), 85, 40, 4210752);
+        //this.fontRendererObj.drawString(UnitDisplay.getDisplayShort(240L, UnitDisplay.Unit.VOLTAGE), 85, 40, 4210752);
 
         drawTextWithTooltip("progress", "%1: " + (entity.isActive() ? LanguageRegistry.instance().getStringLocalization("gui.deriver.running") : LanguageRegistry.instance().getStringLocalization("gui.deriver.idle")), 8, 70, x, y);
-        drawTextWithTooltip("fortron", "%1: " + UnitDisplay.getDisplayShort(entity.getFortronEnergy(), UnitDisplay.Unit.LITER), 8, 105, x, y);
+        drawTextWithTooltip("fortron", "%1: " + UnitDisplay.getDisplayShort(entity.getFortronEnergy(), UnitDisplay.Unit.LITER, UnitDisplay.UnitPrefix.MILLI), 8, 105, x, y);
 
-        this.fontRendererObj.drawString((entity.outputPower ? EnumChatFormatting.RED + "-" : EnumChatFormatting.GREEN + "+") + UnitDisplay.getDisplayShort(entity.getFortronCreationRate() * 20, UnitDisplay.Unit.LITER) + "/s", 118, 117, 4210752);
+        this.fontRendererObj.drawString((entity.outputPower ? EnumChatFormatting.RED + "-" : EnumChatFormatting.GREEN + "+") + UnitDisplay.getDisplayShort(entity.getFortronCreationRate() * 20, UnitDisplay.Unit.LITER, UnitDisplay.UnitPrefix.MILLI) + "/s", 118, 117, 4210752);
 
         super.drawGuiContainerForegroundLayer(x, y);
     }

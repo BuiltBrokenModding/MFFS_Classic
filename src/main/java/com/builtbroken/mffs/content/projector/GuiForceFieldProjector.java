@@ -55,7 +55,7 @@ public class GuiForceFieldProjector extends GuiMatrix
         this.textFieldFrequency.drawTextBox();
 
         int cost = proj.getFortronCost() * 20;
-        this.fontRendererObj.drawString(EnumChatFormatting.RED + (cost > 0 ? "-" : "") + UnitDisplay.getDisplayShort(cost, UnitDisplay.Unit.LITER) + "/s", 120, 119, 4210752);
+        this.fontRendererObj.drawString(EnumChatFormatting.RED + (cost > 0 ? "-" : "") + UnitDisplay.getDisplayShort(cost, UnitDisplay.Unit.LITER, UnitDisplay.UnitPrefix.MILLI) + "/s", 120, 119, 4210752);
         super.drawGuiContainerForegroundLayer(x, y);
     }
 

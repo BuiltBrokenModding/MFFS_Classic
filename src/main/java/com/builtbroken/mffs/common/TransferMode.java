@@ -3,6 +3,7 @@ package com.builtbroken.mffs.common;
 /**
  * @author Calclavia
  */
+@Deprecated
 public enum TransferMode
 {
     EQUALIZE, DISTRIBUTE, DRAIN, FILL;

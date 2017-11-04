@@ -4,8 +4,8 @@ import com.builtbroken.mc.imp.transform.vector.Point;
 import com.builtbroken.mffs.MFFS;
 import com.builtbroken.mffs.api.fortron.IFortronFrequency;
 import com.builtbroken.mffs.api.utils.UnitDisplay;
-import com.builtbroken.mffs.client.gui.buttons.TransferModeButton;
 import com.builtbroken.mffs.client.gui.base.MFFSGui;
+import com.builtbroken.mffs.client.gui.buttons.TransferModeButton;
 import com.builtbroken.mffs.common.net.packet.EntityToggle;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -70,12 +70,12 @@ public class GuiFortronCapacitor extends MFFSGui
         cap.getLinkedDevices(freq);
         drawTextWithTooltip("linkedDevice", "%1: " + freq.size(), 8, 28, mouseX, mouseY);
 
-        drawTextWithTooltip("transmissionRate", "%1: " + UnitDisplay.getDisplayShort(cap.getTransmissionRate() * 20, UnitDisplay.Unit.LITER) + "/s", 8, 40, mouseX, mouseY);
+        drawTextWithTooltip("transmissionRate", "%1: " + UnitDisplay.getDisplayShort(cap.getTransmissionRate() * 20, UnitDisplay.Unit.LITER, UnitDisplay.UnitPrefix.MILLI) + "/s", 8, 40, mouseX, mouseY);
         drawTextWithTooltip("range", "%1: " + cap.getTransmissionRange(), 8, 52, mouseX, mouseY);
         drawTextWithTooltip("frequency", "%1:", 8, 63, mouseX, mouseY);
         this.textFieldFrequency.drawTextBox();
         drawTextWithTooltip("fortron", "%1:", 8, 95, mouseX, mouseY);
-        fontRendererObj.drawString(UnitDisplay.getDisplayShort(cap.getFortronEnergy(), UnitDisplay.Unit.LITER) + "/" + UnitDisplay.getDisplay(cap.getFortronCapacity(), UnitDisplay.Unit.LITER, UnitDisplay.UnitPrefix.MILLI), 8, 105, 4210752);
+        fontRendererObj.drawString(UnitDisplay.getDisplayShort(cap.getFortronEnergy(), UnitDisplay.Unit.LITER, UnitDisplay.UnitPrefix.MILLI) + "/" + UnitDisplay.getDisplay(cap.getFortronCapacity(), UnitDisplay.Unit.LITER, UnitDisplay.UnitPrefix.MILLI), 8, 105, 4210752);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
