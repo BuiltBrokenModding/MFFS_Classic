@@ -9,6 +9,7 @@ import com.builtbroken.mffs.api.IBlockFrequency;
  *
  * @author Calclavia
  */
+@Deprecated
 public interface IFortronFrequency
         extends IFortronStorage, IBlockFrequency
 {

@@ -17,10 +17,9 @@ import com.builtbroken.mffs.common.items.card.ItemCardFrequency;
 import com.builtbroken.mffs.common.items.card.ItemCardLink;
 import com.builtbroken.mffs.common.items.modules.upgrades.ItemModuleScale;
 import com.builtbroken.mffs.common.items.modules.upgrades.ItemModuleSpeed;
-import com.builtbroken.mffs.common.net.packet.EntityToggle;
 import com.builtbroken.mffs.prefab.ModuleInventory;
 import com.builtbroken.mffs.prefab.tile.TileModuleAcceptor;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -182,25 +181,16 @@ public class TileFortronCapacitor extends TileModuleAcceptor implements IFortron
         return .001F; //TODO why so low?
     }
 
-    /**
-     * Handles the message given by the handler.
-     *
-     * @param imessage The message.
-     */
     @Override
-    public IMessage handleMessage(IMessage imessage) //TODO replace with VE packet system
+    public void writeDescPacket(ByteBuf buf)
     {
-        if (imessage instanceof EntityToggle)
-        {
-            EntityToggle tog = (EntityToggle) imessage;
-            if (tog.toggle_opcode == EntityToggle.TRANSFER_TOGGLE)
-            {
-                this.mode = this.mode.toggle();
-                worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-                return null;
-            }
-        }
-        return super.handleMessage(imessage);
+        super.writeDescPacket(buf);
+    }
+
+    @Override
+    public void readDescPacket(ByteBuf buf)
+    {
+        super.readDescPacket(buf);
     }
 
     @Override

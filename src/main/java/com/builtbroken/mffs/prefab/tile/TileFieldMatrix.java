@@ -10,8 +10,7 @@ import com.builtbroken.mffs.api.vector.Vector3D;
 import com.builtbroken.mffs.common.items.modules.projector.ItemModuleInvert;
 import com.builtbroken.mffs.common.items.modules.upgrades.ItemModuleScale;
 import com.builtbroken.mffs.common.items.modules.upgrades.ItemModuleTranslate;
-import com.builtbroken.mffs.common.net.packet.EntityToggle;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -342,25 +341,18 @@ public abstract class TileFieldMatrix extends TileModuleAcceptor implements IFie
         this.useAbsoluteDirection = nbt.getBoolean("isAbs");
     }
 
-    /**
-     * Handles the message given by the handler.
-     *
-     * @param imessage The message.
-     */
     @Override
-    public IMessage handleMessage(IMessage imessage)
+    public void writeDescPacket(ByteBuf buf)
     {
-        if (imessage instanceof EntityToggle)
-        {
-            EntityToggle pkt = (EntityToggle) imessage;
-            if (pkt.toggle_opcode == EntityToggle.ABSOLUTE_TOGGLE)
-            {
-                this.useAbsoluteDirection = !this.useAbsoluteDirection;
-                worldObj.markBlockForUpdate(xCoord, yCoord, zCoord); //we need to signal that this entity has been changed serverside!
-                return null;
-            }
-        }
-        return super.handleMessage(imessage);
+        super.writeDescPacket(buf);
+        buf.writeBoolean(useAbsoluteDirection);
+    }
+
+    @Override
+    public void readDescPacket(ByteBuf buf)
+    {
+        super.readDescPacket(buf);
+        useAbsoluteDirection = buf.readBoolean();
     }
 
     public List<EventTimedTask> getEventsQueued()

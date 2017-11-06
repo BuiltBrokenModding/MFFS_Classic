@@ -1,13 +1,10 @@
 package com.builtbroken.mffs.common.items.modules.interdiction;
 
-import com.builtbroken.mffs.MFFS;
 import com.builtbroken.mffs.api.IProjector;
 import com.builtbroken.mffs.api.security.IBiometricIdentifier;
 import com.builtbroken.mffs.api.security.Permission;
 import com.builtbroken.mffs.api.vector.Vector3D;
 import com.builtbroken.mffs.common.items.modules.BaseModule;
-import com.builtbroken.mffs.common.net.packet.ForcefieldCalculation;
-import com.builtbroken.mffs.content.projector.TileForceFieldProjector;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -92,7 +89,7 @@ public final class ItemModuleRepulsion extends BaseModule
     @Override
     public boolean onDestroy(IProjector projector, Set<Vector3D> field)
     {
-        MFFS.channel.sendToAll(new ForcefieldCalculation((TileForceFieldProjector) projector));
+        //MFFS.channel.sendToAll(new ForcefieldCalculation((TileForceFieldProjector) projector)); TODO what did this do?
         return false;
     }
 

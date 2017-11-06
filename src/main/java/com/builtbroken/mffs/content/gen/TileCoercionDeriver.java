@@ -5,16 +5,13 @@ import com.builtbroken.mc.api.energy.IEnergyBuffer;
 import com.builtbroken.mc.api.energy.IEnergyBufferProvider;
 import com.builtbroken.mc.framework.energy.UniversalEnergySystem;
 import com.builtbroken.mc.framework.energy.data.AbstractEnergyBuffer;
-import com.builtbroken.mffs.MFFSSettings;
 import com.builtbroken.mffs.MFFS;
-import com.builtbroken.mffs.api.modules.IFieldModule;
-import com.builtbroken.mffs.common.items.card.ItemCardFrequency;
+import com.builtbroken.mffs.MFFSSettings;
 import com.builtbroken.mffs.common.items.modules.upgrades.ItemModuleScale;
 import com.builtbroken.mffs.common.items.modules.upgrades.ItemModuleSpeed;
 import com.builtbroken.mffs.prefab.ModuleInventory;
 import com.builtbroken.mffs.prefab.tile.TileModuleAcceptor;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -28,10 +25,19 @@ import java.util.List;
  */
 public final class TileCoercionDeriver extends TileModuleAcceptor implements IEnergyHandler, IEnergyBufferProvider
 {
+    public static final int GUI_MAIN = 0;
+    public static final int GUI_UPGRADES = 1;
+    public static final int GUI_LINKS = 2;
+    public static final int GUI_SETTINGS = 3;
+
     //Inventory slots
-    public static final int SLOT_FREQUENCY = 0;
-    public static final int SLOT_BATTERY = 1;
-    public static final int SLOT_FUEL = 2;
+    @Deprecated //Being removed
+    public static final int SLOT_BATTERY_START = 0;
+    public static final int SLOT_BATTERY_END = 3;
+    public static final int SLOT_FUEL = 4;
+    public static final int UPGRADES_START = 5;
+    public static final int UPGRADES_END = UPGRADES_START + 6;
+    public static final int SIZE_INVENTORY = UPGRADES_END;
 
     //Battery
     private CoercionEnergyBuffer energyBuffer;
@@ -64,12 +70,13 @@ public final class TileCoercionDeriver extends TileModuleAcceptor implements IEn
                         requestFortron(getFortronCreationRate(), true);
                         getBattery().addEnergyToStorage(getFortronCreationRate(), true);
                     }
-                    //TODO: recharge batteries
+                    //TODO: recharge battery items
+                    //TODO export power
                 }
-                //Turn power into fortron, only produce if we have space
+                //Turn power into fortron, only produce if we have space to save fuel & power
                 else if ((getFortronEnergy() + getFortronCreationRate()) < getFortronCapacity())
                 {
-                    //TODO: Discharge batteries
+                    //TODO: Discharge battery items
                     if (canCreateFortron())
                     {
                         //Create fortron
@@ -134,7 +141,7 @@ public final class TileCoercionDeriver extends TileModuleAcceptor implements IEn
     @Override
     public int getSizeInventory()
     {
-        return 6;
+        return SIZE_INVENTORY;
     }
 
 
@@ -144,28 +151,6 @@ public final class TileCoercionDeriver extends TileModuleAcceptor implements IEn
         List<ItemStack> stack = super.getRemovedItems(entityPlayer);
         stack.add(new ItemStack(MFFS.coercionDeriver));
         return stack;
-    }
-
-    @Override
-    public boolean isItemValidForSlot(int slotID, ItemStack itemStack)
-    {
-        if (itemStack != null)
-        {
-            if (slotID >= moduleInventory.start)
-            {
-                return itemStack.getItem() instanceof IFieldModule;
-            }
-            switch (slotID)
-            {
-                case SLOT_FREQUENCY:
-                    return itemStack.getItem() instanceof ItemCardFrequency;
-                case SLOT_BATTERY://battery
-                    return false;
-                case SLOT_FUEL:
-                    return itemStack.getItem() == Items.dye && itemStack.getItemDamage() == 4 || itemStack.getItem() == Items.quartz;
-            }
-        }
-        return false;
     }
 
     //===========================================

@@ -6,8 +6,8 @@ import com.builtbroken.mc.lib.helper.LanguageUtility;
 import com.builtbroken.mffs.MFFS;
 import com.builtbroken.mffs.MFFSSettings;
 import com.builtbroken.mffs.api.card.ICardInfinite;
-import com.builtbroken.mffs.api.modules.IInterdictionModule;
 import com.builtbroken.mffs.api.modules.IFieldModule;
+import com.builtbroken.mffs.api.modules.IInterdictionModule;
 import com.builtbroken.mffs.api.security.IBiometricIdentifier;
 import com.builtbroken.mffs.api.security.IInterdictionMatrix;
 import com.builtbroken.mffs.api.security.Permission;
@@ -15,11 +15,10 @@ import com.builtbroken.mffs.api.vector.Vector3D;
 import com.builtbroken.mffs.common.items.card.ItemCardFrequency;
 import com.builtbroken.mffs.common.items.modules.interdiction.ItemModuleWarn;
 import com.builtbroken.mffs.common.items.modules.upgrades.ItemModuleScale;
-import com.builtbroken.mffs.common.net.packet.EntityToggle;
+import com.builtbroken.mffs.content.projector.TileForceFieldProjector;
 import com.builtbroken.mffs.prefab.ModuleInventory;
 import com.builtbroken.mffs.prefab.tile.TileModuleAcceptor;
-import com.builtbroken.mffs.content.projector.TileForceFieldProjector;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -99,7 +98,7 @@ public final class TileInterdictionMatrix extends TileModuleAcceptor implements 
     @Override
     public boolean isActive()
     {
-        return super.isActive() && ticks > 12  && (projector == null || projector.isActive());
+        return super.isActive() && ticks > 12 && (projector == null || projector.isActive());
     }
 
     /**
@@ -211,24 +210,16 @@ public final class TileInterdictionMatrix extends TileModuleAcceptor implements 
         return new Cube(center.sub(range), center.add(range));
     }
 
-    /**
-     * Handles the message given by the handler.
-     *
-     * @param imessage The message.
-     */
-    public IMessage handleMessage(IMessage imessage)
+    @Override
+    public void writeDescPacket(ByteBuf buf)
     {
-        if (imessage instanceof EntityToggle)
-        {
-            EntityToggle tog = (EntityToggle) imessage;
-            if (tog.toggle_opcode == EntityToggle.FILTER_TOGGLE)
-            {
-                this.banMode = !banMode;
-                this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
-                return null;
-            }
-        }
-        return super.handleMessage(imessage);
+        super.writeDescPacket(buf);
+    }
+
+    @Override
+    public void readDescPacket(ByteBuf buf)
+    {
+        super.readDescPacket(buf);
     }
 
     @Override

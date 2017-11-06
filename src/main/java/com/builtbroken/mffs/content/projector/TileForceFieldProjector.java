@@ -12,14 +12,11 @@ import com.builtbroken.mffs.common.items.card.ItemCardFrequency;
 import com.builtbroken.mffs.common.items.modules.projector.ItemModuleDisintegration;
 import com.builtbroken.mffs.common.items.modules.projector.ItemModuleSilence;
 import com.builtbroken.mffs.common.items.modules.upgrades.ItemModuleSpeed;
-import com.builtbroken.mffs.common.net.packet.BeamRequest;
-import com.builtbroken.mffs.common.net.packet.ForcefieldCalculation;
 import com.builtbroken.mffs.content.field.BlockForceField;
 import com.builtbroken.mffs.content.field.TileForceField;
 import com.builtbroken.mffs.prefab.ModuleInventory;
 import com.builtbroken.mffs.prefab.item.ItemMode;
 import com.builtbroken.mffs.prefab.tile.TileFieldMatrix;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -471,32 +468,6 @@ public class TileForceFieldProjector extends TileFieldMatrix implements IProject
             return stack.getItem() instanceof IFieldModule;
         }
         return true;
-    }
-
-    /**
-     * Handles the message given by the handler.
-     *
-     * @param imessage The message.
-     */
-    @Override
-    public IMessage handleMessage(IMessage imessage)
-    {
-        if (imessage instanceof ForcefieldCalculation) //TODO why does the client need to understand the field?
-        {
-            ForcefieldCalculation calc = (ForcefieldCalculation) imessage;
-            getCalculatedField().clear();
-            getCalculatedField().addAll(calc.getBlocks());
-            this.isCalculatingField = true;
-            return null; //we are done!
-        }
-        else if (imessage instanceof BeamRequest)
-        {
-            BeamRequest req = (BeamRequest) imessage;  //TODO move to event system
-            MFFS.proxy.registerBeamEffect(worldObj, req.destination.translate(.5), new Vector3D((IPos3D) this).translate(.5), 1.0F, 0.0F, 0.0F, 40);
-            MFFS.proxy.animateFortron(worldObj, req.destination, 1.0F, 0.0F, 0.0F, 60);
-            return null;
-        }
-        return super.handleMessage(imessage);
     }
 
     @Override

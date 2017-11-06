@@ -14,7 +14,6 @@ import com.builtbroken.mffs.common.items.modules.interdiction.*;
 import com.builtbroken.mffs.common.items.modules.projector.*;
 import com.builtbroken.mffs.common.items.modules.projector.mode.*;
 import com.builtbroken.mffs.common.items.modules.upgrades.*;
-import com.builtbroken.mffs.common.net.packet.*;
 import com.builtbroken.mffs.content.biometric.BlockBiometricIdentifier;
 import com.builtbroken.mffs.content.biometric.TileBiometricIdentifier;
 import com.builtbroken.mffs.content.cap.BlockFortronCapacitor;
@@ -179,15 +178,6 @@ public class MFFS extends AbstractMod
         Fortron.FLUID_ID = FluidRegistry.getFluidID("fortron");
 
         MinecraftForge.EVENT_BUS.register(new ForgeSubscribeHandler());
-
-        //TODO move to VoltzEngine packet system
-        MFFS.channel.registerMessage(EntityToggle.ServerHandler.class, EntityToggle.class, 0, Side.SERVER);
-        channel.registerMessage(FortronSync.ClientHandler.class, FortronSync.class, 1, Side.CLIENT);
-        MFFS.channel.registerMessage(ChangeFrequency.ServerHandler.class, ChangeFrequency.class, 2, Side.SERVER);
-        MFFS.channel.registerMessage(ForcefieldCalculation.ClientHandler.class, ForcefieldCalculation.class, 3, Side.CLIENT);
-        MFFS.channel.registerMessage(BeamRequest.ClientHandler.class, BeamRequest.class, 4, Side.CLIENT);
-        MFFS.channel.registerMessage(ItemByteToggle.ServerHandler.class, ItemByteToggle.class, 5, Side.SERVER);
-        MFFS.channel.registerMessage(ItemStringToggle.ServerHandler.class, ItemStringToggle.class, 6, Side.SERVER);
 
         proxy.preInit();
     }

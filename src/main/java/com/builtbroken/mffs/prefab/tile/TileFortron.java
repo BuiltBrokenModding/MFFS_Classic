@@ -1,18 +1,13 @@
 package com.builtbroken.mffs.prefab.tile;
 
 import com.builtbroken.jlib.data.vector.IPos3D;
-import com.builtbroken.mffs.MFFS;
-import com.builtbroken.mffs.MFFSSettings;
 import com.builtbroken.mffs.api.card.ICard;
 import com.builtbroken.mffs.api.fortron.FrequencyGrid;
 import com.builtbroken.mffs.api.fortron.IFortronFrequency;
 import com.builtbroken.mffs.api.utils.FortronHelper;
 import com.builtbroken.mffs.api.vector.Vector3D;
 import com.builtbroken.mffs.common.TransferMode;
-import com.builtbroken.mffs.common.net.packet.FortronSync;
 import com.builtbroken.mffs.content.fluids.Fortron;
-import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -29,18 +24,6 @@ public abstract class TileFortron extends TileFrequency implements IFluidHandler
 
     /* This will hold our fluids */
     protected FluidTank tank = new FluidTank(1_000);
-
-    @Override
-    public void updateEntity()
-    {
-        super.updateEntity();
-
-        if (this.ticks % MFFSSettings.FORTRON_SYNC_TICKS == 0 && !worldObj.isRemote)
-        {//We do not need to send by client!
-            //TODO: Send fortron only to people in the interface!
-            MFFS.channel.sendToAllAround(new FortronSync(this), new NetworkRegistry.TargetPoint(this.worldObj.provider.dimensionId, xCoord, yCoord, zCoord, 25));
-        }
-    }
 
     @Override
     public void invalidate()
@@ -219,28 +202,5 @@ public abstract class TileFortron extends TileFrequency implements IFluidHandler
     public FluidTank getTank()
     {
         return tank;
-    }
-
-    /**
-     * Handles the message given by the handler.
-     *
-     * @param imessage The message.
-     */
-    @Override
-    public IMessage handleMessage(IMessage imessage)
-    {
-        if (imessage instanceof FortronSync)
-        {
-            FortronSync sync = (FortronSync) imessage;
-            if (tank.getFluid() != null)
-            {
-                tank.getFluid().amount = sync.amount;
-            }
-            else
-            {
-                tank.setFluid(FluidRegistry.getFluidStack("fortron", sync.amount));
-            }
-        }
-        return super.handleMessage(imessage);
     }
 }

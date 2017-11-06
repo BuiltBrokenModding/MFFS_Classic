@@ -2,14 +2,12 @@ package com.builtbroken.mffs.common.items.modules.projector;
 
 import com.builtbroken.mc.core.registry.implement.IRecipeContainer;
 import com.builtbroken.mc.lib.helper.recipe.UniversalRecipe;
-import com.builtbroken.mffs.MFFS;
 import com.builtbroken.mffs.api.Blacklist;
 import com.builtbroken.mffs.api.IProjector;
 import com.builtbroken.mffs.api.vector.Vector3D;
 import com.builtbroken.mffs.common.event.DelayedBlockDropEvent;
 import com.builtbroken.mffs.common.event.DelayedBlockInventoryEvent;
 import com.builtbroken.mffs.common.items.modules.BaseModule;
-import com.builtbroken.mffs.common.net.packet.BeamRequest;
 import com.builtbroken.mffs.content.projector.TileForceFieldProjector;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -119,7 +117,7 @@ public class ItemModuleDisintegration extends BaseModule implements IRecipeConta
                     return 2;
                 }
 
-                MFFS.channel.sendToAll(new BeamRequest(entity, position));
+                //MFFS.channel.sendToAll(new BeamRequest(entity, position)); TODO why?
                 return 1;
             }
         }

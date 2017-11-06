@@ -1,6 +1,7 @@
 package com.builtbroken.mffs.client.gui.base;
 
-import com.builtbroken.mffs.api.gui.GuiSlotType;
+import com.builtbroken.mc.imp.transform.region.Rectangle;
+import com.builtbroken.mc.prefab.gui.GuiSlotType;
 import com.builtbroken.mffs.api.utils.UnitDisplay;
 import com.builtbroken.mffs.api.vector.Matrix2d;
 import com.builtbroken.mffs.api.vector.Vector3D;
@@ -14,21 +15,16 @@ import net.minecraft.inventory.Container;
  * Created by Poopsicle360 on 7/17/2016.
  */
 @SideOnly(Side.CLIENT)
-public abstract class GuiMatrix extends MFFSGui
+public abstract class GuiMatrix<H extends TileFieldMatrix> extends GuiMFFS<H>
 {
     public static final Matrix2d FORCE_BOUNDS = new Matrix2d(new Vector3D(175, 0, 0), new Vector3D(186, 107, 0));
     /**
      * @param container
      * @param matrix
      */
-    public GuiMatrix(Container container, TileFieldMatrix matrix)
+    public GuiMatrix(Container container, H matrix)
     {
         super(container, matrix);
-    }
-
-    public TileFieldMatrix getMatrix()
-    {
-        return (TileFieldMatrix) this.frequencyTile;
     }
 
     /**
@@ -38,39 +34,38 @@ public abstract class GuiMatrix extends MFFSGui
     public void initGui()
     {
         super.initGui();
-        TileFieldMatrix proj = getMatrix();
-        String north = LanguageRegistry.instance().getStringLocalization("gui.projector." + (proj.useAbsoluteDirection ? "north" : "front"));
-        String south = LanguageRegistry.instance().getStringLocalization("gui.projector." + (proj.useAbsoluteDirection ? "south" : "back"));
-        String west = LanguageRegistry.instance().getStringLocalization("gui.projector." + (proj.useAbsoluteDirection ? "west" : "left"));
-        String east = LanguageRegistry.instance().getStringLocalization("gui.projector." + (proj.useAbsoluteDirection ? "east" : "right"));
+        String north = LanguageRegistry.instance().getStringLocalization("gui.projector." + (host.useAbsoluteDirection ? "north" : "front"));
+        String south = LanguageRegistry.instance().getStringLocalization("gui.projector." + (host.useAbsoluteDirection ? "south" : "back"));
+        String west = LanguageRegistry.instance().getStringLocalization("gui.projector." + (host.useAbsoluteDirection ? "west" : "left"));
+        String east = LanguageRegistry.instance().getStringLocalization("gui.projector." + (host.useAbsoluteDirection ? "east" : "right"));
 
         for (int i = 1; i <= 2; i++)
         {
-            tooltips.put(new Matrix2d(TileFieldMatrix.MATRIX_CENTER.x(), TileFieldMatrix.MATRIX_CENTER.y() - 18 * i, 18), north);
+            tooltips.put(new Rectangle(TileFieldMatrix.MATRIX_CENTER.x(), TileFieldMatrix.MATRIX_CENTER.y() - 18 * i, 18), north);
         }
 
         for (int i = 1; i <= 2; i++)
         {
-            tooltips.put(new Matrix2d(TileFieldMatrix.MATRIX_CENTER.x(), TileFieldMatrix.MATRIX_CENTER.y() + 18 * i, 18), south);
+            tooltips.put(new Rectangle(TileFieldMatrix.MATRIX_CENTER.x(), TileFieldMatrix.MATRIX_CENTER.y() + 18 * i, 18), south);
         }
 
         for (int i = 1; i <= 2; i++)
         {
-            tooltips.put(new Matrix2d(TileFieldMatrix.MATRIX_CENTER.x() + 18 * i, TileFieldMatrix.MATRIX_CENTER.y(), 18), east);
+            tooltips.put(new Rectangle(TileFieldMatrix.MATRIX_CENTER.x() + 18 * i, TileFieldMatrix.MATRIX_CENTER.y(), 18), east);
         }
 
         for (int i = 1; i <= 2; i++)
         {
-            tooltips.put(new Matrix2d(TileFieldMatrix.MATRIX_CENTER.x() - 18 * i, TileFieldMatrix.MATRIX_CENTER.y(), 18), west);
+            tooltips.put(new Rectangle(TileFieldMatrix.MATRIX_CENTER.x() - 18 * i, TileFieldMatrix.MATRIX_CENTER.y(), 18), west);
         }
 
-        this.tooltips.put(new Matrix2d(TileFieldMatrix.MATRIX_CENTER.x(), TileFieldMatrix.MATRIX_CENTER.y(), 18), LanguageRegistry.instance().getStringLocalization("gui.projector.mode"));
+        this.tooltips.put(new Rectangle(TileFieldMatrix.MATRIX_CENTER.x(), TileFieldMatrix.MATRIX_CENTER.y(), 18), LanguageRegistry.instance().getStringLocalization("gui.projector.mode"));
 
-        tooltips.put(new Matrix2d(TileFieldMatrix.MATRIX_CENTER.x() - 18, TileFieldMatrix.MATRIX_CENTER.y() - 18, 18), LanguageRegistry.instance().getStringLocalization("gui.projector.up"));
-        tooltips.put(new Matrix2d(TileFieldMatrix.MATRIX_CENTER.x() + 18, TileFieldMatrix.MATRIX_CENTER.y() - 18, 18), LanguageRegistry.instance().getStringLocalization("gui.projector.up"));
+        tooltips.put(new Rectangle(TileFieldMatrix.MATRIX_CENTER.x() - 18, TileFieldMatrix.MATRIX_CENTER.y() - 18, 18), LanguageRegistry.instance().getStringLocalization("gui.projector.up"));
+        tooltips.put(new Rectangle(TileFieldMatrix.MATRIX_CENTER.x() + 18, TileFieldMatrix.MATRIX_CENTER.y() - 18, 18), LanguageRegistry.instance().getStringLocalization("gui.projector.up"));
 
-        tooltips.put(new Matrix2d(TileFieldMatrix.MATRIX_CENTER.x() - 18, TileFieldMatrix.MATRIX_CENTER.y() + 18, 18), LanguageRegistry.instance().getStringLocalization("gui.projector.down"));
-        tooltips.put(new Matrix2d(TileFieldMatrix.MATRIX_CENTER.x() + 18, TileFieldMatrix.MATRIX_CENTER.y() + 18, 18), LanguageRegistry.instance().getStringLocalization("gui.projector.down"));
+        tooltips.put(new Rectangle(TileFieldMatrix.MATRIX_CENTER.x() - 18, TileFieldMatrix.MATRIX_CENTER.y() + 18, 18), LanguageRegistry.instance().getStringLocalization("gui.projector.down"));
+        tooltips.put(new Rectangle(TileFieldMatrix.MATRIX_CENTER.x() + 18, TileFieldMatrix.MATRIX_CENTER.y() + 18, 18), LanguageRegistry.instance().getStringLocalization("gui.projector.down"));
     }
 
     @Override
@@ -78,7 +73,7 @@ public abstract class GuiMatrix extends MFFSGui
     {
         super.drawGuiContainerBackgroundLayer(var1, x, y);
 
-        drawSlot((int) TileFieldMatrix.MATRIX_CENTER.x(), (int) TileFieldMatrix.MATRIX_CENTER.y(), GuiSlotType.NONE, 1, 0.4F, 0.4F);
+        drawSlot((int) TileFieldMatrix.MATRIX_CENTER.x(), (int) TileFieldMatrix.MATRIX_CENTER.y(), GuiSlotType.NONE, 1f, 0.4F, 0.4F);
 
         for (int i = 1; i <= 2; i++)
         {
@@ -123,11 +118,10 @@ public abstract class GuiMatrix extends MFFSGui
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
     {
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-        TileFieldMatrix proj = getMatrix();
         if (FORCE_BOUNDS.isIn(mouseX - this.guiLeft, mouseY - this.guiTop))
         {
-            drawTooltip(mouseX - this.guiLeft, mouseY - this.guiTop, UnitDisplay.getDisplayShort(proj.getFortronEnergy(), UnitDisplay.Unit.LITER));
+            drawTooltip(mouseX - this.guiLeft, mouseY - this.guiTop, UnitDisplay.getDisplayShort(host.getFortronEnergy(), UnitDisplay.Unit.LITER));
         }
-        drawForceVertical(175, 0, proj.getFortronEnergy() > 0 ? ((float) proj.getFortronEnergy()) / proj.getFortronCapacity() : 0);
+        //drawForceVertical(175, 0, proj.getFortronEnergy() > 0 ? ((float) proj.getFortronEnergy()) / proj.getFortronCapacity() : 0);
     }
 }

@@ -2,14 +2,15 @@ package com.builtbroken.mffs.prefab.tile;
 
 import com.builtbroken.mc.api.IWorldPosition;
 import com.builtbroken.mc.api.tile.IRemovable;
+import com.builtbroken.mc.core.Engine;
+import com.builtbroken.mc.core.network.IPacketIDReceiver;
+import com.builtbroken.mc.core.network.packet.PacketTile;
+import com.builtbroken.mc.core.network.packet.PacketType;
 import com.builtbroken.mc.lib.helper.WrenchUtility;
 import com.builtbroken.mffs.api.IActivatable;
-import com.builtbroken.mffs.common.net.IPacketReceiver_Entity;
-import com.builtbroken.mffs.common.net.packet.EntityToggle;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -20,8 +21,10 @@ import net.minecraftforge.common.util.ForgeDirection;
  * @author Calclavia
  */
 @Deprecated //Has been converted to node framework
-public abstract class TileMFFS extends TileEntity implements IActivatable, IPacketReceiver_Entity, IRemovable.ICustomRemoval, IWorldPosition
+public abstract class TileMFFS extends TileEntity implements IActivatable, IPacketIDReceiver, IRemovable.ICustomRemoval, IWorldPosition
 {
+    public static int PACKET_DESC_ID = -1;
+
     public float animation;
 
     /* Ticks */
@@ -76,36 +79,7 @@ public abstract class TileMFFS extends TileEntity implements IActivatable, IPack
     @Override
     public void setActive(boolean on)
     {
-        if (!on && (isProvidingSignal || worldObj.isRemote))
-        {
-            return;
-        }
         this.isActivated = on;
-        this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
-    }
-
-    /**
-     * Handles the message given by the handler.
-     *
-     * @param imessage The message.
-     */
-    public IMessage handleMessage(IMessage imessage)
-    {
-        if (imessage instanceof EntityToggle)
-        {
-            EntityToggle tog = (EntityToggle) imessage;
-            if (tog.toggle_opcode == EntityToggle.REDSTONE_TOGGLE)
-            {
-                this.isProvidingSignal = !this.isProvidingSignal;
-                this.isActivated = this.isProvidingSignal;
-            }
-            else if (tog.toggle_opcode == EntityToggle.TOGGLE_STATE)
-            {
-                this.isActivated = !this.isActivated;
-            }
-            this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
-        }
-        return null;
     }
 
     public ForgeDirection getDirection()
@@ -124,22 +98,34 @@ public abstract class TileMFFS extends TileEntity implements IActivatable, IPack
         return new S35PacketUpdateTileEntity(this.xCoord, this.yCoord, this.zCoord, 0, tag);
     }
 
-    /**
-     * Called when you receive a TileEntityData packet for the location this
-     * TileEntity is currently in. On the client, the NetworkManager will always
-     * be the remote server. On the server, it will be whomever is responsible for
-     * sending the packet.
-     *
-     * @param net The NetworkManager the packet originated from
-     * @param pkt The data packet
-     */
     @Override
-    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt)
+    public boolean read(ByteBuf buf, int id, EntityPlayer player, PacketType type)
     {
-        //this.isActivated = pkt.func_148857_g().getBoolean("active");
-        //this.isProvidingSignal = pkt.func_148857_g().getBoolean("redstone");
-        readFromNBT(pkt.func_148857_g());
-        super.onDataPacket(net, pkt);
+        if (worldObj.isRemote && PACKET_DESC_ID == id)
+        {
+            readDescPacket(buf);
+            return true;
+        }
+        return false;
+    }
+
+    public void sendDescPacket()
+    {
+        PacketTile tile = new PacketTile(this);
+        writeDescPacket(tile.data());
+        Engine.packetHandler.sendToAllAround(tile, this);
+    }
+
+    public void writeDescPacket(ByteBuf buf)
+    {
+        buf.writeBoolean(isActivated);
+        buf.writeBoolean(isProvidingSignal);
+    }
+
+    public void readDescPacket(ByteBuf buf)
+    {
+        isActivated = buf.readBoolean();
+        isProvidingSignal = buf.readBoolean();
     }
 
     @Override

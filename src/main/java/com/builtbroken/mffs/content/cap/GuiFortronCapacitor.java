@@ -1,12 +1,8 @@
 package com.builtbroken.mffs.content.cap;
 
-import com.builtbroken.mc.imp.transform.vector.Point;
-import com.builtbroken.mffs.MFFS;
 import com.builtbroken.mffs.api.fortron.IFortronFrequency;
 import com.builtbroken.mffs.api.utils.UnitDisplay;
-import com.builtbroken.mffs.client.gui.base.MFFSGui;
-import com.builtbroken.mffs.client.gui.buttons.TransferModeButton;
-import com.builtbroken.mffs.common.net.packet.EntityToggle;
+import com.builtbroken.mffs.client.gui.base.GuiMFFS;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.GuiButton;
@@ -20,62 +16,50 @@ import java.util.Set;
  * @author Calclavia
  */
 @SideOnly(Side.CLIENT)
-public class GuiFortronCapacitor extends MFFSGui
+public class GuiFortronCapacitor extends GuiMFFS<TileFortronCapacitor>
 {
 
     /**
      * @param player
-     * @param cap
+     * @param host
      */
-    public GuiFortronCapacitor(EntityPlayer player, TileFortronCapacitor cap)
+    public GuiFortronCapacitor(EntityPlayer player, TileFortronCapacitor host)
     {
-        super(new FortronCapacitorContainer(player, cap), cap);
-    }
-
-    public TileFortronCapacitor getCapacitor()
-    {
-        return (TileFortronCapacitor) this.frequencyTile;
+        super(new FortronCapacitorContainer(player, host), host);
     }
 
     @Override
     public void initGui()
     {
-        this.textFieldPos = new Point(50, 76);
         super.initGui();
-        this.buttonList.add(new TransferModeButton(1, width / 2 + 15, height / 2 - 37, this, getCapacitor()));
+        //this.buttonList.add(new TransferModeButton(1, width / 2 + 15, height / 2 - 37, this, host));
     }
 
     @Override
     protected void actionPerformed(GuiButton guiButton)
     {
         super.actionPerformed(guiButton);
-        if (guiButton.id == 1)
-        {
-            MFFS.channel.sendToServer(new EntityToggle(getCapacitor(), EntityToggle.TRANSFER_TOGGLE));
-        }
-
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
     {
-        TileFortronCapacitor cap = getCapacitor();
-        fontRendererObj.drawString(cap.getInventoryName(), this.xSize / 2 - fontRendererObj.getStringWidth(cap.getInventoryName()) / 2, 6, 4210752);
+        fontRendererObj.drawString(host.getInventoryName(), this.xSize / 2 - fontRendererObj.getStringWidth(host.getInventoryName()) / 2, 6, 4210752);
         GL11.glPushMatrix();
         GL11.glRotatef(-90, 0, 0, 1);
         drawTextWithTooltip("upgrade", -95, 140, mouseX, mouseY);
         GL11.glPopMatrix();
 
         Set<IFortronFrequency> freq = new HashSet<>();
-        cap.getLinkedDevices(freq);
+        host.getLinkedDevices(freq);
         drawTextWithTooltip("linkedDevice", "%1: " + freq.size(), 8, 28, mouseX, mouseY);
 
-        drawTextWithTooltip("transmissionRate", "%1: " + UnitDisplay.getDisplayShort(cap.getTransmissionRate() * 20, UnitDisplay.Unit.LITER, UnitDisplay.UnitPrefix.MILLI) + "/s", 8, 40, mouseX, mouseY);
-        drawTextWithTooltip("range", "%1: " + cap.getTransmissionRange(), 8, 52, mouseX, mouseY);
+        drawTextWithTooltip("transmissionRate", "%1: " + UnitDisplay.getDisplayShort(host.getTransmissionRate() * 20, UnitDisplay.Unit.LITER, UnitDisplay.UnitPrefix.MILLI) + "/s", 8, 40, mouseX, mouseY);
+        drawTextWithTooltip("range", "%1: " + host.getTransmissionRange(), 8, 52, mouseX, mouseY);
         drawTextWithTooltip("frequency", "%1:", 8, 63, mouseX, mouseY);
-        this.textFieldFrequency.drawTextBox();
+
         drawTextWithTooltip("fortron", "%1:", 8, 95, mouseX, mouseY);
-        fontRendererObj.drawString(UnitDisplay.getDisplayShort(cap.getFortronEnergy(), UnitDisplay.Unit.LITER, UnitDisplay.UnitPrefix.MILLI) + "/" + UnitDisplay.getDisplay(cap.getFortronCapacity(), UnitDisplay.Unit.LITER, UnitDisplay.UnitPrefix.MILLI), 8, 105, 4210752);
+        fontRendererObj.drawString(UnitDisplay.getDisplayShort(host.getFortronEnergy(), UnitDisplay.Unit.LITER, UnitDisplay.UnitPrefix.MILLI) + "/" + UnitDisplay.getDisplay(host.getFortronCapacity(), UnitDisplay.Unit.LITER, UnitDisplay.UnitPrefix.MILLI), 8, 105, 4210752);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
@@ -83,14 +67,6 @@ public class GuiFortronCapacitor extends MFFSGui
     protected void drawGuiContainerBackgroundLayer(float var1, int x, int y)
     {
         super.drawGuiContainerBackgroundLayer(var1, x, y);
-
-        drawSlot(153, 46);
-        drawSlot(153, 66);
-        drawSlot(153, 86);
-
-        drawSlot(8, 73);
-        drawSlot(26, 73);
-        TileFortronCapacitor cap = getCapacitor();
-        drawForce(8, 115, (float) cap.getFortronEnergy() / cap.getFortronCapacity());
+        //drawForce(8, 115, (float) host.getFortronEnergy() / host.getFortronCapacity());
     }
 }

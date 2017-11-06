@@ -6,6 +6,7 @@ package com.builtbroken.mffs.api.fortron;
  *
  * @author Calclavia
  */
+@Deprecated //Use fluid tank system
 public interface IFortronStorage
 {
     int getFortronEnergy();
