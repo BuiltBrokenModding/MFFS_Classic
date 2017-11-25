@@ -24,7 +24,7 @@ public class ContainerCoercionDeriver extends PlayerContainer
             //Add slots
             for (int i = 0; i < 4; i++)
             {
-                addSlotToContainer(new SlotEnergyItem(driver, i, 9 + 9 * i, 41));
+                addSlotToContainer(new SlotEnergyItem(driver, i, 9 + 18 * i, 41));
             }
             addSlotToContainer(new Slot(driver, TileCoercionDeriver.SLOT_FUEL, 29, 83));
         }

@@ -4,7 +4,6 @@ import com.builtbroken.jlib.data.science.units.UnitDisplay;
 import com.builtbroken.mc.prefab.gui.buttons.GuiImageButton;
 import com.builtbroken.mffs.client.gui.base.GuiMFFS;
 import com.builtbroken.mffs.content.gen.TileCoercionDeriver;
-import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.GuiButton;
@@ -41,11 +40,13 @@ public class GuiCoercionDeriver extends GuiMFFS<TileCoercionDeriver>
         int y = guiTop + 10;
 
         //Menu Tabs
-        mainWindowButton = addButton(GuiImageButton.newButton18(0, x, y, 0, 0).setTexture(GUI_BUTTONS));
-        upgradesWindowButton = addButton(GuiImageButton.newButton18(1, x, y + 19 * 2, 2, 0).setTexture(GUI_BUTTONS));
-        linksWindowButton = addButton(GuiImageButton.newButton18(2, x, y + 19 * 3, 7, 0).setTexture(GUI_BUTTONS));
-        settingsWindowButton = addButton(GuiImageButton.newButton18(3, x, y + 19 * 4, 5, 0).setTexture(GUI_BUTTONS));
-}
+        mainWindowButton = (GuiImageButton) addButton(GuiImageButton.newButton18(0, x, y, 0, 0).setTexture(GUI_BUTTONS)).setEnabled(id != 0);
+        upgradesWindowButton = (GuiImageButton) addButton(GuiImageButton.newButton18(1, x, y + 19, 7, 0).setTexture(GUI_BUTTONS)).setEnabled(id != 1);
+        linksWindowButton = (GuiImageButton) addButton(GuiImageButton.newButton18(2, x, y + 19 * 2, 6, 0).setTexture(GUI_BUTTONS)).setEnabled(id != 2);
+        settingsWindowButton = (GuiImageButton) addButton(GuiImageButton.newButton18(3, x, y + 19 * 3, 5, 0).setTexture(GUI_BUTTONS)).setEnabled(id != 3);
+
+        //TODO implement invert button
+    }
 
 
     @Override
@@ -56,18 +57,8 @@ public class GuiCoercionDeriver extends GuiMFFS<TileCoercionDeriver>
 
         drawTextWithTooltip("upgrade", -95, 140, x, y);
 
-        /*if ((this.buttonList.get(1) instanceof GuiButton)) {
-            if (!entity.isInversed) {
-                ((GuiButton) this.buttonList.get(1)).displayString = LanguageRegistry.instance().getStringLocalization("gui.deriver.derive");
-            } else {
-                ((GuiButton) this.buttonList.get(1)).displayString = LanguageRegistry.instance().getStringLocalization("gui.deriver.integrate");
-            }
-        }*/
-
         renderUniversalDisplay(85, 30, host.getBattery().getMaxBufferSize(), x, y, UnitDisplay.Unit.JOULES);
-        //this.fontRendererObj.drawString(UnitDisplay.getDisplayShort(240L, UnitDisplay.Unit.VOLTAGE), 85, 40, 4210752);
 
-        drawTextWithTooltip("progress", "%1: " + (host.isActive() ? LanguageRegistry.instance().getStringLocalization("gui.deriver.running") : LanguageRegistry.instance().getStringLocalization("gui.deriver.idle")), 8, 70, x, y);
         drawTextWithTooltip("fortron", "%1: " + host.getFortronCreationRate(), 8, 105, x, y);
 
         this.fontRendererObj.drawString((host.outputPower ? EnumChatFormatting.RED + "-" : EnumChatFormatting.GREEN + "+") + host.getFortronCreationRate(), 118, 117, 4210752);
@@ -94,7 +85,7 @@ public class GuiCoercionDeriver extends GuiMFFS<TileCoercionDeriver>
         //Turn sentry on
         if (buttonId == 10)
         {
-           // host.sendPacketToServer(new PacketTile(host, 3, true));
+            // host.sendPacketToServer(new PacketTile(host, 3, true));
         }
         //Turn sentry off
         else if (buttonId == 11)
