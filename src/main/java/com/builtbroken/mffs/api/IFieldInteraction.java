@@ -1,7 +1,7 @@
 package com.builtbroken.mffs.api;
 
 import com.builtbroken.jlib.data.vector.IPos3D;
-import com.builtbroken.mc.api.IWorldPosition;
+import com.builtbroken.mc.api.abstraction.world.IPosWorld;
 import com.builtbroken.mffs.api.modules.IFieldModule;
 import com.builtbroken.mffs.api.modules.IModuleContainer;
 import com.builtbroken.mffs.api.modules.IProjectorMode;
@@ -15,7 +15,7 @@ import java.util.Set;
  * @author Calclavia
  */
 public interface IFieldInteraction
-        extends IModuleContainer, IActivatable, IWorldPosition
+        extends IModuleContainer, IActivatable, IPosWorld
 {
     IProjectorMode getMode(); //TODO turn into a default method?
 

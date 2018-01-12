@@ -1,6 +1,8 @@
 package com.builtbroken.mffs.content.gen.gui;
 
 import com.builtbroken.jlib.data.science.units.UnitDisplay;
+import com.builtbroken.mc.core.Engine;
+import com.builtbroken.mc.core.network.packet.callback.PacketOpenGUI;
 import com.builtbroken.mc.prefab.gui.buttons.GuiImageButton;
 import com.builtbroken.mffs.client.gui.base.GuiMFFS;
 import com.builtbroken.mffs.content.gen.TileCoercionDeriver;
@@ -18,11 +20,15 @@ public class GuiCoercionDeriver extends GuiMFFS<TileCoercionDeriver>
 {
     private static final int TABS = 4;
 
+    public static final int MAIN_GUI_ID = 0;
+    public static final int UPGRADE_GUI_ID = 1;
+    public static final int LINKS_GUI_ID = 2;
+    public static final int SETTINGS_GUI_ID = 3;
+
     private GuiImageButton mainWindowButton;
     private GuiImageButton upgradesWindowButton;
     private GuiImageButton linksWindowButton;
     private GuiImageButton settingsWindowButton;
-
 
     protected int id = 0;
 
@@ -40,28 +46,39 @@ public class GuiCoercionDeriver extends GuiMFFS<TileCoercionDeriver>
         int y = guiTop + 10;
 
         //Menu Tabs
-        mainWindowButton = (GuiImageButton) addButton(GuiImageButton.newButton18(0, x, y, 0, 0).setTexture(GUI_BUTTONS)).setEnabled(id != 0);
-        upgradesWindowButton = (GuiImageButton) addButton(GuiImageButton.newButton18(1, x, y + 19, 7, 0).setTexture(GUI_BUTTONS)).setEnabled(id != 1);
-        linksWindowButton = (GuiImageButton) addButton(GuiImageButton.newButton18(2, x, y + 19 * 2, 6, 0).setTexture(GUI_BUTTONS)).setEnabled(id != 2);
-        settingsWindowButton = (GuiImageButton) addButton(GuiImageButton.newButton18(3, x, y + 19 * 3, 5, 0).setTexture(GUI_BUTTONS)).setEnabled(id != 3);
+        mainWindowButton = (GuiImageButton) addButton(GuiImageButton.newButton18(MAIN_GUI_ID, x, y, 0, 0).setTexture(GUI_BUTTONS)).setEnabled(id != MAIN_GUI_ID);
+        upgradesWindowButton = (GuiImageButton) addButton(GuiImageButton.newButton18(UPGRADE_GUI_ID, x, y + 19, 7, 0).setTexture(GUI_BUTTONS)).setEnabled(id != UPGRADE_GUI_ID);
+        linksWindowButton = (GuiImageButton) addButton(GuiImageButton.newButton18(LINKS_GUI_ID, x, y + 19 * 2, 6, 0).setTexture(GUI_BUTTONS)).setEnabled(id != LINKS_GUI_ID);
+        settingsWindowButton = (GuiImageButton) addButton(GuiImageButton.newButton18(SETTINGS_GUI_ID, x, y + 19 * 3, 5, 0).setTexture(GUI_BUTTONS)).setEnabled(id != SETTINGS_GUI_ID);
 
         //TODO implement invert button
     }
-
 
     @Override
     protected void drawGuiContainerForegroundLayer(int x, int y)
     {
         this.fontRendererObj.drawString(host.getInventoryName(), this.xSize / 2 - this.fontRendererObj.getStringWidth(host.getInventoryName()) / 2, 6, 4210752);
 
+        if (MAIN_GUI_ID == id)
+        {
+            renderUniversalDisplay(85, 30, host.getBattery().getMaxBufferSize(), x, y, UnitDisplay.Unit.JOULES);
 
-        drawTextWithTooltip("upgrade", -95, 140, x, y);
+            drawTextWithTooltip("fortron", "%1: " + host.getFortronCreationRate(), 8, 105, x, y);
 
-        renderUniversalDisplay(85, 30, host.getBattery().getMaxBufferSize(), x, y, UnitDisplay.Unit.JOULES);
-
-        drawTextWithTooltip("fortron", "%1: " + host.getFortronCreationRate(), 8, 105, x, y);
-
-        this.fontRendererObj.drawString((host.outputPower ? EnumChatFormatting.RED + "-" : EnumChatFormatting.GREEN + "+") + host.getFortronCreationRate(), 118, 117, 4210752);
+            fontRendererObj.drawString((host.outputPower ? EnumChatFormatting.RED + "-" : EnumChatFormatting.GREEN + "+") + host.getFortronCreationRate(), 118, 117, 4210752);
+        }
+        else if (UPGRADE_GUI_ID == id)
+        {
+            drawTextWithTooltip("upgrade", 1, 140, x, y);
+        }
+        else if (LINKS_GUI_ID == id)
+        {
+            drawTextWithTooltip("WIP", 1, 140, x, y);
+        }
+        else if (SETTINGS_GUI_ID == id)
+        {
+            drawTextWithTooltip("WIP", 1, 140, x, y);
+        }
 
         super.drawGuiContainerForegroundLayer(x, y);
     }
@@ -74,7 +91,6 @@ public class GuiCoercionDeriver extends GuiMFFS<TileCoercionDeriver>
 
         //drawBar(50, 84, 1.0F);
 
-
         //drawForce(8, 115, host.getFortronEnergy() > 0 ? ((float) host.getFortronEnergy()) / host.getFortronCapacity() : 0);
     }
 
@@ -82,20 +98,13 @@ public class GuiCoercionDeriver extends GuiMFFS<TileCoercionDeriver>
     protected void actionPerformed(GuiButton button)
     {
         final int buttonId = button.id;
-        //Turn sentry on
-        if (buttonId == 10)
+        if (buttonId >= 0 && buttonId < TABS && buttonId != id)
         {
-            // host.sendPacketToServer(new PacketTile(host, 3, true));
+            Engine.packetHandler.sendToServer(new PacketOpenGUI(host, buttonId));
         }
-        //Turn sentry off
-        else if (buttonId == 11)
+        else
         {
-            //host.sendPacketToServer(new PacketTile(host, 3, false));
-        }
-        //Tab switch buttons
-        else if (buttonId >= 0 && buttonId < TABS && buttonId != id)
-        {
-            //host.sendPacketToServer(new PacketOpenGUI(host, buttonId));
+            super.actionPerformed(button);
         }
     }
 }

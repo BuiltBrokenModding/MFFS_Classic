@@ -1,5 +1,6 @@
 package com.builtbroken.mffs;
 
+import com.builtbroken.mc.api.tile.access.IGuiTile;
 import com.builtbroken.mc.framework.mod.AbstractProxy;
 import com.builtbroken.mffs.api.vector.Vector3D;
 import com.builtbroken.mffs.common.items.card.id.ContainerCardID;
@@ -7,8 +8,6 @@ import com.builtbroken.mffs.content.biometric.BiometricContainer;
 import com.builtbroken.mffs.content.biometric.TileBiometricIdentifier;
 import com.builtbroken.mffs.content.cap.FortronCapacitorContainer;
 import com.builtbroken.mffs.content.cap.TileFortronCapacitor;
-import com.builtbroken.mffs.content.gen.gui.ContainerCoercionDeriver;
-import com.builtbroken.mffs.content.gen.TileCoercionDeriver;
 import com.builtbroken.mffs.content.interdiction.InterdictionContainer;
 import com.builtbroken.mffs.content.interdiction.TileInterdictionMatrix;
 import com.builtbroken.mffs.content.projector.ForceFieldProjectorContainer;
@@ -61,38 +60,35 @@ public class CommonProxy extends AbstractProxy
     @Override
     public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
     {
-        if (ID == 0)
+        TileEntity tileEntity = world.getTileEntity(x, y, z);
+        if (tileEntity instanceof IGuiTile)
         {
-            TileEntity tileEntity = world.getTileEntity(x, y, z);
-            if (tileEntity != null)
+            return super.getServerGuiElement(ID, player, world, x, y, z);
+        }
+        else if (ID == 0)
+        {
+            if (tileEntity instanceof TileForceFieldProjector)
             {
-                if (tileEntity instanceof TileCoercionDeriver)
-                {
-                    return new ContainerCoercionDeriver(player, (TileCoercionDeriver) tileEntity, ID);
-                }
-                else if (tileEntity instanceof TileForceFieldProjector)
-                {
-                    return new ForceFieldProjectorContainer(player, (TileForceFieldProjector) tileEntity);
-                }
-                else if (tileEntity instanceof TileFortronCapacitor)
-                {
-                    return new FortronCapacitorContainer(player, (TileFortronCapacitor) tileEntity);
-                }
-                else if (tileEntity instanceof TileBiometricIdentifier)
-                {
-                    return new BiometricContainer(player, (TileBiometricIdentifier) tileEntity);
-                }
-                else if (tileEntity instanceof TileInterdictionMatrix)
-                {
-                    return new InterdictionContainer(player, (TileInterdictionMatrix) tileEntity);
-                }
+                return new ForceFieldProjectorContainer(player, (TileForceFieldProjector) tileEntity);
+            }
+            else if (tileEntity instanceof TileFortronCapacitor)
+            {
+                return new FortronCapacitorContainer(player, (TileFortronCapacitor) tileEntity);
+            }
+            else if (tileEntity instanceof TileBiometricIdentifier)
+            {
+                return new BiometricContainer(player, (TileBiometricIdentifier) tileEntity);
+            }
+            else if (tileEntity instanceof TileInterdictionMatrix)
+            {
+                return new InterdictionContainer(player, (TileInterdictionMatrix) tileEntity);
             }
         }
         else if (ID == 1)
         {
             return new ContainerCardID(player, player.inventory, x);
         }
-        return null;
+        return super.getServerGuiElement(ID, player, world, x, y, z);
     }
 
     /**
@@ -140,6 +136,6 @@ public class CommonProxy extends AbstractProxy
     @Override
     public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
     {
-        return null;
+        return super.getClientGuiElement(ID, player, world, x, y, z);
     }
 }

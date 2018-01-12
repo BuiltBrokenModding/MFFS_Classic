@@ -1,12 +1,15 @@
 package com.builtbroken.mffs.prefab.tile;
 
-import com.builtbroken.mc.api.IWorldPosition;
+import com.builtbroken.mc.api.IModObject;
+import com.builtbroken.mc.api.abstraction.world.IWorld;
 import com.builtbroken.mc.api.tile.IRemovable;
+import com.builtbroken.mc.api.tile.ITile;
 import com.builtbroken.mc.core.Engine;
 import com.builtbroken.mc.core.network.IPacketIDReceiver;
 import com.builtbroken.mc.core.network.packet.PacketTile;
 import com.builtbroken.mc.core.network.packet.PacketType;
 import com.builtbroken.mc.lib.helper.WrenchUtility;
+import com.builtbroken.mffs.MFFS;
 import com.builtbroken.mffs.api.IActivatable;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,14 +17,13 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 /**
  * @author Calclavia
  */
 @Deprecated //Has been converted to node framework
-public abstract class TileMFFS extends TileEntity implements IActivatable, IPacketIDReceiver, IRemovable.ICustomRemoval, IWorldPosition
+public abstract class TileMFFS extends TileEntity implements IActivatable, IPacketIDReceiver, IRemovable.ICustomRemoval, IModObject, ITile
 {
     public static int PACKET_DESC_ID = -1;
 
@@ -35,6 +37,15 @@ public abstract class TileMFFS extends TileEntity implements IActivatable, IPack
 
     /* If this tile requires a restone signal */
     private boolean isProvidingSignal;
+
+
+    private IWorld _worldCache;
+
+    @Override
+    public String getMod()
+    {
+        return MFFS.DOMAIN;
+    }
 
     @Override
     public void updateEntity()
@@ -153,8 +164,12 @@ public abstract class TileMFFS extends TileEntity implements IActivatable, IPack
     }
 
     @Override
-    public World oldWorld()
+    public IWorld world()
     {
-        return worldObj;
+        if (_worldCache == null && worldObj != null)
+        {
+            _worldCache = Engine.getWorld(worldObj.provider.dimensionId);
+        }
+        return _worldCache;
     }
 }

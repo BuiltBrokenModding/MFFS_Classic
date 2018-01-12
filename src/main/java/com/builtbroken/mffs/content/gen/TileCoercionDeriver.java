@@ -3,12 +3,15 @@ package com.builtbroken.mffs.content.gen;
 import cofh.api.energy.IEnergyHandler;
 import com.builtbroken.mc.api.energy.IEnergyBuffer;
 import com.builtbroken.mc.api.energy.IEnergyBufferProvider;
+import com.builtbroken.mc.api.tile.access.IGuiTile;
 import com.builtbroken.mc.framework.energy.UniversalEnergySystem;
 import com.builtbroken.mc.framework.energy.data.AbstractEnergyBuffer;
 import com.builtbroken.mffs.MFFS;
 import com.builtbroken.mffs.MFFSSettings;
 import com.builtbroken.mffs.common.items.modules.upgrades.ItemModuleScale;
 import com.builtbroken.mffs.common.items.modules.upgrades.ItemModuleSpeed;
+import com.builtbroken.mffs.content.gen.gui.ContainerCoercionDeriver;
+import com.builtbroken.mffs.content.gen.gui.GuiCoercionDeriver;
 import com.builtbroken.mffs.prefab.ModuleInventory;
 import com.builtbroken.mffs.prefab.tile.TileModuleAcceptor;
 import net.minecraft.entity.player.EntityPlayer;
@@ -23,7 +26,7 @@ import java.util.List;
  *
  * @author Calclavia, DarkCow
  */
-public final class TileCoercionDeriver extends TileModuleAcceptor implements IEnergyHandler, IEnergyBufferProvider
+public final class TileCoercionDeriver extends TileModuleAcceptor implements IEnergyHandler, IEnergyBufferProvider, IGuiTile
 {
     public static final int GUI_MAIN = 0;
     public static final int GUI_UPGRADES = 1;
@@ -284,6 +287,26 @@ public final class TileCoercionDeriver extends TileModuleAcceptor implements IEn
     public IEnergyBuffer getEnergyBuffer(ForgeDirection side)
     {
         return energyBuffer;
+    }
+
+    @Override
+    public Object getServerGuiElement(int ID, EntityPlayer player)
+    {
+        return new ContainerCoercionDeriver(player, this, ID);
+    }
+
+    @Override
+    public Object getClientGuiElement(int ID, EntityPlayer player)
+    {
+        return new GuiCoercionDeriver(player, this, ID);
+    }
+
+    @Override
+    public boolean openGui(EntityPlayer player, int requestedID)
+    {
+        player.openGui(MFFS.INSTANCE, requestedID, world().unwrap(), xi(), yi(), zi());
+
+        return true;
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.builtbroken.mffs.client;
 
+import com.builtbroken.mc.api.tile.access.IGuiTile;
 import com.builtbroken.mffs.CommonProxy;
 import com.builtbroken.mffs.MFFS;
 import com.builtbroken.mffs.api.vector.Vector3D;
@@ -11,7 +12,6 @@ import com.builtbroken.mffs.content.biometric.GuiBiometricIdentifier;
 import com.builtbroken.mffs.content.biometric.TileBiometricIdentifier;
 import com.builtbroken.mffs.content.cap.GuiFortronCapacitor;
 import com.builtbroken.mffs.content.cap.TileFortronCapacitor;
-import com.builtbroken.mffs.content.gen.gui.GuiCoercionDeriver;
 import com.builtbroken.mffs.content.gen.TileCoercionDeriver;
 import com.builtbroken.mffs.content.interdiction.GuiInterdictionMatrix;
 import com.builtbroken.mffs.content.interdiction.TileInterdictionMatrix;
@@ -77,31 +77,28 @@ public class ClientProxy extends CommonProxy
     @Override
     public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
     {
-        if (ID == 0)
+        TileEntity tileEntity = world.getTileEntity(x, y, z);
+        if (tileEntity instanceof IGuiTile)
         {
-            TileEntity tileEntity = world.getTileEntity(x, y, z);
-            if (tileEntity != null)
+            return super.getClientGuiElement(ID, player, world, x, y, z);
+        }
+        else if (ID == 0)
+        {
+            if (tileEntity instanceof TileForceFieldProjector)
             {
-                if (tileEntity instanceof TileCoercionDeriver)
-                {
-                    return new GuiCoercionDeriver(player, (TileCoercionDeriver) tileEntity, ID);
-                }
-                else if (tileEntity instanceof TileForceFieldProjector)
-                {
-                    return new GuiForceFieldProjector(player, (TileForceFieldProjector) tileEntity);
-                }
-                else if (tileEntity instanceof TileFortronCapacitor)
-                {
-                    return new GuiFortronCapacitor(player, (TileFortronCapacitor) tileEntity);
-                }
-                else if (tileEntity instanceof TileBiometricIdentifier)
-                {
-                    return new GuiBiometricIdentifier(player, (TileBiometricIdentifier) tileEntity);
-                }
-                else if (tileEntity instanceof TileInterdictionMatrix)
-                {
-                    return new GuiInterdictionMatrix(player, (TileInterdictionMatrix) tileEntity);
-                }
+                return new GuiForceFieldProjector(player, (TileForceFieldProjector) tileEntity);
+            }
+            else if (tileEntity instanceof TileFortronCapacitor)
+            {
+                return new GuiFortronCapacitor(player, (TileFortronCapacitor) tileEntity);
+            }
+            else if (tileEntity instanceof TileBiometricIdentifier)
+            {
+                return new GuiBiometricIdentifier(player, (TileBiometricIdentifier) tileEntity);
+            }
+            else if (tileEntity instanceof TileInterdictionMatrix)
+            {
+                return new GuiInterdictionMatrix(player, (TileInterdictionMatrix) tileEntity);
             }
         }
         else if (ID == 1)

@@ -7,6 +7,7 @@ import com.builtbroken.mc.prefab.gui.buttons.GuiButton9px;
 import com.builtbroken.mffs.MFFS;
 import com.builtbroken.mffs.api.IBiometricIdentifierLink;
 import com.builtbroken.mffs.prefab.tile.TileMFFS;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.inventory.Container;
 import net.minecraft.util.ResourceLocation;
 
@@ -59,6 +60,22 @@ public class GuiMFFS<H extends TileMFFS> extends GuiContainerBase<H>
         if ((this.host instanceof IBiometricIdentifierLink)) //TODO is needed?
         {
             drawBulb(167, 4, ((IBiometricIdentifierLink) this.host).getBiometricIdentifier() != null);
+        }
+    }
+
+    @Override
+    protected void actionPerformed(GuiButton button)
+    {
+        final int buttonId = button.id;
+        //Turn sentry on
+        if (buttonId == 10)
+        {
+            // host.sendPacketToServer(new PacketTile(host, 3, true));
+        }
+        //Turn sentry off
+        else if (buttonId == 11)
+        {
+            //host.sendPacketToServer(new PacketTile(host, 3, false));
         }
     }
 }
