@@ -1,9 +1,10 @@
 package com.builtbroken.mffs.content.gen.gui;
 
-import com.builtbroken.jlib.data.science.units.UnitDisplay;
 import com.builtbroken.mc.core.Engine;
+import com.builtbroken.mc.core.References;
 import com.builtbroken.mc.core.network.packet.callback.PacketOpenGUI;
 import com.builtbroken.mc.prefab.gui.buttons.GuiImageButton;
+import com.builtbroken.mffs.MFFS;
 import com.builtbroken.mffs.client.gui.base.GuiMFFS;
 import com.builtbroken.mffs.content.gen.TileCoercionDeriver;
 import cpw.mods.fml.relauncher.Side;
@@ -11,6 +12,10 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
+
+import java.awt.*;
 
 /**
  * @author Calclavia
@@ -20,10 +25,7 @@ public class GuiCoercionDeriver extends GuiMFFS<TileCoercionDeriver>
 {
     private static final int TABS = 4;
 
-    public static final int MAIN_GUI_ID = 0;
-    public static final int UPGRADE_GUI_ID = 1;
-    public static final int LINKS_GUI_ID = 2;
-    public static final int SETTINGS_GUI_ID = 3;
+    public static final ResourceLocation GUI_TEXTURE = new ResourceLocation(MFFS.DOMAIN, References.GUI_DIRECTORY + "tile.coercion.deriver.png");
 
     private GuiImageButton mainWindowButton;
     private GuiImageButton upgradesWindowButton;
@@ -46,10 +48,14 @@ public class GuiCoercionDeriver extends GuiMFFS<TileCoercionDeriver>
         int y = guiTop + 10;
 
         //Menu Tabs
-        mainWindowButton = (GuiImageButton) addButton(GuiImageButton.newButton18(MAIN_GUI_ID, x, y, 0, 0).setTexture(GUI_BUTTONS)).setEnabled(id != MAIN_GUI_ID);
-        upgradesWindowButton = (GuiImageButton) addButton(GuiImageButton.newButton18(UPGRADE_GUI_ID, x, y + 19, 7, 0).setTexture(GUI_BUTTONS)).setEnabled(id != UPGRADE_GUI_ID);
-        linksWindowButton = (GuiImageButton) addButton(GuiImageButton.newButton18(LINKS_GUI_ID, x, y + 19 * 2, 6, 0).setTexture(GUI_BUTTONS)).setEnabled(id != LINKS_GUI_ID);
-        settingsWindowButton = (GuiImageButton) addButton(GuiImageButton.newButton18(SETTINGS_GUI_ID, x, y + 19 * 3, 5, 0).setTexture(GUI_BUTTONS)).setEnabled(id != SETTINGS_GUI_ID);
+        mainWindowButton = (GuiImageButton) addButton(GuiImageButton.newButton18(TileCoercionDeriver.GUI_MAIN, x, y, 0, 0).setTexture(GUI_BUTTONS))
+                .setEnabled(id != TileCoercionDeriver.GUI_MAIN);
+        upgradesWindowButton = (GuiImageButton) addButton(GuiImageButton.newButton18(TileCoercionDeriver.GUI_UPGRADES, x, y + 19, 7, 0).setTexture(GUI_BUTTONS))
+                .setEnabled(id != TileCoercionDeriver.GUI_UPGRADES);
+        linksWindowButton = (GuiImageButton) addButton(GuiImageButton.newButton18(TileCoercionDeriver.GUI_LINKS, x, y + 19 * 2, 6, 0).setTexture(GUI_BUTTONS))
+                .setEnabled(id != TileCoercionDeriver.GUI_LINKS);
+        settingsWindowButton = (GuiImageButton) addButton(GuiImageButton.newButton18(TileCoercionDeriver.GUI_SETTINGS, x, y + 19 * 3, 5, 0).setTexture(GUI_BUTTONS))
+                .setEnabled(id != TileCoercionDeriver.GUI_SETTINGS);
 
         //TODO implement invert button
     }
@@ -59,25 +65,29 @@ public class GuiCoercionDeriver extends GuiMFFS<TileCoercionDeriver>
     {
         this.fontRendererObj.drawString(host.getInventoryName(), this.xSize / 2 - this.fontRendererObj.getStringWidth(host.getInventoryName()) / 2, 6, 4210752);
 
-        if (MAIN_GUI_ID == id)
+        if (TileCoercionDeriver.GUI_MAIN == id)
         {
-            renderUniversalDisplay(85, 30, host.getBattery().getMaxBufferSize(), x, y, UnitDisplay.Unit.JOULES);
+            //renderUniversalDisplay(85, 30, host.getBattery().getMaxBufferSize(), x, y, UnitDisplay.Unit.JOULES);
 
-            drawTextWithTooltip("fortron", "%1: " + host.getFortronCreationRate(), 8, 105, x, y);
+            final String fortron = "Fortron: " + host.getFortronEnergy() + "/" + host.getFortronCapacity() + "ml";
+            drawString(fortron, 8, 105);
 
-            fontRendererObj.drawString((host.outputPower ? EnumChatFormatting.RED + "-" : EnumChatFormatting.GREEN + "+") + host.getFortronCreationRate(), 118, 117, 4210752);
+            fontRendererObj.drawString((host.outputPower ? EnumChatFormatting.RED + "-" : EnumChatFormatting.GREEN + "+") + (host.getFortronCreationRate() * 20) + "ml/s",
+                    10 + fontRendererObj.getStringWidth(fortron), 105, 4210752);
         }
-        else if (UPGRADE_GUI_ID == id)
+        else if (TileCoercionDeriver.GUI_UPGRADES == id)
         {
-            drawTextWithTooltip("upgrade", 1, 140, x, y);
+            drawStringCentered("Upgrades", this.xSize / 2, 20);
         }
-        else if (LINKS_GUI_ID == id)
+        else if (TileCoercionDeriver.GUI_LINKS == id)
         {
-            drawTextWithTooltip("WIP", 1, 140, x, y);
+            drawStringCentered("Connections", this.xSize / 2, 20);
+            drawStringCentered("Not implemented", this.xSize / 2, 40);
         }
-        else if (SETTINGS_GUI_ID == id)
+        else if (TileCoercionDeriver.GUI_SETTINGS == id)
         {
-            drawTextWithTooltip("WIP", 1, 140, x, y);
+            drawStringCentered("Settings", this.xSize / 2, 20);
+            drawStringCentered("Not implemented", this.xSize / 2, 40);
         }
 
         super.drawGuiContainerForegroundLayer(x, y);
@@ -85,13 +95,38 @@ public class GuiCoercionDeriver extends GuiMFFS<TileCoercionDeriver>
 
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float f, int x, int y)
+    protected void drawGuiContainerBackgroundLayer(float f, int mouse_x, int mouse_y)
     {
-        super.drawGuiContainerBackgroundLayer(f, x, y);
+        super.drawGuiContainerBackgroundLayer(f, mouse_x, mouse_y);
 
-        //drawBar(50, 84, 1.0F);
+        if (TileCoercionDeriver.GUI_MAIN == id)
+        {
+            this.mc.renderEngine.bindTexture(GUI_TEXTURE);
+            //------------------------------
+            //Fortron tank render
 
-        //drawForce(8, 115, host.getFortronEnergy() > 0 ? ((float) host.getFortronEnergy()) / host.getFortronCapacity() : 0);
+            int x = guiLeft + 10;
+            int y = guiTop + 20;
+
+            //Background
+            this.drawTexturedModalRect(x, y, 0, 167, 94, 50);
+
+            //Get color
+            Color color = Color.BLUE;
+            GL11.glColor4f(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1.0F);
+
+            //Calculate size
+            float volume_render = (float) host.getFortronEnergy() / (float) host.getFortronCapacity();
+            int renderHeight = (int) Math.floor(50 * volume_render);
+
+            //Render fluid
+            this.drawTexturedModalRect(x + 1, y - 1 + (50 - renderHeight), 95 + 20, 167, 94, renderHeight);
+
+            //Render overlay
+            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+            this.drawTexturedModalRect(x + 1, y, 95, 167, 20, 50);
+            //------------------------------
+        }
     }
 
     @Override

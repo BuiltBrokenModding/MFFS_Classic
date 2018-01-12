@@ -9,9 +9,8 @@ import net.minecraft.inventory.Slot;
 /**
  * @author Calclavia
  */
-public class ContainerCoercionDeriver extends PlayerContainer
+public class ContainerCoercionDeriver extends PlayerContainer<TileCoercionDeriver>
 {
-
     /**
      * @param player
      * @param driver
@@ -24,19 +23,21 @@ public class ContainerCoercionDeriver extends PlayerContainer
             //Add slots
             for (int i = 0; i < 4; i++)
             {
-                addSlotToContainer(new SlotEnergyItem(driver, i, 9 + 18 * i, 41));
+                addSlotToContainer(new SlotEnergyItem(driver, TileCoercionDeriver.SLOT_BATTERY_START + i, 150, 20 + 18 * i));
             }
-            addSlotToContainer(new Slot(driver, TileCoercionDeriver.SLOT_FUEL, 29, 83));
+            addSlotToContainer(new SlotCoercionFuel(driver, TileCoercionDeriver.SLOT_FUEL, 29, 83));
         }
         else if (id == TileCoercionDeriver.GUI_UPGRADES)
         {
             //Upgrades
-            addSlotToContainer(new Slot(driver, 3, 154, 67));
-            addSlotToContainer(new Slot(driver, 4, 154, 87));
-            addSlotToContainer(new Slot(driver, 5, 154, 47));
+            int x = 20;
+            int y = 40;
+            addSlotToContainer(new Slot(driver, TileCoercionDeriver.UPGRADES_START, x, y));
+            addSlotToContainer(new Slot(driver, TileCoercionDeriver.UPGRADES_START + 1, x, y + 30));
+            addSlotToContainer(new Slot(driver, TileCoercionDeriver.UPGRADES_START + 2, x, y + 60));
         }
 
         //Player inventory
-        addPlayerInventory(player);
+        addPlayerInventory(player, 8 , 135);
     }
 }

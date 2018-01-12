@@ -10,7 +10,7 @@ import net.minecraft.entity.player.EntityPlayer;
 /**
  * Created by pwaln on 12/28/2016.
  */
-public class InterdictionContainer extends PlayerContainer
+public class InterdictionContainer extends PlayerContainer<TileInterdictionMatrix>
 {
 
     /**
@@ -37,6 +37,6 @@ public class InterdictionContainer extends PlayerContainer
             addSlotToContainer(new BaseSlot(matrix, i + 10, 9 + i * 18, 69));
         }
 
-        addPlayerInventory(player);
+        addPlayerInventory(player, 8 , 135);
     }
 }

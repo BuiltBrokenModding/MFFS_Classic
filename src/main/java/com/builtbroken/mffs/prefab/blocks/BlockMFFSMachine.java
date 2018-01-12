@@ -29,7 +29,7 @@ import java.util.Random;
 /**
  * @author Calclavia
  */
-public abstract class MFFSMachine extends Block implements ITileEntityProvider
+public abstract class BlockMFFSMachine extends Block implements ITileEntityProvider
 {
 
     /* Textures mapped to certain sides */
@@ -38,7 +38,7 @@ public abstract class MFFSMachine extends Block implements ITileEntityProvider
     /**
      * Constructor.
      */
-    public MFFSMachine()
+    public BlockMFFSMachine()
     {
         super(Material.iron);
         this.isBlockContainer = true;

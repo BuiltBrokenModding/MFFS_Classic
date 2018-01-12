@@ -13,14 +13,14 @@ import static com.builtbroken.mffs.prefab.tile.TileFieldMatrix.MATRIX_CENTER;
 /**
  * Created by Poopsicle360 on 7/18/2016.
  */
-public abstract class MatrixContainer extends PlayerContainer
+public abstract class MatrixContainer<H extends TileFieldMatrix> extends PlayerContainer<H>
 {
 
     /**
      * @param player
      * @param matrix
      */
-    public MatrixContainer(EntityPlayer player, TileFieldMatrix matrix)
+    public MatrixContainer(EntityPlayer player, H matrix)
     {
         super(player, matrix);
 

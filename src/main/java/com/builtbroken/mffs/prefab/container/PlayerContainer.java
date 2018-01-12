@@ -1,66 +1,19 @@
 package com.builtbroken.mffs.prefab.container;
 
-import com.builtbroken.mffs.api.IPlayerUsing;
+import com.builtbroken.mc.prefab.gui.ContainerBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
 /**
  * @author Calclavia
  */
-public class PlayerContainer extends Container
+@Deprecated
+public class PlayerContainer<H extends Object> extends ContainerBase<H>
 {
-
-    public static int xInventoryDisplacement = 8;
-    public static int yInventoryDisplacement = 135;
-    public static int yHotBarDisplacement = 193;
-
-    protected int slotCount = 0;
-    private IInventory inventory;
-
-    public PlayerContainer(EntityPlayer player, IInventory inventory)
+    public PlayerContainer(EntityPlayer player, H inventory)
     {
-        this.inventory = inventory;
-        this.slotCount = inventory.getSizeInventory();
-        if ((inventory instanceof IPlayerUsing))
-        {
-            ((IPlayerUsing) inventory).getPlayersUsing().add(player);
-        }
-        //addPlayerInventory(player);
-    }
-
-    /**
-     * @param player
-     */
-    protected void addPlayerInventory(EntityPlayer player)
-    {
-        if ((this.inventory instanceof IPlayerUsing))
-        {
-            ((IPlayerUsing) this.inventory).getPlayersUsing().add(player);
-        }
-        for (int y = 0; y < 3; y++)
-        {
-            for (int x = 0; x < 9; x++)
-            {
-                addSlotToContainer(new Slot(player.inventory, x + y * 9 + 9, this.xInventoryDisplacement + x * 18, this.yInventoryDisplacement + y * 18));
-            }
-        }
-        for (int x = 0; x < 9; x++)
-        {
-            addSlotToContainer(new Slot(player.inventory, x, this.xInventoryDisplacement + x * 18, this.yHotBarDisplacement));
-        }
-    }
-
-    @Override
-    public void onContainerClosed(EntityPlayer entityplayer)
-    {
-        if ((this.inventory instanceof IPlayerUsing))
-        {
-            ((IPlayerUsing) this.inventory).getPlayersUsing().remove(entityplayer);
-        }
-        super.onContainerClosed(entityplayer);
+        super(player, inventory);
     }
 
     @Override

@@ -15,6 +15,8 @@ import com.builtbroken.mffs.content.gen.gui.GuiCoercionDeriver;
 import com.builtbroken.mffs.prefab.ModuleInventory;
 import com.builtbroken.mffs.prefab.tile.TileModuleAcceptor;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -34,13 +36,14 @@ public final class TileCoercionDeriver extends TileModuleAcceptor implements IEn
     public static final int GUI_SETTINGS = 3;
 
     //Inventory slots
-    @Deprecated //Being removed
     public static final int SLOT_BATTERY_START = 0;
     public static final int SLOT_BATTERY_END = 3;
     public static final int SLOT_FUEL = 4;
     public static final int UPGRADES_START = 5;
     public static final int UPGRADES_END = UPGRADES_START + 6;
     public static final int SIZE_INVENTORY = UPGRADES_END;
+
+    public static Item FUEL_ITEM = Items.redstone;
 
     //Battery
     private CoercionEnergyBuffer energyBuffer;
@@ -89,7 +92,7 @@ public final class TileCoercionDeriver extends TileModuleAcceptor implements IEn
                         getBattery().removeEnergyFromStorage(getPowerUsage(), true);
 
                         //Consume fuel, in power mode this boosts output
-                        if (fuelTimer == 0 && isItemValidForSlot(SLOT_FUEL, getStackInSlot(SLOT_FUEL)))
+                        if (fuelTimer == 0 && getStackInSlot(SLOT_FUEL) != null && getStackInSlot(SLOT_FUEL).getItem() == FUEL_ITEM) //TODO add meta data support and hooks to add more items
                         {
                             decrStackSize(SLOT_FUEL, 1);
                             this.fuelTimer = (200 * Math.max(getModuleCount(ItemModuleScale.class) / 20, 1));
@@ -108,6 +111,12 @@ public final class TileCoercionDeriver extends TileModuleAcceptor implements IEn
         {
             animation++;
         }
+    }
+
+    @Override
+    protected boolean isValidGuiUser(EntityPlayer player)
+    {
+        return player.openContainer instanceof ContainerCoercionDeriver;
     }
 
     protected boolean canCreateFortron()

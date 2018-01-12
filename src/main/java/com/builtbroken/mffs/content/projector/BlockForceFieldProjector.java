@@ -4,7 +4,7 @@ import com.builtbroken.mc.core.registry.implement.IPostInit;
 import com.builtbroken.mc.lib.helper.recipe.UniversalRecipe;
 import com.builtbroken.mffs.MFFS;
 import com.builtbroken.mffs.client.render.RenderBlockHandler;
-import com.builtbroken.mffs.prefab.blocks.MFFSMachine;
+import com.builtbroken.mffs.prefab.blocks.BlockMFFSMachine;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -20,7 +20,7 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 /**
  * @author Calclavia
  */
-public class BlockForceFieldProjector extends MFFSMachine implements IPostInit
+public class BlockForceFieldProjector extends BlockMFFSMachine implements IPostInit
 {
 
     /**

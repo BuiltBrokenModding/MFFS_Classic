@@ -67,15 +67,17 @@ public class GuiMFFS<H extends TileMFFS> extends GuiContainerBase<H>
     protected void actionPerformed(GuiButton button)
     {
         final int buttonId = button.id;
-        //Turn sentry on
+        //Turn on
         if (buttonId == 10)
         {
-            // host.sendPacketToServer(new PacketTile(host, 3, true));
+            host.setActive(true);
+            host.sendActivationStateToServer();
         }
-        //Turn sentry off
+        //Turn off
         else if (buttonId == 11)
         {
-            //host.sendPacketToServer(new PacketTile(host, 3, false));
+            host.setActive(false);
+            host.sendActivationStateToServer();
         }
     }
 }

@@ -9,7 +9,7 @@ import net.minecraft.entity.player.EntityPlayer;
 /**
  * @author Calclavia
  */
-public class BiometricContainer extends PlayerContainer
+public class BiometricContainer extends PlayerContainer<TileBiometricIdentifier>
 {
 
     /**
@@ -31,6 +31,6 @@ public class BiometricContainer extends PlayerContainer
             }
         }
 
-        addPlayerInventory(player);
+        addPlayerInventory(player, 8 , 135);
     }
 }

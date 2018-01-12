@@ -8,7 +8,7 @@ import net.minecraft.item.ItemBlock;
 /**
  * @author Calclavia
  */
-public final class ForceFieldProjectorContainer extends MatrixContainer
+public final class ForceFieldProjectorContainer extends MatrixContainer<TileForceFieldProjector>
 {
 
     /**
@@ -26,8 +26,6 @@ public final class ForceFieldProjectorContainer extends MatrixContainer
                 addSlotToContainer(new SlotSpecific(field, x + y * 2 + (1 + 25), 21 + 18 * x, 31 + 18 * y, ItemBlock.class));
             }
         }
-        addPlayerInventory(player);
+        addPlayerInventory(player, 8 , 135);
     }
-
-
 }

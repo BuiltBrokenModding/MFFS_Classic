@@ -10,7 +10,7 @@ import net.minecraft.entity.player.EntityPlayer;
 /**
  * @author Calclavia
  */
-public final class FortronCapacitorContainer extends PlayerContainer
+public final class FortronCapacitorContainer extends PlayerContainer<TileFortronCapacitor>
 {
 
     /**
@@ -28,7 +28,7 @@ public final class FortronCapacitorContainer extends PlayerContainer
         addSlotToContainer(new BaseSlot(cap, 3, 154, 67));
         addSlotToContainer(new BaseSlot(cap, 4, 154, 87));
 
-        addPlayerInventory(player);
+        addPlayerInventory(player, 8 , 135);
     }
 
 }

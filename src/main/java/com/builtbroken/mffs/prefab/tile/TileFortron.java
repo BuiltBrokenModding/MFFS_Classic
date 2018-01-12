@@ -8,6 +8,8 @@ import com.builtbroken.mffs.api.utils.FortronHelper;
 import com.builtbroken.mffs.api.vector.Vector3D;
 import com.builtbroken.mffs.common.TransferMode;
 import com.builtbroken.mffs.content.fluids.Fortron;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -23,7 +25,7 @@ public abstract class TileFortron extends TileFrequency implements IFluidHandler
     public boolean sendFortron = true;
 
     /* This will hold our fluids */
-    protected FluidTank tank = new FluidTank(1_000);
+    protected FluidTank tank = new FluidTank(FluidContainerRegistry.BUCKET_VOLUME);
 
     @Override
     public void invalidate()
@@ -192,6 +194,22 @@ public abstract class TileFortron extends TileFrequency implements IFluidHandler
         }
 
         return null;
+    }
+
+    @Override
+    public void writeGuiPacket(ByteBuf buf, EntityPlayer player)
+    {
+        super.writeGuiPacket(buf, player);
+        buf.writeInt(getFortronCapacity());
+        buf.writeInt(getFortronEnergy());
+    }
+
+    @Override
+    public void readGuiPacket(ByteBuf buf, EntityPlayer player)
+    {
+        super.readGuiPacket(buf, player);
+        tank.setCapacity(buf.readInt());
+        setFortronEnergy(buf.readInt());
     }
 
     /**

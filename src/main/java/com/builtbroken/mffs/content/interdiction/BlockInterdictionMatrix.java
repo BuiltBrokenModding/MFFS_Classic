@@ -1,7 +1,7 @@
 package com.builtbroken.mffs.content.interdiction;
 
 import com.builtbroken.mc.core.registry.implement.IPostInit;
-import com.builtbroken.mffs.prefab.blocks.MFFSMachine;
+import com.builtbroken.mffs.prefab.blocks.BlockMFFSMachine;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
@@ -12,7 +12,7 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 /**
  * @author Calclavia
  */
-public class BlockInterdictionMatrix extends MFFSMachine implements IPostInit
+public class BlockInterdictionMatrix extends BlockMFFSMachine implements IPostInit
 {
 
     /**

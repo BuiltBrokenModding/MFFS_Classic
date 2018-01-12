@@ -13,7 +13,7 @@ import com.builtbroken.mffs.api.utils.MatrixHelper;
 import com.builtbroken.mffs.api.utils.UnitDisplay;
 import com.builtbroken.mffs.api.utils.Util;
 import com.builtbroken.mffs.api.vector.Vector3D;
-import com.builtbroken.mffs.prefab.blocks.MFFSMachine;
+import com.builtbroken.mffs.prefab.blocks.BlockMFFSMachine;
 import com.builtbroken.mffs.common.items.card.ItemCardFrequency;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import net.minecraft.block.Block;
@@ -126,7 +126,7 @@ public class RemoteController extends ItemCardFrequency implements ICoordLink
         { //you should be sneaking to set coord!
             Location coord = new Location(world, x, y, z);
             Block block = coord.getBlock();
-            if (block != null && block instanceof MFFSMachine)
+            if (block != null && block instanceof BlockMFFSMachine)
             {
 
                 setLink(stack, coord);

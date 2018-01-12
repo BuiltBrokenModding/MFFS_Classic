@@ -3,7 +3,7 @@ package com.builtbroken.mffs.content.gen;
 import com.builtbroken.mc.lib.helper.recipe.UniversalRecipe;
 import com.builtbroken.mffs.MFFS;
 import com.builtbroken.mffs.client.render.RenderBlockHandler;
-import com.builtbroken.mffs.prefab.blocks.MFFSMachine;
+import com.builtbroken.mffs.prefab.blocks.BlockMFFSMachine;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -17,7 +17,7 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 /**
  * @author Calclavia
  */
-public final class BlockCoercionDeriver extends MFFSMachine
+public final class BlockCoercionDeriver extends BlockMFFSMachine
 {
 
     /**

@@ -2,6 +2,8 @@ package com.builtbroken.mffs.prefab.tile;
 
 import com.builtbroken.mc.api.IModObject;
 import com.builtbroken.mc.api.abstraction.world.IWorld;
+import com.builtbroken.mc.api.data.IPacket;
+import com.builtbroken.mc.api.tile.IPlayerUsing;
 import com.builtbroken.mc.api.tile.IRemovable;
 import com.builtbroken.mc.api.tile.ITile;
 import com.builtbroken.mc.core.Engine;
@@ -9,35 +11,46 @@ import com.builtbroken.mc.core.network.IPacketIDReceiver;
 import com.builtbroken.mc.core.network.packet.PacketTile;
 import com.builtbroken.mc.core.network.packet.PacketType;
 import com.builtbroken.mc.lib.helper.WrenchUtility;
+import com.builtbroken.mc.prefab.gui.ContainerBase;
 import com.builtbroken.mffs.MFFS;
 import com.builtbroken.mffs.api.IActivatable;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author Calclavia
  */
 @Deprecated //Has been converted to node framework
-public abstract class TileMFFS extends TileEntity implements IActivatable, IPacketIDReceiver, IRemovable.ICustomRemoval, IModObject, ITile
+public abstract class TileMFFS extends TileEntity implements IActivatable, IPacketIDReceiver, IRemovable.ICustomRemoval, IModObject, ITile, IPlayerUsing
 {
     public static int PACKET_DESC_ID = -1;
+    public static int PACKET_ACTIVATE_ID = 0;
+    public static int PACKET_GUI_ID = 1;
 
-    public float animation;
+    public float animation; //TODO ?
 
-    /* Ticks */
+    /** Ticks */
     protected int ticks;
 
-    /* If this machine is on */
+    protected boolean doDescPacket = false;
+
+    /** If this machine is on */
     private boolean isActivated;
 
-    /* If this tile requires a restone signal */
+    /** If this tile requires a restone signal */
     private boolean isProvidingSignal;
 
+    private List<EntityPlayer> playersUsingGUI = new ArrayList();
 
     private IWorld _worldCache;
 
@@ -45,6 +58,12 @@ public abstract class TileMFFS extends TileEntity implements IActivatable, IPack
     public String getMod()
     {
         return MFFS.DOMAIN;
+    }
+
+    @Override
+    public Collection<EntityPlayer> getPlayersUsing()
+    {
+        return playersUsingGUI;
     }
 
     @Override
@@ -58,11 +77,48 @@ public abstract class TileMFFS extends TileEntity implements IActivatable, IPack
         {
             ticks = 1;
         }
+
+        if (isServer())
+        {
+            if (doDescPacket)
+            {
+                doDescPacket = false;
+                sendDescPacket();
+            }
+            if (playersUsingGUI.size() > 0 && ticks % 3 == 0)
+            {
+                doGUIPacket();
+            }
+        }
     }
 
     /* Starts the entity */
     public void start()
     {
+    }
+
+    protected void doGUIPacket()
+    {
+        Iterator<EntityPlayer> it = playersUsingGUI.iterator();
+        while (it.hasNext())
+        {
+            EntityPlayer player = it.next();
+            if (player instanceof EntityPlayerMP && isValidGuiUser(player))
+            {
+                PacketTile packet = new PacketTile(this, PACKET_GUI_ID);
+                writeGuiPacket(packet.data(), player);
+                Engine.packetHandler.sendToPlayer(packet, (EntityPlayerMP) player);
+            }
+            else
+            {
+                it.remove();
+            }
+        }
+    }
+
+    protected boolean isValidGuiUser(EntityPlayer player)
+    {
+        return player.inventoryContainer instanceof ContainerBase;
     }
 
     @Override
@@ -91,6 +147,7 @@ public abstract class TileMFFS extends TileEntity implements IActivatable, IPack
     public void setActive(boolean on)
     {
         this.isActivated = on;
+        doDescPacket = true;
     }
 
     public ForgeDirection getDirection()
@@ -98,26 +155,53 @@ public abstract class TileMFFS extends TileEntity implements IActivatable, IPack
         return ForgeDirection.getOrientation(getBlockMetadata());
     }
 
-    /**
-     * Overriden in a sign to provide the text.
-     */
     @Override
-    public Packet getDescriptionPacket()
+    public final Packet getDescriptionPacket()
     {
-        NBTTagCompound tag = new NBTTagCompound();
-        writeToNBT(tag);
-        return new S35PacketUpdateTileEntity(this.xCoord, this.yCoord, this.zCoord, 0, tag);
+        return Engine.packetHandler.toMCPacket(getDescPacket());
+    }
+
+    public IPacket getDescPacket()
+    {
+        PacketTile packetTile = new PacketTile(this, PACKET_DESC_ID);
+        writeDescPacket(packetTile.data());
+        return packetTile;
     }
 
     @Override
     public boolean read(ByteBuf buf, int id, EntityPlayer player, PacketType type)
     {
-        if (worldObj.isRemote && PACKET_DESC_ID == id)
+        if (isClient())
         {
-            readDescPacket(buf);
-            return true;
+            if (id == PACKET_DESC_ID)
+            {
+                readDescPacket(buf);
+                return true;
+            }
+            else if (id == PACKET_GUI_ID)
+            {
+                readGuiPacket(buf, player);
+                return true;
+            }
+        }
+        else
+        {
+            if (id == PACKET_ACTIVATE_ID)
+            {
+                //TODO add anti-cheat check to ensure player is within range of tile
+                setActive(buf.readBoolean());
+                return true;
+            }
         }
         return false;
+    }
+
+    public void sendActivationStateToServer()
+    {
+        if (isClient())
+        {
+            Engine.packetHandler.sendToServer(new PacketTile(this, PACKET_ACTIVATE_ID, isActive()));
+        }
     }
 
     public void sendDescPacket()
@@ -137,6 +221,16 @@ public abstract class TileMFFS extends TileEntity implements IActivatable, IPack
     {
         isActivated = buf.readBoolean();
         isProvidingSignal = buf.readBoolean();
+    }
+
+    public void writeGuiPacket(ByteBuf buf, EntityPlayer player)
+    {
+
+    }
+
+    public void readGuiPacket(ByteBuf buf, EntityPlayer player)
+    {
+
     }
 
     @Override

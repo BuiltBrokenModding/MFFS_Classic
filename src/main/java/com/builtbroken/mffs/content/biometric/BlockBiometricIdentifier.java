@@ -2,7 +2,7 @@ package com.builtbroken.mffs.content.biometric;
 
 import com.builtbroken.mc.core.registry.implement.IPostInit;
 import com.builtbroken.mc.lib.helper.recipe.UniversalRecipe;
-import com.builtbroken.mffs.prefab.blocks.MFFSMachine;
+import com.builtbroken.mffs.prefab.blocks.BlockMFFSMachine;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
@@ -12,7 +12,7 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 /**
  * @author Calclavia
  */
-public class BlockBiometricIdentifier extends MFFSMachine implements IPostInit
+public class BlockBiometricIdentifier extends BlockMFFSMachine implements IPostInit
 {
 
     /**
