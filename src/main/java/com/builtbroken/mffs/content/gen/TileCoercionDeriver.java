@@ -14,6 +14,7 @@ import com.builtbroken.mffs.content.gen.gui.ContainerCoercionDeriver;
 import com.builtbroken.mffs.content.gen.gui.GuiCoercionDeriver;
 import com.builtbroken.mffs.prefab.ModuleInventory;
 import com.builtbroken.mffs.prefab.tile.TileModuleAcceptor;
+import cpw.mods.fml.common.Optional;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -28,6 +29,7 @@ import java.util.List;
  *
  * @author Calclavia, DarkCow
  */
+@Optional.Interface(iface = "cofh.api.energy.IEnergyHandler", modid = "CoFHCore")
 public final class TileCoercionDeriver extends TileModuleAcceptor implements IEnergyHandler, IEnergyBufferProvider, IGuiTile
 {
     public static final int GUI_MAIN = 0;
