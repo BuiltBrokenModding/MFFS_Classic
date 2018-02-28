@@ -22,8 +22,9 @@ public class MFFSSettings
     //Interdiction matrix
     public static int INTERDICTION_ATTACK_ENERGY = 10000;
     public static int INTERDICTION_MAX_RANGE = 1000;
+    public static int INTERDICTION_FORTRON_NEEDED = 30;
     public static boolean ANTI_PERSONNEL_COLLECT_ITEMS = false;
-
+    
     //Network settings
     public static short FORTRON_SYNC_TICKS = 60; // 3 seconds TODO ?
 
@@ -79,6 +80,9 @@ public class MFFSSettings
         Property anti_personel = config.get(category, "collect_items", ANTI_PERSONNEL_COLLECT_ITEMS);
         anti_personel.comment = "Set to true for interdiction matrix to collect items from killed players without collection module.";
         ANTI_PERSONNEL_COLLECT_ITEMS = anti_personel.getBoolean(ANTI_PERSONNEL_COLLECT_ITEMS);
+        
+        INTERDICTION_FOTRON_NEEDED = configInt("Interdiction Matrix", "fortron_amount", INTERDICTION_FORTRON_NEEDED, 0, 30, 
+                                               "Upkeep cost for the running of the Interdiction Matrix");
     }
 
     protected static void loadProjectorSettings(Configuration config)
