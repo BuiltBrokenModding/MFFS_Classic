@@ -37,13 +37,13 @@ public class GuiInterdictionMatrix extends GuiMFFS<TileInterdictionMatrix>
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
     {
         this.fontRendererObj.drawString(host.getInventoryName(), this.xSize / 2 - this.fontRendererObj.getStringWidth(host.getInventoryName()) / 2, 6, 4210752);
-        drawTextWithTooltip("warn", "%1: " + host.getWarningRange(), 35, 19, mouseX, mouseY);
-        drawTextWithTooltip("action", "%1: " + host.getActionRange(), 100, 19, mouseX, mouseY);
+        drawTextWithTooltip("warn", "%1: " + host.getWarningRange(), 27, 17, mouseX, mouseY);
+        drawTextWithTooltip("action", "%1: " + host.getActionRange(), 90, 17, mouseX, mouseY);
 
-        drawTextWithTooltip("filterMode", "%1:", 9, 32, mouseX, mouseY);
+        drawTextWithTooltip("filterMode", "%1:", 8, 26, mouseX, mouseY);
 
 
-        drawTextWithTooltip("frequency", "%1:", 8, 93, mouseX, mouseY);
+        drawTextWithTooltip("frequency", "%1:", 8, 84, mouseX, mouseY);
 
         drawTextWithTooltip("fortron", "%1: "
                 + com.builtbroken.mffs.api.utils.UnitDisplay.getDisplayShort(host.getFortronEnergy(), com.builtbroken.mffs.api.utils.UnitDisplay.Unit.LITER) + "/"
