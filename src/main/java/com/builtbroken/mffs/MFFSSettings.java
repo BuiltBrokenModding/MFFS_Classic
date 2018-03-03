@@ -10,8 +10,7 @@ import net.minecraftforge.common.config.Property;
  */
 public class MFFSSettings
 {
-    //TODO move settings to content/components they are used by
-    //TODO move settings to JSON system, aka I want this class gone
+    //TODO move settings to JSON system, aka I want this class gone - I will do this (From Dark)
 
     //Projector settings
     public static int PROJECTOR_BLOCKS_PER_TICK = 1000;
@@ -24,7 +23,7 @@ public class MFFSSettings
     public static int INTERDICTION_MAX_RANGE = 1000;
     public static int INTERDICTION_FORTRON_NEEDED = 30;
     public static boolean ANTI_PERSONNEL_COLLECT_ITEMS = false;
-    
+
     //Network settings
     public static short FORTRON_SYNC_TICKS = 60; // 3 seconds TODO ?
 
@@ -45,22 +44,23 @@ public class MFFSSettings
     {
         final String category = "fortron_generator";
 
-        COERCION_POWER_COST = config.getInt(category, "energy_cost", COERCION_POWER_COST, 0, Integer.MAX_VALUE,
+        COERCION_POWER_COST = getIntNotNeg(config, category, "energy_cost", COERCION_POWER_COST,
                 "UE energy consumed per cycle (20 cycles per second, speed modules increase cycles and thus power cost)");
 
-        COERCION_BATTERY_SIZE = config.getInt(category, "energy_buffer", COERCION_BATTERY_SIZE, 0, Integer.MAX_VALUE,
+        COERCION_BATTERY_SIZE = getIntNotNeg(config, category, "energy_buffer", COERCION_BATTERY_SIZE,
                 "UE energy stored in the machine, make sure to scale with power usage (power = normal_power * speed(64) * bonus(4)");
 
-        COERCION_BATTERY_TRANSFER_PERCENTAGE = config.getFloat(category, "transfer_percentage", COERCION_BATTERY_TRANSFER_PERCENTAGE, 0, 1f,
+        COERCION_BATTERY_TRANSFER_PERCENTAGE = config.getFloat("transfer_percentage", category, COERCION_BATTERY_TRANSFER_PERCENTAGE,
+                0, 1f,
                 "Percentage of power to input or output per transfer");
 
-        COERCION_OUTPUT_PER_TICK = config.getInt(category, "output", COERCION_OUTPUT_PER_TICK, 0, Integer.MAX_VALUE,
+        COERCION_OUTPUT_PER_TICK = getIntNotNeg(config, category, "output", COERCION_OUTPUT_PER_TICK,
                 "Fortron created per operation (20 operations a second)");
 
-        COERCION_FORTRON_TANK_SIZE = config.getInt(category, "tank_size", COERCION_FORTRON_TANK_SIZE, 0, Short.MAX_VALUE,
+        COERCION_FORTRON_TANK_SIZE = getIntNotNeg(config, category, "tank_size", COERCION_FORTRON_TANK_SIZE,
                 "Buckets of fortron that can be stored, scales with capacity cards");
 
-        COERCION_FUEL_BONUS = config.getInt(category, "fuel_bonus", COERCION_FUEL_BONUS, 0, Short.MAX_VALUE,
+        COERCION_FUEL_BONUS = getIntNotNeg(config, category, "fuel_bonus", COERCION_FUEL_BONUS,
                 "Bonus fortron created when using fuel (output = bonus * normal_output * speed_modules)");
 
         COERCION_USE_POWER = config.getBoolean("use_power", category, COERCION_USE_POWER,
@@ -70,31 +70,31 @@ public class MFFSSettings
     protected static void loadInterdictionSettings(Configuration config)
     {
         final String category = "interdiction_matrix";
-        INTERDICTION_ATTACK_ENERGY = config.getInt(category, "attack_cost", INTERDICTION_ATTACK_ENERGY, 0, 100000,
+        INTERDICTION_ATTACK_ENERGY = getIntNotNeg(config, category, "attack_cost", INTERDICTION_ATTACK_ENERGY,
                 "Fortron cost for attacking entities.");
 
-        Property interdictionRange = config.get(category, "range", INTERDICTION_MAX_RANGE);
-        interdictionRange.comment = "The maximum range for the interdiction matrix.";
-        INTERDICTION_MAX_RANGE = interdictionRange.getInt(INTERDICTION_MAX_RANGE);
+        INTERDICTION_MAX_RANGE = getIntNotNeg(config, category, "range", INTERDICTION_MAX_RANGE,
+                "The maximum range for the interdiction matrix.");
 
-        Property anti_personel = config.get(category, "collect_items", ANTI_PERSONNEL_COLLECT_ITEMS);
-        anti_personel.comment = "Set to true for interdiction matrix to collect items from killed players without collection module.";
-        ANTI_PERSONNEL_COLLECT_ITEMS = anti_personel.getBoolean(ANTI_PERSONNEL_COLLECT_ITEMS);
-        
-        INTERDICTION_FOTRON_NEEDED = configInt("Interdiction Matrix", "fortron_amount", INTERDICTION_FORTRON_NEEDED, 0, 30, 
-                                               "Upkeep cost for the running of the Interdiction Matrix");
+        ANTI_PERSONNEL_COLLECT_ITEMS = config.getBoolean("collect_items", category, ANTI_PERSONNEL_COLLECT_ITEMS,
+                "Set to true for interdiction matrix to collect items from killed players without collection module.");
+
+        INTERDICTION_FORTRON_NEEDED = getIntNotNeg(config, category, "fortron_amount", INTERDICTION_FORTRON_NEEDED,
+                "Upkeep cost for the running of the Interdiction Matrix");
     }
 
     protected static void loadProjectorSettings(Configuration config)
     {
-        Property maxFFGenPerTick = config.get("forcefield_projector", "blocks_per_tick", PROJECTOR_BLOCKS_PER_TICK);
-        maxFFGenPerTick.comment = "How many blocks can be generated per tick. Decreasing this can improve TPS, at the cost of response time of fields";
-        PROJECTOR_BLOCKS_PER_TICK = maxFFGenPerTick.getInt(PROJECTOR_BLOCKS_PER_TICK);
+        final String category = "forcefield_projector";
+        PROJECTOR_BLOCKS_PER_TICK = getIntNotNeg(config, category, "blocks_per_tick", PROJECTOR_BLOCKS_PER_TICK,
+                "How many blocks can be generated per tick. Decreasing this can improve TPS, at the cost of response time of fields");
     }
 
     protected static void loadCapacitorSettings(Configuration config)
     {
-        CAPACITOR_POWER_DRAIN = config.getInt("capacitor", "fortron_cost", CAPACITOR_POWER_DRAIN, 0, 10000, "Upkeep cost for running the capacitor.");
+        final String category = "capacitor";
+        CAPACITOR_POWER_DRAIN = getIntNotNeg(config, category, "fortron_cost", CAPACITOR_POWER_DRAIN,
+                "Upkeep cost for running the capacitor.");
     }
 
     protected static void loadRenderSettings(Configuration config)
@@ -103,6 +103,11 @@ public class MFFSSettings
         //TODO implement settings to disable beam render
     }
 
+    /**
+     * Called to load the settings
+     *
+     * @param config
+     */
     public static void load(Configuration config)
     {
         config.load();
@@ -113,4 +118,22 @@ public class MFFSSettings
         loadRenderSettings(config);
         config.save();
     }
+
+    /**
+     * Gets an int with a value between zero and {@link Integer#MAX_VALUE}
+     *
+     * @param config
+     * @param name
+     * @param category
+     * @param defaultValue
+     * @param comment
+     * @return
+     */
+    public static int getIntNotNeg(Configuration config, String category, String name, int defaultValue, String comment)
+    {
+        Property prop = config.get(category, name, defaultValue);
+        prop.comment = comment + " [range: " + 0 + " ~ Integer.MAX, default: " + defaultValue + "]";
+        return prop.getInt(defaultValue) < 0 ? 0 : prop.getInt(defaultValue);
+    }
+
 }
