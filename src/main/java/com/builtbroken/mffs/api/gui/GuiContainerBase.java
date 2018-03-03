@@ -54,6 +54,7 @@ public class GuiContainerBase extends GuiContainer
         this.ySize = 217;
     }
 
+    @Override
     public void onGuiClosed()
     {
         Keyboard.enableRepeatEvents(false);
