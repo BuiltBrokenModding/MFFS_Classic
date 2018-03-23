@@ -19,6 +19,7 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
@@ -29,6 +30,7 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -41,6 +43,7 @@ public class BlockForceField extends Block implements ITileEntityProvider, IForc
      * Force Field Block to reference!
      */
     public static BlockForceField BLOCK_FORCE_FIELD;
+    public static HashMap<Item, Integer> errorCount = new HashMap();
 
     /**
      * Default method.
@@ -343,19 +346,38 @@ public class BlockForceField extends Block implements ITileEntityProvider, IForc
     @SideOnly(Side.CLIENT)
     public boolean shouldSideBeRendered(IBlockAccess world, int x, int y, int z, int p_149646_5_)
     {
-        TileEntity tile = world.getTileEntity(x, y, z);
-        if (tile instanceof TileForceField)
+        ItemStack stack = null;
+        try
         {
-            ItemStack stack = ((TileForceField) tile).camouflageMaterial;
-            try
+            TileEntity tile = world.getTileEntity(x, y, z);
+            if (tile instanceof TileForceField)
             {
+                stack = ((TileForceField) tile).camouflageMaterial;
                 return stack != null && ((ItemBlock) stack.getItem()).field_150939_a.shouldSideBeRendered(world, x, y, z, p_149646_5_);
             }
-            catch (Exception e)
+        }
+        catch (Exception e)
+        {
+            //Entry
+            Item item = stack != null ? stack.getItem() : null;
+
+            //If over 5 errors, suppress additional errors
+            if (errorCount.get(item) < 5)
             {
-                System.out.println("Side Render Error: ForceFieldBlock");
-                e.printStackTrace();
-                return true;
+                //Error message
+                String msg = "BlockForceField#shouldSideBeRendered(%s, %d, %d, %d, %d) - Unexpected error while handling call. ItemStack = %s";
+                msg = String.format(msg, world, x, y, z, p_149646_5_, stack);
+                MFFS.INSTANCE.logger().error(msg, e);
+
+                //Track errors per item
+                if (!errorCount.containsKey(item))
+                {
+                    errorCount.put(item, 1);
+                }
+                else
+                {
+                    errorCount.put(item, errorCount.get(item) + 1);
+                }
             }
         }
         return super.shouldSideBeRendered(world, x, y, z, p_149646_5_);
