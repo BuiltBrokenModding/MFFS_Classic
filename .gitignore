@@ -16,6 +16,8 @@ out
 # gradle
 build
 .gradle
+setup.bat
+build.bat
 
 # other
 eclipse
