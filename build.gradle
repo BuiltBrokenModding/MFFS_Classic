@@ -23,10 +23,21 @@ minecraft {
     version = "${mc_version}-${forge_version}"
     runDir = "run"
     mappings = "${mcp_mappings}"
+    makeObfSourceJar = false
+}
+
+repositories {
+	maven { url = "http://dvs1.progwml6.com/files/maven" }
+	maven { url = "http://tehnut.info/maven" }
+	maven { url = "http://maven.covers1624.net" }
 }
 
 dependencies {
-
+	compile "mezz.jei:jei_${mc_version}:${jei_version}:api"
+	compile "mcp.mobius.waila:Hwyla:${hwyla_version}:api"
+	compile "cofh:RedstoneFlux:${rf_version}:deobf"
+	runtime "mezz.jei:jei_${mc_version}:${jei_version}"
+    runtime "mcp.mobius.waila:Hwyla:${hwyla_version}"
 }
 
 processResources {
@@ -41,4 +52,23 @@ processResources {
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }
+}
+
+jar {
+    classifier = 'universal'
+}
+
+task deobfJar(type: Jar) {
+    from sourceSets.main.output
+    classifier = 'deobf'
+}
+
+task srcJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'sources'
+}
+
+artifacts {
+    archives deobfJar
+    archives srcJar
 }
