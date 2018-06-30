@@ -106,7 +106,7 @@ public abstract class TileMFFS extends TileEntity implements IActivatable, IPack
             if (player instanceof EntityPlayerMP && isValidGuiUser(player))
             {
                 PacketTile packet = new PacketTile(this, PACKET_GUI_ID);
-                writeGuiPacket(packet.data(), player);
+                packet.addWriter(byteBuf -> writeGuiPacket(byteBuf, player));
                 Engine.packetHandler.sendToPlayer(packet, (EntityPlayerMP) player);
             }
             else
@@ -164,7 +164,7 @@ public abstract class TileMFFS extends TileEntity implements IActivatable, IPack
     public IPacket getDescPacket()
     {
         PacketTile packetTile = new PacketTile(this, PACKET_DESC_ID);
-        writeDescPacket(packetTile.data());
+        packetTile.addWriter(byteBuf -> writeDescPacket(byteBuf));
         return packetTile;
     }
 
@@ -207,7 +207,7 @@ public abstract class TileMFFS extends TileEntity implements IActivatable, IPack
     public void sendDescPacket()
     {
         PacketTile tile = new PacketTile(this);
-        writeDescPacket(tile.data());
+        tile.addWriter(byteBuf -> writeDescPacket(byteBuf));
         Engine.packetHandler.sendToAllAround(tile, this);
     }
 

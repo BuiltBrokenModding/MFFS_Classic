@@ -137,7 +137,7 @@ public class ItemCardID extends ItemCardBlank implements ICardIdentification, IP
     public void sendUserNamePacket(EntityPlayer player, String paramString)
     {
         PacketPlayerItem packet = new PacketPlayerItem(player.inventory.currentItem, 0);
-        ByteBufUtils.writeUTF8String(packet.data(), paramString);
+        packet.add(paramString);
         Engine.packetHandler.sendToServer(packet);
     }
 
@@ -147,8 +147,8 @@ public class ItemCardID extends ItemCardBlank implements ICardIdentification, IP
         if (perm != null)
         {
             PacketPlayerItem packet = new PacketPlayerItem(player.inventory.currentItem, 1);
-            packet.data().writeInt(permID);
-            packet.data().writeBoolean(state);
+            packet.add(permID);
+            packet.add(state);
             Engine.packetHandler.sendToServer(packet);
         }
         else
