@@ -1,7 +1,7 @@
 [
 {
   "modid": "mffs",
-  "name": "Modular Forcefield System",
+  "name": "Modular Force Field System",
   "description": "Modular Force Field System is a mod that adds force fields, high tech machinery and defensive systems to Minecraft.",
   "version": "${version}",
   "mcversion": "${mcversion}",
