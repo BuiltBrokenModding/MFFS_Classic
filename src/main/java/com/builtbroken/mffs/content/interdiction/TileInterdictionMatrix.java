@@ -134,6 +134,11 @@ public final class TileInterdictionMatrix extends TileModuleAcceptor implements 
 
             for (Entity entity : entities)
             {
+            	if(entity.isDead)
+            	{
+            		continue;
+	            }
+
                 boolean inField = (projector == null || projector.getInteriorPoints().contains(new Vector3D(entity).floor()));
                 //Action Range
                 if (actionRange.isWithin(entity.posX, entity.posY, entity.posZ) && inField) //TODO unit test position
