@@ -32,6 +32,10 @@ public class TileBiometricIdentifier extends TileFrequency implements IBiometric
             ItemStack stack = getStackInSlot(slot);
             if (stack != null)
             {
+                if (!(stack.getItem() instanceof ICardIdentification)) {
+                    continue;
+                }
+
                 ICardIdentification card = (ICardIdentification) stack.getItem();
                 if (card.getUsername(stack).equals(paramString))
                 {
