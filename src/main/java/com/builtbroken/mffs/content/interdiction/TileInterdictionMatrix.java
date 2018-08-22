@@ -143,20 +143,24 @@ public final class TileInterdictionMatrix extends TileModuleAcceptor implements 
                 //Action Range
                 if (actionRange.isWithin(entity.posX, entity.posY, entity.posZ) && inField) //TODO unit test position
                 {
-                    //Checking if player has permissions
-                    if (bio != null && entity instanceof EntityPlayer)
-                    {
-                        EntityPlayer player = (EntityPlayer) entity;
-                        String name = player.getGameProfile().getName();
-                        if(name != null && name.equalsIgnoreCase(owner)){
-                        	continue;
-                        }
 
-                        if (bio.isAccessGranted(name, Permission.BYPASS_DEFENSE) || player.capabilities.isCreativeMode)
-                        {
-                            continue;
-                        }
-                    }
+	                if(entity instanceof EntityPlayer)
+	                {
+	                	EntityPlayer player = (EntityPlayer) entity;
+	                	String name = player.getGameProfile().getName();
+
+	                	//Check if the player is the owner
+		                if (name != null && name.equalsIgnoreCase(owner))
+		                {
+			                continue;
+		                }
+
+		                //Checking if player has permissions
+		                if (bio != null && bio.isAccessGranted(name, Permission.BYPASS_DEFENSE) || player.capabilities.isCreativeMode)
+		                {
+		                	continue;
+		                }
+	                }
 
                     //Run modular actions
                     for (ItemStack stack : modules)
