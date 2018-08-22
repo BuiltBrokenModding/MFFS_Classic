@@ -45,6 +45,8 @@ public final class TileInterdictionMatrix extends TileModuleAcceptor implements 
 
     private TileForceFieldProjector projector;
 
+    private String owner;
+
     public TileInterdictionMatrix()
     {
         this.fortronCapacity = 30;
@@ -140,7 +142,12 @@ public final class TileInterdictionMatrix extends TileModuleAcceptor implements 
                     if (bio != null && entity instanceof EntityPlayer)
                     {
                         EntityPlayer player = (EntityPlayer) entity;
-                        if (bio.isAccessGranted(player.getGameProfile().getName(), Permission.BYPASS_DEFENSE) || player.capabilities.isCreativeMode)
+                        String name = player.getGameProfile().getName();
+                        if(name != null && name.equalsIgnoreCase(owner)){
+                        	continue;
+                        }
+
+                        if (bio.isAccessGranted(name, Permission.BYPASS_DEFENSE) || player.capabilities.isCreativeMode)
                         {
                             continue;
                         }
@@ -236,7 +243,17 @@ public final class TileInterdictionMatrix extends TileModuleAcceptor implements 
         return stacks;
     }
 
-    @Override
+	public String getOwner()
+	{
+		return owner;
+	}
+
+	public void setOwner(String owner)
+	{
+		this.owner = owner;
+	}
+
+	@Override
     public boolean getFilterMode()
     {
         return this.banMode;
@@ -262,6 +279,7 @@ public final class TileInterdictionMatrix extends TileModuleAcceptor implements 
     {
         super.writeToNBT(nbt);
         nbt.setBoolean("ban", banMode);
+        nbt.setString("owner", owner);
     }
 
     @Override
@@ -269,6 +287,7 @@ public final class TileInterdictionMatrix extends TileModuleAcceptor implements 
     {
         super.readFromNBT(nbt);
         this.banMode = nbt.getBoolean("ban");
+        this.owner = nbt.getString("owner");
     }
 
     @Override
@@ -312,4 +331,5 @@ public final class TileInterdictionMatrix extends TileModuleAcceptor implements 
         stack.add(new ItemStack(MFFS.interdictionMatrix));
         return stack;
     }
+
 }
