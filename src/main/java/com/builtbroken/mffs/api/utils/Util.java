@@ -117,6 +117,9 @@ public class Util
         {
             return null;
         }
+        if (!inv.isItemValidForSlot(slot, stack)) {
+        	return null;
+        }
         ItemStack item = inv.getStackInSlot(slot);
         if (item == null)
         {
