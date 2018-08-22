@@ -36,221 +36,222 @@ import java.util.Set;
  */
 public final class TileInterdictionMatrix extends TileModuleAcceptor implements IInterdictionMatrix
 {
-    private static final int TICK_RATE = 20; //TODO make configurable TODO scale module effects by speed to keep constant
-    /* Single instance of interdiction warning */
-    private static ChatComponentText warning = new ChatComponentText("[InterdictionMatrix] " + LanguageUtility.getLocal("message.interdictionMatrix.warn"));
 
-    /* Deteremines if this machine is in 'ban' mode */
-    private boolean banMode;
+	private static final int TICK_RATE = 20; //TODO make configurable TODO scale module effects by speed to keep constant
+	/* Single instance of interdiction warning */
+	private static ChatComponentText warning = new ChatComponentText("[InterdictionMatrix] " + LanguageUtility.getLocal("message.interdictionMatrix.warn"));
 
-    private TileForceFieldProjector projector;
+	/* Deteremines if this machine is in 'ban' mode */
+	private boolean banMode;
 
-    private String owner;
+	private TileForceFieldProjector projector;
 
-    public TileInterdictionMatrix()
-    {
-        this.fortronCapacity = 30;
-        this.moduleInventory = new ModuleInventory(this, 2, 9);
-    }
+	private String owner;
 
-    @Override
-    public void updateEntity()
-    {
-        //TODO repogram to have a visual effect so this can not be used as a trap
-        //TODO increase power cost when not attached to forcefield
-        //TODO decrease damage effects when not attached to forcefield
-        super.updateEntity();
-        if (!worldObj.isRemote)
-        {
-            //Increase this to 1 a second.
-            if (this.isActive() && this.ticks % TICK_RATE == 0) //TODO randomize start to reduce several fields running on same tick
-            {
-                //Find projector
-                if (projector == null)
-                {
-                    int count = 0;
-                    Pos pos = new Pos(xCoord, yCoord, zCoord);
-                    for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
-                    {
-                        TileEntity tile = pos.add(direction).getTileEntity(worldObj);
-                        if (tile instanceof TileForceFieldProjector)
-                        {
-                            count++;
-                            projector = (TileForceFieldProjector) tile;
-                        }
-                    }
+	public TileInterdictionMatrix()
+	{
+		this.fortronCapacity = 30;
+		this.moduleInventory = new ModuleInventory(this, 2, 9);
+	}
 
-                    if (count > 1)
-                    {
-                        projector = null;
-                        //TODO error saying that there can only be 1 projector per matrix
-                    }
-                }
+	@Override
+	public void updateEntity()
+	{
+		//TODO repogram to have a visual effect so this can not be used as a trap
+		//TODO increase power cost when not attached to forcefield
+		//TODO decrease damage effects when not attached to forcefield
+		super.updateEntity();
+		if (!worldObj.isRemote)
+		{
+			//Increase this to 1 a second.
+			if (this.isActive() && this.ticks % TICK_RATE == 0) //TODO randomize start to reduce several fields running on same tick
+			{
+				//Find projector
+				if (projector == null)
+				{
+					int count = 0;
+					Pos pos = new Pos(xCoord, yCoord, zCoord);
+					for (ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
+					{
+						TileEntity tile = pos.add(direction).getTileEntity(worldObj);
+						if (tile instanceof TileForceFieldProjector)
+						{
+							count++;
+							projector = (TileForceFieldProjector) tile;
+						}
+					}
 
-                //TODO move energy cost to variable with config
-                if (requestFortron(getFortronCost() * 10, false) > 0)
-                {
-                    requestFortron(getFortronCost() * 10, true);
-                    scan();
-                }
-            }
-        }
-    }
+					if (count > 1)
+					{
+						projector = null;
+						//TODO error saying that there can only be 1 projector per matrix
+					}
+				}
 
-    @Override
-    public boolean isActive()
-    {
-        return super.isActive() && ticks > 12 && (projector == null || projector.isActive());
-    }
+				//TODO move energy cost to variable with config
+				if (requestFortron(getFortronCost() * 10, false) > 0)
+				{
+					requestFortron(getFortronCost() * 10, true);
+					scan();
+				}
+			}
+		}
+	}
 
-    /**
-     * Scans the action range of this entity and performs appropriate action.
-     */
-    private void scan()
-    {
-        //Get biometrix identifier
-        IBiometricIdentifier bio = getBiometricIdentifier();
+	@Override
+	public boolean isActive()
+	{
+		return super.isActive() && ticks > 12 && (projector == null || projector.isActive());
+	}
 
-        //Get ranges
-        Cube warningRange = getWarningRange();
-        Cube actionRange = getActionRange();
+	/**
+	 * Scans the action range of this entity and performs appropriate action.
+	 */
+	private void scan()
+	{
+		//Get biometrix identifier
+		IBiometricIdentifier bio = getBiometricIdentifier();
 
-        //Get modules
-        Set<ItemStack> modules = getModuleStacks(); //obtain modules here to save reIteration.
-        boolean hasWarnModule = false;
-        for (ItemStack stack : modules)
-        {
-            if (stack != null && stack.getItem() instanceof ItemModuleWarn)
-            {
-                hasWarnModule = true;
-                break;
-            }
-        }
+		//Get ranges
+		Cube warningRange = getWarningRange();
+		Cube actionRange = getActionRange();
 
-        if (modules != null && modules.size() > 0)
-        {
-            //Get entities in box
-            List<Entity> entities = warningRange.getEntities(worldObj);
+		//Get modules
+		Set<ItemStack> modules = getModuleStacks(); //obtain modules here to save reIteration.
+		boolean hasWarnModule = false;
+		for (ItemStack stack : modules)
+		{
+			if (stack != null && stack.getItem() instanceof ItemModuleWarn)
+			{
+				hasWarnModule = true;
+				break;
+			}
+		}
 
-            for (Entity entity : entities)
-            {
-            	if(entity.isDead)
-            	{
-            		continue;
-	            }
+		if (modules != null && modules.size() > 0)
+		{
+			//Get entities in box
+			List<Entity> entities = warningRange.getEntities(worldObj);
 
-                boolean inField = (projector == null || projector.getInteriorPoints().contains(new Vector3D(entity).floor()));
-                //Action Range
-                if (actionRange.isWithin(entity.posX, entity.posY, entity.posZ) && inField) //TODO unit test position
-                {
+			for (Entity entity : entities)
+			{
+				if (entity.isDead)
+				{
+					continue;
+				}
 
-	                if(entity instanceof EntityPlayer)
-	                {
-	                	EntityPlayer player = (EntityPlayer) entity;
-	                	String name = player.getGameProfile().getName();
+				boolean inField = (projector == null || projector.getInteriorPoints().contains(new Vector3D(entity).floor()));
+				//Action Range
+				if (actionRange.isWithin(entity.posX, entity.posY, entity.posZ) && inField) //TODO unit test position
+				{
 
-	                	//Check if the player is the owner
-		                if (name != null && name.equalsIgnoreCase(owner))
-		                {
-			                continue;
-		                }
+					if (entity instanceof EntityPlayer)
+					{
+						EntityPlayer player = (EntityPlayer) entity;
+						String name = player.getGameProfile().getName();
 
-		                //Checking if player has permissions
-		                if (bio != null && bio.isAccessGranted(name, Permission.BYPASS_DEFENSE) || player.capabilities.isCreativeMode)
-		                {
-		                	continue;
-		                }
-	                }
+						//Check if the player is the owner
+						if (name != null && name.equalsIgnoreCase(owner))
+						{
+							continue;
+						}
 
-                    //Run modular actions
-                    for (ItemStack stack : modules)
-                    {
-                        if (stack != null && stack.getItem() instanceof IInterdictionModule)
-                        {
-                            IInterdictionModule mod = (IInterdictionModule) stack.getItem();
-                            if (mod.onDefend(this, entity) || entity.isDead)
-                            {
-                                break;
-                            }
-                        }
-                    }
-                }
-                //Warning Range!
-                //TODO add config to force enable
-                //TODO add system to detect enter and leave to reduce chat spam
-                //TODO add timer to reduce chat spam
-                //TODO add config to switch chat to audio
-                //TODO add audio warning
-                //TODO only chat spam if harmful to user
-                else if (entity instanceof EntityPlayer && hasWarnModule)
-                {
-                    EntityPlayer pl = (EntityPlayer) entity;
-                    if (bio != null && bio.isAccessGranted(pl.getGameProfile().getName(), Permission.BYPASS_DEFENSE))
-                    {
-                        continue;
-                    }
-                    pl.addChatMessage(warning);
-                }
-            }
-        }
-    }
+						//Checking if player has permissions
+						if (bio != null && bio.isAccessGranted(name, Permission.BYPASS_DEFENSE) || player.capabilities.isCreativeMode)
+						{
+							continue;
+						}
+					}
 
-    @Override
-    public Cube getWarningRange()
-    {
-        int range = Math.min(getModuleCount(ItemModuleWarn.class), MFFSSettings.INTERDICTION_MAX_RANGE) + 3;
-        return getActionRange().expand(range);
-    }
+					//Run modular actions
+					for (ItemStack stack : modules)
+					{
+						if (stack != null && stack.getItem() instanceof IInterdictionModule)
+						{
+							IInterdictionModule mod = (IInterdictionModule) stack.getItem();
+							if (mod.onDefend(this, entity) || entity.isDead)
+							{
+								break;
+							}
+						}
+					}
+				}
+				//Warning Range!
+				//TODO add config to force enable
+				//TODO add system to detect enter and leave to reduce chat spam
+				//TODO add timer to reduce chat spam
+				//TODO add config to switch chat to audio
+				//TODO add audio warning
+				//TODO only chat spam if harmful to user
+				else if (entity instanceof EntityPlayer && hasWarnModule)
+				{
+					EntityPlayer pl = (EntityPlayer) entity;
+					if (bio != null && bio.isAccessGranted(pl.getGameProfile().getName(), Permission.BYPASS_DEFENSE))
+					{
+						continue;
+					}
+					pl.addChatMessage(warning);
+				}
+			}
+		}
+	}
 
-    @Override
-    public Cube getActionRange()
-    {
-        if (projector != null)
-        {
-            Vector3D negScale = projector.getNegativeScale();
-            Vector3D posScale = projector.getPositiveScale();
-            Vector3D translation = projector.getTranslation();
-            Vector3D pos = new Vector3D(projector.xCoord + 0.5, projector.yCoord + 0.5, projector.zCoord + 0.5);
+	@Override
+	public Cube getWarningRange()
+	{
+		int range = Math.min(getModuleCount(ItemModuleWarn.class), MFFSSettings.INTERDICTION_MAX_RANGE) + 3;
+		return getActionRange().expand(range);
+	}
 
-            negScale = negScale.scale(-1).add(translation).add(pos);
-            posScale = posScale.add(translation).add(pos);
+	@Override
+	public Cube getActionRange()
+	{
+		if (projector != null)
+		{
+			Vector3D negScale = projector.getNegativeScale();
+			Vector3D posScale = projector.getPositiveScale();
+			Vector3D translation = projector.getTranslation();
+			Vector3D pos = new Vector3D(projector.xCoord + 0.5, projector.yCoord + 0.5, projector.zCoord + 0.5);
 
-            Pos start = new Pos(negScale.x, negScale.y, negScale.z);
-            Pos end = new Pos(posScale.x, posScale.y, posScale.z);
+			negScale = negScale.scale(-1).add(translation).add(pos);
+			posScale = posScale.add(translation).add(pos);
 
-            return new Cube(start, end);
-        }
+			Pos start = new Pos(negScale.x, negScale.y, negScale.z);
+			Pos end = new Pos(posScale.x, posScale.y, posScale.z);
 
-        Pos center = new Pos(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5);
-        int range = Math.min(getModuleCount(ItemModuleScale.class), MFFSSettings.INTERDICTION_MAX_RANGE);
-        return new Cube(center.sub(range), center.add(range));
-    }
+			return new Cube(start, end);
+		}
 
-    @Override
-    public void writeDescPacket(ByteBuf buf)
-    {
-        super.writeDescPacket(buf);
-    }
+		Pos center = new Pos(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5);
+		int range = Math.min(getModuleCount(ItemModuleScale.class), MFFSSettings.INTERDICTION_MAX_RANGE);
+		return new Cube(center.sub(range), center.add(range));
+	}
 
-    @Override
-    public void readDescPacket(ByteBuf buf)
-    {
-        super.readDescPacket(buf);
-    }
+	@Override
+	public void writeDescPacket(ByteBuf buf)
+	{
+		super.writeDescPacket(buf);
+	}
 
-    @Override
-    public Set<ItemStack> getFilteredItems()
-    {
-        Set<ItemStack> stacks = new HashSet();
-        for (int i = moduleInventory.end; i < getSizeInventory() - 1; i++)
-        {
-            if (getStackInSlot(i) != null)
-            {
-                stacks.add(getStackInSlot(i));
-            }
-        }
-        return stacks;
-    }
+	@Override
+	public void readDescPacket(ByteBuf buf)
+	{
+		super.readDescPacket(buf);
+	}
+
+	@Override
+	public Set<ItemStack> getFilteredItems()
+	{
+		Set<ItemStack> stacks = new HashSet();
+		for (int i = moduleInventory.end; i < getSizeInventory() - 1; i++)
+		{
+			if (getStackInSlot(i) != null)
+			{
+				stacks.add(getStackInSlot(i));
+			}
+		}
+		return stacks;
+	}
 
 	public String getOwner()
 	{
@@ -263,82 +264,81 @@ public final class TileInterdictionMatrix extends TileModuleAcceptor implements 
 	}
 
 	@Override
-    public boolean getFilterMode()
-    {
-        return this.banMode;
-    }
+	public boolean getFilterMode()
+	{
+		return this.banMode;
+	}
 
-    @Override
-    public float getAmplifier()
-    {
-        return 1;
-    }
+	@Override
+	public float getAmplifier()
+	{
+		return 1;
+	}
 
-    /**
-     * Returns the number of slots in the inventory.
-     */
-    @Override
-    public int getSizeInventory()
-    {
-        return 19;
-    }
+	/**
+	 * Returns the number of slots in the inventory.
+	 */
+	@Override
+	public int getSizeInventory()
+	{
+		return 19;
+	}
 
-    @Override
-    public void writeToNBT(NBTTagCompound nbt)
-    {
-        super.writeToNBT(nbt);
-        nbt.setBoolean("ban", banMode);
-        nbt.setString("owner", owner);
-    }
+	@Override
+	public void writeToNBT(NBTTagCompound nbt)
+	{
+		super.writeToNBT(nbt);
+		nbt.setBoolean("ban", banMode);
+		nbt.setString("owner", owner);
+	}
 
-    @Override
-    public void readFromNBT(NBTTagCompound nbt)
-    {
-        super.readFromNBT(nbt);
-        this.banMode = nbt.getBoolean("ban");
-        this.owner = nbt.getString("owner");
-    }
+	@Override
+	public void readFromNBT(NBTTagCompound nbt)
+	{
+		super.readFromNBT(nbt);
+		this.banMode = nbt.getBoolean("ban");
+		this.owner = nbt.getString("owner");
+	}
 
-    @Override
-    public Set<ItemStack> getCards()
-    {
-        Set<ItemStack> cards = new HashSet();
-        cards.add(super.getCard());
-        cards.add(getStackInSlot(1));
-        return cards;
-    }
+	@Override
+	public Set<ItemStack> getCards()
+	{
+		Set<ItemStack> cards = new HashSet();
+		cards.add(super.getCard());
+		cards.add(getStackInSlot(1));
+		return cards;
+	}
 
-    /**
-     * Returns true if automation is allowed to insert the given stack (ignoring stack size) into the given slot.
-     *
-     * @param slot
-     * @param item
-     */
-    @Override
-    public boolean isItemValidForSlot(int slot, ItemStack item)
-    {
-        if (slot == 0)
-        {
-            return item.getItem() instanceof ICardInfinite;
-        }
-        else if (slot == 1)
-        {
-            return item.getItem() instanceof ItemCardFrequency;
-        }
+	/**
+	 * Returns true if automation is allowed to insert the given stack (ignoring stack size) into the given slot.
+	 *
+	 * @param slot
+	 * @param item
+	 */
+	@Override
+	public boolean isItemValidForSlot(int slot, ItemStack item)
+	{
+		if (slot == 0)
+		{
+			return item.getItem() instanceof ICardInfinite;
+		} else if (slot == 1)
+		{
+			return item.getItem() instanceof ItemCardFrequency;
+		}
 
-        if (slot > moduleInventory.end)
-        {
-            return true;
-        }
-        return item.getItem() instanceof IFieldModule;
-    }
+		if (slot > moduleInventory.end)
+		{
+			return true;
+		}
+		return item.getItem() instanceof IFieldModule;
+	}
 
-    @Override
-    public List<ItemStack> getRemovedItems(EntityPlayer entityPlayer)
-    {
-        List<ItemStack> stack = super.getRemovedItems(entityPlayer);
-        stack.add(new ItemStack(MFFS.interdictionMatrix));
-        return stack;
-    }
+	@Override
+	public List<ItemStack> getRemovedItems(EntityPlayer entityPlayer)
+	{
+		List<ItemStack> stack = super.getRemovedItems(entityPlayer);
+		stack.add(new ItemStack(MFFS.interdictionMatrix));
+		return stack;
+	}
 
 }
