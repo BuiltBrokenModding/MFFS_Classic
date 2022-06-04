@@ -2,5 +2,6 @@
   "itemGroup.mffs": "MFFS",
   
   "block.mffs.machine_block": "Base Machine Block",
-  "block.mffs.projector_block": "Force Field Projector"
+  "block.mffs.projector": "Force Field Projector",
+  "block.mffs.coercion_deriver": "Coercion Deriver"
 }

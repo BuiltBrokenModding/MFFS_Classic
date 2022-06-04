@@ -7,9 +7,10 @@ import net.minecraft.core.particles.ParticleType;
 public class ModParticleType<T extends ParticleOptions> extends ParticleType<T> {
     private final Codec<T> codec;
 
+    @SuppressWarnings("deprecation")
     public ModParticleType(boolean overrideLimiter, ParticleOptions.Deserializer<T> deserializer, Codec<T> codec) {
         super(overrideLimiter, deserializer);
-        
+
         this.codec = codec;
     }
 

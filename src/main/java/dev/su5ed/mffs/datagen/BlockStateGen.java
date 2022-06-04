@@ -1,8 +1,8 @@
 package dev.su5ed.mffs.datagen;
 
 import dev.su5ed.mffs.MFFSMod;
-import dev.su5ed.mffs.ModObjects;
 import dev.su5ed.mffs.block.ProjectorBlock;
+import dev.su5ed.mffs.init.ModBlocks;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
@@ -18,9 +18,10 @@ final class BlockStateGen extends BlockStateProvider {
 
     @Override
     protected void registerStatesAndModels() {
-        simpleBlock(ModObjects.MACHINE_BLOCK.get());
-        
-        machineBlock(ModObjects.PROJECTOR_BLOCK.get());
+        simpleBlock(ModBlocks.MACHINE_BLOCK.get());
+
+        machineBlock(ModBlocks.PROJECTOR.get());
+        machineBlock(ModBlocks.COERCION_DERIVER.get());
     }
 
     public void machineBlock(Block block) {

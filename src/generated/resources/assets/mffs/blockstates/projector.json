@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "active=false": {
+      "model": "mffs:block/projector"
+    },
+    "active=true": {
+      "model": "mffs:block/projector_active"
+    }
+  }
+}

@@ -3,7 +3,7 @@ package dev.su5ed.mffs.render;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 public record TranslucentVertexConsumer(VertexConsumer wrapped, int alpha) implements VertexConsumer {
-    
+
     @Override
     public VertexConsumer vertex(double x, double y, double z) {
         return wrapped.vertex(x, y, z);

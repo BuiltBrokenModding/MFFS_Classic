@@ -1,20 +1,20 @@
 {
-	"textures": {
-		"particle": "mffs:model/force_cube",
-		"0": "mffs:model/force_cube"
-	},
-	"elements": [
-		{
-			"from": [0, 0, 0],
-			"to": [16, 16, 16],
-			"faces": {
-				"north": {"uv": [4, 9.6, 8, 16], "texture": "#0"},
-				"east": {"uv": [0, 9.6, 4, 16], "texture": "#0"},
-				"south": {"uv": [12, 9.6, 16, 16], "texture": "#0"},
-				"west": {"uv": [8, 9.6, 12, 16], "texture": "#0"},
-				"up": {"uv": [8, 9.6, 4, 3.2], "texture": "#0"},
-				"down": {"uv": [12, 3.2, 8, 9.6], "texture": "#0"}
-			}
-		}
-	]
+    "textures": {
+        "particle": "mffs:model/force_cube",
+        "0": "mffs:model/force_cube"
+    },
+    "elements": [
+        {
+            "from": [0, 0, 0],
+            "to": [16, 16, 16],
+            "faces": {
+                "north": {"uv": [4, 9.6, 8, 16], "texture": "#0"},
+                "east": {"uv": [0, 9.6, 4, 16], "texture": "#0"},
+                "south": {"uv": [12, 9.6, 16, 16], "texture": "#0"},
+                "west": {"uv": [8, 9.6, 12, 16], "texture": "#0"},
+                "up": {"uv": [8, 9.6, 4, 3.2], "texture": "#0"},
+                "down": {"uv": [12, 3.2, 8, 9.6], "texture": "#0"}
+            }
+        }
+    ]
 }

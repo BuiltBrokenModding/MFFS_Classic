@@ -2,7 +2,7 @@ package dev.su5ed.mffs.render;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.serialization.Codec;
-import dev.su5ed.mffs.ModObjects;
+import dev.su5ed.mffs.init.ModObjects;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.FriendlyByteBuf;

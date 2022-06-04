@@ -6,19 +6,13 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public class ProjectorBlock extends BaseEntityBlock {
-    private static final VoxelShape SHAPE = Shapes.or(
-        Block.box(0, 0, 0, 16, 12, 16),
-        Block.box(3, 12, 5, 13, 14, 11),
-        Block.box(5, 12, 3, 11, 14, 13),
-        Block.box(4, 12, 4, 12, 14, 12)
-    );
+public class CoercionDeriverBlock extends BaseEntityBlock {
+    private static final VoxelShape SHAPE = Block.box(0, 0, 0, 16, 12.8, 16);
 
-    public ProjectorBlock(Properties properties) {
-        super(properties, ModObjects.PROJECTOR_BLOCK_ENTITY::get);
+    public CoercionDeriverBlock(Properties properties) {
+        super(properties, ModObjects.COERCION_DERIVER_BLOCK_ENTITY::get);
     }
 
     @Override
