@@ -1,4 +1,4 @@
-package dev.su5ed.mffs.init;
+package dev.su5ed.mffs.setup;
 
 import dev.su5ed.mffs.MFFSMod;
 import net.minecraft.world.item.*;
@@ -18,10 +18,12 @@ public final class ModItems {
         }
     };
     private static final Item.Properties ITEM_PROPERTIES = new Item.Properties().tab(ITEM_GROUP);
-
+    
     public static final RegistryObject<Item> MACHINE_ITEM = fromBlock(ModBlocks.MACHINE_BLOCK);
     public static final RegistryObject<Item> PROJECTOR_ITEM = fromBlock(ModBlocks.PROJECTOR);
     public static final RegistryObject<Item> COERCION_DERIVER_ITEM = fromBlock(ModBlocks.COERCION_DERIVER);
+    
+    public static final RegistryObject<Item> REDSTONE_TORCH_OFF = ITEMS.register("redstone_torch_off", () -> new Item(new Item.Properties()));
 
     public static void init(final IEventBus bus) {
         ITEMS.register(bus);

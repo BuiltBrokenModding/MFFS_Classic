@@ -1,4 +1,4 @@
-package dev.su5ed.mffs.render;
+package dev.su5ed.mffs.render.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;

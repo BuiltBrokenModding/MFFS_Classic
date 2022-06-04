@@ -1,6 +1,6 @@
 package dev.su5ed.mffs.block;
 
-import dev.su5ed.mffs.init.ModObjects;
+import dev.su5ed.mffs.setup.ModObjects;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;

@@ -1,9 +1,11 @@
 package dev.su5ed.mffs;
 
 import com.mojang.logging.LogUtils;
-import dev.su5ed.mffs.init.ModBlocks;
-import dev.su5ed.mffs.init.ModItems;
-import dev.su5ed.mffs.init.ModObjects;
+import dev.su5ed.mffs.network.Network;
+import dev.su5ed.mffs.setup.ModBlocks;
+import dev.su5ed.mffs.setup.ModContainers;
+import dev.su5ed.mffs.setup.ModItems;
+import dev.su5ed.mffs.setup.ModObjects;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
@@ -23,6 +25,9 @@ public final class MFFSMod {
         ModBlocks.init(bus);
         ModItems.init(bus);
         ModObjects.init();
+        ModContainers.init(bus);
+
+        Network.registerPackets();
 
         MinecraftForge.EVENT_BUS.register(this);
     }

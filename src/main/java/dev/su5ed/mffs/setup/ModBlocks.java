@@ -1,4 +1,4 @@
-package dev.su5ed.mffs.init;
+package dev.su5ed.mffs.setup;
 
 import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.block.BaseEntityBlock;

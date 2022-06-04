@@ -1,6 +1,6 @@
 package dev.su5ed.mffs.blockentity;
 
-import dev.su5ed.mffs.init.ModObjects;
+import dev.su5ed.mffs.setup.ModObjects;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -25,7 +25,7 @@ public class AnimatedBlockEntity extends BaseBlockEntity {
     }
 
     @Override
-    public InteractionResult use(Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
+    public InteractionResult use(Player player, InteractionHand hand, BlockHitResult hit) {
         setActive(!isActive());
         return InteractionResult.SUCCESS;
     }

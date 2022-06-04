@@ -1,7 +1,7 @@
 package dev.su5ed.mffs.datagen;
 
 import dev.su5ed.mffs.MFFSMod;
-import dev.su5ed.mffs.init.ModItems;
+import dev.su5ed.mffs.setup.ModItems;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;

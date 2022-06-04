@@ -9,6 +9,7 @@ import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.blockentity.AnimatedBlockEntity;
+import dev.su5ed.mffs.render.model.ProjectorRotorModel;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.LightTexture;

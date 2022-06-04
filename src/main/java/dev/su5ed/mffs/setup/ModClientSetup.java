@@ -1,9 +1,13 @@
-package dev.su5ed.mffs;
+package dev.su5ed.mffs.setup;
 
-import dev.su5ed.mffs.init.ModBlocks;
-import dev.su5ed.mffs.init.ModObjects;
-import dev.su5ed.mffs.render.*;
+import dev.su5ed.mffs.render.BeamParticleProvider;
+import dev.su5ed.mffs.render.CoercionDeriverBlockRenderer;
+import dev.su5ed.mffs.render.ProjectorBlockRenderer;
+import dev.su5ed.mffs.render.model.CoercionDeriverTopModel;
+import dev.su5ed.mffs.render.model.ProjectorRotorModel;
+import dev.su5ed.mffs.screen.CoercionDeriverScreen;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraftforge.api.distmarker.Dist;
@@ -20,7 +24,11 @@ public final class ModClientSetup {
 
     @SubscribeEvent
     public static void clientSetup(FMLClientSetupEvent event) {
-        ItemBlockRenderTypes.setRenderLayer(ModBlocks.COERCION_DERIVER.get(), RenderType.cutout());
+        event.enqueueWork(() -> {
+            MenuScreens.register(ModContainers.POWERGEN_CONTAINER.get(), CoercionDeriverScreen::new);
+            
+            ItemBlockRenderTypes.setRenderLayer(ModBlocks.COERCION_DERIVER.get(), RenderType.cutout());
+        });
     }
 
     @SubscribeEvent

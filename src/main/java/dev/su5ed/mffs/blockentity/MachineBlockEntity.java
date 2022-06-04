@@ -1,6 +1,6 @@
 package dev.su5ed.mffs.blockentity;
 
-import dev.su5ed.mffs.init.ModObjects;
+import dev.su5ed.mffs.setup.ModObjects;
 import dev.su5ed.mffs.render.BeamParticleOptions;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
@@ -19,7 +19,7 @@ public class MachineBlockEntity extends BaseBlockEntity {
     }
 
     @Override
-    public InteractionResult use(Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
+    public InteractionResult use(Player player, InteractionHand hand, BlockHitResult hit) {
         this.enabled = !this.enabled;
         
         return InteractionResult.SUCCESS;

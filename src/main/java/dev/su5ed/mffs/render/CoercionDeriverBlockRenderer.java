@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
 import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.blockentity.AnimatedBlockEntity;
+import dev.su5ed.mffs.render.model.CoercionDeriverTopModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;

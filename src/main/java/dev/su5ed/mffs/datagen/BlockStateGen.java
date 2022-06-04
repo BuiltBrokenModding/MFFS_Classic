@@ -2,7 +2,7 @@ package dev.su5ed.mffs.datagen;
 
 import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.block.ProjectorBlock;
-import dev.su5ed.mffs.init.ModBlocks;
+import dev.su5ed.mffs.setup.ModBlocks;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
