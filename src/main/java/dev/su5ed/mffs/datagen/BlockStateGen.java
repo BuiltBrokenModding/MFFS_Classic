@@ -28,8 +28,8 @@ final class BlockStateGen extends BlockStateProvider {
         ResourceLocation id = block.getRegistryName();
         getVariantBuilder(block)
             .forAllStates(state -> {
-                ResourceLocation modelLocation = state.getValue(ProjectorBlock.ACTIVE)
-                    ? new ResourceLocation(id.getNamespace(), id.getPath() + "_active")
+                ResourceLocation modelLocation = state.getValue(ProjectorBlock.ENABLED)
+                    ? new ResourceLocation(id.getNamespace(), id.getPath() + "_enabled")
                     : id;
 
                 return ConfiguredModel.builder()

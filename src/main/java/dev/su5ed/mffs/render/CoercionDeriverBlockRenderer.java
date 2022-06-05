@@ -25,7 +25,7 @@ public class CoercionDeriverBlockRenderer implements BlockEntityRenderer<Animate
 
     @Override
     public void render(AnimatedBlockEntity blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
-        ResourceLocation texture = blockEntity.isActive() ? COERCION_DERIVER_ON_TEXTURE : COERCION_DERIVER_OFF_TEXTURE;
+        ResourceLocation texture = blockEntity.isEnabled() ? COERCION_DERIVER_ON_TEXTURE : COERCION_DERIVER_OFF_TEXTURE;
 
         poseStack.pushPose();
         poseStack.translate(0.5, 1.96, 0.5);

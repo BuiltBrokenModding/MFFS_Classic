@@ -9,24 +9,24 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class ToggleActivationPacket {
+public class ToggleModePacket {
     public final BlockPos pos;
-    public final boolean active;
+    public final boolean enabled;
 
-    public ToggleActivationPacket(BlockPos pos, boolean active) {
+    public ToggleModePacket(BlockPos pos, boolean enabled) {
         this.pos = pos;
-        this.active = active;
+        this.enabled = enabled;
     }
 
     public void encode(FriendlyByteBuf buf) {
         buf.writeBlockPos(this.pos);
-        buf.writeBoolean(this.active);
+        buf.writeBoolean(this.enabled);
     }
 
-    public static ToggleActivationPacket decode(FriendlyByteBuf buf) {
+    public static ToggleModePacket decode(FriendlyByteBuf buf) {
         BlockPos pos = buf.readBlockPos();
-        boolean active = buf.readBoolean();
-        return new ToggleActivationPacket(pos, active);
+        boolean enabled = buf.readBoolean();
+        return new ToggleModePacket(pos, enabled);
     }
 
     public void processServerPacket(Supplier<NetworkEvent.Context> ctx) {
@@ -39,6 +39,6 @@ public class ToggleActivationPacket {
     }
     
     public void process(CoercionDeriverBlockEntity blockEntity) {
-        blockEntity.setActive(this.active);
+        blockEntity.setEnabled(this.enabled);
     }
 }

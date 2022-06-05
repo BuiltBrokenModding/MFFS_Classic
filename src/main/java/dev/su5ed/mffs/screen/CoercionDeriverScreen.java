@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.container.CoercionDeriverContainer;
 import dev.su5ed.mffs.network.Network;
-import dev.su5ed.mffs.network.ToggleActivationPacket;
+import dev.su5ed.mffs.network.ToggleModePacket;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -25,8 +25,8 @@ public class CoercionDeriverScreen extends AbstractContainerScreen<CoercionDeriv
         super.init();
         
         this.titleLabelX = (this.imageWidth - this.font.width(this.title)) / 2;
-        addRenderableWidget(new ToggleButton(this.width / 2 - 82, this.height / 2 - 104, this.menu.blockEntity::isActive,
-            button -> Network.INSTANCE.sendToServer(new ToggleActivationPacket(this.menu.blockEntity.getBlockPos(), !this.menu.blockEntity.isActive()))
+        addRenderableWidget(new ToggleButton(this.width / 2 - 82, this.height / 2 - 104, this.menu.blockEntity::isEnabled,
+            button -> Network.INSTANCE.sendToServer(new ToggleModePacket(this.menu.blockEntity.getBlockPos(), !this.menu.blockEntity.isEnabled()))
         ));
     }
 

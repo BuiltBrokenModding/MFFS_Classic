@@ -26,18 +26,18 @@ public final class Network {
         int id = 0;
 
         INSTANCE.registerMessage(id++,
-            ToggleActivationPacket.class,
-            ToggleActivationPacket::encode,
-            ToggleActivationPacket::decode,
-            ToggleActivationPacket::processServerPacket,
+            ToggleModePacket.class,
+            ToggleModePacket::encode,
+            ToggleModePacket::decode,
+            ToggleModePacket::processServerPacket,
             Optional.of(NetworkDirection.PLAY_TO_SERVER)
         );
 
         INSTANCE.registerMessage(id++,
-            ToggleActivationPacketClient.class,
-            ToggleActivationPacketClient::encode,
-            ToggleActivationPacketClient::decode,
-            ToggleActivationPacketClient::processClientPacket,
+            ToggleModePacketClient.class,
+            ToggleModePacketClient::encode,
+            ToggleModePacketClient::decode,
+            ToggleModePacketClient::processClientPacket,
             Optional.of(NetworkDirection.PLAY_TO_CLIENT)
         );
     }

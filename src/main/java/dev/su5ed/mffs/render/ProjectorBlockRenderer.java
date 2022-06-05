@@ -44,7 +44,7 @@ public class ProjectorBlockRenderer implements BlockEntityRenderer<AnimatedBlock
     }
 
     private void renderRotor(AnimatedBlockEntity blockEntity, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
-        ResourceLocation texture = blockEntity.isActive() ? PROJECTOR_ON_TEXTURE : PROJECTOR_OFF_TEXTURE;
+        ResourceLocation texture = blockEntity.isEnabled() ? PROJECTOR_ON_TEXTURE : PROJECTOR_OFF_TEXTURE;
 
         poseStack.pushPose();
         poseStack.translate(0.5, -0.75, 0.5);

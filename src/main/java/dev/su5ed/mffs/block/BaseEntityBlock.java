@@ -24,7 +24,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 public class BaseEntityBlock extends Block implements EntityBlock {
-    public static final Property<Boolean> ACTIVE = BooleanProperty.create("active");
+    public static final Property<Boolean> ENABLED = BooleanProperty.create("enabled");
 
     private final Supplier<BlockEntityType<? extends BaseBlockEntity>> provider;
 
@@ -44,14 +44,14 @@ public class BaseEntityBlock extends Block implements EntityBlock {
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
-        builder.add(ACTIVE);
+        builder.add(ENABLED);
     }
 
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext pContext) {
         return super.getStateForPlacement(pContext)
-            .setValue(ACTIVE, false);
+            .setValue(ENABLED, false);
     }
 
     @Nullable

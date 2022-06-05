@@ -10,7 +10,7 @@ import java.util.function.Consumer;
 
 public final class ClientPacketHandler {
     
-    public static void handleToggleActivationPacket(ToggleActivationPacket packet) {
+    public static void handleToggleActivationPacket(ToggleModePacket packet) {
         runBlockEntityTask(ModObjects.COERCION_DERIVER_BLOCK_ENTITY.get(), packet.pos, packet::process);
     }
 

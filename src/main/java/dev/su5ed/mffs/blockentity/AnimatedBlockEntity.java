@@ -26,7 +26,7 @@ public class AnimatedBlockEntity extends BaseBlockEntity {
 
     @Override
     public InteractionResult use(Player player, InteractionHand hand, BlockHitResult hit) {
-        setActive(!isActive());
+        setEnabled(!isEnabled());
         return InteractionResult.SUCCESS;
     }
 
@@ -34,6 +34,6 @@ public class AnimatedBlockEntity extends BaseBlockEntity {
     public void tickClient() {
         super.tickClient();
 
-        if (isActive()) this.animation++;
+        if (isEnabled()) this.animation++;
     }
 }

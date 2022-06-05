@@ -13,7 +13,7 @@ public final class ModContainers {
     private static final DeferredRegister<MenuType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.CONTAINERS, MFFSMod.MODID);
 
     public static final RegistryObject<MenuType<CoercionDeriverContainer>> POWERGEN_CONTAINER = CONTAINERS.register("powergen",
-        () -> IForgeMenuType.create((windowId, inv, data) -> new CoercionDeriverContainer(windowId, inv.player, data.readBlockPos())));
+        () -> IForgeMenuType.create((windowId, inv, data) -> new CoercionDeriverContainer(windowId, data.readBlockPos(), inv.player, inv)));
 
     public static void init(final IEventBus bus) {
         CONTAINERS.register(bus);

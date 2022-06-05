@@ -8,16 +8,16 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class ToggleActivationPacketClient extends ToggleActivationPacket {
+public class ToggleModePacketClient extends ToggleModePacket {
 
-    public ToggleActivationPacketClient(BlockPos pos, boolean active) {
-        super(pos, active);
+    public ToggleModePacketClient(BlockPos pos, boolean enabled) {
+        super(pos, enabled);
     }
 
-    public static ToggleActivationPacketClient decode(FriendlyByteBuf buf) {
+    public static ToggleModePacketClient decode(FriendlyByteBuf buf) {
         BlockPos pos = buf.readBlockPos();
-        boolean active = buf.readBoolean();
-        return new ToggleActivationPacketClient(pos, active);
+        boolean enabled = buf.readBoolean();
+        return new ToggleModePacketClient(pos, enabled);
     }
 
     public void processClientPacket(Supplier<NetworkEvent.Context> ctx) {
