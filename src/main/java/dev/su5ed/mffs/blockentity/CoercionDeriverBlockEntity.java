@@ -17,8 +17,8 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.EnergyStorage;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.network.NetworkHooks;
@@ -39,7 +39,7 @@ public class CoercionDeriverBlockEntity extends AnimatedBlockEntity implements M
     @Override
     public InteractionResult use(Player player, InteractionHand hand, BlockHitResult hit) {
         if (!this.level.isClientSide) {
-            NetworkHooks.openGui((ServerPlayer) player, this, this.worldPosition);
+            NetworkHooks.openScreen((ServerPlayer) player, this, this.worldPosition);
         }
         return InteractionResult.SUCCESS;
     }
@@ -47,8 +47,6 @@ public class CoercionDeriverBlockEntity extends AnimatedBlockEntity implements M
     @Override
     public void tickServer() {
         super.tickServer();
-        
-        
     }
 
     @Override
@@ -71,8 +69,7 @@ public class CoercionDeriverBlockEntity extends AnimatedBlockEntity implements M
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (cap == CapabilityEnergy.ENERGY) return this.energy.cast();
-        return super.getCapability(cap, side);
+        return ForgeCapabilities.ENERGY.orEmpty(cap, this.energy.cast());
     }
 
     @Override

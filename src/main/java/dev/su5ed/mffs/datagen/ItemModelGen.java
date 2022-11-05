@@ -5,6 +5,7 @@ import dev.su5ed.mffs.setup.ModItems;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.registries.ForgeRegistries;
 
 final class ItemModelGen extends ItemModelProvider {
 
@@ -14,6 +15,6 @@ final class ItemModelGen extends ItemModelProvider {
 
     @Override
     protected void registerModels() {
-        withExistingParent(ModItems.MACHINE_ITEM.get().getRegistryName().getPath(), modLoc("block/machine_block"));
+        withExistingParent(ForgeRegistries.ITEMS.getKey(ModItems.MACHINE_ITEM.get()).getPath(), modLoc("block/machine_block"));
     }
 }

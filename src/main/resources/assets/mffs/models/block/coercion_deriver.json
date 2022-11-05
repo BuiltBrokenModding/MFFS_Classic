@@ -4,6 +4,7 @@
         "particle": "mffs:block/machine_block",
         "0": "mffs:model/coercion_deriver_off"
     },
+    "render_type": "cutout",
     "elements": [
         {
             "name": "corner1",

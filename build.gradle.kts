@@ -1,0 +1,122 @@
+import java.time.LocalDateTime
+
+plugins {
+    eclipse
+    `maven-publish`
+    id("net.minecraftforge.gradle") version "5.1.+"
+    id("org.parchmentmc.librarian.forgegradle") version "1.+"
+}
+
+version = "1.0"
+group = "dev.su5ed.mffs"
+
+java.toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+
+minecraft {
+    mappings("parchment", "2022.10.16-1.19.2")
+
+    runs {
+        create("client") {
+            workingDirectory(project.file("run"))
+            property("forge.logging.markers", "REGISTRIES")
+            property("forge.logging.console.level", "debug")
+            property("forge.enabledGameTestNamespaces", "mffs")
+
+            mods {
+                create("mffs") {
+                    source(sourceSets.main.get())
+                }
+            }
+        }
+
+        create("server") {
+            workingDirectory(project.file("run"))
+            property("forge.logging.markers", "REGISTRIES")
+            property("forge.logging.console.level", "debug")
+            property("forge.enabledGameTestNamespaces", "mffs")
+
+            mods {
+                create("mffs") {
+                    source(sourceSets.main.get())
+                }
+            }
+        }
+
+
+        create("gameTestServer") {
+            workingDirectory(project.file("run"))
+            property("forge.logging.markers", "REGISTRIES")
+            property("forge.logging.console.level", "debug")
+            property("forge.enabledGameTestNamespaces", "mffs")
+
+            mods {
+                create("mffs") {
+                    source(sourceSets.main.get())
+                }
+            }
+        }
+
+        create("data") {
+            workingDirectory(project.file("run"))
+            property("forge.logging.markers", "REGISTRIES")
+            property("forge.logging.console.level", "debug")
+
+            args("--mod", "mffs", "--all", "--output", file("src/generated/resources/"), "--existing", file("src/main/resources/"))
+
+            mods {
+                create("mffs") {
+                    source(sourceSets.main.get())
+                }
+            }
+        }
+    }
+}
+
+sourceSets.main {
+    resources {
+        srcDir("src/generated/resources")
+    }
+}
+
+repositories {
+    maven {
+        name = "Modmaven"
+        url = uri("https://modmaven.dev/")
+    }
+}
+
+dependencies {
+    minecraft(group = "net.minecraftforge", name = "forge", version = "1.19.2-43.1.47")
+
+    runtimeOnly(fg.deobf("mekanism:Mekanism:1.19.2-10.3.5.474"))
+    runtimeOnly(fg.deobf("mekanism:Mekanism:1.19.2-10.3.5.474:generators"))
+}
+
+tasks {
+    jar {
+        finalizedBy("reobfJar")
+        manifest {
+            attributes(
+                "Specification-Title" to project.name,
+                "Specification-Vendor" to "su5ed",
+                "Specification-Version" to "1",
+                "Implementation-Title" to project.name,
+                "Implementation-Version" to project.version,
+                "Implementation-Vendor" to "su5ed",
+                "Implementation-Timestamp" to LocalDateTime.now()
+            )
+        }
+    }
+
+    withType<JavaCompile> {
+        options.encoding = "UTF-8"
+    }
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("mavenJava") {
+            from(components["java"])
+        }
+    }
+}

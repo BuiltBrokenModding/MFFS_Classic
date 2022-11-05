@@ -9,7 +9,6 @@ import dev.su5ed.mffs.network.ToggleModePacket;
 import dev.su5ed.mffs.network.UpdateFrequencyPacket;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -34,7 +33,7 @@ public class CoercionDeriverScreen extends AbstractContainerScreen<CoercionDeriv
             button -> Network.INSTANCE.sendToServer(new ToggleModePacket(this.menu.blockEntity.getBlockPos(), !this.menu.blockEntity.isEnabled()))
         ));
 
-        this.frequency = new NumericEditBox(this.font, this.leftPos + 30, this.topPos + 43, 50, 12, new TextComponent("Frequency"));
+        this.frequency = new NumericEditBox(this.font, this.leftPos + 30, this.topPos + 43, 50, 12, Component.literal("Frequency"));
         this.frequency.setCanLoseFocus(true);
         this.frequency.setBordered(true);
         this.frequency.setEditable(true);

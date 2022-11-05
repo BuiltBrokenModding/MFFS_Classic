@@ -10,13 +10,13 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 public final class ModContainers {
-    private static final DeferredRegister<MenuType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.CONTAINERS, MFFSMod.MODID);
+    private static final DeferredRegister<MenuType<?>> MENU_TYPES = DeferredRegister.create(ForgeRegistries.MENU_TYPES, MFFSMod.MODID);
 
-    public static final RegistryObject<MenuType<CoercionDeriverContainer>> POWERGEN_CONTAINER = CONTAINERS.register("powergen",
+    public static final RegistryObject<MenuType<CoercionDeriverContainer>> COERCION_DERIVER_MENU = MENU_TYPES.register("coercion_deriver",
         () -> IForgeMenuType.create((windowId, inv, data) -> new CoercionDeriverContainer(windowId, data.readBlockPos(), inv.player, inv)));
 
     public static void init(final IEventBus bus) {
-        CONTAINERS.register(bus);
+        MENU_TYPES.register(bus);
     }
 
     private ModContainers() {}

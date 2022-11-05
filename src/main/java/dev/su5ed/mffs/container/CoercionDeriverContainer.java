@@ -11,7 +11,8 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
@@ -26,7 +27,7 @@ public class CoercionDeriverContainer extends AbstractContainerMenu {
     private final IItemHandler playerInventory;
 
     public CoercionDeriverContainer(int containerId, BlockPos pos, Player player, Inventory playerInventory) {
-        super(ModContainers.POWERGEN_CONTAINER.get(), containerId);
+        super(ModContainers.COERCION_DERIVER_MENU.get(), containerId);
 
         this.player = player;
         this.blockEntity = player.getCommandSenderWorld().getBlockEntity(pos, ModObjects.COERCION_DERIVER_BLOCK_ENTITY.get()).orElseThrow();
@@ -42,13 +43,13 @@ public class CoercionDeriverContainer extends AbstractContainerMenu {
     }
 
     public int getEnergy() {
-        return this.blockEntity.getCapability(CapabilityEnergy.ENERGY)
+        return this.blockEntity.getCapability(ForgeCapabilities.ENERGY)
             .map(IEnergyStorage::getEnergyStored)
             .orElse(0);
     }
 
     public int getCapacity() {
-        return this.blockEntity.getCapability(CapabilityEnergy.ENERGY)
+        return this.blockEntity.getCapability(ForgeCapabilities.ENERGY)
             .map(IEnergyStorage::getMaxEnergyStored)
             .orElse(1);
     }
@@ -65,12 +66,12 @@ public class CoercionDeriverContainer extends AbstractContainerMenu {
      */
     private void trackPower() {
         addDataSlot(new DataSlotWrapper(() -> getEnergy() & 0xFFFF,
-            value -> this.blockEntity.getCapability(CapabilityEnergy.ENERGY).ifPresent(h -> {
+            value -> this.blockEntity.getCapability(ForgeCapabilities.ENERGY).ifPresent(h -> {
                 int energyStored = h.getEnergyStored() & 0xFFFF0000;
                 ((CustomEnergyStorage) h).setEnergy(energyStored + (value & 0xFFFF));
             })));
         addDataSlot(new DataSlotWrapper(() -> getEnergy() >> 16 & 0xFFFF,
-            value -> this.blockEntity.getCapability(CapabilityEnergy.ENERGY).ifPresent(h -> {
+            value -> this.blockEntity.getCapability(ForgeCapabilities.ENERGY).ifPresent(h -> {
                 int energyStored = h.getEnergyStored() & 0x0000FFFF;
                 ((CustomEnergyStorage) h).setEnergy(energyStored | value << 16);
             })));
@@ -87,6 +88,11 @@ public class CoercionDeriverContainer extends AbstractContainerMenu {
             int current = gettter.getAsInt() & 0x0000FFFF;
             setter.accept(current | value << 16);
         }));
+    }
+
+    @Override
+    public ItemStack quickMoveStack(Player player, int index) {
+        return ItemStack.EMPTY; // TODO
     }
 
     private int addSlotRange(IItemHandler handler, int index, int x, int y, int amount, int dx) {

@@ -23,7 +23,7 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.model.data.EmptyModelData;
+import net.minecraftforge.client.model.data.ModelData;
 
 public class ProjectorBlockRenderer implements BlockEntityRenderer<AnimatedBlockEntity> {
     public static final ResourceLocation FORCE_CUBE_MODEL = new ResourceLocation(MFFSMod.MODID, "block/force_cube");
@@ -112,7 +112,8 @@ public class ProjectorBlockRenderer implements BlockEntityRenderer<AnimatedBlock
             1F, 1F, 1F,
             LightTexture.FULL_BRIGHT,
             OverlayTexture.NO_OVERLAY,
-            EmptyModelData.INSTANCE
+            ModelData.EMPTY,
+            RenderType.translucent()
         );
 
         poseStack.popPose();

@@ -2,7 +2,11 @@ package dev.su5ed.mffs.render.particle;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 import dev.su5ed.mffs.MFFSMod;
@@ -62,7 +66,7 @@ public class BeamParticle extends Particle {
         mat.setIdentity();
 
         int deg = 360 / ROTATION_SPEED;
-        float rot = this.level.getDayTime() % deg * ROTATION_SPEED + ROTATION_SPEED * pPartialTicks;
+        float rot = this.level.getGameTime() % deg * ROTATION_SPEED + ROTATION_SPEED * pPartialTicks;
 
         float size = 1.0f;
         if (PULSE) {

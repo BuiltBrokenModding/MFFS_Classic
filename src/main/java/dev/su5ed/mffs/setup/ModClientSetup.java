@@ -1,34 +1,27 @@
 package dev.su5ed.mffs.setup;
 
-import dev.su5ed.mffs.render.particle.BeamParticleProvider;
 import dev.su5ed.mffs.render.CoercionDeriverBlockRenderer;
 import dev.su5ed.mffs.render.ProjectorBlockRenderer;
 import dev.su5ed.mffs.render.model.CoercionDeriverTopModel;
 import dev.su5ed.mffs.render.model.ProjectorRotorModel;
+import dev.su5ed.mffs.render.particle.BeamParticleProvider;
 import dev.su5ed.mffs.screen.CoercionDeriverScreen;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.client.event.ModelRegistryEvent;
-import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
-import net.minecraftforge.client.model.ForgeModelBakery;
+import net.minecraftforge.client.event.ModelEvent;
+import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
-@Mod.EventBusSubscriber(value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(value = Dist.CLIENT, bus = Bus.MOD)
 public final class ModClientSetup {
 
     @SubscribeEvent
     public static void clientSetup(FMLClientSetupEvent event) {
-        event.enqueueWork(() -> {
-            MenuScreens.register(ModContainers.POWERGEN_CONTAINER.get(), CoercionDeriverScreen::new);
-            
-            ItemBlockRenderTypes.setRenderLayer(ModBlocks.COERCION_DERIVER.get(), RenderType.cutout());
-        });
+        event.enqueueWork(() -> MenuScreens.register(ModContainers.COERCION_DERIVER_MENU.get(), CoercionDeriverScreen::new));
     }
 
     @SubscribeEvent
@@ -38,8 +31,8 @@ public final class ModClientSetup {
     }
     
     @SubscribeEvent
-    public static void registerParticleFactory(ParticleFactoryRegisterEvent event) {
-        Minecraft.getInstance().particleEngine.register(ModObjects.BEAM_PARTICLE.get(), new BeamParticleProvider());
+    public static void registerParticleFactory(RegisterParticleProvidersEvent event) {
+        event.register(ModObjects.BEAM_PARTICLE.get(), new BeamParticleProvider());
     }
 
     @SubscribeEvent
@@ -49,8 +42,8 @@ public final class ModClientSetup {
     }
 
     @SubscribeEvent
-    public static void registerModels(ModelRegistryEvent event) {
-        ForgeModelBakery.addSpecialModel(ProjectorBlockRenderer.FORCE_CUBE_MODEL);
+    public static void registerModels(ModelEvent.RegisterAdditional event) {
+        event.register(ProjectorBlockRenderer.FORCE_CUBE_MODEL);
     }
 
     private ModClientSetup() {}

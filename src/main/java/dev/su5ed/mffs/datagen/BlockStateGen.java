@@ -9,6 +9,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.registries.ForgeRegistries;
 
 final class BlockStateGen extends BlockStateProvider {
 
@@ -25,7 +26,7 @@ final class BlockStateGen extends BlockStateProvider {
     }
 
     public void machineBlock(Block block) {
-        ResourceLocation id = block.getRegistryName();
+        ResourceLocation id = ForgeRegistries.BLOCKS.getKey(block);
         getVariantBuilder(block)
             .forAllStates(state -> {
                 ResourceLocation modelLocation = state.getValue(ProjectorBlock.ENABLED)
