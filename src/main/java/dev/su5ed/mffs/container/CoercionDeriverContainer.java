@@ -35,6 +35,17 @@ public class CoercionDeriverContainer extends AbstractContainerMenu {
 
         layoutPlayerInventorySlots(8, 135);
         trackPower();
+        
+        this.blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(handler -> {
+            addSlot(new SlotItemHandler(handler, 0, 9, 41));
+            
+            addSlot(new SlotItemHandler(handler, 1, 9, 83));
+            addSlot(new SlotItemHandler(handler, 2, 29, 83));
+            
+            addSlot(new SlotItemHandler(handler, 3, 154, 47));
+            addSlot(new SlotItemHandler(handler, 4, 154, 67));
+            addSlot(new SlotItemHandler(handler, 5, 154, 87));
+        });
     }
 
     @Override

@@ -25,28 +25,27 @@ public final class Network {
     public static void registerPackets() {
         int id = 0;
 
-        INSTANCE.registerMessage(id++,
-            ToggleModePacket.class,
-            ToggleModePacket::encode,
-            ToggleModePacket::decode,
-            ToggleModePacket::processServerPacket,
-            Optional.of(NetworkDirection.PLAY_TO_SERVER)
-        );
-        INSTANCE.registerMessage(id++,
-            ToggleModePacketClient.class,
-            ToggleModePacketClient::encode,
-            ToggleModePacketClient::decode,
-            ToggleModePacketClient::processClientPacket,
-            Optional.of(NetworkDirection.PLAY_TO_CLIENT)
-        );
+        INSTANCE.messageBuilder(ToggleModePacket.class, id++, NetworkDirection.PLAY_TO_SERVER)
+            .encoder(ToggleModePacket::encode)
+            .decoder(ToggleModePacket::decode)
+            .consumerMainThread(ToggleModePacket::processServerPacket)
+            .add();
+        INSTANCE.messageBuilder(UpdateFrequencyPacket.class, id++, NetworkDirection.PLAY_TO_SERVER)
+            .encoder(UpdateFrequencyPacket::encode)
+            .decoder(UpdateFrequencyPacket::decode)
+            .consumerMainThread(UpdateFrequencyPacket::processServerPacket)
+            .add();
+        INSTANCE.messageBuilder(ToggleEnergyModePacket.class, id++, NetworkDirection.PLAY_TO_SERVER)
+            .encoder(ToggleEnergyModePacket::encode)
+            .decoder(ToggleEnergyModePacket::decode)
+            .consumerMainThread(ToggleEnergyModePacket::processServerPacket)
+            .add();
 
-        INSTANCE.registerMessage(id++,
-            UpdateFrequencyPacket.class,
-            UpdateFrequencyPacket::encode,
-            UpdateFrequencyPacket::decode,
-            UpdateFrequencyPacket::processServerPacket,
-            Optional.of(NetworkDirection.PLAY_TO_SERVER)
-        );
+        INSTANCE.messageBuilder(ToggleModePacketClient.class, id++, NetworkDirection.PLAY_TO_CLIENT)
+            .encoder(ToggleModePacketClient::encode)
+            .decoder(ToggleModePacketClient::decode)
+            .consumerMainThread(ToggleModePacketClient::processClientPacket)
+            .add();
     }
 
     public static <T extends BlockEntity> Optional<T> findBlockEntity(BlockEntityType<T> type, Level level, BlockPos pos) {

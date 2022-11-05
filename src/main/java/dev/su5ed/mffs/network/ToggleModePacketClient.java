@@ -8,10 +8,10 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class ToggleModePacketClient extends ToggleModePacket {
-
-    public ToggleModePacketClient(BlockPos pos, boolean enabled) {
-        super(pos, enabled);
+public record ToggleModePacketClient(BlockPos pos, boolean enabled) {
+    public void encode(FriendlyByteBuf buf) {
+        buf.writeBlockPos(this.pos);
+        buf.writeBoolean(this.enabled);
     }
 
     public static ToggleModePacketClient decode(FriendlyByteBuf buf) {

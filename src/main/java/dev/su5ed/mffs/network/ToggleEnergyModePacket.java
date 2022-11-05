@@ -9,17 +9,16 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public record UpdateFrequencyPacket(BlockPos pos, int frequency) {
-
+public record ToggleEnergyModePacket(BlockPos pos, CoercionDeriverBlockEntity.EnergyMode mode) {
     public void encode(FriendlyByteBuf buf) {
         buf.writeBlockPos(this.pos);
-        buf.writeInt(this.frequency);
+        buf.writeEnum(this.mode);
     }
 
-    public static UpdateFrequencyPacket decode(FriendlyByteBuf buf) {
+    public static ToggleEnergyModePacket decode(FriendlyByteBuf buf) {
         BlockPos pos = buf.readBlockPos();
-        int frequency = buf.readInt();
-        return new UpdateFrequencyPacket(pos, frequency);
+        CoercionDeriverBlockEntity.EnergyMode mode = buf.readEnum(CoercionDeriverBlockEntity.EnergyMode.class);
+        return new ToggleEnergyModePacket(pos, mode);
     }
 
     public void processServerPacket(Supplier<NetworkEvent.Context> ctx) {
@@ -27,8 +26,8 @@ public record UpdateFrequencyPacket(BlockPos pos, int frequency) {
         Network.findBlockEntity(ModObjects.COERCION_DERIVER_BLOCK_ENTITY.get(), level, this.pos)
             .ifPresent(this::process);
     }
-
+    
     public void process(CoercionDeriverBlockEntity be) {
-        be.setFrequency(this.frequency);
+        be.setEnergyMode(this.mode);
     }
 }

@@ -9,15 +9,7 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class ToggleModePacket {
-    public final BlockPos pos;
-    public final boolean enabled;
-
-    public ToggleModePacket(BlockPos pos, boolean enabled) {
-        this.pos = pos;
-        this.enabled = enabled;
-    }
-
+public record ToggleModePacket(BlockPos pos, boolean enabled) {
     public void encode(FriendlyByteBuf buf) {
         buf.writeBlockPos(this.pos);
         buf.writeBoolean(this.enabled);
@@ -30,15 +22,12 @@ public class ToggleModePacket {
     }
 
     public void processServerPacket(Supplier<NetworkEvent.Context> ctx) {
-        ctx.get().enqueueWork(() -> {
-            Level level = ctx.get().getSender().getLevel();
-            Network.findBlockEntity(ModObjects.COERCION_DERIVER_BLOCK_ENTITY.get(), level, this.pos)
-                .ifPresent(this::process);
-        });
-        ctx.get().setPacketHandled(true);
+        Level level = ctx.get().getSender().getLevel();
+        Network.findBlockEntity(ModObjects.COERCION_DERIVER_BLOCK_ENTITY.get(), level, this.pos)
+            .ifPresent(this::process);
     }
     
-    public void process(CoercionDeriverBlockEntity blockEntity) {
-        blockEntity.setEnabled(this.enabled);
+    public void process(CoercionDeriverBlockEntity be) {
+        be.setEnabled(this.enabled);
     }
 }
