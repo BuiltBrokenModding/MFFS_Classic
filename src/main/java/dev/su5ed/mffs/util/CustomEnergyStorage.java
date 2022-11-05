@@ -27,6 +27,10 @@ public class CustomEnergyStorage extends EnergyStorage {
         }
         return rc;
     }
+    
+    public int extractEnergy() {
+        return extractEnergy(this.maxExtract, false);
+    }
 
     @Override
     public int extractEnergy(int maxExtract, boolean simulate) {
@@ -61,5 +65,22 @@ public class CustomEnergyStorage extends EnergyStorage {
             this.energy = 0;
         }
         onEnergyChanged();
+    }
+    
+    public void setMaxTransfer(int maxTransfer) {
+        this.maxReceive = maxTransfer;
+        this.maxExtract = maxTransfer;
+    }
+    
+    public int getRequestedEnergy() {
+        return getMaxEnergyStored() - getEnergyStored();
+    }
+    
+    public boolean canExtract() {
+        return canExtract(this.maxExtract);
+    }
+    
+    public boolean canExtract(int extract) {
+        return extractEnergy(extract, true) >= extract;
     }
 }

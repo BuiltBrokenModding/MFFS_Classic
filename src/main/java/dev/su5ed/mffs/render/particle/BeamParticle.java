@@ -34,10 +34,10 @@ public class BeamParticle extends Particle {
 
     private float prevSize;
 
-    public BeamParticle(ClientLevel pLevel, Vec3 start, Vec3 target, int lifetime) {
+    public BeamParticle(ClientLevel pLevel, Vec3 start, Vec3 target, BeamColor color, int lifetime) {
         super(pLevel, start.x, start.y, start.z, 0, 0, 0);
 
-        setColor(0.6f, 0.6f, 1f);
+        setColor(color.getRed(), color.getGreen(), color.getBlue());
         setSize(0.02f, 0.02f);
         setBoundingBox(new AABB(start, target));
         setLifetime(lifetime);

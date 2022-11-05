@@ -38,7 +38,7 @@ public class CoercionDeriverScreen extends AbstractContainerScreen<CoercionDeriv
             () -> Network.INSTANCE.sendToServer(new ToggleModePacket(this.menu.blockEntity.getBlockPos(), !this.menu.blockEntity.isEnabled()))
         ));
         addRenderableWidget(new TextButton(this.width / 2 - 10, this.height / 2 - 28, 58, 20,
-            () -> Component.literal(this.menu.blockEntity.getEnergyMode() == EnergyMode.DERIVE ? "Derive" : "Integrate"),
+            () -> Component.literal(this.menu.blockEntity.isInversed() ? "Integrate" : "Derive"),
             button -> {
                 EnergyMode mode = this.menu.blockEntity.getEnergyMode().next();
                 this.menu.blockEntity.setEnergyMode(mode);

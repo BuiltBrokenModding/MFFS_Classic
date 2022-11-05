@@ -12,8 +12,8 @@ import net.minecraft.world.phys.BlockHitResult;
 public class AnimatedBlockEntity extends BaseBlockEntity {
     private long animation;
 
-    public AnimatedBlockEntity(BlockPos pWorldPosition, BlockState pBlockState) {
-        super(ModObjects.PROJECTOR_BLOCK_ENTITY.get(), pWorldPosition, pBlockState);
+    public AnimatedBlockEntity(BlockPos pos, BlockState state) {
+        super(ModObjects.PROJECTOR_BLOCK_ENTITY.get(), pos, state);
     }
 
     protected AnimatedBlockEntity(BlockEntityType<? extends BaseBlockEntity> type, BlockPos pos, BlockState state) {

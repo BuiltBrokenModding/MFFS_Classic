@@ -11,6 +11,6 @@ public class BeamParticleProvider implements ParticleProvider<BeamParticleOption
     @Nullable
     @Override
     public Particle createParticle(BeamParticleOptions options, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-        return new BeamParticle(level, new Vec3(x, y, z), options.target, options.lifetime);
+        return new BeamParticle(level, new Vec3(x, y, z), options.target(), options.color(), options.lifetime());
     }
 }

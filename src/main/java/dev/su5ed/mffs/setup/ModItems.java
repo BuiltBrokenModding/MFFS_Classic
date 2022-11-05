@@ -1,7 +1,12 @@
 package dev.su5ed.mffs.setup;
 
 import dev.su5ed.mffs.MFFSMod;
-import net.minecraft.world.item.*;
+import dev.su5ed.mffs.api.module.Module;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
@@ -22,6 +27,10 @@ public final class ModItems {
     public static final RegistryObject<Item> MACHINE_ITEM = fromBlock(ModBlocks.MACHINE_BLOCK);
     public static final RegistryObject<Item> PROJECTOR_ITEM = fromBlock(ModBlocks.PROJECTOR);
     public static final RegistryObject<Item> COERCION_DERIVER_ITEM = fromBlock(ModBlocks.COERCION_DERIVER);
+    
+    public static final RegistryObject<Item> SPEED_MODULE = null; // TODO
+    public static final RegistryObject<Module> CAMOUFLAGE_MODULE = null;
+    public static final RegistryObject<Item> SCALE_MODULE = null;
     
     public static final RegistryObject<Item> REDSTONE_TORCH_OFF = ITEMS.register("redstone_torch_off", () -> new Item(new Item.Properties()));
 

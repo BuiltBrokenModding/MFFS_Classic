@@ -2,6 +2,8 @@ package dev.su5ed.mffs.datagen;
 
 import dev.su5ed.mffs.MFFSMod;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.tags.BlockTagsProvider;
+import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -13,9 +15,13 @@ public final class ModDataGen {
     @SubscribeEvent
     public static void gatherData(GatherDataEvent event) {
         DataGenerator generator = event.getGenerator();
+        ExistingFileHelper helper = event.getExistingFileHelper();
         
-        generator.addProvider(event.includeClient(), new BlockStateGen(generator, event.getExistingFileHelper()));
-        generator.addProvider(event.includeClient(), new ItemModelGen(generator, event.getExistingFileHelper()));
+        generator.addProvider(event.includeClient(), new BlockStateGen(generator, helper));
+        generator.addProvider(event.includeClient(), new ItemModelGen(generator, helper));
+        
+        BlockTagsProvider blockTags = new BlockTagsProvider(generator, MFFSMod.MODID, helper);
+        generator.addProvider(event.includeServer(), new ItemTagsGen(generator, blockTags, helper));
     }
 
     private ModDataGen() {}
