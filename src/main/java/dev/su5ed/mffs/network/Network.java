@@ -14,7 +14,7 @@ import java.util.Optional;
 
 public final class Network {
     private static final String PROTOCOL_VERSION = "1";
-    
+
     public static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(
         new ResourceLocation(MFFSMod.MODID, "main"),
         () -> PROTOCOL_VERSION,
@@ -32,7 +32,6 @@ public final class Network {
             ToggleModePacket::processServerPacket,
             Optional.of(NetworkDirection.PLAY_TO_SERVER)
         );
-
         INSTANCE.registerMessage(id++,
             ToggleModePacketClient.class,
             ToggleModePacketClient::encode,
@@ -40,8 +39,16 @@ public final class Network {
             ToggleModePacketClient::processClientPacket,
             Optional.of(NetworkDirection.PLAY_TO_CLIENT)
         );
+
+        INSTANCE.registerMessage(id++,
+            UpdateFrequencyPacket.class,
+            UpdateFrequencyPacket::encode,
+            UpdateFrequencyPacket::decode,
+            UpdateFrequencyPacket::processServerPacket,
+            Optional.of(NetworkDirection.PLAY_TO_SERVER)
+        );
     }
-    
+
     public static <T extends BlockEntity> Optional<T> findBlockEntity(BlockEntityType<T> type, Level level, BlockPos pos) {
         return level.isLoaded(pos) ? level.getBlockEntity(pos, type) : Optional.empty();
     }

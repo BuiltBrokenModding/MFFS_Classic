@@ -16,7 +16,9 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.PacketDistributor;
 
 public abstract class BaseBlockEntity extends BlockEntity {
-    protected boolean enabled;
+    private boolean enabled;
+    protected int frequency;
+    
     private long tickCounter;
 
     protected BaseBlockEntity(BlockEntityType<? extends BaseBlockEntity> type, BlockPos pos, BlockState state) {
@@ -33,6 +35,16 @@ public abstract class BaseBlockEntity extends BlockEntity {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+        setChanged();
+    }
+    
+    public int getFrequency() {
+        return this.frequency;
+    }
+    
+    public void setFrequency(int frequency) {
+        this.frequency = frequency;
+        setChanged();
     }
 
     public InteractionResult use(Player player, InteractionHand hand, BlockHitResult hit) {
@@ -91,9 +103,13 @@ public abstract class BaseBlockEntity extends BlockEntity {
         tag.putBoolean("enabled", this.enabled);
     }
 
-    protected void loadTag(CompoundTag tag) {}
+    protected void loadTag(CompoundTag tag) {
+        this.frequency = tag.getInt("frequency");
+    }
 
-    protected void saveTag(CompoundTag tag) {}
+    protected void saveTag(CompoundTag tag) {
+        tag.putInt("frequency", this.frequency);
+    }
 
     public <T> void sendToChunk(T msg) {
         Network.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> this.level.getChunkAt(this.worldPosition)), msg);

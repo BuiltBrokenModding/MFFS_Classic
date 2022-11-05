@@ -1,4 +1,4 @@
-package dev.su5ed.mffs.render;
+package dev.su5ed.mffs.render.particle;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;

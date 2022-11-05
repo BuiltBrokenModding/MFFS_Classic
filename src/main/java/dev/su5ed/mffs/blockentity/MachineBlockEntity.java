@@ -1,7 +1,7 @@
 package dev.su5ed.mffs.blockentity;
 
 import dev.su5ed.mffs.setup.ModObjects;
-import dev.su5ed.mffs.render.BeamParticleOptions;
+import dev.su5ed.mffs.render.particle.BeamParticleOptions;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;

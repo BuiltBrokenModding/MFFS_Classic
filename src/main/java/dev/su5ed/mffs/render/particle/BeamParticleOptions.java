@@ -1,4 +1,4 @@
-package dev.su5ed.mffs.render;
+package dev.su5ed.mffs.render.particle;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.serialization.Codec;

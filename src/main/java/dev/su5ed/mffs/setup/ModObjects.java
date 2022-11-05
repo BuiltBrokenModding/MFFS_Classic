@@ -4,7 +4,7 @@ import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.blockentity.CoercionDeriverBlockEntity;
 import dev.su5ed.mffs.blockentity.MachineBlockEntity;
 import dev.su5ed.mffs.blockentity.AnimatedBlockEntity;
-import dev.su5ed.mffs.render.BeamParticleOptions;
+import dev.su5ed.mffs.render.particle.BeamParticleOptions;
 import dev.su5ed.mffs.render.ModParticleType;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.world.level.block.Block;
@@ -28,8 +28,7 @@ public final class ModObjects {
 
     public static final RegistryObject<ModParticleType<BeamParticleOptions>> BEAM_PARTICLE = PARTICLES.register("beam", () -> new ModParticleType<>(true, BeamParticleOptions.DESERIALIZER, BeamParticleOptions.CODEC));
 
-    public static void init() {
-        final IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+    public static void init(final IEventBus bus) {
         BLOCK_ENTITIES.register(bus);
         PARTICLES.register(bus);
     }

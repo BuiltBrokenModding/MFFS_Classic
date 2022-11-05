@@ -5,17 +5,20 @@ import dev.su5ed.mffs.setup.ModBlocks;
 import dev.su5ed.mffs.setup.ModContainers;
 import dev.su5ed.mffs.setup.ModObjects;
 import dev.su5ed.mffs.util.CustomEnergyStorage;
+import dev.su5ed.mffs.util.DataSlotWrapper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.minecraft.world.inventory.DataSlot;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
+
+import java.util.function.IntConsumer;
+import java.util.function.IntSupplier;
 
 public class CoercionDeriverContainer extends AbstractContainerMenu {
     public final CoercionDeriverBlockEntity blockEntity;
@@ -44,41 +47,46 @@ public class CoercionDeriverContainer extends AbstractContainerMenu {
             .orElse(0);
     }
 
+    public int getCapacity() {
+        return this.blockEntity.getCapability(CapabilityEnergy.ENERGY)
+            .map(IEnergyStorage::getMaxEnergyStored)
+            .orElse(1);
+    }
+    
+    public int getFrequency() {
+        return this.blockEntity.getFrequency();
+    }
+
     /**
-     * Unfortunatelly on a dedicated server ints are actually truncated to short, so we need
+     * Unfortunately, on a dedicated server, ints are actually truncated to short, so we need
      * to split our integer here (split our 32-bit integer into two 16-bit integers)
      *
      * @author McJty
      */
     private void trackPower() {
-        addDataSlot(new DataSlot() {
-            @Override
-            public int get() {
-                return getEnergy() & 0xffff;
-            }
-
-            @Override
-            public void set(int value) {
-                blockEntity.getCapability(CapabilityEnergy.ENERGY).ifPresent(h -> {
-                    int energyStored = h.getEnergyStored() & 0xffff0000;
-                    ((CustomEnergyStorage) h).setEnergy(energyStored + (value & 0xffff));
-                });
-            }
-        });
-        addDataSlot(new DataSlot() {
-            @Override
-            public int get() {
-                return getEnergy() >> 16 & 0xffff;
-            }
-
-            @Override
-            public void set(int value) {
-                blockEntity.getCapability(CapabilityEnergy.ENERGY).ifPresent(h -> {
-                    int energyStored = h.getEnergyStored() & 0x0000ffff;
-                    ((CustomEnergyStorage) h).setEnergy(energyStored | value << 16);
-                });
-            }
-        });
+        addDataSlot(new DataSlotWrapper(() -> getEnergy() & 0xFFFF,
+            value -> this.blockEntity.getCapability(CapabilityEnergy.ENERGY).ifPresent(h -> {
+                int energyStored = h.getEnergyStored() & 0xFFFF0000;
+                ((CustomEnergyStorage) h).setEnergy(energyStored + (value & 0xFFFF));
+            })));
+        addDataSlot(new DataSlotWrapper(() -> getEnergy() >> 16 & 0xFFFF,
+            value -> this.blockEntity.getCapability(CapabilityEnergy.ENERGY).ifPresent(h -> {
+                int energyStored = h.getEnergyStored() & 0x0000FFFF;
+                ((CustomEnergyStorage) h).setEnergy(energyStored | value << 16);
+            })));
+        
+        addIntDataSlot(this.blockEntity::getFrequency, this.blockEntity::setFrequency);
+    }
+    
+    private void addIntDataSlot(IntSupplier gettter, IntConsumer setter) {
+        addDataSlot(new DataSlotWrapper(() -> gettter.getAsInt() & 0xFFFF, value -> {
+            int current = gettter.getAsInt() & 0xFFFF0000;
+            setter.accept(current + (value & 0xFFFF));
+        }));
+        addDataSlot(new DataSlotWrapper(() -> gettter.getAsInt() >> 16 & 0xFFFF, value -> {
+            int current = gettter.getAsInt() & 0x0000FFFF;
+            setter.accept(current | value << 16);
+        }));
     }
 
     private int addSlotRange(IItemHandler handler, int index, int x, int y, int amount, int dx) {

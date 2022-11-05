@@ -24,7 +24,7 @@ public final class MFFSMod {
         bus.addListener(this::setup);
         ModBlocks.init(bus);
         ModItems.init(bus);
-        ModObjects.init();
+        ModObjects.init(bus);
         ModContainers.init(bus);
 
         Network.registerPackets();

@@ -1,6 +1,6 @@
 package dev.su5ed.mffs.setup;
 
-import dev.su5ed.mffs.render.BeamParticleProvider;
+import dev.su5ed.mffs.render.particle.BeamParticleProvider;
 import dev.su5ed.mffs.render.CoercionDeriverBlockRenderer;
 import dev.su5ed.mffs.render.ProjectorBlockRenderer;
 import dev.su5ed.mffs.render.model.CoercionDeriverTopModel;

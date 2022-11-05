@@ -29,7 +29,7 @@ import javax.annotation.Nonnull;
 public class CoercionDeriverBlockEntity extends AnimatedBlockEntity implements MenuProvider {
     private static final int CAPACITY = 5000000;
 
-    private final EnergyStorage energyStorage = new CustomEnergyStorage(CAPACITY, 100, this::isEnabled, this::setChanged);
+    private final EnergyStorage energyStorage = new CustomEnergyStorage(CAPACITY, 10000, this::isEnabled, this::setChanged);
     private final LazyOptional<IEnergyStorage> energy = LazyOptional.of(() -> energyStorage);
 
     public CoercionDeriverBlockEntity(BlockPos pos, BlockState state) {

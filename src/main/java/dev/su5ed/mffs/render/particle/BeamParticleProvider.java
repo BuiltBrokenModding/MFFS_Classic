@@ -1,4 +1,4 @@
-package dev.su5ed.mffs.render;
+package dev.su5ed.mffs.render.particle;
 
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
