@@ -10,6 +10,8 @@ import dev.su5ed.mffs.api.security.BiometricIdentifierLink;
 import dev.su5ed.mffs.block.BaseEntityBlock;
 import dev.su5ed.mffs.network.ToggleModePacketClient;
 import dev.su5ed.mffs.util.Fortron;
+import dev.su5ed.mffs.util.FrequencyCard;
+import dev.su5ed.mffs.util.InventorySlot;
 import dev.su5ed.mffs.util.TransferMode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -34,8 +36,6 @@ import java.util.Optional;
 import java.util.Set;
 
 public abstract class FortronBlockEntity extends InventoryBlockEntity implements FortronFrequency, FrequencyBlock, BiometricIdentifierLink, Activatable {
-    protected static final int SLOT_FREQUENCY = 0;
-    
     protected final FluidTank fortronTank = new FluidTank(getBaseFortronTankCapacity() * FluidType.BUCKET_VOLUME) {
         @Override
         protected void onContentsChanged() {
@@ -43,22 +43,21 @@ public abstract class FortronBlockEntity extends InventoryBlockEntity implements
         }
     };
     private final LazyOptional<IFluidHandler> fluidCap = LazyOptional.of(() -> this.fortronTank);
+    protected final InventorySlot frequencySlot;
 
     protected int frequency;
-    private boolean markSendFortron = true;
+    public boolean markSendFortron = true;
     private boolean active;
     private int animation;
 
     protected FortronBlockEntity(BlockEntityType<? extends BaseBlockEntity> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
+
+        this.frequencySlot = addSlot("frequency", InventorySlot.Mode.NONE, stack -> stack.getItem() instanceof FrequencyCard);
     }
-    
+
     public long getAnimation() {
         return this.animation;
-    }
-    
-    public Set<ItemStack> getCards() {
-        return Set.of(this.items.getStackInSlot(SLOT_FREQUENCY));
     }
 
     /**
@@ -92,11 +91,6 @@ public abstract class FortronBlockEntity extends InventoryBlockEntity implements
     }
 
     @Override
-    public int getSizeInventory() {
-        return 1;
-    }
-
-    @Override
     public void tickServer() {
         super.tickServer();
 
@@ -114,7 +108,7 @@ public abstract class FortronBlockEntity extends InventoryBlockEntity implements
     @Override
     public void tickClient() {
         super.tickClient();
-        
+
         if (isActive()) this.animation++;
     }
 
@@ -139,11 +133,11 @@ public abstract class FortronBlockEntity extends InventoryBlockEntity implements
     @Override
     protected void loadTag(CompoundTag tag) {
         super.loadTag(tag);
-        
+
         this.fortronTank.readFromNBT(tag.getCompound("fortronTank"));
         this.frequency = tag.getInt("frequency");
     }
-    
+
     @Override
     protected void loadCommonTag(CompoundTag tag) {
         this.active = tag.getBoolean("active");
@@ -162,7 +156,7 @@ public abstract class FortronBlockEntity extends InventoryBlockEntity implements
         }
         return super.getCapability(cap, side);
     }
-    
+
     @Override
     public int getFrequency() {
         return this.frequency;
@@ -226,5 +220,9 @@ public abstract class FortronBlockEntity extends InventoryBlockEntity implements
             .append(StreamEx.of(FrequencyGrid.instance().get(getFrequency()))
                 .select(BiometricIdentifier.class))
             .toSet();
+    }
+
+    private Set<ItemStack> getCards() {
+        return Set.of(this.frequencySlot.getItem());
     }
 }

@@ -1,5 +1,7 @@
 package dev.su5ed.mffs.blockentity;
 
+import dev.su5ed.mffs.util.InventorySlot;
+import dev.su5ed.mffs.util.SlotItemHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
@@ -9,41 +11,31 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
+import java.util.function.Predicate;
 
 public abstract class InventoryBlockEntity extends BaseBlockEntity {
-    protected final ItemStackHandler items;
+    protected final SlotItemHandler items;
     private final LazyOptional<IItemHandler> itemCap;
 
     protected InventoryBlockEntity(BlockEntityType<? extends BaseBlockEntity> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
 
-        this.items = new ItemStackHandler(getSizeInventory()) {
-            @Override
-            public boolean isItemValid(int slot, ItemStack stack) {
-                return InventoryBlockEntity.this.isItemValidForSlot(slot, stack);
-            }
-
-            @Override
-            protected void onContentsChanged(int slot) {
-                InventoryBlockEntity.this.onInventoryChanged(slot);
-            }
-        };
+        this.items = new SlotItemHandler(this::onInventoryChanged);
         this.itemCap = LazyOptional.of(() -> this.items);
     }
 
-    public abstract int getSizeInventory();
+    protected InventorySlot addSlot(String name, InventorySlot.Mode mode) {
+        return addSlot(name, mode, stack -> true);
+    }
 
-    public boolean isItemValidForSlot(int slot, ItemStack stack) {
-        return true;
+    protected InventorySlot addSlot(String name, InventorySlot.Mode mode, Predicate<ItemStack> filter) {
+        return this.items.addSlot(name, mode, filter);
     }
-    
-    protected void onInventoryChanged(int slot) {
-        
-    }
+
+    protected void onInventoryChanged() {}
 
     @Nonnull
     @Override

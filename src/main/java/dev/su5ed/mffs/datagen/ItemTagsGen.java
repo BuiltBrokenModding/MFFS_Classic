@@ -17,7 +17,7 @@ public class ItemTagsGen extends ItemTagsProvider {
 
     @Override
     protected void addTags() {
-        tag(ModTags.FORTRON_CATALYST).add(Items.LAPIS_LAZULI, Items.QUARTZ);
+        tag(ModTags.FORTRON_FUEL).add(Items.LAPIS_LAZULI, Items.QUARTZ);
     }
 
     @Override

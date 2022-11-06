@@ -4,7 +4,8 @@ import dev.su5ed.mffs.MFFSConfig;
 import dev.su5ed.mffs.container.CoercionDeriverContainer;
 import dev.su5ed.mffs.setup.ModItems;
 import dev.su5ed.mffs.setup.ModObjects;
-import dev.su5ed.mffs.util.Fortron;
+import dev.su5ed.mffs.setup.ModTags;
+import dev.su5ed.mffs.util.InventorySlot;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -18,7 +19,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.fluids.FluidType;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
@@ -36,8 +37,8 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity implements Me
     public static final float FE_FORTRON_RATIO = 0.0025f;
     public static final int ENERGY_LOSS = 1;
     
-    private static final int SLOT_BATTERY = 1;
-    private static final int SLOT_FUEL = 2;
+    private final InventorySlot batterySlot;
+    private final InventorySlot fuelSlot;
     private static final int[] SLOT_UPGRADE = {3, 4, 5};
 
     private int processTime;
@@ -46,6 +47,8 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity implements Me
     public CoercionDeriverBlockEntity(BlockPos pos, BlockState state) {
         super(ModObjects.COERCION_DERIVER_BLOCK_ENTITY.get(), pos, state, DEFAULT_FE_CAPACITY);
         
+        this.batterySlot = addSlot("battery", InventorySlot.Mode.BOTH, stack -> stack.getCapability(ForgeCapabilities.ENERGY).isPresent());
+        this.fuelSlot = addSlot("fuel", InventorySlot.Mode.BOTH, stack -> stack.is(ModTags.FORTRON_FUEL));
         this.energy.setMaxTransfer(getWattage());
     }
 
@@ -63,11 +66,6 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity implements Me
     
     public boolean isInversed() {
         return this.energyMode == EnergyMode.INTEGRATE;
-    }
-
-    @Override
-    public int getSizeInventory() {
-        return 6;
     }
 
     @Override
@@ -95,12 +93,12 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity implements Me
                     this.energy.receiveEnergy(withdrawnElectricity * ENERGY_LOSS, true);
                 }
 
-                recharge(this.items.getStackInSlot(SLOT_BATTERY));
+                charge(this.batterySlot.getItem());
                 produce();
             } else {
                 if (getFortronEnergy() < getFortronCapacity()) {
                     // Convert Electricity to Fortron
-                    discharge(this.items.getStackInSlot(SLOT_BATTERY));
+                    discharge(this.batterySlot.getItem());
 
                     if (this.energy.canExtract() || !MFFSConfig.COMMON.enableElectricity.get() && hasFuel()) {
                         // Fill Fortron
@@ -109,7 +107,7 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity implements Me
 
                         // Use fuel
                         if (this.processTime == 0 && hasFuel()) {
-                            this.items.getStackInSlot(SLOT_FUEL).shrink(1);
+                            this.fuelSlot.getItem().shrink(1);
                             this.processTime = FUEL_PROCESS_TIME * Math.max(getModuleCount(ModItems.SCALE_MODULE.get()) / 20, 1);
                         }
 
@@ -146,7 +144,7 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity implements Me
     }
     
     public boolean hasFuel() {
-        return !this.items.getStackInSlot(SLOT_FUEL).isEmpty();
+        return !this.fuelSlot.isEmpty();
     }
 
     @Override

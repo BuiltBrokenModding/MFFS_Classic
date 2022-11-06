@@ -30,9 +30,9 @@ public abstract class ElectricTileEntity extends ModularBlockEntity {
     }
 
     /**
-     * Recharges electric item.
+     * Charges electric item.
      */
-    public void recharge(ItemStack stack) {
+    public void charge(ItemStack stack) {
         stack.getCapability(ForgeCapabilities.ENERGY)
             .ifPresent(energy -> this.energy.extractEnergy(energy.receiveEnergy(this.energy.getEnergyStored(), false), false));
     }

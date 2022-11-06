@@ -7,7 +7,7 @@ import net.minecraft.world.item.Item;
 import static dev.su5ed.mffs.MFFSMod.location;
 
 public final class ModTags {
-    public static final TagKey<Item> FORTRON_CATALYST = itemTag("fortron_catalyst");
+    public static final TagKey<Item> FORTRON_FUEL = itemTag("fortron_fuel");
     
     private static TagKey<Item> itemTag(String name) {
         return ItemTags.create(location(name));

@@ -27,9 +27,6 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
      */
     private final Map<String, Object> cache = new HashMap<>();
 
-    public int startModuleIndex = 0;
-    public int endModuleIndex = getSizeInventory() - 1;
-
     protected int capacityBoost = 5;
 
     /**
@@ -63,8 +60,8 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
     }
 
     @Override
-    protected void onInventoryChanged(int slot) {
-        super.onInventoryChanged(slot);
+    protected void onInventoryChanged() {
+        super.onInventoryChanged();
         updateFortronTankCapacity();
         // Clears the cache.
         clearCache();
@@ -129,9 +126,8 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
             return (Set<ItemStack>) stacks;
         }
 
-        IntStreamEx stream = slots.length == 0 ? IntStreamEx.rangeClosed(this.startModuleIndex, this.endModuleIndex) : IntStreamEx.of(slots);
+        StreamEx<ItemStack> stream = slots.length == 0 ? getModuleItems() : IntStreamEx.of(slots).mapToObj(this.items::getStackInSlot);
         Set<ItemStack> modules = stream
-            .mapToObj(this.items::getStackInSlot)
             .filter(stack -> stack.getItem() instanceof Module)
             .toSet();
 
@@ -151,9 +147,8 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
             return (Set<T>) stacks;
         }
 
-        IntStreamEx stream = slots.length == 0 ? IntStreamEx.rangeClosed(this.startModuleIndex, this.endModuleIndex) : IntStreamEx.of(slots);
+        StreamEx<ItemStack> stream = slots.length == 0 ? getModuleItems() : IntStreamEx.of(slots).mapToObj(this.items::getStackInSlot);
         Set<T> modules = stream
-            .mapToObj(this.items::getStackInSlot)
             .map(ItemStack::getItem)
             .select(Module.class)
             .map(item -> (T) item)
@@ -212,8 +207,12 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
         return (int) Math.round(cost);
     }
 
-    public void updateFortronTankCapacity() {
+    private void updateFortronTankCapacity() {
         int capacity = (getModuleCount(ModItems.CAPACITY_MODULE.get()) * this.capacityBoost + getBaseFortronTankCapacity()) * FluidType.BUCKET_VOLUME;
         this.fortronTank.setCapacity(capacity);
+    }
+    
+    private StreamEx<ItemStack> getModuleItems() {
+        return StreamEx.empty(); // TODO
     }
 }
