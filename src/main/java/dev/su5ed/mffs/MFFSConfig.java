@@ -25,6 +25,7 @@ public class MFFSConfig {
     public static final class Common {
         public final ForgeConfigSpec.BooleanValue enableElectricity;
         public final ForgeConfigSpec.DoubleValue fortronProductionMultiplier;
+        public final ForgeConfigSpec.BooleanValue useCache;
 
         private Common(ForgeConfigSpec.Builder builder) {
             builder.push("General config");
@@ -34,6 +35,9 @@ public class MFFSConfig {
             this.fortronProductionMultiplier = builder
                 .comment("Fortron Production Multiplier")
                 .defineInRange("fortronProductionMultiplier", 1.0, 0, 10);
+            this.useCache = builder
+                .comment("Cache allows temporary data saving to decrease calculations required")
+                .define("useCache", true);
             builder.pop();
         }
     }

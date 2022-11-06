@@ -2,10 +2,9 @@ package dev.su5ed.mffs.setup;
 
 import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.blockentity.CoercionDeriverBlockEntity;
-import dev.su5ed.mffs.blockentity.MachineBlockEntity;
-import dev.su5ed.mffs.blockentity.AnimatedBlockEntity;
-import dev.su5ed.mffs.render.particle.BeamParticleOptions;
+import dev.su5ed.mffs.blockentity.ProjectorBlockEntity;
 import dev.su5ed.mffs.render.ModParticleType;
+import dev.su5ed.mffs.render.particle.BeamParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -21,8 +20,7 @@ public final class ModObjects {
     private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, MFFSMod.MODID);
     private static final DeferredRegister<ParticleType<?>> PARTICLES = DeferredRegister.create(ForgeRegistries.PARTICLE_TYPES, MFFSMod.MODID);
 
-    public static final RegistryObject<BlockEntityType<MachineBlockEntity>> MACHINE_BLOCK_ENTITY = blockEntity("machine", MachineBlockEntity::new, ModBlocks.MACHINE_BLOCK::get);
-    public static final RegistryObject<BlockEntityType<AnimatedBlockEntity>> PROJECTOR_BLOCK_ENTITY = blockEntity("projector", AnimatedBlockEntity::new, ModBlocks.PROJECTOR::get);
+    public static final RegistryObject<BlockEntityType<ProjectorBlockEntity>> PROJECTOR_BLOCK_ENTITY = blockEntity("projector", ProjectorBlockEntity::new, ModBlocks.PROJECTOR::get);
     public static final RegistryObject<BlockEntityType<CoercionDeriverBlockEntity>> COERCION_DERIVER_BLOCK_ENTITY = blockEntity("coercion_deriver", CoercionDeriverBlockEntity::new, ModBlocks.COERCION_DERIVER::get);
 
     public static final RegistryObject<ModParticleType<BeamParticleOptions>> BEAM_PARTICLE = PARTICLES.register("beam", () -> new ModParticleType<>(true, BeamParticleOptions.DESERIALIZER, BeamParticleOptions.CODEC));

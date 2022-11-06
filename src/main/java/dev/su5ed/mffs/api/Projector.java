@@ -1,13 +1,16 @@
 package dev.su5ed.mffs.api;
 
 import dev.su5ed.mffs.api.security.BiometricIdentifierLink;
+import net.minecraft.world.phys.Vec3;
+
+import java.util.Set;
 
 /**
  * Also extends IDisableable, IFortronFrequency
  * 
  * @author Calclavia
  */
-public interface Projector extends BiometricIdentifierLink, IFieldInteraction
+public interface Projector extends BiometricIdentifierLink, FieldInteraction
 {
 	/**
 	 * Projects a force field.
@@ -34,6 +37,6 @@ public interface Projector extends BiometricIdentifierLink, IFieldInteraction
 	 * 
 	 * @return The actual force field block coordinates in the world.
 	 */
-    Set<Vector3> getForceFields();
+    Set<Vec3> getForceFields();
 
 }

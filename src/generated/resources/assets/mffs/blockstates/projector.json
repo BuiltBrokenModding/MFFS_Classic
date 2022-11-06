@@ -1,10 +1,10 @@
 {
   "variants": {
-    "enabled=false": {
+    "active=false": {
       "model": "mffs:block/projector"
     },
-    "enabled=true": {
-      "model": "mffs:block/projector_enabled"
+    "active=true": {
+      "model": "mffs:block/projector_active"
     }
   }
 }

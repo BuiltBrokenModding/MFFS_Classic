@@ -41,7 +41,7 @@ public final class Fortron {
             if (totalFortron > 0 && totalCapacity > 0) {
                 // Test each mode and based on the mode, spread Fortron energy.
                 switch (transferMode) {
-                    case EQUALIZE: {
+                    case EQUALIZE -> {
                         for (T machine : frequencyTiles) {
                             if (machine != null) {
                                 double capacityPercentage = (double) machine.getFortronCapacity() / (double) totalCapacity;
@@ -49,10 +49,8 @@ public final class Fortron {
                                 doTransferFortron(transmitter, machine, amountToSet - machine.getFortronEnergy(), limit);
                             }
                         }
-
-                        break;
                     }
-                    case DISTRIBUTE: {
+                    case DISTRIBUTE -> {
                         final int amountToSet = totalFortron / frequencyTiles.size();
 
                         for (T machine : frequencyTiles) {
@@ -60,10 +58,8 @@ public final class Fortron {
                                 doTransferFortron(transmitter, machine, amountToSet - machine.getFortronEnergy(), limit);
                             }
                         }
-
-                        break;
                     }
-                    case DRAIN: {
+                    case DRAIN -> {
                         frequencyTiles.remove(transmitter);
 
                         for (T machine : frequencyTiles) {
@@ -76,10 +72,8 @@ public final class Fortron {
                                 }
                             }
                         }
-
-                        break;
                     }
-                    case FILL: {
+                    case FILL -> {
                         if (transmitter.getFortronEnergy() < transmitter.getFortronCapacity()) {
                             frequencyTiles.remove(transmitter);
 
@@ -97,8 +91,6 @@ public final class Fortron {
                                 }
                             }
                         }
-
-                        break;
                     }
                 }
             }

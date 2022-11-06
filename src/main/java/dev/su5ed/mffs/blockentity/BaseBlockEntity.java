@@ -1,14 +1,11 @@
 package dev.su5ed.mffs.blockentity;
 
-import dev.su5ed.mffs.block.BaseEntityBlock;
 import dev.su5ed.mffs.network.Network;
-import dev.su5ed.mffs.network.ToggleModePacketClient;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -16,9 +13,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.PacketDistributor;
 
 public abstract class BaseBlockEntity extends BlockEntity {
-    private boolean enabled;
-    protected int frequency;
-    
     private long tickCounter;
 
     protected BaseBlockEntity(BlockEntityType<? extends BaseBlockEntity> type, BlockPos pos, BlockState state) {
@@ -27,24 +21,6 @@ public abstract class BaseBlockEntity extends BlockEntity {
 
     public long getTicks() {
         return this.tickCounter;
-    }
-
-    public boolean isEnabled() {
-        return this.enabled || this.level.hasNeighborSignal(this.worldPosition);
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-        setChanged();
-    }
-    
-    public int getFrequency() {
-        return this.frequency;
-    }
-    
-    public void setFrequency(int frequency) {
-        this.frequency = frequency;
-        setChanged();
     }
 
     public InteractionResult use(Player player, InteractionHand hand, BlockHitResult hit) {
@@ -57,22 +33,12 @@ public abstract class BaseBlockEntity extends BlockEntity {
 
     public void tickServer() {
         ++this.tickCounter;
-
-        BlockState state = getBlockState();
-        boolean enabled = isEnabled();
-        if (state.getValue(BaseEntityBlock.ENABLED) != enabled) {
-            this.level.setBlock(this.worldPosition, state.setValue(BaseEntityBlock.ENABLED, enabled), Block.UPDATE_ALL);
-
-            if (!this.level.isClientSide()) {
-                sendToChunk(new ToggleModePacketClient(this.worldPosition, isEnabled()));
-            }
-        }
     }
 
     @Override
     public CompoundTag getUpdateTag() {
         CompoundTag tag = new CompoundTag();
-        loadCommonTag(tag);
+        saveCommonTag(tag);
         return tag;
     }
 
@@ -95,21 +61,13 @@ public abstract class BaseBlockEntity extends BlockEntity {
         saveTag(tag);
     }
 
-    protected void loadCommonTag(CompoundTag tag) {
-        this.enabled = tag.getBoolean("enabled");
-    }
+    protected void loadCommonTag(CompoundTag tag) {}
 
-    protected void saveCommonTag(CompoundTag tag) {
-        tag.putBoolean("enabled", this.enabled);
-    }
+    protected void saveCommonTag(CompoundTag tag) {}
 
-    protected void loadTag(CompoundTag tag) {
-        this.frequency = tag.getInt("frequency");
-    }
+    protected void loadTag(CompoundTag tag) {}
 
-    protected void saveTag(CompoundTag tag) {
-        tag.putInt("frequency", this.frequency);
-    }
+    protected void saveTag(CompoundTag tag) {}
 
     public <T> void sendToChunk(T msg) {
         Network.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> this.level.getChunkAt(this.worldPosition)), msg);

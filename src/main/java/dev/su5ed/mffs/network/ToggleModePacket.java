@@ -9,10 +9,10 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public record ToggleModePacket(BlockPos pos, boolean enabled) {
+public record ToggleModePacket(BlockPos pos, boolean active) {
     public void encode(FriendlyByteBuf buf) {
         buf.writeBlockPos(this.pos);
-        buf.writeBoolean(this.enabled);
+        buf.writeBoolean(this.active);
     }
 
     public static ToggleModePacket decode(FriendlyByteBuf buf) {
@@ -28,6 +28,6 @@ public record ToggleModePacket(BlockPos pos, boolean enabled) {
     }
     
     public void process(CoercionDeriverBlockEntity be) {
-        be.setEnabled(this.enabled);
+        be.setActive(this.active);
     }
 }

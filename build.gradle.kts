@@ -21,6 +21,7 @@ minecraft {
             property("forge.logging.markers", "REGISTRIES")
             property("forge.logging.console.level", "debug")
             property("forge.enabledGameTestNamespaces", "mffs")
+            forceExit = false
 
             mods {
                 create("mffs") {
@@ -34,6 +35,7 @@ minecraft {
             property("forge.logging.markers", "REGISTRIES")
             property("forge.logging.console.level", "debug")
             property("forge.enabledGameTestNamespaces", "mffs")
+            forceExit = false
 
             mods {
                 create("mffs") {
@@ -48,6 +50,7 @@ minecraft {
             property("forge.logging.markers", "REGISTRIES")
             property("forge.logging.console.level", "debug")
             property("forge.enabledGameTestNamespaces", "mffs")
+            forceExit = false
 
             mods {
                 create("mffs") {
@@ -60,6 +63,7 @@ minecraft {
             workingDirectory(project.file("run"))
             property("forge.logging.markers", "REGISTRIES")
             property("forge.logging.console.level", "debug")
+            forceExit = false
 
             args("--mod", "mffs", "--all", "--output", file("src/generated/resources/"), "--existing", file("src/main/resources/"))
 
@@ -83,10 +87,13 @@ repositories {
         name = "Modmaven"
         url = uri("https://modmaven.dev/")
     }
+    mavenCentral()
 }
 
 dependencies {
     minecraft(group = "net.minecraftforge", name = "forge", version = "1.19.2-43.1.47")
+    
+    minecraftLibrary("one.util:streamex:0.8.1") // Streams galore!
 
     runtimeOnly(fg.deobf("mekanism:Mekanism:1.19.2-10.3.5.474"))
     runtimeOnly(fg.deobf("mekanism:Mekanism:1.19.2-10.3.5.474:generators"))

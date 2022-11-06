@@ -1,5 +1,3 @@
-// 1.19.2	2022-11-05T12:55:32.4722659	Block States: mffs
-5b57ad3042c16822ae2e3071900f5dfaa44cdcd5 assets/mffs/blockstates/coercion_deriver.json
-c071990765121fc14cb245494ea4ba35f0039203 assets/mffs/blockstates/machine_block.json
-7f058326a4d6f4192056760461371d974742d8f0 assets/mffs/blockstates/projector.json
-4735a51b66910334b94cbcba85d3b5c7e65998eb assets/mffs/models/block/machine_block.json
+// 1.19.2	2022-11-06T12:08:46.4888973	Block States: mffs
+39664fd5f9627fd244d7d75466ce80dad7264edd assets/mffs/blockstates/coercion_deriver.json
+1ac042f2bae16bcc5651bb49e533792822f35f9d assets/mffs/blockstates/projector.json

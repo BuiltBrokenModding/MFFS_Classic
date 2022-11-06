@@ -22,7 +22,6 @@ public final class ModBlocks {
     private static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MFFSMod.MODID);
     private static final BlockBehaviour.Properties BLOCK_PROPERTIES = BlockBehaviour.Properties.of(Material.STONE).strength(2f).requiresCorrectToolForDrops();
 
-    public static final RegistryObject<BaseEntityBlock> MACHINE_BLOCK = baseEntityBlock("machine_block", () -> ModObjects.MACHINE_BLOCK_ENTITY.get());
     public static final RegistryObject<ProjectorBlock> PROJECTOR = block("projector", ProjectorBlock::new);
     public static final RegistryObject<BaseEntityBlock> COERCION_DERIVER = block("coercion_deriver", CoercionDeriverBlock::new);
 

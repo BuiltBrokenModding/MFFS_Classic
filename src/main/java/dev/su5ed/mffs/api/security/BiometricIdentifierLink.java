@@ -1,7 +1,5 @@
 package dev.su5ed.mffs.api.security;
 
-import mffs.api.security.IBiometricIdentifier;
-
 import java.util.Set;
 
 /**
@@ -12,7 +10,7 @@ import java.util.Set;
  */
 public interface BiometricIdentifierLink
 {
-	public IBiometricIdentifier getBiometricIdentifier();
+	BiometricIdentifier getBiometricIdentifier();
 
-	public Set<IBiometricIdentifier> getBiometricIdentifiers();
+	Set<BiometricIdentifier> getBiometricIdentifiers();
 }

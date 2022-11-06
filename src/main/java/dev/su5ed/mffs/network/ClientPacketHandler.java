@@ -11,7 +11,7 @@ import java.util.function.Consumer;
 public final class ClientPacketHandler {
     
     public static void handleToggleActivationPacket(ToggleModePacketClient packet) {
-        runBlockEntityTask(ModObjects.COERCION_DERIVER_BLOCK_ENTITY.get(), packet.pos(), be -> be.setEnabled(packet.enabled()));
+        runBlockEntityTask(ModObjects.COERCION_DERIVER_BLOCK_ENTITY.get(), packet.pos(), be -> be.setActive(packet.active()));
     }
 
     private static <T extends BlockEntity> void runBlockEntityTask(BlockEntityType<T> type, BlockPos pos, Consumer<T> consumer) {

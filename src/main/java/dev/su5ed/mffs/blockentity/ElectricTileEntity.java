@@ -18,14 +18,14 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collections;
 import java.util.Set;
 
-public abstract class ElectricTileEntity extends FortronBlockEntity {
+public abstract class ElectricTileEntity extends ModularBlockEntity {
     protected final CustomEnergyStorage energy;
     private final LazyOptional<IEnergyStorage> energyCap;
 
     protected ElectricTileEntity(BlockEntityType<? extends BaseBlockEntity> type, BlockPos pos, BlockState state, int capacity) {
         super(type, pos, state);
 
-        this.energy = new CustomEnergyStorage(capacity, Integer.MAX_VALUE, this::isEnabled, this::setChanged);
+        this.energy = new CustomEnergyStorage(capacity, Integer.MAX_VALUE, this::isActive, this::setChanged);
         this.energyCap = LazyOptional.of(() -> this.energy);
     }
 
@@ -36,7 +36,7 @@ public abstract class ElectricTileEntity extends FortronBlockEntity {
         stack.getCapability(ForgeCapabilities.ENERGY)
             .ifPresent(energy -> this.energy.extractEnergy(energy.receiveEnergy(this.energy.getEnergyStored(), false), false));
     }
-    
+
     /**
      * Discharges electric item.
      */
@@ -44,7 +44,7 @@ public abstract class ElectricTileEntity extends FortronBlockEntity {
         stack.getCapability(ForgeCapabilities.ENERGY)
             .ifPresent(energy -> this.energy.receiveEnergy(energy.extractEnergy(this.energy.getRequestedEnergy(), false), false));
     }
-    
+
     protected long produce() {
         long totalUsed = 0;
         for (Direction direction : getOutputSides()) {
@@ -60,7 +60,11 @@ public abstract class ElectricTileEntity extends FortronBlockEntity {
         }
         return totalUsed;
     }
-    
+
+    public Set<Direction> getInputSides() {
+        return Collections.emptySet();
+    }
+
     public Set<Direction> getOutputSides() {
         return Collections.emptySet();
     }
@@ -74,7 +78,8 @@ public abstract class ElectricTileEntity extends FortronBlockEntity {
     @NotNull
     @Override
     public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        if (cap == ForgeCapabilities.ENERGY) {
+        // TODO Sided energy IO
+        if (cap == ForgeCapabilities.ENERGY && (side == null || getInputSides().contains(side) || getOutputSides().contains(side))) {
             return this.energyCap.cast();
         }
         return super.getCapability(cap, side);
@@ -83,14 +88,14 @@ public abstract class ElectricTileEntity extends FortronBlockEntity {
     @Override
     protected void saveTag(CompoundTag tag) {
         super.saveTag(tag);
-        
+
         tag.put("energy", this.energy.serializeNBT());
     }
 
     @Override
     protected void loadTag(CompoundTag tag) {
         super.loadTag(tag);
-        
+
         this.energy.deserializeNBT(tag.get("energy"));
     }
 }

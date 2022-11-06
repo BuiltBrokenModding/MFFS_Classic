@@ -1,7 +1,7 @@
 package dev.su5ed.mffs.setup;
 
 import dev.su5ed.mffs.MFFSMod;
-import dev.su5ed.mffs.api.module.Module;
+import dev.su5ed.mffs.item.ItemModule;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -24,13 +24,13 @@ public final class ModItems {
     };
     private static final Item.Properties ITEM_PROPERTIES = new Item.Properties().tab(ITEM_GROUP);
     
-    public static final RegistryObject<Item> MACHINE_ITEM = fromBlock(ModBlocks.MACHINE_BLOCK);
     public static final RegistryObject<Item> PROJECTOR_ITEM = fromBlock(ModBlocks.PROJECTOR);
     public static final RegistryObject<Item> COERCION_DERIVER_ITEM = fromBlock(ModBlocks.COERCION_DERIVER);
     
-    public static final RegistryObject<Item> SPEED_MODULE = null; // TODO
-    public static final RegistryObject<Module> CAMOUFLAGE_MODULE = null;
-    public static final RegistryObject<Item> SCALE_MODULE = null;
+    public static final RegistryObject<ItemModule> SPEED_MODULE = ITEMS.register("speed_module", () -> new ItemModule(new Item.Properties()));
+    public static final RegistryObject<ItemModule> CAMOUFLAGE_MODULE = ITEMS.register("camouflage_module", () -> new ItemModule(new Item.Properties()));
+    public static final RegistryObject<ItemModule> SCALE_MODULE = ITEMS.register("scale_module", () -> new ItemModule(new Item.Properties()));
+    public static final RegistryObject<ItemModule> CAPACITY_MODULE = ITEMS.register("capacity_module", () -> new ItemModule(new Item.Properties()));
     
     public static final RegistryObject<Item> REDSTONE_TORCH_OFF = ITEMS.register("redstone_torch_off", () -> new Item(new Item.Properties()));
 

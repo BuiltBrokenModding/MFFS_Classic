@@ -4,7 +4,6 @@ import dev.su5ed.mffs.blockentity.CoercionDeriverBlockEntity;
 import dev.su5ed.mffs.setup.ModBlocks;
 import dev.su5ed.mffs.setup.ModContainers;
 import dev.su5ed.mffs.setup.ModObjects;
-import dev.su5ed.mffs.util.CustomEnergyStorage;
 import dev.su5ed.mffs.util.DataSlotWrapper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
@@ -13,7 +12,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
@@ -52,18 +50,6 @@ public class CoercionDeriverContainer extends AbstractContainerMenu {
     public boolean stillValid(Player pPlayer) {
         return stillValid(ContainerLevelAccess.create(this.blockEntity.getLevel(), this.blockEntity.getBlockPos()), this.player, ModBlocks.COERCION_DERIVER.get());
     }
-
-    public int getEnergy() {
-        return this.blockEntity.getCapability(ForgeCapabilities.ENERGY)
-            .map(IEnergyStorage::getEnergyStored)
-            .orElse(0);
-    }
-
-    public int getCapacity() {
-        return this.blockEntity.getCapability(ForgeCapabilities.ENERGY)
-            .map(IEnergyStorage::getMaxEnergyStored)
-            .orElse(1);
-    }
     
     public int getFrequency() {
         return this.blockEntity.getFrequency();
@@ -76,16 +62,16 @@ public class CoercionDeriverContainer extends AbstractContainerMenu {
      * @author McJty
      */
     private void trackPower() {
-        addDataSlot(new DataSlotWrapper(() -> getEnergy() & 0xFFFF,
-            value -> this.blockEntity.getCapability(ForgeCapabilities.ENERGY).ifPresent(h -> {
-                int energyStored = h.getEnergyStored() & 0xFFFF0000;
-                ((CustomEnergyStorage) h).setEnergy(energyStored + (value & 0xFFFF));
-            })));
-        addDataSlot(new DataSlotWrapper(() -> getEnergy() >> 16 & 0xFFFF,
-            value -> this.blockEntity.getCapability(ForgeCapabilities.ENERGY).ifPresent(h -> {
-                int energyStored = h.getEnergyStored() & 0x0000FFFF;
-                ((CustomEnergyStorage) h).setEnergy(energyStored | value << 16);
-            })));
+        addDataSlot(new DataSlotWrapper(() -> this.blockEntity.getFortronEnergy() & 0xFFFF,
+            value -> {
+                int energyStored = this.blockEntity.getFortronEnergy() & 0xFFFF0000;
+                this.blockEntity.setFortronEnergy(energyStored + (value & 0xFFFF));
+            }));
+        addDataSlot(new DataSlotWrapper(() -> this.blockEntity.getFortronEnergy() >> 16 & 0xFFFF,
+            value -> {
+                int energyStored = this.blockEntity.getFortronEnergy() & 0x0000FFFF;
+                this.blockEntity.setFortronEnergy(energyStored | value << 16);
+            }));
         
         addIntDataSlot(this.blockEntity::getFrequency, this.blockEntity::setFrequency);
     }

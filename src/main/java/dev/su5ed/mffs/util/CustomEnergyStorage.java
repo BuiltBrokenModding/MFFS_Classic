@@ -76,10 +76,6 @@ public class CustomEnergyStorage extends EnergyStorage {
         return getMaxEnergyStored() - getEnergyStored();
     }
     
-    public boolean canExtract() {
-        return canExtract(this.maxExtract);
-    }
-    
     public boolean canExtract(int extract) {
         return extractEnergy(extract, true) >= extract;
     }

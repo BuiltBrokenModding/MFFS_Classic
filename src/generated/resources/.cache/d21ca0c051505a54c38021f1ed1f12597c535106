@@ -1,2 +1,5 @@
-// 1.19.2	2022-11-05T12:55:32.4702662	Item Models: mffs
-b36db1967e8793b6bc05af8e50300ee39107c3f4 assets/mffs/models/item/machine_block.json
+// 1.19.2	2022-11-06T12:47:16.5726329	Item Models: mffs
+eb9cdb4e2d3ca6a3a69366e0eae54972889518b4 assets/mffs/models/item/camouflage_module.json
+7c5fcaaad7f10eff8edf71b60c3f9d8a935b4a93 assets/mffs/models/item/capacity_module.json
+c7c8b7135a5033dd5ddf5be9905e743855d6cdde assets/mffs/models/item/scale_module.json
+7d4c919633731c3a0c9b906fc0ceb0bf220783fd assets/mffs/models/item/speed_module.json

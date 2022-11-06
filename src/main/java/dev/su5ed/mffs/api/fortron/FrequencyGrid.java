@@ -20,7 +20,7 @@ public class FrequencyGrid {
     private static FrequencyGrid CLIENT_INSTANCE = new FrequencyGrid();
     private static FrequencyGrid SERVER_INSTANCE = new FrequencyGrid();
 
-    private final Set<FrequencyBlock> frequencyGrid = new HashSet<FrequencyBlock>();
+    private final Set<FrequencyBlock> frequencyGrid = new HashSet<>();
 
     public <T extends BlockEntity & FrequencyBlock> void register(T be) {
 		this.frequencyGrid.removeIf(frequency -> frequency == null || ((BlockEntity) frequency).isRemoved() || ((BlockEntity) frequency).getBlockPos().equals(be.getBlockPos()));

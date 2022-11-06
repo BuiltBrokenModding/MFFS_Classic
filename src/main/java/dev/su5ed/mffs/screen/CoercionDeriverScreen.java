@@ -14,8 +14,6 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.energy.IEnergyStorage;
 
 public class CoercionDeriverScreen extends AbstractContainerScreen<CoercionDeriverContainer> {
     public static final ResourceLocation BACKGROUND = new ResourceLocation(MFFSMod.MODID, "textures/gui/coercion_deriver.png");
@@ -34,8 +32,8 @@ public class CoercionDeriverScreen extends AbstractContainerScreen<CoercionDeriv
         super.init();
 
         this.titleLabelX = (this.imageWidth - this.font.width(this.title)) / 2;
-        addRenderableWidget(new ToggleButton(this.width / 2 - 82, this.height / 2 - 104, this.menu.blockEntity::isEnabled,
-            () -> Network.INSTANCE.sendToServer(new ToggleModePacket(this.menu.blockEntity.getBlockPos(), !this.menu.blockEntity.isEnabled()))
+        addRenderableWidget(new ToggleButton(this.width / 2 - 82, this.height / 2 - 104, this.menu.blockEntity::isActive,
+            () -> Network.INSTANCE.sendToServer(new ToggleModePacket(this.menu.blockEntity.getBlockPos(), !this.menu.blockEntity.isActive()))
         ));
         addRenderableWidget(new TextButton(this.width / 2 - 10, this.height / 2 - 28, 58, 20,
             () -> Component.literal(this.menu.blockEntity.isInversed() ? "Integrate" : "Derive"),
@@ -76,7 +74,7 @@ public class CoercionDeriverScreen extends AbstractContainerScreen<CoercionDeriv
         int relY = (this.height - this.imageHeight) / 2;
         blit(poseStack, relX, relY, 0, 0, this.imageWidth, this.imageHeight);
 
-        drawForce(poseStack, 8, 115, this.menu.getEnergy() / (float) this.menu.getCapacity());
+        drawForce(poseStack, 8, 115, this.menu.blockEntity.getFortronEnergy() / (float) this.menu.blockEntity.getFortronCapacity());
     }
     
     public void renderFg(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
@@ -93,12 +91,10 @@ public class CoercionDeriverScreen extends AbstractContainerScreen<CoercionDeriv
         this.font.draw(poseStack, "Upgrade", -95, 140, GuiColors.DARK_GREY);
         poseStack.popPose();
         
-        this.font.draw(poseStack, "Progress: " + (this.menu.blockEntity.isEnabled() ? "Running" : "Idle"), 8, 70, GuiColors.DARK_GREY);
+        this.font.draw(poseStack, "Progress: " + (this.menu.blockEntity.isActive() ? "Running" : "Idle"), 8, 70, GuiColors.DARK_GREY);
         
-        int energy = this.menu.blockEntity.getCapability(ForgeCapabilities.ENERGY)
-            .map(IEnergyStorage::getEnergyStored)
-            .orElseThrow();
-        this.font.draw(poseStack, "Fortron: " + energy + " FE", 8, 105, GuiColors.DARK_GREY); // TODO production rate
+        int energy = this.menu.blockEntity.getFortronEnergy();
+        this.font.draw(poseStack, "Fortron: " + energy + " L", 8, 105, GuiColors.DARK_GREY); // TODO production rate
     }
     
     private void onFrequencyChanged(String str) {

@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
 import dev.su5ed.mffs.MFFSMod;
-import dev.su5ed.mffs.blockentity.AnimatedBlockEntity;
+import dev.su5ed.mffs.blockentity.FortronBlockEntity;
 import dev.su5ed.mffs.render.model.CoercionDeriverTopModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -13,7 +13,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 
-public class CoercionDeriverBlockRenderer implements BlockEntityRenderer<AnimatedBlockEntity> {
+public class CoercionDeriverBlockRenderer implements BlockEntityRenderer<FortronBlockEntity> {
     public static final ResourceLocation COERCION_DERIVER_OFF_TEXTURE = new ResourceLocation(MFFSMod.MODID, "textures/model/coercion_deriver_off.png");
     public static final ResourceLocation COERCION_DERIVER_ON_TEXTURE = new ResourceLocation(MFFSMod.MODID, "textures/model/coercion_deriver_on.png");
 
@@ -24,8 +24,8 @@ public class CoercionDeriverBlockRenderer implements BlockEntityRenderer<Animate
     }
 
     @Override
-    public void render(AnimatedBlockEntity blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
-        ResourceLocation texture = blockEntity.isEnabled() ? COERCION_DERIVER_ON_TEXTURE : COERCION_DERIVER_OFF_TEXTURE;
+    public void render(FortronBlockEntity blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
+        ResourceLocation texture = blockEntity.isActive() ? COERCION_DERIVER_ON_TEXTURE : COERCION_DERIVER_OFF_TEXTURE;
 
         poseStack.pushPose();
         poseStack.translate(0.5, 1.96, 0.5);

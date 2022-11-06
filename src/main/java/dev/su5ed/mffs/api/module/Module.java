@@ -1,5 +1,14 @@
 package dev.su5ed.mffs.api.module;
 
+import dev.su5ed.mffs.api.FieldInteraction;
+import dev.su5ed.mffs.api.Projector;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
+
+import java.util.Set;
+
 public interface Module extends FortronCost {
 
     /**
@@ -8,9 +17,9 @@ public interface Module extends FortronCost {
      * @param projector
      * @return True to stop projecting.
      */
-    boolean onProject(IProjector projector, Set<Vector3> field);
+    boolean onProject(Projector projector, Set<Vec3> field);
 
-    boolean onDestroy(IProjector projector, Set<Vector3> field);
+    boolean onDestroy(Projector projector, Set<Vec3> field);
 
     /**
      * Called right after the projector creates a force field block.
@@ -20,14 +29,14 @@ public interface Module extends FortronCost {
      * @return 0 - Do nothing; 1 - Skip this block and continue; 2 - Cancel rest of projection;
      */
 
-    int onProject(IProjector projector, Vector3 position);
+    int onProject(Projector projector, Vec3 position);
 
     /**
      * Called when an entity collides with a force field block.
      *
      * @return True to stop the default process of entity collision.
      */
-    boolean onCollideWithForceField(World world, int x, int y, int z, Entity entity, ItemStack moduleStack);
+    boolean onCollideWithForceField(Level level, int x, int y, int z, Entity entity, ItemStack moduleStack);
 
     /**
      * Called in this module when it is being calculated by the projector. Called BEFORE
@@ -35,14 +44,14 @@ public interface Module extends FortronCost {
      *
      * @return False if to prevent this position from being added to the projection que.
      */
-    Set<Vector3> onPreCalculate(IFieldInteraction projector, Set<Vector3> calculatedField);
+    Set<Vec3> onPreCalculate(FieldInteraction projector, Set<Vec3> calculatedField);
 
     /**
      * Called in this module when it is being calculated by the projector.
      *
      * @return False if to prevent this position from being added to the projection que.
      */
-    void onCalculate(IFieldInteraction projector, Set<Vector3> fieldDefinition);
+    void onCalculate(FieldInteraction projector, Set<Vec3> fieldDefinition);
 
     /**
      * @param moduleStack

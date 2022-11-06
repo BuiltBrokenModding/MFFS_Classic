@@ -19,8 +19,6 @@ final class BlockStateGen extends BlockStateProvider {
 
     @Override
     protected void registerStatesAndModels() {
-        simpleBlock(ModBlocks.MACHINE_BLOCK.get());
-
         machineBlock(ModBlocks.PROJECTOR.get());
         machineBlock(ModBlocks.COERCION_DERIVER.get());
     }
@@ -29,8 +27,8 @@ final class BlockStateGen extends BlockStateProvider {
         ResourceLocation id = ForgeRegistries.BLOCKS.getKey(block);
         getVariantBuilder(block)
             .forAllStates(state -> {
-                ResourceLocation modelLocation = state.getValue(ProjectorBlock.ENABLED)
-                    ? new ResourceLocation(id.getNamespace(), id.getPath() + "_enabled")
+                ResourceLocation modelLocation = state.getValue(ProjectorBlock.ACTIVE)
+                    ? new ResourceLocation(id.getNamespace(), id.getPath() + "_active")
                     : id;
 
                 return ConfiguredModel.builder()
