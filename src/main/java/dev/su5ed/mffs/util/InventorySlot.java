@@ -12,7 +12,7 @@ public class InventorySlot implements INBTSerializable<CompoundTag> {
     private final Mode mode;
     private final Predicate<ItemStack> filter;
 
-    private ItemStack content;
+    private ItemStack content = ItemStack.EMPTY;
     
     public InventorySlot(SlotItemHandler parent, String name, Mode mode, Predicate<ItemStack> filter) {
         this.parent = parent;

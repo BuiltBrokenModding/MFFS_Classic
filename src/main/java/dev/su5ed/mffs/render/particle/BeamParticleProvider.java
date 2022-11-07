@@ -3,6 +3,7 @@ package dev.su5ed.mffs.render.particle;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 

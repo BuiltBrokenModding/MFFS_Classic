@@ -21,6 +21,7 @@ final class BlockStateGen extends BlockStateProvider {
     protected void registerStatesAndModels() {
         machineBlock(ModBlocks.PROJECTOR.get());
         machineBlock(ModBlocks.COERCION_DERIVER.get());
+        machineBlock(ModBlocks.FORTRON_CAPACITOR.get());
     }
 
     public void machineBlock(Block block) {

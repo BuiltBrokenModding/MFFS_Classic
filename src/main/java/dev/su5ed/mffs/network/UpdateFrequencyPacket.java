@@ -1,7 +1,6 @@
 package dev.su5ed.mffs.network;
 
-import dev.su5ed.mffs.blockentity.CoercionDeriverBlockEntity;
-import dev.su5ed.mffs.setup.ModObjects;
+import dev.su5ed.mffs.api.fortron.FortronFrequency;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.Level;
@@ -24,11 +23,7 @@ public record UpdateFrequencyPacket(BlockPos pos, int frequency) {
 
     public void processServerPacket(Supplier<NetworkEvent.Context> ctx) {
         Level level = ctx.get().getSender().getLevel();
-        Network.findBlockEntity(ModObjects.COERCION_DERIVER_BLOCK_ENTITY.get(), level, this.pos)
-            .ifPresent(this::process);
-    }
-
-    public void process(CoercionDeriverBlockEntity be) {
-        be.setFrequency(this.frequency);
+        Network.findBlockEntity(FortronFrequency.class, level, this.pos)
+            .ifPresent(be -> be.setFrequency(this.frequency));
     }
 }

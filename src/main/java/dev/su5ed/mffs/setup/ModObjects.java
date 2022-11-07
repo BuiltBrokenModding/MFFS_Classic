@@ -2,6 +2,7 @@ package dev.su5ed.mffs.setup;
 
 import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.blockentity.CoercionDeriverBlockEntity;
+import dev.su5ed.mffs.blockentity.FortronCapacitorBlockEntity;
 import dev.su5ed.mffs.blockentity.ProjectorBlockEntity;
 import dev.su5ed.mffs.render.ModParticleType;
 import dev.su5ed.mffs.render.particle.BeamParticleOptions;
@@ -22,6 +23,7 @@ public final class ModObjects {
 
     public static final RegistryObject<BlockEntityType<ProjectorBlockEntity>> PROJECTOR_BLOCK_ENTITY = blockEntity("projector", ProjectorBlockEntity::new, ModBlocks.PROJECTOR::get);
     public static final RegistryObject<BlockEntityType<CoercionDeriverBlockEntity>> COERCION_DERIVER_BLOCK_ENTITY = blockEntity("coercion_deriver", CoercionDeriverBlockEntity::new, ModBlocks.COERCION_DERIVER::get);
+    public static final RegistryObject<BlockEntityType<FortronCapacitorBlockEntity>> FORTRON_CAPACITOR_BLOCK_ENTITY = blockEntity("fortron_capacitor", FortronCapacitorBlockEntity::new, ModBlocks.FORTRON_CAPACITOR::get);
 
     public static final RegistryObject<ModParticleType<BeamParticleOptions>> BEAM_PARTICLE = PARTICLES.register("beam", () -> new ModParticleType<>(true, BeamParticleOptions.DESERIALIZER, BeamParticleOptions.CODEC));
 

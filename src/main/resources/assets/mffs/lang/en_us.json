@@ -3,5 +3,6 @@
   
   "block.mffs.machine_block": "Base Machine Block",
   "block.mffs.projector": "Force Field Projector",
-  "block.mffs.coercion_deriver": "Coercion Deriver"
+  "block.mffs.coercion_deriver": "Coercion Deriver",
+  "block.mffs.fortron_capacitor": "Fortron Capacitor"
 }

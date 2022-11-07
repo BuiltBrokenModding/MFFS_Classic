@@ -1,22 +1,21 @@
 package dev.su5ed.mffs.network;
 
-import dev.su5ed.mffs.setup.ModObjects;
+import dev.su5ed.mffs.api.Activatable;
+import dev.su5ed.mffs.render.particle.BeamParticleOptions;
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-
-import java.util.function.Consumer;
+import net.minecraft.world.phys.Vec3;
 
 public final class ClientPacketHandler {
     
     public static void handleToggleActivationPacket(ToggleModePacketClient packet) {
-        runBlockEntityTask(ModObjects.COERCION_DERIVER_BLOCK_ENTITY.get(), packet.pos(), be -> be.setActive(packet.active()));
+        Network.findBlockEntity(Activatable.class, Minecraft.getInstance().level, packet.pos())
+            .ifPresent(be -> be.setActive(packet.active()));
     }
-
-    private static <T extends BlockEntity> void runBlockEntityTask(BlockEntityType<T> type, BlockPos pos, Consumer<T> consumer) {
-        Minecraft mc = Minecraft.getInstance();
-        mc.doRunTask(() -> Network.findBlockEntity(type, mc.level, pos).ifPresent(consumer));
+    
+    public static void handleDrawBeamPacket(DrawBeamPacket packet) {
+        Minecraft minecraft = Minecraft.getInstance();
+        Vec3 pos = packet.position();
+        minecraft.level.addParticle(new BeamParticleOptions(packet.target(), packet.color(), packet.lifetime()), pos.x(), pos.y(), pos.z(), 0, 0, 0);
     }
 
     private ClientPacketHandler() {}

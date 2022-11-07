@@ -26,6 +26,7 @@ public final class ModItems {
     
     public static final RegistryObject<Item> PROJECTOR_ITEM = fromBlock(ModBlocks.PROJECTOR);
     public static final RegistryObject<Item> COERCION_DERIVER_ITEM = fromBlock(ModBlocks.COERCION_DERIVER);
+    public static final RegistryObject<Item> FORTRON_CAPACITOR_ITEM = fromBlock(ModBlocks.FORTRON_CAPACITOR);
     
     public static final RegistryObject<ItemModule> SPEED_MODULE = ITEMS.register("speed_module", () -> new ItemModule(new Item.Properties()));
     public static final RegistryObject<ItemModule> CAMOUFLAGE_MODULE = ITEMS.register("camouflage_module", () -> new ItemModule(new Item.Properties()));

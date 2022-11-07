@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "active=false": {
+      "model": "mffs:block/fortron_capacitor"
+    },
+    "active=true": {
+      "model": "mffs:block/fortron_capacitor_active"
+    }
+  }
+}

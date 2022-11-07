@@ -1,7 +1,7 @@
 package dev.su5ed.mffs.blockentity;
 
 import dev.su5ed.mffs.MFFSConfig;
-import dev.su5ed.mffs.container.CoercionDeriverContainer;
+import dev.su5ed.mffs.menu.CoercionDeriverMenu;
 import dev.su5ed.mffs.setup.ModItems;
 import dev.su5ed.mffs.setup.ModObjects;
 import dev.su5ed.mffs.setup.ModTags;
@@ -100,10 +100,11 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity implements Me
                     // Convert Electricity to Fortron
                     discharge(this.batterySlot.getItem());
 
-                    if (this.energy.canExtract() || !MFFSConfig.COMMON.enableElectricity.get() && hasFuel()) {
+                    int production = getProductionRate();
+                    if (this.energy.canExtract(production) || !MFFSConfig.COMMON.enableElectricity.get() && hasFuel()) {
                         // Fill Fortron
-                        provideFortron(getProductionRate(), FluidAction.EXECUTE);
-                        this.energy.extractEnergy();
+                        this.energy.extractEnergy(production, false);
+                        provideFortron(production, FluidAction.EXECUTE);
 
                         // Use fuel
                         if (this.processTime == 0 && hasFuel()) {
@@ -155,7 +156,7 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity implements Me
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int containerId, Inventory inventory, Player player) {
-        return new CoercionDeriverContainer(containerId, this.worldPosition, player, inventory);
+        return new CoercionDeriverMenu(containerId, this.worldPosition, player, inventory);
     }
 
     @Override

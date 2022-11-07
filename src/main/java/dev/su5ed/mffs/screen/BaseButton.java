@@ -27,7 +27,7 @@ public abstract class BaseButton extends AbstractButton {
         RenderSystem.defaultBlendFunc();
         RenderSystem.enableDepthTest();
 
-        int i = this.getYImage(this.isHoveredOrFocused());
+        int i = getYImage(isHoveredOrFocused());
         blit(poseStack, this.x, this.y, 0, 46 + i * 20, this.width / 2, this.height);
         blit(poseStack, this.x + this.width / 2, this.y, 200 - this.width / 2, 46 + i * 20, this.width / 2, this.height);
         renderBg(poseStack, minecraft, mouseX, mouseY);

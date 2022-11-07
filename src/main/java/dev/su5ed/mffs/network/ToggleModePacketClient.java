@@ -21,7 +21,6 @@ public record ToggleModePacketClient(BlockPos pos, boolean active) {
     }
 
     public void processClientPacket(Supplier<NetworkEvent.Context> ctx) {
-        ctx.get().enqueueWork(() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> ClientPacketHandler.handleToggleActivationPacket(this)));
-        ctx.get().setPacketHandled(true);
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> ClientPacketHandler.handleToggleActivationPacket(this));
     }
 }

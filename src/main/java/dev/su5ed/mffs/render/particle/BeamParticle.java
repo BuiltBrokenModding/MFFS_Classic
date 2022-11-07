@@ -34,17 +34,17 @@ public class BeamParticle extends Particle {
 
     private float prevSize;
 
-    public BeamParticle(ClientLevel pLevel, Vec3 start, Vec3 target, BeamColor color, int lifetime) {
-        super(pLevel, start.x, start.y, start.z, 0, 0, 0);
+    public BeamParticle(ClientLevel level, Vec3 start, Vec3 target, BeamColor color, int lifetime) {
+        super(level, start.x(), start.y(), start.z(), 0, 0, 0);
 
         setColor(color.getRed(), color.getGreen(), color.getBlue());
         setSize(0.02f, 0.02f);
         setBoundingBox(new AABB(start, target));
         setLifetime(lifetime);
 
-        this.xd = this.xo - target.x;
-        this.yd = this.yo - target.y;
-        this.zd = this.zo - target.z;
+        this.xd = this.xo - target.x();
+        this.yd = this.yo - target.y();
+        this.zd = this.zo - target.z();
         this.length = (float) start.distanceTo(target);
         this.rotYaw = (float) (Math.atan2(xd, zd) * 180.0D / Math.PI);
         double destX = Math.sqrt(this.xd * this.xd + this.zd * this.zd);

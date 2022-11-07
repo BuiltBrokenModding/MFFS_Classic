@@ -5,6 +5,7 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.fml.util.thread.EffectiveSide;
+import one.util.streamex.StreamEx;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -29,7 +30,7 @@ public class FrequencyGrid {
 
     public void unregister(FrequencyBlock tileEntity) {
         this.frequencyGrid.remove(tileEntity);
-        this.cleanUp();
+        cleanUp();
     }
 
     public Set<FrequencyBlock> get() {
@@ -48,30 +49,20 @@ public class FrequencyGrid {
     }
 
 	public void cleanUp() {
-		this.frequencyGrid.stream()
-			.filter(block -> block == null || ((BlockEntity) block).isRemoved() || ((BlockEntity) block).getLevel().getBlockEntity(((BlockEntity) block).getBlockPos()) != block)
-			.forEach(this::unregister);
+        this.frequencyGrid.removeIf(block -> block == null || ((BlockEntity) block).isRemoved() || ((BlockEntity) block).getLevel().getBlockEntity(((BlockEntity) block).getBlockPos()) != block);
     }
 
     public Set<FrequencyBlock> get(Level level, Vec3i position, int radius, int frequency) {
-        Set<FrequencyBlock> set = new HashSet<>();
-
-        for (FrequencyBlock be : get(frequency)) {
-            if (((BlockEntity) be).getLevel() == level) {
-                if (position.closerThan(((BlockEntity) be).getBlockPos(), radius)) {
-                    set.add(be);
-                }
-            }
-        }
-        return set;
-
+        return StreamEx.of(get(frequency))
+            .filter(block -> ((BlockEntity) block).getLevel() == level && position.closerThan(((BlockEntity) block).getBlockPos(), radius))
+            .toSet();
     }
 
     public Set<FortronFrequency> getFortronTiles(Level level) {
-        return get().stream()
+        return StreamEx.of(get())
 			.filter(block -> ((BlockEntity) block).getLevel() == level && block instanceof FortronFrequency)
 			.map(block -> (FortronFrequency) block)
-			.collect(Collectors.toSet());
+			.toSet();
     }
 
     @SuppressWarnings("unchecked") // I checked it for you, java, it's okay

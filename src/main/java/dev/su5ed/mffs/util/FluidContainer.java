@@ -13,7 +13,7 @@ public class FluidContainer {
     private final Lazy<Fluid> flowingFluid;
 
     public FluidContainer(ModFluidType.FluidProperties properties) {
-        this.fluidType = () -> new ModFluidType(properties);
+        this.fluidType = Lazy.of(() -> new ModFluidType(properties));
         
         ForgeFlowingFluid.Properties fluidProperties = new ForgeFlowingFluid.Properties(this.fluidType, this::getSourceFluid, this::getFlowingFluid);
         this.sourceFluid = Lazy.of(() -> new ForgeFlowingFluid.Source(fluidProperties));

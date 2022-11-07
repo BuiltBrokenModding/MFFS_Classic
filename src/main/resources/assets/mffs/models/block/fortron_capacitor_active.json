@@ -1,0 +1,7 @@
+{
+    "parent": "mffs:block/fortron_capacitor",
+    "textures": {
+        "particle": "mffs:block/machine_block",
+        "0": "mffs:model/fortron_capacitor_on"
+    }
+}

@@ -4,6 +4,7 @@ import dev.su5ed.mffs.api.Activatable;
 import dev.su5ed.mffs.api.FrequencyBlock;
 import dev.su5ed.mffs.api.card.CoordLink;
 import dev.su5ed.mffs.api.fortron.FortronFrequency;
+import dev.su5ed.mffs.api.fortron.FortronStorage;
 import dev.su5ed.mffs.api.fortron.FrequencyGrid;
 import dev.su5ed.mffs.api.security.BiometricIdentifier;
 import dev.su5ed.mffs.api.security.BiometricIdentifierLink;
@@ -32,10 +33,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-public abstract class FortronBlockEntity extends InventoryBlockEntity implements FortronFrequency, FrequencyBlock, BiometricIdentifierLink, Activatable {
+public abstract class FortronBlockEntity extends InventoryBlockEntity implements FortronFrequency, FortronStorage, FrequencyBlock, BiometricIdentifierLink, Activatable {
     protected final FluidTank fortronTank = new FluidTank(getBaseFortronTankCapacity() * FluidType.BUCKET_VOLUME) {
         @Override
         protected void onContentsChanged() {
@@ -43,7 +45,7 @@ public abstract class FortronBlockEntity extends InventoryBlockEntity implements
         }
     };
     private final LazyOptional<IFluidHandler> fluidCap = LazyOptional.of(() -> this.fortronTank);
-    protected final InventorySlot frequencySlot;
+    public final InventorySlot frequencySlot;
 
     protected int frequency;
     public boolean markSendFortron = true;
@@ -222,7 +224,7 @@ public abstract class FortronBlockEntity extends InventoryBlockEntity implements
             .toSet();
     }
 
-    private Set<ItemStack> getCards() {
-        return Set.of(this.frequencySlot.getItem());
+    protected List<ItemStack> getCards() {
+        return List.of(this.frequencySlot.getItem());
     }
 }

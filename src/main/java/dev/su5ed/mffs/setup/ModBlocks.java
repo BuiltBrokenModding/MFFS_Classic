@@ -3,6 +3,7 @@ package dev.su5ed.mffs.setup;
 import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.block.BaseEntityBlock;
 import dev.su5ed.mffs.block.CoercionDeriverBlock;
+import dev.su5ed.mffs.block.FortronCapacitorBlock;
 import dev.su5ed.mffs.block.ProjectorBlock;
 import dev.su5ed.mffs.blockentity.BaseBlockEntity;
 import net.minecraft.world.level.block.Block;
@@ -23,7 +24,8 @@ public final class ModBlocks {
     private static final BlockBehaviour.Properties BLOCK_PROPERTIES = BlockBehaviour.Properties.of(Material.STONE).strength(2f).requiresCorrectToolForDrops();
 
     public static final RegistryObject<ProjectorBlock> PROJECTOR = block("projector", ProjectorBlock::new);
-    public static final RegistryObject<BaseEntityBlock> COERCION_DERIVER = block("coercion_deriver", CoercionDeriverBlock::new);
+    public static final RegistryObject<CoercionDeriverBlock> COERCION_DERIVER = block("coercion_deriver", CoercionDeriverBlock::new);
+    public static final RegistryObject<FortronCapacitorBlock> FORTRON_CAPACITOR = block("fortron_capacitor", FortronCapacitorBlock::new);
 
     public static void init(final IEventBus bus) {
         BLOCKS.register(bus);
