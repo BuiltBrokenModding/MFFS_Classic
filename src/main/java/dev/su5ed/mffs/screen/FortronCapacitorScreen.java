@@ -5,6 +5,7 @@ import com.mojang.math.Vector3f;
 import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.menu.FortronCapacitorMenu;
 import dev.su5ed.mffs.network.Network;
+import dev.su5ed.mffs.network.SwitchTransferModePacket;
 import dev.su5ed.mffs.network.ToggleModePacket;
 import dev.su5ed.mffs.network.UpdateFrequencyPacket;
 import net.minecraft.network.chat.Component;
@@ -13,6 +14,7 @@ import net.minecraft.world.entity.player.Inventory;
 
 public class FortronCapacitorScreen extends BaseScreen<FortronCapacitorMenu> {
     public static final ResourceLocation BACKGROUND = new ResourceLocation(MFFSMod.MODID, "textures/gui/fortron_capacitor.png");
+    public static final ResourceLocation GUI_BUTTONS = new ResourceLocation(MFFSMod.MODID, "textures/gui/buttons.png");
 
     private NumericEditBox frequency;
 
@@ -27,6 +29,8 @@ public class FortronCapacitorScreen extends BaseScreen<FortronCapacitorMenu> {
         addRenderableWidget(new ToggleButton(this.width / 2 - 82, this.height / 2 - 104, this.menu.blockEntity::isActive,
             () -> Network.INSTANCE.sendToServer(new ToggleModePacket(this.menu.blockEntity.getBlockPos(), !this.menu.blockEntity.isActive()))
         ));
+        addRenderableWidget(new IconCycleButton<>(this.width / 2 + 15, this.height / 2 - 37, 18, 18, GUI_BUTTONS, 0, 0, 18, this.menu.blockEntity::getTransferMode,
+            value -> Network.INSTANCE.sendToServer(new SwitchTransferModePacket(this.menu.blockEntity.getBlockPos(), value.next()))));
 
         this.frequency = new NumericEditBox(this.font, this.leftPos + 50, this.topPos + 76, 50, 12, Component.literal("Frequency:"));
         this.frequency.setCanLoseFocus(true);

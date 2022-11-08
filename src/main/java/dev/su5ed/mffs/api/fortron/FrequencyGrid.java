@@ -43,9 +43,9 @@ public class FrequencyGrid {
      * @param frequency - The Frequency
      */
     public Set<FrequencyBlock> get(int frequency) {
-        return get().stream()
+        return StreamEx.of(get())
 			.filter(block -> block != null && !((BlockEntity) block).isRemoved() && block.getFrequency() == frequency)
-			.collect(Collectors.toSet());
+			.toSet();
     }
 
 	public void cleanUp() {

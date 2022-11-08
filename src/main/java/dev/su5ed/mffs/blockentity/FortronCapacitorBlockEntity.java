@@ -46,6 +46,15 @@ public class FortronCapacitorBlockEntity extends ModularBlockEntity implements F
         this.capacityBoost = 10;
     }
 
+    public TransferMode getTransferMode() {
+        return this.transferMode;
+    }
+
+    public void setTransferMode(TransferMode transferMode) {
+        this.transferMode = transferMode;
+        setChanged();
+    }
+
     @Override
     public int getBaseFortronTankCapacity() {
         return 700;
@@ -120,14 +129,14 @@ public class FortronCapacitorBlockEntity extends ModularBlockEntity implements F
     }
 
     @Override
-    protected void saveTag(CompoundTag tag) {
-        super.saveTag(tag);
+    protected void saveCommonTag(CompoundTag tag) {
+        super.saveCommonTag(tag);
         tag.putString("transferMode", this.transferMode.name());
     }
 
     @Override
-    protected void loadTag(CompoundTag tag) {
-        super.loadTag(tag);
+    protected void loadCommonTag(CompoundTag tag) {
+        super.loadCommonTag(tag);
         this.transferMode = TransferMode.valueOf(tag.getString("transferMode"));
     }
 

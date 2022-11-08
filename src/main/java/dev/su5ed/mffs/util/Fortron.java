@@ -110,29 +110,28 @@ public final class Fortron {
      */
     public static void doTransferFortron(FortronFrequency transmitter, FortronFrequency receiver, int joules, int limit) {
         if (transmitter != null && receiver != null) { // TODO stop machines from sending power to themselves
-            BlockEntity transmitterBe = (BlockEntity) transmitter; 
-            BlockEntity receiverBe = (BlockEntity) receiver;
             boolean isCamo = transmitter instanceof ModuleAcceptor acceptor && acceptor.getModuleCount(ModItems.CAMOUFLAGE_MODULE.get()) > 0;
             
-            BlockEntity source, destination;
+            FortronFrequency source, destination;
             if (joules > 0) {
-                source = transmitterBe;
-                destination = receiverBe;
+                source = transmitter;
+                destination = receiver;
             } else {
-                source = receiverBe;
-                destination = transmitterBe;
+                source = receiver;
+                destination = transmitter;
             }
 
             // Take energy from receiver.
             int transfer = Math.min(Math.abs(joules), limit);
-            int transmitted = transmitter.provideFortron(receiver.requestFortron(transfer, FluidAction.SIMULATE), FluidAction.SIMULATE);
-            int received = receiver.requestFortron(transmitter.provideFortron(transmitted, FluidAction.EXECUTE), FluidAction.EXECUTE);
+            int available = destination.provideFortron(source.requestFortron(transfer, FluidAction.SIMULATE), FluidAction.SIMULATE);
+            int transferred = source.requestFortron(destination.provideFortron(available, FluidAction.EXECUTE), FluidAction.EXECUTE);
 
             // Draw Beam Effect
-            if (received > 0 && !isCamo) {
-                Level level = transmitterBe.getLevel();
-                Vec3 target = Vec3.atCenterOf(destination.getBlockPos());
-                Vec3 position = Vec3.atCenterOf(source.getBlockPos());
+            if (transferred > 0 && !isCamo) {
+                BlockPos sourcePos = ((BlockEntity) source).getBlockPos();
+                Level level = ((BlockEntity) transmitter).getLevel();
+                Vec3 target = Vec3.atCenterOf(((BlockEntity) destination).getBlockPos());
+                Vec3 position = Vec3.atCenterOf(sourcePos);
                 BeamColor color = BeamColor.BLUE;
                 int lifetime = 20;
                 if (level instanceof ClientLevel clientLevel) {
@@ -140,7 +139,7 @@ public final class Fortron {
                 }
                 else {
                     DrawBeamPacket packet = new DrawBeamPacket(target, position, color, lifetime);
-                    Network.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(source.getBlockPos())), packet);
+                    Network.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(sourcePos)), packet);
                 }
             }
         }

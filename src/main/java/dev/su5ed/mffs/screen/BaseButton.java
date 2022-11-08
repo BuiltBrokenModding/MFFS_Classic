@@ -6,12 +6,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.network.chat.Component;
 
 public abstract class BaseButton extends AbstractButton {
     private final Runnable onPress;
 
     public BaseButton(int x, int y, int width, int height, Runnable onPress) {
-        super(x, y, width, height, null);
+        super(x, y, width, height, Component.empty());
 
         this.onPress = onPress;
     }

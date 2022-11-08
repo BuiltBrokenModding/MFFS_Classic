@@ -3,7 +3,9 @@ package dev.su5ed.mffs.menu;
 import dev.su5ed.mffs.blockentity.FortronCapacitorBlockEntity;
 import dev.su5ed.mffs.setup.ModContainers;
 import dev.su5ed.mffs.setup.ModObjects;
+import dev.su5ed.mffs.util.DataSlotWrapper;
 import dev.su5ed.mffs.util.SlotInventory;
+import dev.su5ed.mffs.util.TransferMode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -16,6 +18,7 @@ public class FortronCapacitorMenu extends FortronMenu<FortronCapacitorBlockEntit
         super(ModContainers.FORTRON_CAPACITOR_MENU.get(), ModObjects.FORTRON_CAPACITOR_BLOCK_ENTITY.get(), containerId, pos, player, playerInventory);
 
         layoutPlayerInventorySlots(8, 135);
+        addDataSlot(new DataSlotWrapper(() -> this.blockEntity.getTransferMode().ordinal(), i -> this.blockEntity.setTransferMode(TransferMode.values()[i])));
 
         this.blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(handler -> {
             addSlot(new SlotInventory(this.blockEntity.frequencySlot, 9, 74));

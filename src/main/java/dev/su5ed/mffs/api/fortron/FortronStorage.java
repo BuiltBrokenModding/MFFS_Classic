@@ -2,7 +2,7 @@ package dev.su5ed.mffs.api.fortron;
 
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
-public interface FortronStorage {
+public interface FortronStorage { // TODO Capability
     /**
      * Sets the amount of fortron energy.
      *

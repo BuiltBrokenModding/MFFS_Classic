@@ -25,16 +25,16 @@ public abstract class FortronMenu<T extends BlockEntity & FortronFrequency> exte
 
     protected FortronMenu(@Nullable MenuType<?> type, BlockEntityType<T> blockEntityType, int containerId, BlockPos pos, Player player, Inventory playerInventory) {
         super(type, containerId);
-        
+
         this.player = player;
         this.blockEntity = player.getCommandSenderWorld().getBlockEntity(pos, blockEntityType).orElseThrow();
         this.playerInventory = new InvWrapper(playerInventory);
-        
+
         trackPower();
     }
-    
+
     @Override
-    public boolean stillValid(Player pPlayer) {
+    public boolean stillValid(Player player) {
         return stillValid(ContainerLevelAccess.create(this.blockEntity.getLevel(), this.blockEntity.getBlockPos()), this.player, this.blockEntity.getBlockState().getBlock());
     }
 
@@ -62,28 +62,18 @@ public abstract class FortronMenu<T extends BlockEntity & FortronFrequency> exte
             y += dy;
         }
     }
-    
+
+    private void trackPower() {
+        addIntDataSlot(this.blockEntity::getFortronEnergy, this.blockEntity::setFortronEnergy);
+        addIntDataSlot(this.blockEntity::getFrequency, this.blockEntity::setFrequency);
+    }
+
     /**
      * Unfortunately, on a dedicated server, ints are actually truncated to short, so we need
      * to split our integer here (split our 32-bit integer into two 16-bit integers)
      *
      * @author McJty
      */
-    private void trackPower() {
-        addDataSlot(new DataSlotWrapper(() -> this.blockEntity.getFortronEnergy() & 0xFFFF,
-            value -> {
-                int energyStored = this.blockEntity.getFortronEnergy() & 0xFFFF0000;
-                this.blockEntity.setFortronEnergy(energyStored + (value & 0xFFFF));
-            }));
-        addDataSlot(new DataSlotWrapper(() -> this.blockEntity.getFortronEnergy() >> 16 & 0xFFFF,
-            value -> {
-                int energyStored = this.blockEntity.getFortronEnergy() & 0x0000FFFF;
-                this.blockEntity.setFortronEnergy(energyStored | value << 16);
-            }));
-
-        addIntDataSlot(this.blockEntity::getFrequency, this.blockEntity::setFrequency);
-    }
-
     protected void addIntDataSlot(IntSupplier gettter, IntConsumer setter) {
         addDataSlot(new DataSlotWrapper(() -> gettter.getAsInt() & 0xFFFF, value -> {
             int current = gettter.getAsInt() & 0xFFFF0000;

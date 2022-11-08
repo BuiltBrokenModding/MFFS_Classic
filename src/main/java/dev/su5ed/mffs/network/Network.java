@@ -40,6 +40,11 @@ public final class Network {
             .decoder(ToggleEnergyModePacket::decode)
             .consumerMainThread(ToggleEnergyModePacket::processServerPacket)
             .add();
+        INSTANCE.messageBuilder(SwitchTransferModePacket.class, id++, NetworkDirection.PLAY_TO_SERVER)
+            .encoder(SwitchTransferModePacket::encode)
+            .decoder(SwitchTransferModePacket::decode)
+            .consumerMainThread(SwitchTransferModePacket::processServerPacket)
+            .add();
 
         INSTANCE.messageBuilder(ToggleModePacketClient.class, id++, NetworkDirection.PLAY_TO_CLIENT)
             .encoder(ToggleModePacketClient::encode)
@@ -56,7 +61,7 @@ public final class Network {
     public static <T extends BlockEntity> Optional<T> findBlockEntity(BlockEntityType<T> type, Level level, BlockPos pos) {
         return level.isLoaded(pos) ? level.getBlockEntity(pos, type) : Optional.empty();
     }
-    
+
     @SuppressWarnings("unchecked")
     public static <T> Optional<T> findBlockEntity(Class<T> type, Level level, BlockPos pos) {
         return level.isLoaded(pos) ? Optional.ofNullable(level.getBlockEntity(pos)).map(be -> type.isInstance(be) ? (T) be : null) : Optional.empty();

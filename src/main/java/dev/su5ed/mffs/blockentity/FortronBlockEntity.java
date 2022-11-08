@@ -116,12 +116,12 @@ public abstract class FortronBlockEntity extends InventoryBlockEntity implements
 
     @Override
     public void setRemoved() {
-        super.setRemoved();
-
         if (this.markSendFortron) {
             // Let remaining Fortron escape.
             Fortron.transferFortron(this, FrequencyGrid.instance().getFortronTiles(this.level, this.worldPosition, 100, getFrequency()), TransferMode.DRAIN, Integer.MAX_VALUE);
         }
+        
+        super.setRemoved();
     }
 
     @Override
