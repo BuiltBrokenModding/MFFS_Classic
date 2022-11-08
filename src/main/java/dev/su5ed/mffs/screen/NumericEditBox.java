@@ -6,14 +6,14 @@ import net.minecraft.network.chat.Component;
 
 public class NumericEditBox extends EditBox {
 
-    public NumericEditBox(Font pFont, int pX, int pY, int pWidth, int pHeight, Component pMessage) {
-        super(pFont, pX, pY, pWidth, pHeight, pMessage);
+    public NumericEditBox(Font font, int x, int y, int width, int height, Component message) {
+        super(font, x, y, width, height, message);
     }
 
     @Override
     public boolean charTyped(char codePoint, int modifiers) {
-        if (this.canConsumeInput() && Character.isDigit(codePoint)) {
-            this.insertText(Character.toString(codePoint));
+        if (canConsumeInput() && Character.isDigit(codePoint)) {
+            insertText(Character.toString(codePoint));
             return true;
         }
         return false;

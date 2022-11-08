@@ -30,10 +30,6 @@ public class CoercionDeriverMenu extends FortronMenu<CoercionDeriverBlockEntity>
         });
     }
 
-    public int getFrequency() {
-        return this.blockEntity.getFrequency();
-    }
-
     @Override
     public ItemStack quickMoveStack(Player player, int index) {
         return ItemStack.EMPTY; // TODO

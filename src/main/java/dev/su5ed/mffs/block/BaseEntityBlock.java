@@ -35,10 +35,10 @@ public class BaseEntityBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
-        return getBlockEntity(pLevel, pPos)
-            .map(be -> be.use(pPlayer, pHand, pHit))
-            .orElseGet(() -> super.use(pState, pLevel, pPos, pPlayer, pHand, pHit));
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+        return getBlockEntity(level, pos)
+            .map(be -> be.use(player, hand, hit))
+            .orElseGet(() -> super.use(state, level, pos, player, hand, hit));
     }
 
     @Override
@@ -62,7 +62,7 @@ public class BaseEntityBlock extends Block implements EntityBlock {
 
     @Nullable
     @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) {
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
         return (lvl, pos, stt, te) -> {
             if (te instanceof BaseBlockEntity machine) {
                 if (lvl.isClientSide()) machine.tickClient();

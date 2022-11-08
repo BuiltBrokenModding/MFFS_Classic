@@ -1,5 +1,6 @@
 package dev.su5ed.mffs.menu;
 
+import dev.su5ed.mffs.api.Activatable;
 import dev.su5ed.mffs.api.fortron.FortronFrequency;
 import dev.su5ed.mffs.util.DataSlotWrapper;
 import net.minecraft.core.BlockPos;
@@ -18,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
 
-public abstract class FortronMenu<T extends BlockEntity & FortronFrequency> extends AbstractContainerMenu {
+public abstract class FortronMenu<T extends BlockEntity & FortronFrequency & Activatable> extends AbstractContainerMenu {
     public final T blockEntity;
     protected final Player player;
     protected final IItemHandler playerInventory;
@@ -31,6 +32,10 @@ public abstract class FortronMenu<T extends BlockEntity & FortronFrequency> exte
         this.playerInventory = new InvWrapper(playerInventory);
 
         trackPower();
+    }
+
+    public int getFrequency() {
+        return this.blockEntity.getFrequency();
     }
 
     @Override

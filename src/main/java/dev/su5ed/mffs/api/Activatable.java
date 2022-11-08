@@ -1,8 +1,7 @@
 package dev.su5ed.mffs.api;
 
-public interface Activatable
-{
-	boolean isActive();
+public interface Activatable {
+    boolean isActive();
 
-	void setActive(boolean active);
+    void setActive(boolean active);
 }

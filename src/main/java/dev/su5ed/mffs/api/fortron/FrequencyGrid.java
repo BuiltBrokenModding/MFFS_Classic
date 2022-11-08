@@ -9,7 +9,6 @@ import one.util.streamex.StreamEx;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * A grid MFFS uses to search for machines with frequencies that can be linked and spread Fortron
@@ -26,6 +25,10 @@ public class FrequencyGrid {
     public <T extends BlockEntity & FrequencyBlock> void register(T be) {
 		this.frequencyGrid.removeIf(frequency -> frequency == null || ((BlockEntity) frequency).isRemoved() || ((BlockEntity) frequency).getBlockPos().equals(be.getBlockPos()));
         this.frequencyGrid.add(be);
+    }
+
+    public static FrequencyGrid instance() {
+        return EffectiveSide.get().isServer() ? SERVER_INSTANCE : CLIENT_INSTANCE;
     }
 
     public void unregister(FrequencyBlock tileEntity) {
@@ -65,13 +68,11 @@ public class FrequencyGrid {
 			.toSet();
     }
 
-    @SuppressWarnings("unchecked") // I checked it for you, java, it's okay
-    public <T extends BlockEntity & FortronFrequency> Set<T> getFortronTiles(Level level, Vec3i position, int radius, int frequency) {
-        return get(frequency).stream()
-			.filter(block -> ((BlockEntity) block).getLevel() == level && block instanceof FortronFrequency
-				&& ((BlockEntity) block).getBlockPos().closerThan(position, radius))
-			.map(block -> (T) block)
-			.collect(Collectors.toSet());
+    public Set<? extends FortronFrequency> getFortronTiles(Level level, Vec3i position, int radius, int frequency) {
+        return StreamEx.of(get(frequency))
+            .select(FortronFrequency.class)
+			.filter(block -> ((BlockEntity) block).getLevel() == level && ((BlockEntity) block).getBlockPos().closerThan(position, radius))
+			.toSet();
     }
 
     /**
@@ -81,9 +82,5 @@ public class FrequencyGrid {
     public static void reinitiate() {
         CLIENT_INSTANCE = new FrequencyGrid();
         SERVER_INSTANCE = new FrequencyGrid();
-    }
-
-    public static FrequencyGrid instance() {
-        return EffectiveSide.get().isServer() ? SERVER_INSTANCE : CLIENT_INSTANCE;
     }
 }

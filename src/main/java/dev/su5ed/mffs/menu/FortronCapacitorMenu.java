@@ -26,10 +26,6 @@ public class FortronCapacitorMenu extends FortronMenu<FortronCapacitorBlockEntit
         });
     }
 
-    public int getFrequency() { // TODO Common
-        return this.blockEntity.getFrequency();
-    }
-
     @Override
     public ItemStack quickMoveStack(Player player, int index) {
         return ItemStack.EMPTY;

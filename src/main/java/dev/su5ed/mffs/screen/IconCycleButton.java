@@ -2,6 +2,7 @@ package dev.su5ed.mffs.screen;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import dev.su5ed.mffs.MFFSMod;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -13,12 +14,18 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class IconCycleButton<T extends Enum<T>> extends AbstractButton {
+    public static final ResourceLocation GUI_BUTTONS = new ResourceLocation(MFFSMod.MODID, "textures/gui/buttons.png");
+    
     private final ResourceLocation image;
     private final int imageU;
     private final int imageV;
     private final int yStep;
     private final Supplier<T> value;
     private final Consumer<T> onPress;
+    
+    public IconCycleButton(int x, int y, int width, int height, int imageU, int imageV, int yStep, Supplier<T> value, Consumer<T> onPress) {
+        this(x, y, width, height, GUI_BUTTONS, imageU, imageV, yStep, value, onPress);
+    }
 
     public IconCycleButton(int x, int y, int width, int height, ResourceLocation image, int imageU, int imageV, int yStep, Supplier<T> value, Consumer<T> onPress) {
         super(x, y, width, height, Component.empty());

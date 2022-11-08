@@ -7,5 +7,5 @@ public interface FortronCost {
     /**
      * The amount of Fortron this module consumes per tick.
      */
-    public float getFortronCost(float amplifier);
+    float getFortronCost(float amplifier);
 }
