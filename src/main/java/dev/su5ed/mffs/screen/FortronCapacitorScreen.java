@@ -38,7 +38,7 @@ public class FortronCapacitorScreen extends FortronScreen<FortronCapacitorMenu> 
         this.font.draw(poseStack, "Upgrade", -95, 140, GuiColors.DARK_GREY);
         poseStack.popPose();
 
-        this.font.draw(poseStack, "Linked Devices: " + this.menu.blockEntity.getLinkedDevices().size(), 8, 28, GuiColors.DARK_GREY);
+        this.font.draw(poseStack, "Linked Devices: " + this.menu.blockEntity.getDevicesByFrequency().size(), 8, 28, GuiColors.DARK_GREY);
         this.font.draw(poseStack, "Transmission rate: " + this.menu.blockEntity.getTransmissionRate() * 10 + " L/s", 8, 40, GuiColors.DARK_GREY);
         this.font.draw(poseStack, "Range: " + this.menu.blockEntity.getTransmissionRange(), 8, 52, GuiColors.DARK_GREY);
 

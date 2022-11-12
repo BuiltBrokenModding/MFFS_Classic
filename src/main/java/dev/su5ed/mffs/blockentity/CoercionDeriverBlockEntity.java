@@ -28,25 +28,24 @@ import java.util.EnumSet;
 import java.util.Set;
 
 public class CoercionDeriverBlockEntity extends ElectricTileEntity implements MenuProvider {
-    private static final int DEFAULT_FE_CAPACITY = 5000000;
+    private static final int DEFAULT_FE_CAPACITY = 1500000;
     public static final int FUEL_PROCESS_TIME = 10 * 20;
     public static final int PRODUCTION_MULTIPLIER = 4;
     /**
      * Ratio from FE to Fortron. Multiply FE by this value to convert to Fortron.
      */
-    public static final float FE_FORTRON_RATIO = 0.0025f;
+    public static final float FE_FORTRON_RATIO = 0.0025F;
     public static final int ENERGY_LOSS = 1;
-    
-    private final InventorySlot batterySlot;
-    private final InventorySlot fuelSlot;
-    private static final int[] SLOT_UPGRADE = {3, 4, 5};
+
+    public final InventorySlot batterySlot;
+    public final InventorySlot fuelSlot;
 
     private int processTime;
     private EnergyMode energyMode = EnergyMode.DERIVE;
 
     public CoercionDeriverBlockEntity(BlockPos pos, BlockState state) {
         super(ModObjects.COERCION_DERIVER_BLOCK_ENTITY.get(), pos, state, DEFAULT_FE_CAPACITY);
-        
+
         this.batterySlot = addSlot("battery", InventorySlot.Mode.BOTH, stack -> stack.getCapability(ForgeCapabilities.ENERGY).isPresent());
         this.fuelSlot = addSlot("fuel", InventorySlot.Mode.BOTH, stack -> stack.is(ModTags.FORTRON_FUEL));
         this.energy.setMaxTransfer(getWattage());
@@ -59,11 +58,11 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity implements Me
     public void setEnergyMode(EnergyMode energyMode) {
         this.energyMode = energyMode;
     }
-    
+
     public int getWattage() {
         return (int) (DEFAULT_FE_CAPACITY + DEFAULT_FE_CAPACITY * (getModuleCount(ModItems.SPEED_MODULE.get()) / 8.0f));
     }
-    
+
     public boolean isInversed() {
         return this.energyMode == EnergyMode.INTEGRATE;
     }
@@ -84,7 +83,7 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity implements Me
     @Override
     public void tickServer() {
         super.tickServer();
-       
+
         if (isActive()) {
             if (isInversed() && MFFSConfig.COMMON.enableElectricity.get()) {
                 if (this.energy.getEnergyStored() < this.energy.getMaxEnergyStored()) {
@@ -143,7 +142,7 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity implements Me
         }
         return 0;
     }
-    
+
     public boolean hasFuel() {
         return !this.fuelSlot.isEmpty();
     }
@@ -170,18 +169,18 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity implements Me
     @Override
     protected void loadTag(CompoundTag tag) {
         super.loadTag(tag);
-        
+
         this.processTime = tag.getInt("processTime");
         this.energyMode = EnergyMode.valueOf(tag.getString("energyMode"));
     }
-    
+
     @Override
-    public Set<Direction> getInputSides() {
+    public Set<Direction> getEnergyInputSides() {
         return EnumSet.allOf(Direction.class);
     }
 
     @Override
-    public Set<Direction> getOutputSides() {
+    public Set<Direction> getEnergyOutput() {
         return EnumSet.allOf(Direction.class);
     }
 

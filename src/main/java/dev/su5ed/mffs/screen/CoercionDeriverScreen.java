@@ -8,6 +8,7 @@ import dev.su5ed.mffs.menu.CoercionDeriverMenu;
 import dev.su5ed.mffs.network.Network;
 import dev.su5ed.mffs.network.ToggleEnergyModePacket;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -48,6 +49,8 @@ public class CoercionDeriverScreen extends FortronScreen<CoercionDeriverMenu> {
         this.font.draw(poseStack, "Progress: " + (this.menu.blockEntity.isActive() ? "Running" : "Idle"), 8, 70, GuiColors.DARK_GREY);
         
         int energy = this.menu.blockEntity.getFortronEnergy();
-        this.font.draw(poseStack, "Fortron: " + energy + " L", 8, 105, GuiColors.DARK_GREY); // TODO production rate
+        this.font.draw(poseStack, "Fortron: " + energy + " L", 8, 105, GuiColors.DARK_GREY);
+        boolean inversed = this.menu.blockEntity.isInversed();
+        this.font.draw(poseStack, Component.literal((inversed ? "-" : "+") + this.menu.blockEntity.getProductionRate() * 20 + " L/s").withStyle(inversed ? ChatFormatting.RED : ChatFormatting.DARK_GREEN), 118, 117, GuiColors.DARK_GREY);
     }
 }

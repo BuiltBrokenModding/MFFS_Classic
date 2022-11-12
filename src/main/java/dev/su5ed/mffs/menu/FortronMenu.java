@@ -2,24 +2,27 @@ package dev.su5ed.mffs.menu;
 
 import dev.su5ed.mffs.api.Activatable;
 import dev.su5ed.mffs.api.fortron.FortronFrequency;
+import dev.su5ed.mffs.blockentity.ModularBlockEntity;
 import dev.su5ed.mffs.util.DataSlotWrapper;
+import dev.su5ed.mffs.util.SlotInventory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
+import one.util.streamex.EntryStream;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
 
-public abstract class FortronMenu<T extends BlockEntity & FortronFrequency & Activatable> extends AbstractContainerMenu {
+public abstract class FortronMenu<T extends ModularBlockEntity & FortronFrequency & Activatable> extends AbstractContainerMenu {
     public final T blockEntity;
     protected final Player player;
     protected final IItemHandler playerInventory;
@@ -32,6 +35,7 @@ public abstract class FortronMenu<T extends BlockEntity & FortronFrequency & Act
         this.playerInventory = new InvWrapper(playerInventory);
 
         trackPower();
+        addUpgradeSlots();
     }
 
     public int getFrequency() {
@@ -66,6 +70,13 @@ public abstract class FortronMenu<T extends BlockEntity & FortronFrequency & Act
             index = addSlotRange(handler, index, x, y, horAmount, dx);
             y += dy;
         }
+    }
+    
+    private void addUpgradeSlots() {
+        this.blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(handler -> {
+            EntryStream.of(this.blockEntity.upgradeSlots)
+                .forKeyValue((i, slot) -> addSlot(new SlotInventory(slot, 154, 47 + i * 20)));
+        });
     }
 
     private void trackPower() {

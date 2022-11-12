@@ -10,6 +10,7 @@ import dev.su5ed.mffs.api.security.BiometricIdentifier;
 import dev.su5ed.mffs.api.security.BiometricIdentifierLink;
 import dev.su5ed.mffs.block.BaseEntityBlock;
 import dev.su5ed.mffs.network.ToggleModePacketClient;
+import dev.su5ed.mffs.setup.ModFluids;
 import dev.su5ed.mffs.util.Fortron;
 import dev.su5ed.mffs.util.FrequencyCard;
 import dev.su5ed.mffs.util.InventorySlot;
@@ -25,6 +26,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
@@ -38,23 +40,21 @@ import java.util.Optional;
 import java.util.Set;
 
 public abstract class FortronBlockEntity extends InventoryBlockEntity implements FortronFrequency, FortronStorage, FrequencyBlock, BiometricIdentifierLink, Activatable {
-    protected final FluidTank fortronTank = new FluidTank(getBaseFortronTankCapacity() * FluidType.BUCKET_VOLUME) {
-        @Override
-        protected void onContentsChanged() {
-            setChanged();
-        }
-    };
-    private final LazyOptional<IFluidHandler> fluidCap = LazyOptional.of(() -> this.fortronTank);
     public final InventorySlot frequencySlot;
+    
+    protected final FluidTank fortronTank;
+    private final LazyOptional<IFluidHandler> fluidCap;
 
-    protected int frequency;
-    public boolean markSendFortron = true;
+    private int frequency;
+    private boolean markSendFortron = true;
     private boolean active;
     private int animation;
 
     protected FortronBlockEntity(BlockEntityType<? extends BaseBlockEntity> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
 
+        this.fortronTank = new FortronFluidTank(getBaseFortronTankCapacity() * FluidType.BUCKET_VOLUME);
+        this.fluidCap = LazyOptional.of(() -> this.fortronTank);
         this.frequencySlot = addSlot("frequency", InventorySlot.Mode.NONE, stack -> stack.getItem() instanceof FrequencyCard);
     }
 
@@ -62,11 +62,19 @@ public abstract class FortronBlockEntity extends InventoryBlockEntity implements
         return this.animation;
     }
 
+    public void setMarkSendFortron(boolean markSendFortron) {
+        this.markSendFortron = markSendFortron;
+    }
+
     /**
      * @return The initial fortron tank capacity in buckets
      */
     public int getBaseFortronTankCapacity() {
         return 1;
+    }
+    
+    protected List<ItemStack> getCards() {
+        return List.of(this.frequencySlot.getItem());
     }
 
     @Override
@@ -111,7 +119,9 @@ public abstract class FortronBlockEntity extends InventoryBlockEntity implements
     public void tickClient() {
         super.tickClient();
 
-        if (isActive()) this.animation++;
+        if (isActive()) {
+            this.animation++;
+        }
     }
 
     @Override
@@ -223,8 +233,20 @@ public abstract class FortronBlockEntity extends InventoryBlockEntity implements
                 .select(BiometricIdentifier.class))
             .toSet();
     }
+    
+    private class FortronFluidTank extends FluidTank {
+        public FortronFluidTank(int capacity) {
+            super(capacity);
+        }
 
-    protected List<ItemStack> getCards() {
-        return List.of(this.frequencySlot.getItem());
+        @Override
+        public boolean isFluidValid(FluidStack stack) {
+            return stack.getFluid() == ModFluids.FORTRON_FLUID.get();
+        }
+
+        @Override
+        protected void onContentsChanged() {
+            setChanged();
+        }
     }
 }

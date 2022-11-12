@@ -40,10 +40,9 @@ public class FortronCapacitorBlockEntity extends ModularBlockEntity implements F
     private TransferMode transferMode = TransferMode.EQUALIZE;
 
     public FortronCapacitorBlockEntity(BlockPos pos, BlockState state) {
-        super(ModObjects.FORTRON_CAPACITOR_BLOCK_ENTITY.get(), pos, state);
+        super(ModObjects.FORTRON_CAPACITOR_BLOCK_ENTITY.get(), pos, state, 10);
 
         this.secondaryCard = addSlot("secondaryCard", InventorySlot.Mode.BOTH, stack -> stack.getItem() instanceof FrequencyCard);
-        this.capacityBoost = 10;
     }
 
     public TransferMode getTransferMode() {
@@ -62,7 +61,7 @@ public class FortronCapacitorBlockEntity extends ModularBlockEntity implements F
 
     @Override
     protected float getAmplifier() {
-        return 0.001f;
+        return 0.001F;
     }
 
     @Override
@@ -79,8 +78,7 @@ public class FortronCapacitorBlockEntity extends ModularBlockEntity implements F
 
         consumeCost();
 
-        // Transmit Fortrons in frequency network, evenly distributing them.
-        // Gets the card.
+        // Distribute fortron across the network
         if (isActive() && getTicks() % 10 == 0) {
             Set<FortronFrequency> machines = new HashSet<>();
 
@@ -97,8 +95,8 @@ public class FortronCapacitorBlockEntity extends ModularBlockEntity implements F
                 }
             }
 
-            if (machines.size() < 1) {
-                machines = getLinkedDevices();
+            if (machines.isEmpty()) {
+                machines = getDevicesByFrequency();
             }
 
             Fortron.transferFortron(this, machines, this.transferMode, getTransmissionRate());
@@ -106,7 +104,7 @@ public class FortronCapacitorBlockEntity extends ModularBlockEntity implements F
     }
 
     @Override
-    public Set<FortronFrequency> getLinkedDevices() {
+    public Set<FortronFrequency> getDevicesByFrequency() {
         Set<FrequencyBlock> frequencyBlocks = FrequencyGrid.instance().get(this.level, this.worldPosition, getTransmissionRange(), getFrequency());
         return StreamEx.of(frequencyBlocks)
             .select(FortronFrequency.class)
