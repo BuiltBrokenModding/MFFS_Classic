@@ -13,6 +13,7 @@ import net.minecraft.world.entity.player.Inventory;
 public abstract class FortronScreen<T extends FortronMenu<?>> extends BaseScreen<T> {
     protected IntIntPair frequencyBoxPos = IntIntPair.of(0, 0);
     protected IntIntPair frequencyLabelPos = IntIntPair.of(0, 0);
+    protected IntIntPair fortronEnergyBarPos = IntIntPair.of(0, 0);
 
     private NumericEditBox frequency;
 
@@ -24,7 +25,7 @@ public abstract class FortronScreen<T extends FortronMenu<?>> extends BaseScreen
     protected void init() {
         super.init();
 
-        addRenderableWidget(new ToggleButton(this.width / 2 - 82, this.height / 2 - 104, () -> this.menu.blockEntity.isActive(),
+        addRenderableWidget(new ToggleButton(this.width / 2 - 82, this.height / 2 - 104, this.menu.blockEntity::isActive,
             () -> Network.INSTANCE.sendToServer(new ToggleModePacket(this.menu.blockEntity.getBlockPos(), !this.menu.blockEntity.isActive()))));
 
         this.frequency = new NumericEditBox(this.font, this.leftPos + this.frequencyBoxPos.leftInt(), this.topPos + this.frequencyBoxPos.rightInt(), 50, 12, Component.literal("Frequency:"));
@@ -36,7 +37,7 @@ public abstract class FortronScreen<T extends FortronMenu<?>> extends BaseScreen
         this.frequency.setValue(Integer.toString(this.menu.getFrequency()));
         addWidget(this.frequency);
 
-        addRenderableWidget(new FortronChargeWidget(this.leftPos + 8, this.topPos + 115, 107, 11, Component.empty(),
+        addRenderableWidget(new FortronChargeWidget(this.leftPos + this.fortronEnergyBarPos.leftInt(), this.topPos + this.fortronEnergyBarPos.rightInt(), 107, 11, Component.empty(),
             () -> this.menu.blockEntity.getFortronEnergy() / (double) this.menu.blockEntity.getFortronCapacity()));
     }
 
@@ -52,8 +53,8 @@ public abstract class FortronScreen<T extends FortronMenu<?>> extends BaseScreen
     }
 
     @Override
-    protected void renderLabels(PoseStack poseStack, int pMouseX, int pMouseY) {
-        super.renderLabels(poseStack, pMouseX, pMouseY);
+    protected void renderLabels(PoseStack poseStack, int mouseX, int mouseY) {
+        super.renderLabels(poseStack, mouseX, mouseY);
 
         this.font.draw(poseStack, this.frequency.getMessage(), this.frequencyLabelPos.leftInt(), this.frequencyLabelPos.rightInt(), GuiColors.DARK_GREY);
     }

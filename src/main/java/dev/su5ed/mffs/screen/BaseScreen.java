@@ -29,6 +29,7 @@ public abstract class BaseScreen<T extends AbstractContainerMenu> extends Abstra
     public final void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
         renderBackground(poseStack);
         super.render(poseStack, mouseX, mouseY, partialTick);
+        renderTooltip(poseStack, mouseX, mouseY);
         renderFg(poseStack, mouseX, mouseY, partialTick);
     }
 
@@ -41,7 +42,7 @@ public abstract class BaseScreen<T extends AbstractContainerMenu> extends Abstra
     }
 
     @Override
-    protected void renderLabels(PoseStack poseStack, int pMouseX, int pMouseY) {
+    protected void renderLabels(PoseStack poseStack, int mouseX, int mouseY) {
         this.font.draw(poseStack, this.title, this.titleLabelX, this.titleLabelY, GuiColors.DARK_GREY);
     }
 

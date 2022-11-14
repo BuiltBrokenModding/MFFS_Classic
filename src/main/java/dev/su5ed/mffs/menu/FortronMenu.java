@@ -35,7 +35,6 @@ public abstract class FortronMenu<T extends ModularBlockEntity & FortronFrequenc
         this.playerInventory = new InvWrapper(playerInventory);
 
         trackPower();
-        addUpgradeSlots();
     }
 
     public int getFrequency() {
@@ -72,7 +71,7 @@ public abstract class FortronMenu<T extends ModularBlockEntity & FortronFrequenc
         }
     }
     
-    private void addUpgradeSlots() {
+    protected void addUpgradeSlots() {
         this.blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(handler -> {
             EntryStream.of(this.blockEntity.upgradeSlots)
                 .forKeyValue((i, slot) -> addSlot(new SlotInventory(slot, 154, 47 + i * 20)));

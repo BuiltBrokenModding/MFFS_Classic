@@ -7,6 +7,8 @@ package dev.su5ed.mffs.api;
  */
 public interface ObjectCache {
     Object getCache(String cacheID);
+    
+    void putCache(String cacheID, Object obj);
 
     void clearCache(String cacheID);
 

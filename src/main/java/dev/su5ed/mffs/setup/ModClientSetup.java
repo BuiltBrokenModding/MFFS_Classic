@@ -7,6 +7,7 @@ import dev.su5ed.mffs.render.model.ProjectorRotorModel;
 import dev.su5ed.mffs.render.particle.BeamParticleProvider;
 import dev.su5ed.mffs.screen.CoercionDeriverScreen;
 import dev.su5ed.mffs.screen.FortronCapacitorScreen;
+import dev.su5ed.mffs.screen.ProjectorScreen;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -23,8 +24,9 @@ public final class ModClientSetup {
     @SubscribeEvent
     public static void clientSetup(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
-            MenuScreens.register(ModContainers.COERCION_DERIVER_MENU.get(), CoercionDeriverScreen::new);
-            MenuScreens.register(ModContainers.FORTRON_CAPACITOR_MENU.get(), FortronCapacitorScreen::new);
+            MenuScreens.register(ModMenus.COERCION_DERIVER_MENU.get(), CoercionDeriverScreen::new);
+            MenuScreens.register(ModMenus.FORTRON_CAPACITOR_MENU.get(), FortronCapacitorScreen::new);
+            MenuScreens.register(ModMenus.PROJECTOR_MENU.get(), ProjectorScreen::new);
         });
     }
 

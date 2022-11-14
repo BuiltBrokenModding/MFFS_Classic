@@ -1,7 +1,7 @@
 package dev.su5ed.mffs.api.module;
 
-import dev.su5ed.mffs.api.FieldInteraction;
 import dev.su5ed.mffs.api.Projector;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -17,9 +17,9 @@ public interface Module extends FortronCost {
      * @param projector
      * @return True to stop projecting.
      */
-    boolean onProject(Projector projector, Set<Vec3> field);
+    boolean onProject(Projector projector, Set<BlockPos> field);
 
-    boolean onDestroy(Projector projector, Set<Vec3> field);
+    boolean onDestroy(Projector projector, Set<BlockPos> field);
 
     /**
      * Called right after the projector creates a force field block.
@@ -29,7 +29,7 @@ public interface Module extends FortronCost {
      * @return 0 - Do nothing; 1 - Skip this block and continue; 2 - Cancel rest of projection;
      */
 
-    int onProject(Projector projector, Vec3 position);
+    int onProject(Projector projector, BlockPos position);
 
     /**
      * Called when an entity collides with a force field block.
@@ -44,14 +44,14 @@ public interface Module extends FortronCost {
      *
      * @return False if to prevent this position from being added to the projection que.
      */
-    Set<Vec3> onPreCalculate(FieldInteraction projector, Set<Vec3> calculatedField);
+    Set<Vec3> onPreCalculate(Projector projector, Set<Vec3> calculatedField);
 
     /**
      * Called in this module when it is being calculated by the projector.
      *
      * @return False if to prevent this position from being added to the projection que.
      */
-    void onCalculate(FieldInteraction projector, Set<Vec3> fieldDefinition);
+    void onCalculate(Projector projector, Set<BlockPos> fieldDefinition);
 
     /**
      * @param moduleStack

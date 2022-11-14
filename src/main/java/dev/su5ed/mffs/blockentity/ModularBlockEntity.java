@@ -17,6 +17,7 @@ import one.util.streamex.IntStreamEx;
 import one.util.streamex.StreamEx;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -101,15 +102,14 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
     }
 
     @Override
-    public <T extends Item & Module> int getModuleCount(T module, int... slots) {
-        String cacheID = "getModuleCount_" + module.hashCode() + "_" + Arrays.hashCode(slots);
+    public <T extends Item & Module> int getModuleCount(T module, Collection<InventorySlot> slots) {
+        String cacheID = "getModuleCount_" + module.hashCode() + "_" + slots.hashCode();
 
         if (MFFSConfig.COMMON.useCache.get() && this.cache.get(cacheID) instanceof Integer i) {
             return i;
         }
 
-        StreamEx<ItemStack> stream = slots.length == 0 ? IntStreamEx.of(slots).mapToObj(this.items::getStackInSlot) : StreamEx.of(getModuleStacks());
-        int count = stream
+        int count = getModuleItems(slots)
             .filter(stack -> stack.is(module))
             .mapToInt(ItemStack::getCount)
             .sum();
@@ -123,8 +123,8 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
 
     @SuppressWarnings("unchecked")
     @Override
-    public Set<ItemStack> getModuleStacks(int... slots) {
-        String cacheID = "getModuleStacks_" + Arrays.hashCode(slots);
+    public Set<ItemStack> getModuleStacks(Collection<InventorySlot> slots) {
+        String cacheID = "getModuleStacks_" + slots.hashCode();
 
         if (MFFSConfig.COMMON.useCache.get() && this.cache.get(cacheID) instanceof Set<?> stacks) {
             return (Set<ItemStack>) stacks;
@@ -143,15 +143,15 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T extends Item & Module> Set<T> getModules(int... slots) {
-        String cacheID = "getModules_" + Arrays.hashCode(slots);
+    public <T extends Item & Module> Set<T> getModules() {
+        String cacheID = "getModules";
 
         if (MFFSConfig.COMMON.useCache.get() && this.cache.get(cacheID) instanceof Set<?> stacks) {
             return (Set<T>) stacks;
         }
 
-        Set<T> modules = getModuleItems(slots)
-            .map(ItemStack::getItem)
+        Set<T> modules = StreamEx.of(this.upgradeSlots)
+            .map(slot -> slot.getItem().getItem())
             .select(Module.class)
             .map(item -> (T) item)
             .toSet();
@@ -193,6 +193,11 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
     }
 
     @Override
+    public void putCache(String cacheID, Object obj) {
+        this.cache.put(cacheID, obj);
+    }
+
+    @Override
     public void clearCache(String cacheID) {
         this.cache.remove(cacheID);
     }
@@ -214,8 +219,8 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
         this.fortronTank.setCapacity(capacity);
     }
     
-    private StreamEx<ItemStack> getModuleItems(int... slots) {
-        return slots.length == 0 ? StreamEx.of(this.upgradeSlots).map(InventorySlot::getItem)
-            : IntStreamEx.of(slots).mapToObj(this.items::getStackInSlot);
+    private StreamEx<ItemStack> getModuleItems(Collection<InventorySlot> slots) {
+        return slots.isEmpty() ? StreamEx.of(this.upgradeSlots).map(InventorySlot::getItem)
+            : StreamEx.of(slots).map(InventorySlot::getItem);
     }
 }

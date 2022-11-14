@@ -20,7 +20,8 @@ public final class ModDataGen {
         generator.addProvider(event.includeClient(), new BlockStateGen(generator, helper));
         generator.addProvider(event.includeClient(), new ItemModelGen(generator, helper));
         
-        BlockTagsProvider blockTags = new BlockTagsProvider(generator, MFFSMod.MODID, helper);
+        BlockTagsProvider blockTags = new BlockTagsGen(generator, helper);
+        generator.addProvider(event.includeServer(), blockTags);
         generator.addProvider(event.includeServer(), new ItemTagsGen(generator, blockTags, helper));
     }
 

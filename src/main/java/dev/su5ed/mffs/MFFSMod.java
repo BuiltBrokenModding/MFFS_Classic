@@ -3,7 +3,7 @@ package dev.su5ed.mffs;
 import com.mojang.logging.LogUtils;
 import dev.su5ed.mffs.network.Network;
 import dev.su5ed.mffs.setup.ModBlocks;
-import dev.su5ed.mffs.setup.ModContainers;
+import dev.su5ed.mffs.setup.ModMenus;
 import dev.su5ed.mffs.setup.ModFluids;
 import dev.su5ed.mffs.setup.ModItems;
 import dev.su5ed.mffs.setup.ModObjects;
@@ -30,7 +30,7 @@ public final class MFFSMod {
         ModBlocks.init(bus);
         ModItems.init(bus);
         ModObjects.init(bus);
-        ModContainers.init(bus);
+        ModMenus.init(bus);
         ModFluids.init(bus);
 
         Network.registerPackets();

@@ -24,6 +24,10 @@ final class ItemModelGen extends ItemModelProvider {
         simpleItem(ModItems.CAPACITY_MODULE);
         simpleItem(ModItems.SCALE_MODULE);
         simpleItem(ModItems.SPEED_MODULE);
+        simpleItem(ModItems.DISINTEGRATION_MODULE);
+        simpleItem(ModItems.TRANSLATION_MODULE);
+        simpleItem(ModItems.ROTATION_MODULE);
+        simpleItem(ModItems.CUBE_MODE);
     }
     
     private void simpleItem(RegistryObject<? extends Item> item) {

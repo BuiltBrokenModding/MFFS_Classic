@@ -26,6 +26,7 @@ public class MFFSConfig {
         public final ForgeConfigSpec.BooleanValue enableElectricity;
         public final ForgeConfigSpec.DoubleValue fortronProductionMultiplier;
         public final ForgeConfigSpec.BooleanValue useCache;
+        public final ForgeConfigSpec.IntValue maxFFGenPerTick;
 
         private Common(ForgeConfigSpec.Builder builder) {
             builder.push("General config");
@@ -38,6 +39,9 @@ public class MFFSConfig {
             this.useCache = builder
                 .comment("Cache allows temporary data saving to decrease calculations required")
                 .define("useCache", true);
+            this.maxFFGenPerTick = builder
+                .comment("How many force field blocks can be generated per tick? Less reduces lag.")
+                .defineInRange("maxFFGenPerTick", 1000000, 0, Integer.MAX_VALUE);
             builder.pop();
         }
     }

@@ -21,6 +21,7 @@ public class CoercionDeriverScreen extends FortronScreen<CoercionDeriverMenu> {
         
         this.frequencyBoxPos = IntIntPair.of(30, 43);
         this.frequencyLabelPos = IntIntPair.of(8, 30);
+        this.fortronEnergyBarPos = IntIntPair.of(8, 115);
     }
 
     @Override
@@ -51,6 +52,6 @@ public class CoercionDeriverScreen extends FortronScreen<CoercionDeriverMenu> {
         int energy = this.menu.blockEntity.getFortronEnergy();
         this.font.draw(poseStack, "Fortron: " + energy + " L", 8, 105, GuiColors.DARK_GREY);
         boolean inversed = this.menu.blockEntity.isInversed();
-        this.font.draw(poseStack, Component.literal((inversed ? "-" : "+") + this.menu.blockEntity.getProductionRate() * 20 + " L/s").withStyle(inversed ? ChatFormatting.RED : ChatFormatting.DARK_GREEN), 118, 117, GuiColors.DARK_GREY);
+        this.font.draw(poseStack, Component.literal((inversed ? "-" : "+") + this.menu.blockEntity.getProductionRate() * 20 + " L/s").withStyle(inversed ? ChatFormatting.DARK_RED : ChatFormatting.DARK_GREEN), 118, 117, GuiColors.DARK_GREY);
     }
 }

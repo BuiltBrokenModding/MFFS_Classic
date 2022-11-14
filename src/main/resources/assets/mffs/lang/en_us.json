@@ -4,5 +4,14 @@
   "block.mffs.machine_block": "Base Machine Block",
   "block.mffs.projector": "Force Field Projector",
   "block.mffs.coercion_deriver": "Coercion Deriver",
-  "block.mffs.fortron_capacitor": "Fortron Capacitor"
+  "block.mffs.fortron_capacitor": "Fortron Capacitor",
+  
+  "item.mffs.camouflage_module": "Camouflage Module",
+  "item.mffs.capacity_module": "Capacity Module",
+  "item.mffs.cube_module": "Cube Module",
+  "item.mffs.disintegration_module": "Disintegration Module",
+  "item.mffs.rotation_module": "Rotation Module",
+  "item.mffs.scale_module": "Scale Module",
+  "item.mffs.speed_module": "Speed Module",
+  "item.mffs.translation_module": "Translation Module"
 }

@@ -48,7 +48,7 @@ public abstract class FortronBlockEntity extends InventoryBlockEntity implements
     private int frequency;
     private boolean markSendFortron = true;
     private boolean active;
-    private int animation;
+    protected int animation;
 
     protected FortronBlockEntity(BlockEntityType<? extends BaseBlockEntity> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -75,6 +75,12 @@ public abstract class FortronBlockEntity extends InventoryBlockEntity implements
     
     protected List<ItemStack> getCards() {
         return List.of(this.frequencySlot.getItem());
+    }
+    
+    protected void animate() {
+        if (isActive()) {
+            this.animation++;
+        }
     }
 
     @Override
@@ -119,9 +125,7 @@ public abstract class FortronBlockEntity extends InventoryBlockEntity implements
     public void tickClient() {
         super.tickClient();
 
-        if (isActive()) {
-            this.animation++;
-        }
+        animate();
     }
 
     @Override

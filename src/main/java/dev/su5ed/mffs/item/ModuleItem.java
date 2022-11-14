@@ -1,8 +1,8 @@
 package dev.su5ed.mffs.item;
 
-import dev.su5ed.mffs.api.FieldInteraction;
 import dev.su5ed.mffs.api.Projector;
 import dev.su5ed.mffs.api.module.Module;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.Item;
@@ -15,14 +15,14 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Set;
 
-public class ItemModule extends Item implements Module {
+public class ModuleItem extends Item implements Module {
     private final float fortronCost;
 
-    public ItemModule(Properties properties) {
+    public ModuleItem(Properties properties) {
         this(properties, 0.5F);
     }
 
-    public ItemModule(Properties properties, float fortronCost) {
+    public ModuleItem(Properties properties, float fortronCost) {
         super(properties);
 
         this.fortronCost = fortronCost;
@@ -41,17 +41,17 @@ public class ItemModule extends Item implements Module {
     }
 
     @Override
-    public boolean onProject(Projector projector, Set<Vec3> field) {
+    public boolean onProject(Projector projector, Set<BlockPos> field) {
         return false;
     }
 
     @Override
-    public boolean onDestroy(Projector projector, Set<Vec3> field) {
+    public boolean onDestroy(Projector projector, Set<BlockPos> field) {
         return false;
     }
 
     @Override
-    public int onProject(Projector projector, Vec3 position) {
+    public int onProject(Projector projector, BlockPos position) {
         return 0;
     }
 
@@ -61,12 +61,12 @@ public class ItemModule extends Item implements Module {
     }
 
     @Override
-    public Set<Vec3> onPreCalculate(FieldInteraction projector, Set<Vec3> calculatedField) {
+    public Set<Vec3> onPreCalculate(Projector projector, Set<Vec3> calculatedField) {
         return calculatedField;
     }
 
     @Override
-    public void onCalculate(FieldInteraction projector, Set<Vec3> fieldDefinition) {
+    public void onCalculate(Projector projector, Set<BlockPos> fieldDefinition) {
 
     }
 
