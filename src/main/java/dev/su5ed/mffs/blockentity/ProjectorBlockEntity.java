@@ -44,12 +44,13 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-public class ProjectorBlockEntity extends ModularBlockEntity implements MenuProvider, Projector, ProjectorCalculationThread.ThreadCallBack {
+public class ProjectorBlockEntity extends ModularBlockEntity implements MenuProvider, Projector {
     public final List<DelayedEvent> delayedEvents = new ArrayList<>();
     public final InventorySlot secondaryCard;
     public final InventorySlot projectorModeSlot;
@@ -99,7 +100,6 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements MenuProv
 
     // TODO Stablizer Module Construction FXs
 
-    @Override
     public void onThreadComplete() {
         destroyField();
     }
@@ -460,7 +460,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements MenuProv
         calculateForceField(null);
     }
 
-    private void calculateForceField(@Nullable ProjectorCalculationThread.ThreadCallBack callBack) {
+    private void calculateForceField(@Nullable Runnable callBack) {
         if (!this.level.isClientSide && !this.isCalculating) {
             if (getMode() != null) {
                 if (getModeStack().getItem() instanceof ObjectCache cache) {

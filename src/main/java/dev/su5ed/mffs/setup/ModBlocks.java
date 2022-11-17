@@ -7,7 +7,6 @@ import dev.su5ed.mffs.block.ForceFieldBlockImpl;
 import dev.su5ed.mffs.block.FortronCapacitorBlock;
 import dev.su5ed.mffs.block.ProjectorBlock;
 import dev.su5ed.mffs.blockentity.BaseBlockEntity;
-import dev.su5ed.mffs.blockentity.ForceFieldBlockEntity;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;

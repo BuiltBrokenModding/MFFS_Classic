@@ -14,22 +14,15 @@ import java.util.Set;
  * @author Calclavia
  */
 public class ProjectorCalculationThread extends Thread {
-    public interface ThreadCallBack {
-        /**
-         * Called when the thread finishes the calculation.
-         */
-        void onThreadComplete();
-    }
-
     private final ProjectorBlockEntity projector;
     @Nullable
-    private final ThreadCallBack callBack;
+    private final Runnable callBack;
 
     public ProjectorCalculationThread(ProjectorBlockEntity projector) {
         this(projector, null);
     }
 
-    public ProjectorCalculationThread(ProjectorBlockEntity projector, @Nullable ThreadCallBack callBack) {
+    public ProjectorCalculationThread(ProjectorBlockEntity projector, @Nullable Runnable callBack) {
 		this.projector = projector;
         this.callBack = callBack;
     }
@@ -46,11 +39,14 @@ public class ProjectorCalculationThread extends Thread {
             int rotationPitch = this.projector.getRotationPitch();
 			
 			StreamEx.of(exteriorPoints)
-				.map(pos -> rotationYaw != 0 || rotationPitch != 0 ? CalcUtil.rotateByAngle(pos, rotationYaw, rotationPitch) : pos)
-				.map(pos -> pos.offset(this.projector.getBlockPos()).offset(translation))
+				.map(pos -> rotationYaw != 0 || rotationPitch != 0 ? CalcUtil.rotateByAngle(pos, rotationYaw, rotationPitch, 0) : pos)
+				.map(pos -> {
+                    BlockPos projPos = this.projector.getBlockPos();
+                    return pos.offset(projPos).offset(translation);
+                })
 				.forEach(pos -> {
 					if (pos.getY() <= this.projector.getLevel().getHeight()) {
-						this.projector.getCalculatedField().add(pos);
+						this.projector.getCalculatedField().add(new HashBlockPos(pos));
 					}
 				});
 
@@ -65,7 +61,7 @@ public class ProjectorCalculationThread extends Thread {
         this.projector.isCalculated = true;
 
         if (this.callBack != null) {
-            this.callBack.onThreadComplete();
+            this.callBack.run();
         }
     }
 }

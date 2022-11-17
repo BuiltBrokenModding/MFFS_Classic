@@ -28,7 +28,7 @@ public class CubeProjectorModeItem extends ProjectorModeItem {
             for (float z = -negScale.getZ(); z <= posScale.getZ(); z += 0.5f) {
                 for (float y = -negScale.getY(); y <= posScale.getY(); y += 0.5f) {
                     if (y == -negScale.getY() || y == posScale.getY() || x == -negScale.getX() || x == posScale.getX() || z == -negScale.getZ() || z == posScale.getZ()) {
-                        fieldBlocks.add(new BlockPos(x, y, z));
+                        fieldBlocks.add(new BlockPos(Math.round(x), Math.round(y), Math.round(z)));
                     }
                 }
             }
