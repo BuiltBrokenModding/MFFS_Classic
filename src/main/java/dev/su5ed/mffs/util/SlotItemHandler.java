@@ -100,7 +100,7 @@ public class SlotItemHandler implements IItemHandler, IItemHandlerModifiable, IN
         this.slots.forEach(slot -> {
             if (nbt.contains(slot.getName())) {
                 CompoundTag tag = nbt.getCompound(slot.getName());
-                slot.setItem(ItemStack.of(tag));
+                slot.setItem(ItemStack.of(tag), false);
             }
         });
     }

@@ -4,6 +4,7 @@ import dev.su5ed.mffs.util.InventorySlot;
 import dev.su5ed.mffs.util.SlotItemHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -44,5 +45,19 @@ public abstract class InventoryBlockEntity extends BaseBlockEntity {
             return this.itemCap.cast();
         }
         return super.getCapability(cap, side);
+    }
+
+    @Override
+    protected void saveTag(CompoundTag tag) {
+        super.saveTag(tag);
+
+        tag.put("items", this.items.serializeNBT());
+    }
+
+    @Override
+    protected void loadTag(CompoundTag tag) {
+        super.loadTag(tag);
+        
+        this.items.deserializeNBT(tag.getCompound("items"));
     }
 }

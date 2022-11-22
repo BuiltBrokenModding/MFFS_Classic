@@ -34,6 +34,8 @@ public abstract class BaseBlockEntity extends BlockEntity {
     public void tickServer() {
         ++this.tickCounter;
     }
+    
+    public void blockRemoved() {}
 
     @Override
     public CompoundTag getUpdateTag() {

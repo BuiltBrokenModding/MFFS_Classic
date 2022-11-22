@@ -18,6 +18,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.BlockHitResult;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
@@ -39,6 +40,16 @@ public class BaseEntityBlock extends Block implements EntityBlock {
         return getBlockEntity(level, pos)
             .map(be -> be.use(player, hand, hit))
             .orElseGet(() -> super.use(state, level, pos, player, hand, hit));
+    }
+
+    // Credit: Mekanism
+    @Override
+    public void onRemove(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState newState, boolean isMoving) {
+        if (state.hasBlockEntity() && (!state.is(newState.getBlock()) || !newState.hasBlockEntity())) {
+            getBlockEntity(level, pos)
+                .ifPresent(BaseBlockEntity::blockRemoved);
+        }
+        super.onRemove(state, level, pos, newState, isMoving);
     }
 
     @Override

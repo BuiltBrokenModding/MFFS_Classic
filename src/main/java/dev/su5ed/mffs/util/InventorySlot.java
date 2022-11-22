@@ -38,8 +38,14 @@ public class InventorySlot implements INBTSerializable<CompoundTag> {
     }
     
     public void setItem(ItemStack stack) {
+        setItem(stack, true);
+    }
+    
+    public void setItem(ItemStack stack, boolean notify) {
         this.content = stack;
-        this.parent.setChanged();
+        if (notify) {
+            this.parent.setChanged();
+        }
     }
     
     public ItemStack extract(int amount) {

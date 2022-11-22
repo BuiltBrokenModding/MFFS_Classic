@@ -44,7 +44,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -149,9 +148,9 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements MenuProv
     }
 
     @Override
-    public void setRemoved() {
+    public void blockRemoved() {
         destroyField();
-        super.setRemoved();
+        super.blockRemoved();
     }
     
     @Override

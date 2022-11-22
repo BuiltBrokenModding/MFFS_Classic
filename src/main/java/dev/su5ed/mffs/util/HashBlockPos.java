@@ -5,8 +5,8 @@ import net.minecraft.core.Vec3i;
 
 public class HashBlockPos extends BlockPos {
 
-    public HashBlockPos(Vec3i pVector) {
-        super(pVector);
+    public HashBlockPos(Vec3i vec) {
+        super(vec);
     }
 
     @Override
