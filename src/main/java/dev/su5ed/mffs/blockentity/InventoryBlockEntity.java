@@ -48,15 +48,15 @@ public abstract class InventoryBlockEntity extends BaseBlockEntity {
     }
 
     @Override
-    protected void saveTag(CompoundTag tag) {
-        super.saveTag(tag);
+    protected void saveCommonTag(CompoundTag tag) {
+        super.saveCommonTag(tag);
 
         tag.put("items", this.items.serializeNBT());
     }
 
     @Override
-    protected void loadTag(CompoundTag tag) {
-        super.loadTag(tag);
+    protected void loadCommonTag(CompoundTag tag) {
+        super.loadCommonTag(tag);
         
         this.items.deserializeNBT(tag.getCompound("items"));
     }

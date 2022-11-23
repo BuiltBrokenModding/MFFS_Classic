@@ -10,32 +10,23 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
-import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
 import java.util.Set;
 
 public class CoercionDeriverBlockEntity extends ElectricTileEntity implements MenuProvider {
-    private static final int DEFAULT_FE_CAPACITY = 1500000;
     public static final int FUEL_PROCESS_TIME = 10 * 20;
     public static final int PRODUCTION_MULTIPLIER = 4;
-    /**
-     * Ratio from FE to Fortron. Multiply FE by this value to convert to Fortron.
-     */
     public static final float FE_FORTRON_RATIO = 0.0025F;
     public static final int ENERGY_LOSS = 1;
+    private static final int DEFAULT_FE_CAPACITY = 1500000;
 
     public final InventorySlot batterySlot;
     public final InventorySlot fuelSlot;
@@ -48,7 +39,7 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity implements Me
 
         this.batterySlot = addSlot("battery", InventorySlot.Mode.BOTH, stack -> stack.getCapability(ForgeCapabilities.ENERGY).isPresent());
         this.fuelSlot = addSlot("fuel", InventorySlot.Mode.BOTH, stack -> stack.is(ModTags.FORTRON_FUEL));
-        this.energy.setMaxTransfer(getWattage());
+        this.energy.setMaxTransfer(getMaxTransferRate()); // TODO should be dynamic
     }
 
     public EnergyMode getEnergyMode() {
@@ -59,7 +50,7 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity implements Me
         this.energyMode = energyMode;
     }
 
-    public int getWattage() {
+    public int getMaxTransferRate() {
         return (int) (DEFAULT_FE_CAPACITY + DEFAULT_FE_CAPACITY * (getModuleCount(ModItems.SPEED_MODULE.get()) / 8.0f));
     }
 
@@ -73,55 +64,36 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity implements Me
     }
 
     @Override
-    public InteractionResult use(Player player, InteractionHand hand, BlockHitResult hit) {
-        if (!this.level.isClientSide) {
-            NetworkHooks.openScreen((ServerPlayer) player, this, this.worldPosition);
-        }
-        return InteractionResult.SUCCESS;
-    }
-
-    @Override
     public void tickServer() {
         super.tickServer();
 
         if (isActive()) {
             if (isInversed() && MFFSConfig.COMMON.enableElectricity.get()) {
                 if (this.energy.getEnergyStored() < this.energy.getMaxEnergyStored()) {
-                    int withdrawnElectricity = (int) (requestFortron(getProductionRate() / 20, FluidAction.EXECUTE) / FE_FORTRON_RATIO);
+                    int withdrawnElectricity = (int) (extractFortron(getProductionRate() / 20, false) / FE_FORTRON_RATIO);
                     // Inject electricity from Fortron.
                     this.energy.receiveEnergy(withdrawnElectricity * ENERGY_LOSS, true);
                 }
 
                 charge(this.batterySlot.getItem());
-                produce();
-            } else {
-                if (getFortronEnergy() < getFortronCapacity()) {
-                    // Convert Electricity to Fortron
-                    discharge(this.batterySlot.getItem());
+                receiveEnergy();
+            } else if (getFortronEnergy() < getFortronCapacity()) {
+                // Convert Electricity to Fortron
+                discharge(this.batterySlot.getItem());
 
-                    int production = getProductionRate();
-                    if (this.energy.canExtract(production) || !MFFSConfig.COMMON.enableElectricity.get() && hasFuel()) {
-                        // Fill Fortron
-                        this.energy.extractEnergy(production, false);
-                        provideFortron(production, FluidAction.EXECUTE);
+                int production = getProductionRate();
+                if (this.energy.canExtract(production) || !MFFSConfig.COMMON.enableElectricity.get() && hasFuel()) {
+                    // Fill Fortron
+                    this.energy.extractEnergy(production, false);
+                    insertFortron(production, false);
 
-                        // Use fuel
-                        if (this.processTime == 0 && hasFuel()) {
-                            this.fuelSlot.getItem().shrink(1);
-                            this.processTime = FUEL_PROCESS_TIME * Math.max(getModuleCount(ModItems.SCALE_MODULE.get()) / 20, 1);
-                        }
-
-                        if (this.processTime > 0) {
-                            // We are processing.
-                            this.processTime--;
-
-                            if (this.processTime < 1) {
-                                this.processTime = 0;
-                            }
-                        } else {
-                            this.processTime = 0;
-                        }
+                    // Use fuel
+                    // TODO Fuel display
+                    if (this.processTime == 0 && hasFuel()) {
+                        this.fuelSlot.getItem().shrink(1);
+                        this.processTime = FUEL_PROCESS_TIME * Math.max(getModuleCount(ModItems.SCALE_MODULE.get()) / 20, 1);
                     }
+                    this.processTime = Math.max(--this.processTime, 0);
                 }
             }
         }
@@ -132,13 +104,8 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity implements Me
      */
     public int getProductionRate() {
         if (isActive()) {
-            int production = (int) ((float) getWattage() / 20f * FE_FORTRON_RATIO * MFFSConfig.COMMON.fortronProductionMultiplier.get());
-
-            if (this.processTime > 0) {
-                production *= PRODUCTION_MULTIPLIER;
-            }
-
-            return production;
+            int production = (int) (getMaxTransferRate() / 20F * FE_FORTRON_RATIO * MFFSConfig.COMMON.fortronProductionMultiplier.get());
+            return this.processTime > 0 ? production * PRODUCTION_MULTIPLIER : production;
         }
         return 0;
     }
@@ -180,7 +147,7 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity implements Me
     }
 
     @Override
-    public Set<Direction> getEnergyOutput() {
+    public Set<Direction> getEnergyOutputSides() {
         return EnumSet.allOf(Direction.class);
     }
 

@@ -8,24 +8,20 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 import dev.su5ed.mffs.MFFSMod;
-import dev.su5ed.mffs.blockentity.FortronBlockEntity;
+import dev.su5ed.mffs.api.module.ProjectorMode;
+import dev.su5ed.mffs.blockentity.ProjectorBlockEntity;
 import dev.su5ed.mffs.render.model.ProjectorRotorModel;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.ModelBlockRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.model.data.ModelData;
 
-public class ProjectorBlockRenderer implements BlockEntityRenderer<FortronBlockEntity> {
+public class ProjectorBlockRenderer implements BlockEntityRenderer<ProjectorBlockEntity> {
     public static final ResourceLocation FORCE_CUBE_MODEL = new ResourceLocation(MFFSMod.MODID, "block/force_cube");
     public static final ResourceLocation PROJECTOR_OFF_TEXTURE = new ResourceLocation(MFFSMod.MODID, "textures/model/projector_off.png");
     public static final ResourceLocation PROJECTOR_ON_TEXTURE = new ResourceLocation(MFFSMod.MODID, "textures/model/projector_on.png");
@@ -37,13 +33,16 @@ public class ProjectorBlockRenderer implements BlockEntityRenderer<FortronBlockE
     }
 
     @Override
-    public void render(FortronBlockEntity blockEntity, float pPartialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
+    public void render(ProjectorBlockEntity blockEntity, float pPartialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
         renderRotor(blockEntity, poseStack, bufferSource, packedLight, packedOverlay);
-        renderHolo(blockEntity, poseStack, bufferSource);
-        renderForceCube(blockEntity, poseStack, bufferSource);
+        ProjectorMode mode = blockEntity.getMode();
+        if (mode != null) {
+            renderHolo(blockEntity, poseStack, bufferSource);
+            mode.getRenderer().render(poseStack, bufferSource, blockEntity.getTicks());
+        }
     }
 
-    private void renderRotor(FortronBlockEntity blockEntity, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
+    private void renderRotor(ProjectorBlockEntity blockEntity, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
         ResourceLocation texture = blockEntity.isActive() ? PROJECTOR_ON_TEXTURE : PROJECTOR_OFF_TEXTURE;
 
         poseStack.pushPose();
@@ -56,10 +55,10 @@ public class ProjectorBlockRenderer implements BlockEntityRenderer<FortronBlockE
         poseStack.popPose();
     }
 
-    private void renderHolo(FortronBlockEntity blockEntity, PoseStack poseStack, MultiBufferSource bufferSource) {
+    private void renderHolo(ProjectorBlockEntity blockEntity, PoseStack poseStack, MultiBufferSource bufferSource) {
         poseStack.pushPose();
 
-        poseStack.translate(0.5f, 0.5f, 0.5f);
+        poseStack.translate(0.5, 0.5, 0.5);
         Vec3 playerPos = Minecraft.getInstance().player.position();
         BlockPos bePos = blockEntity.getBlockPos();
         double xDifference = playerPos.x - (bePos.getX() + 0.5D);
@@ -77,44 +76,6 @@ public class ProjectorBlockRenderer implements BlockEntityRenderer<FortronBlockE
         buffer.vertex(mat, 0.866F * width, height, -0.5F * width).color(0, 0, 0, 0).endVertex();
         buffer.vertex(mat, 0.0F, height, width).color(0, 0, 0, 0).endVertex();
         buffer.vertex(mat, -0.866F * width, height, -0.5F * width).color(0, 0, 0, 0).endVertex();
-
-        poseStack.popPose();
-    }
-
-    private void renderForceCube(FortronBlockEntity blockEntity, PoseStack poseStack, MultiBufferSource bufferSource) {
-        ModelBlockRenderer renderer = Minecraft.getInstance().getBlockRenderer().getModelRenderer();
-        BakedModel model = Minecraft.getInstance().getModelManager().getModel(FORCE_CUBE_MODEL);
-        long ticks = blockEntity.getTicks();
-        int opacity = (int) ((Math.sin(ticks / 10.0) / 2.0 + 1.0) * 255);
-        float scale = 0.55f;
-
-        poseStack.pushPose();
-
-        poseStack.translate(0, 1 + Math.sin(Math.toRadians(ticks * 3L)) / 7.0, 0);
-
-        poseStack.translate(0.5, 0.5, 0.5);
-        poseStack.scale(scale, scale, scale);
-        poseStack.translate(-0.5, -0.5, -0.5);
-
-        poseStack.translate(0.5, 0.5, 0.5);
-        poseStack.mulPose(new Vector3f(0.0f, 1.0F, 0.0f).rotationDegrees(36 + ticks * 4L));
-        poseStack.mulPose(new Vector3f(0.0f, 0.0F, 1.0f).rotationDegrees(36 + ticks * 4L));
-        poseStack.translate(-0.5, -0.5, -0.5);
-
-        VertexConsumer buffer = bufferSource.getBuffer(RenderType.translucent());
-        VertexConsumer wrapped = new TranslucentVertexConsumer(buffer, Math.min(255, opacity));
-
-        renderer.renderModel(
-            poseStack.last(),
-            wrapped,
-            null,
-            model,
-            1F, 1F, 1F,
-            LightTexture.FULL_BRIGHT,
-            OverlayTexture.NO_OVERLAY,
-            ModelData.EMPTY,
-            RenderType.translucent()
-        );
 
         poseStack.popPose();
     }

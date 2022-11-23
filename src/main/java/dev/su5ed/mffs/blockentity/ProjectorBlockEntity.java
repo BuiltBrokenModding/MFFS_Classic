@@ -7,6 +7,7 @@ import dev.su5ed.mffs.api.ForceFieldBlock;
 import dev.su5ed.mffs.api.ObjectCache;
 import dev.su5ed.mffs.api.Projector;
 import dev.su5ed.mffs.api.module.Module;
+import dev.su5ed.mffs.api.module.Module.ProjectAction;
 import dev.su5ed.mffs.api.module.ProjectorMode;
 import dev.su5ed.mffs.item.ModuleItem;
 import dev.su5ed.mffs.menu.ProjectorMenu;
@@ -22,9 +23,6 @@ import dev.su5ed.mffs.util.ProjectorCalculationThread;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -32,11 +30,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.network.NetworkHooks;
 import one.util.streamex.IntStreamEx;
 import one.util.streamex.StreamEx;
 import org.jetbrains.annotations.Nullable;
@@ -50,6 +44,13 @@ import java.util.List;
 import java.util.Set;
 
 public class ProjectorBlockEntity extends ModularBlockEntity implements MenuProvider, Projector {
+    private static final String TRANSLATION_CACHE_KEY = "getTranslation";
+    private static final String POSITIVE_SCALE_CACHE_KEY = "getPositiveScale";
+    private static final String NEGATIVE_SCALE_CACHE_KEY = "getNegativeScale";
+    private static final String ROTATION_YAW_CACHE_KEY = "getRotationYaw";
+    private static final String ROTATION_PITCH_CACHE_KEY = "getRotationPitch";
+    private static final String INTERIOR_POINTS_CACHE_KEY = "getInteriorPoints";
+
     public final List<DelayedEvent> delayedEvents = new ArrayList<>();
     public final InventorySlot secondaryCard;
     public final InventorySlot projectorModeSlot;
@@ -86,15 +87,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements MenuProv
     public void onLoad() {
         super.onLoad();
 
-        calculateForceField();
-    }
-    
-    @Override
-    public InteractionResult use(Player player, InteractionHand hand, BlockHitResult hit) {
-        if (!this.level.isClientSide) {
-            NetworkHooks.openScreen((ServerPlayer) player, this, this.worldPosition);
-        }
-        return InteractionResult.SUCCESS;
+        reCalculateForceField();
     }
 
     // TODO Stablizer Module Construction FXs
@@ -119,12 +112,12 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements MenuProv
         }
 
         int fortronCost = getFortronCost();
-        if (isActive() && getMode() != null && requestFortron(fortronCost, IFluidHandler.FluidAction.SIMULATE) >= fortronCost) {
+        if (isActive() && getMode() != null && extractFortron(fortronCost, true) >= fortronCost) {
             consumeCost();
 
             if (getTicks() % 10 == 0) {
                 if (!this.isCalculated) {
-                    calculateForceField();
+                    reCalculateForceField();
                 } else {
                     projectField();
                 }
@@ -142,7 +135,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements MenuProv
     @Override
     protected void animate() {
         int fortronCost = getFortronCost();
-        if (isActive() && getMode() != null && requestFortron(fortronCost, IFluidHandler.FluidAction.SIMULATE) >= fortronCost) {
+        if (isActive() && getMode() != null && extractFortron(fortronCost, true) >= fortronCost) {
             this.animation += fortronCost / 3;
         }
     }
@@ -152,7 +145,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements MenuProv
         destroyField();
         super.blockRemoved();
     }
-    
+
     @Override
     public Component getDisplayName() {
         return getBlockState().getBlock().getName();
@@ -211,125 +204,75 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements MenuProv
 
     @Override
     public BlockPos getTranslation() {
-        String cacheID = "getTranslation";
+        return cached(TRANSLATION_CACHE_KEY, () -> {
+            ModuleItem translationModule = ModItems.TRANSLATION_MODULE.get();
+            int zTranslationNeg = getModuleCount(translationModule, getSlotsFromSide(Direction.NORTH));
+            int zTranslationPos = getModuleCount(translationModule, getSlotsFromSide(Direction.SOUTH));
 
-        if (MFFSConfig.COMMON.useCache.get() && getCache(cacheID) instanceof BlockPos pos) {
-            return pos;
-        }
+            int xTranslationNeg = getModuleCount(translationModule, getSlotsFromSide(Direction.WEST));
+            int xTranslationPos = getModuleCount(translationModule, getSlotsFromSide(Direction.EAST));
 
-        ModuleItem translationModule = ModItems.TRANSLATION_MODULE.get();
-        int zTranslationNeg = getModuleCount(translationModule, getSlotsFromSide(Direction.NORTH));
-        int zTranslationPos = getModuleCount(translationModule, getSlotsFromSide(Direction.SOUTH));
+            int yTranslationPos = getModuleCount(translationModule, getSlotsFromSide(Direction.UP));
+            int yTranslationNeg = getModuleCount(translationModule, getSlotsFromSide(Direction.DOWN));
 
-        int xTranslationNeg = getModuleCount(translationModule, getSlotsFromSide(Direction.WEST));
-        int xTranslationPos = getModuleCount(translationModule, getSlotsFromSide(Direction.EAST));
-
-        int yTranslationPos = getModuleCount(translationModule, getSlotsFromSide(Direction.UP));
-        int yTranslationNeg = getModuleCount(translationModule, getSlotsFromSide(Direction.DOWN));
-
-        BlockPos translation = new BlockPos(xTranslationPos - xTranslationNeg, yTranslationPos - yTranslationNeg, zTranslationPos - zTranslationNeg);
-
-        if (MFFSConfig.COMMON.useCache.get()) {
-            putCache(cacheID, translation);
-        }
-
-        return translation;
+            return new BlockPos(xTranslationPos - xTranslationNeg, yTranslationPos - yTranslationNeg, zTranslationPos - zTranslationNeg);
+        });
     }
 
     @Override
     public BlockPos getPositiveScale() {
-        String cacheID = "getPositiveScale";
+        return cached(POSITIVE_SCALE_CACHE_KEY, () -> {
+            ModuleItem scaleModule = ModItems.SCALE_MODULE.get();
+            int zScalePos = getModuleCount(scaleModule, getSlotsFromSide(Direction.SOUTH));
+            int xScalePos = getModuleCount(scaleModule, getSlotsFromSide(Direction.EAST));
+            int yScalePos = getModuleCount(scaleModule, getSlotsFromSide(Direction.UP));
 
-        if (MFFSConfig.COMMON.useCache.get() && getCache(cacheID) instanceof BlockPos pos) {
-            return pos;
-        }
+            int omnidirectionalScale = getModuleCount(scaleModule, getUpgradeSlots());
 
-        ModuleItem scaleModule = ModItems.SCALE_MODULE.get();
-        int zScalePos = getModuleCount(scaleModule, getSlotsFromSide(Direction.SOUTH));
-        int xScalePos = getModuleCount(scaleModule, getSlotsFromSide(Direction.EAST));
-        int yScalePos = getModuleCount(scaleModule, getSlotsFromSide(Direction.UP));
+            zScalePos += omnidirectionalScale;
+            xScalePos += omnidirectionalScale;
+            yScalePos += omnidirectionalScale;
 
-        int omnidirectionalScale = getModuleCount(scaleModule, getUpgradeSlots());
-
-        zScalePos += omnidirectionalScale;
-        xScalePos += omnidirectionalScale;
-        yScalePos += omnidirectionalScale;
-
-        BlockPos positiveScale = new BlockPos(xScalePos, yScalePos, zScalePos);
-
-        if (MFFSConfig.COMMON.useCache.get()) {
-            putCache(cacheID, positiveScale);
-        }
-
-        return positiveScale;
+            return new BlockPos(xScalePos, yScalePos, zScalePos);
+        });
     }
 
     @Override
     public BlockPos getNegativeScale() {
-        String cacheID = "getNegativeScale";
+        return cached(NEGATIVE_SCALE_CACHE_KEY, () -> {
+            ModuleItem scaleModule = ModItems.SCALE_MODULE.get();
+            int zScaleNeg = getModuleCount(scaleModule, getSlotsFromSide(Direction.NORTH));
+            int xScaleNeg = getModuleCount(scaleModule, getSlotsFromSide(Direction.WEST));
+            int yScaleNeg = getModuleCount(scaleModule, getSlotsFromSide(Direction.DOWN));
 
-        if (MFFSConfig.COMMON.useCache.get() && getCache(cacheID) instanceof BlockPos pos) {
-            return pos;
-        }
+            int omnidirectionalScale = getModuleCount(scaleModule, getUpgradeSlots());
 
-        ModuleItem scaleModule = ModItems.SCALE_MODULE.get();
-        int zScaleNeg = getModuleCount(scaleModule, getSlotsFromSide(Direction.NORTH));
-        int xScaleNeg = getModuleCount(scaleModule, getSlotsFromSide(Direction.WEST));
-        int yScaleNeg = getModuleCount(scaleModule, getSlotsFromSide(Direction.DOWN));
+            zScaleNeg += omnidirectionalScale;
+            xScaleNeg += omnidirectionalScale;
+            yScaleNeg += omnidirectionalScale;
 
-        int omnidirectionalScale = getModuleCount(scaleModule, getUpgradeSlots());
-
-        zScaleNeg += omnidirectionalScale;
-        xScaleNeg += omnidirectionalScale;
-        yScaleNeg += omnidirectionalScale;
-
-        BlockPos negativeScale = new BlockPos(xScaleNeg, yScaleNeg, zScaleNeg);
-
-        if (MFFSConfig.COMMON.useCache.get()) {
-            putCache(cacheID, negativeScale);
-        }
-
-        return negativeScale;
+            return new BlockPos(xScaleNeg, yScaleNeg, zScaleNeg);
+        });
     }
 
     @Override
     public int getRotationYaw() {
-        String cacheID = "getRotationYaw";
-
-        if (MFFSConfig.COMMON.useCache.get() && getCache(cacheID) instanceof Integer i) {
-            return i;
-        }
-
-        ModuleItem rotationModule = ModItems.ROTATION_MODULE.get();
-        int horizontalRotation = getModuleCount(rotationModule, getSlotsFromSide(Direction.EAST))
-            - getModuleCount(rotationModule, getSlotsFromSide(Direction.WEST))
-            + getModuleCount(rotationModule, getSlotsFromSide(Direction.SOUTH))
-            - getModuleCount(rotationModule, getSlotsFromSide(Direction.NORTH));
-
-        if (MFFSConfig.COMMON.useCache.get()) {
-            putCache(cacheID, horizontalRotation);
-        }
-
-        return horizontalRotation;
+        return cached(ROTATION_YAW_CACHE_KEY, () -> {
+            ModuleItem rotationModule = ModItems.ROTATION_MODULE.get();
+            return getModuleCount(rotationModule, getSlotsFromSide(Direction.EAST))
+                - getModuleCount(rotationModule, getSlotsFromSide(Direction.WEST))
+                + getModuleCount(rotationModule, getSlotsFromSide(Direction.SOUTH))
+                - getModuleCount(rotationModule, getSlotsFromSide(Direction.NORTH));
+        });
     }
 
     @Override
     public int getRotationPitch() {
-        String cacheID = "getRotationPitch";
-
-        if (MFFSConfig.COMMON.useCache.get() && getCache(cacheID) instanceof Integer i) {
-            return i;
-        }
-
-        ModuleItem rotationModule = ModItems.ROTATION_MODULE.get();
-        int verticleRotation = getModuleCount(rotationModule, getSlotsFromSide(Direction.UP))
-            - getModuleCount(rotationModule, getSlotsFromSide(Direction.DOWN));
-
-        if (MFFSConfig.COMMON.useCache.get()) {
-            putCache(cacheID, verticleRotation);
-        }
-
-        return verticleRotation;
+        return cached(ROTATION_PITCH_CACHE_KEY, () -> {
+            ModuleItem rotationModule = ModItems.ROTATION_MODULE.get();
+            return getModuleCount(rotationModule, getSlotsFromSide(Direction.UP))
+                - getModuleCount(rotationModule, getSlotsFromSide(Direction.DOWN));
+        });
     }
 
     @Override
@@ -337,29 +280,18 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements MenuProv
         return this.calculatedField;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Set<BlockPos> getInteriorPoints() {
-        String cacheID = "getInteriorPoints";
-
-        if (MFFSConfig.COMMON.useCache.get() && getCache(cacheID) instanceof Set<?> set) {
-            return (Set<BlockPos>) set;
-        }
-
-        Set<BlockPos> interiorPoints = getMode().getInteriorPoints(this);
-        BlockPos translation = getTranslation();
-        int rotationYaw = getRotationYaw();
-        int rotationPitch = getRotationPitch();
-        Set<BlockPos> newField = StreamEx.of(interiorPoints)
-            .map(pos -> rotationYaw != 0 || rotationPitch != 0 ? CalcUtil.rotateByAngle(pos, rotationYaw, rotationPitch) : pos)
-            .map(pos -> pos.offset(this.worldPosition).offset(translation))
-            .toSet();
-
-        if (MFFSConfig.COMMON.useCache.get()) {
-            putCache(cacheID, newField);
-        }
-
-        return newField;
+        return cached(INTERIOR_POINTS_CACHE_KEY, () -> {
+            Set<BlockPos> interiorPoints = getMode().getInteriorPoints(this);
+            BlockPos translation = getTranslation();
+            int rotationYaw = getRotationYaw();
+            int rotationPitch = getRotationPitch();
+            return StreamEx.of(interiorPoints)
+                .map(pos -> rotationYaw != 0 || rotationPitch != 0 ? CalcUtil.rotateByAngle(pos, rotationYaw, rotationPitch) : pos)
+                .map(pos -> pos.offset(this.worldPosition).offset(translation))
+                .toSet();
+        });
     }
 
     @Override
@@ -376,48 +308,34 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements MenuProv
             if (getModules().stream().anyMatch(m -> m.onProject(this, fieldToBeProjected))) {
                 return;
             }
-
-            Iterator<BlockPos> it = this.calculatedField.iterator();
-
+            
             fieldLoop:
-            while (it.hasNext()) {
-                BlockPos pos = it.next();
-
+            for (BlockPos pos : this.calculatedField) {
                 if (fieldToBeProjected.contains(pos)) {
                     if (constructionCount > constructionSpeed) {
                         break;
                     }
 
-                    BlockState state = this.level.getBlockState(pos);
-                    if (state.isAir() || getModuleCount(ModItems.DISINTEGRATION_MODULE.get()) > 0 && state.getDestroySpeed(this.level, pos) != -1 || state.getMaterial().isLiquid() || state.is(ModTags.FORCEFIELD_REPLACEABLE)) {
-                        // Prevents the force field projector from disintegrating itself.
-                        if (!state.is(ModBlocks.FORCE_FIELD.get()) && !pos.equals(this.worldPosition)) {
-                            if (this.level.isLoaded(pos)) {
-                                for (Module module : getModules()) {
-                                    int flag = module.onProject(this, pos);
+                    if (canProjectPos(pos)) {
+                        for (Module module : getModules()) {
+                            ProjectAction action = module.onProject(this, pos);
 
-                                    if (flag == 1) {
-                                        continue fieldLoop;
-                                    } else if (flag == 2) {
-                                        break fieldLoop;
-                                    }
-                                }
-
-                                this.level.setBlock(pos, ModBlocks.FORCE_FIELD.get().defaultBlockState(), Block.UPDATE_ALL);
-
-                                // Sets the controlling projector of the force field block to
-                                // this one.
-                                BlockEntity be = this.level.getBlockEntity(pos);
-
-                                if (be instanceof ForceFieldBlockEntity forceFieldBlockEntity) {
-                                    forceFieldBlockEntity.setProjector(this.worldPosition);
-                                }
-
-                                requestFortron(1, IFluidHandler.FluidAction.EXECUTE);
-                                this.forceFields.add(pos);
-                                constructionCount++;
+                            if (action == ProjectAction.SKIP) {
+                                continue fieldLoop;
+                            } else if (action == ProjectAction.INTERRUPT) {
+                                break fieldLoop;
                             }
                         }
+
+                        this.level.setBlock(pos, ModBlocks.FORCE_FIELD.get().defaultBlockState(), Block.UPDATE_ALL);
+
+                        // Sets the controlling projector of the force field block to this one.
+                        this.level.getBlockEntity(pos, ModObjects.FORCE_FIELD_BLOCK_ENTITY.get())
+                            .ifPresent(be -> be.setProjector(this.worldPosition));
+
+                        extractFortron(1, false);
+                        this.forceFields.add(pos);
+                        constructionCount++;
                     }
                 } else {
                     BlockState state = this.level.getBlockState(pos);
@@ -427,22 +345,22 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements MenuProv
                     }
                 }
             }
-
         }
+    }
+    
+    private boolean canProjectPos(BlockPos pos) {
+        BlockState state = this.level.getBlockState(pos);
+        return (state.isAir() || getModuleCount(ModItems.DISINTEGRATION_MODULE.get()) > 0 && state.getDestroySpeed(this.level, pos) != -1 || state.getMaterial().isLiquid() || state.is(ModTags.FORCEFIELD_REPLACEABLE))
+            && !state.is(ModBlocks.FORCE_FIELD.get()) && !pos.equals(this.worldPosition)
+            && this.level.isLoaded(pos);
     }
 
     @Override
     public void destroyField() {
         if (!this.level.isClientSide && this.isCalculated && !this.isCalculating) {
-            Set<BlockPos> copiedSet = new HashSet<>(this.calculatedField);
-
-            for (BlockPos pos : copiedSet) {
-                BlockState state = this.level.getBlockState(pos);
-
-                if (state.is(ModBlocks.FORCE_FIELD.get())) {
-                    this.level.removeBlock(pos, false);
-                }
-            }
+            StreamEx.of(this.calculatedField)
+                .filter(pos -> this.level.getBlockState(pos).is(ModBlocks.FORCE_FIELD.get()))
+                .forEach(pos -> this.level.removeBlock(pos, false));
         }
 
         this.forceFields.clear();
@@ -455,23 +373,21 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements MenuProv
         return 28 + 28 * getModuleCount(ModItems.SPEED_MODULE.get(), getUpgradeSlots());
     }
 
-    private void calculateForceField() {
-        calculateForceField(null);
+    private void reCalculateForceField() {
+        reCalculateForceField(null);
     }
 
-    private void calculateForceField(@Nullable Runnable callBack) {
-        if (!this.level.isClientSide && !this.isCalculating) {
-            if (getMode() != null) {
-                if (getModeStack().getItem() instanceof ObjectCache cache) {
-                    cache.clearCache();
-                }
-
-                this.forceFields.clear();
-                this.calculatedField.clear();
-
-                // Start multi-threading calculation
-                new ProjectorCalculationThread(this, callBack).start();
+    private void reCalculateForceField(@Nullable Runnable callBack) {
+        if (!this.level.isClientSide && !this.isCalculating && getMode() != null) {
+            if (getModeStack().getItem() instanceof ObjectCache cache) {
+                cache.clearCache();
             }
+
+            this.forceFields.clear();
+            this.calculatedField.clear();
+
+            // Start multi-threading calculation
+            new ProjectorCalculationThread(this, callBack).start();
         }
     }
 }

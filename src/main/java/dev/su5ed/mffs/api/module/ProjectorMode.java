@@ -1,8 +1,12 @@
 package dev.su5ed.mffs.api.module;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import dev.su5ed.mffs.api.Projector;
+import dev.su5ed.mffs.util.ProjectorModeItemRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
 
@@ -25,8 +29,6 @@ public interface ProjectorMode
 	 */
 	boolean isInField(Projector projector, BlockPos position);
 
-	/**
-	 * Called to render an object in front of the projection.
-	 */
-	void render(Projector projector, BlockPos pos, float f, long ticks);
+	@Nullable
+	ProjectorModeItemRenderer getRenderer();
 }

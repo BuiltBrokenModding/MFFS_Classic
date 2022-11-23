@@ -21,7 +21,6 @@ import java.util.Set;
  */
 public interface Projector extends ModuleAcceptor, BiometricIdentifierLink
 {
-
 	/**
 	 * @return Is the projector active?
 	 */

@@ -6,7 +6,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
@@ -19,6 +18,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 public abstract class ElectricTileEntity extends ModularBlockEntity {
@@ -30,7 +30,7 @@ public abstract class ElectricTileEntity extends ModularBlockEntity {
 
         this.energy = new CustomEnergyStorage(capacity, Integer.MAX_VALUE, this::isActive, this::setChanged);
         Set<Direction> inputSides = getEnergyInputSides();
-        Set<Direction> outputSides = getEnergyOutput();
+        Set<Direction> outputSides = getEnergyOutputSides();
         this.sidedEnergyCap = StreamEx.of(inputSides)
             .append(outputSides)
             .distinct()
@@ -54,17 +54,15 @@ public abstract class ElectricTileEntity extends ModularBlockEntity {
             .ifPresent(energy -> this.energy.receiveEnergy(energy.extractEnergy(this.energy.getRequestedEnergy(), false), false));
     }
 
-    protected long produce() {
+    protected long receiveEnergy() {
         long totalUsed = 0;
-        for (Direction direction : getEnergyOutput()) {
+        for (Direction direction : getEnergyOutputSides()) {
             if (this.energy.getEnergyStored() > 0) {
-                BlockEntity be = this.level.getBlockEntity(this.worldPosition.relative(direction));
-                if (be != null) {
-                    int received = be.getCapability(ForgeCapabilities.ENERGY, direction.getOpposite())
-                        .map(energy -> energy.receiveEnergy(this.energy.extractEnergy(this.energy.getEnergyStored(), true), false))
-                        .orElse(0);
-                    totalUsed += this.energy.extractEnergy(received, false);
-                }
+                int received = Optional.ofNullable(this.level.getBlockEntity(this.worldPosition.relative(direction)))
+                    .flatMap(be -> be.getCapability(ForgeCapabilities.ENERGY, direction.getOpposite()).resolve())
+                    .map(energy -> energy.receiveEnergy(this.energy.extractEnergy(this.energy.getEnergyStored(), true), false))
+                    .orElse(0);
+                totalUsed += this.energy.extractEnergy(received, false);
             }
         }
         return totalUsed;
@@ -74,7 +72,7 @@ public abstract class ElectricTileEntity extends ModularBlockEntity {
         return Collections.emptySet();
     }
 
-    public Set<Direction> getEnergyOutput() {
+    public Set<Direction> getEnergyOutputSides() {
         return Collections.emptySet();
     }
 

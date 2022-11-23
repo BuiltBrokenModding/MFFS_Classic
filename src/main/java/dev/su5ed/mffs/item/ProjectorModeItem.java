@@ -15,9 +15,4 @@ public abstract class ProjectorModeItem extends Item implements ProjectorMode {
     public boolean isInField(Projector projector, BlockPos position) {
         return false;
     }
-
-    @Override
-    public void render(Projector projector, BlockPos pos, float f, long ticks) {
-
-    }
 }

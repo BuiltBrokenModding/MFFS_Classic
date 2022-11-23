@@ -14,7 +14,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.network.PacketDistributor;
 
 import java.util.Set;
@@ -123,8 +122,8 @@ public final class Fortron {
 
             // Take energy from receiver.
             int transfer = Math.min(Math.abs(joules), limit);
-            int available = destination.provideFortron(source.requestFortron(transfer, FluidAction.SIMULATE), FluidAction.SIMULATE);
-            int transferred = source.requestFortron(destination.provideFortron(available, FluidAction.EXECUTE), FluidAction.EXECUTE);
+            int available = destination.insertFortron(source.extractFortron(transfer, true), true);
+            int transferred = source.extractFortron(destination.insertFortron(available, false), false);
 
             // Draw Beam Effect
             if (transferred > 0 && !isCamo) {

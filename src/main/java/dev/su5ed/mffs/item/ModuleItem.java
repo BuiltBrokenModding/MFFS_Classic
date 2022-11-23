@@ -51,8 +51,8 @@ public class ModuleItem extends Item implements Module {
     }
 
     @Override
-    public int onProject(Projector projector, BlockPos position) {
-        return 0;
+    public ProjectAction onProject(Projector projector, BlockPos position) {
+        return ProjectAction.PROJECT;
     }
 
     @Override

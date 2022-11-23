@@ -3,16 +3,19 @@ package dev.su5ed.mffs.blockentity;
 import dev.su5ed.mffs.network.Network;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PacketDistributor;
 
-public abstract class BaseBlockEntity extends BlockEntity {
+public abstract class BaseBlockEntity extends BlockEntity implements MenuProvider {
     private long tickCounter;
 
     protected BaseBlockEntity(BlockEntityType<? extends BaseBlockEntity> type, BlockPos pos, BlockState state) {
@@ -23,10 +26,6 @@ public abstract class BaseBlockEntity extends BlockEntity {
         return this.tickCounter;
     }
 
-    public InteractionResult use(Player player, InteractionHand hand, BlockHitResult hit) {
-        return InteractionResult.PASS;
-    }
-
     public void tickClient() {
         ++this.tickCounter;
     }
@@ -34,8 +33,15 @@ public abstract class BaseBlockEntity extends BlockEntity {
     public void tickServer() {
         ++this.tickCounter;
     }
-    
+
     public void blockRemoved() {}
+
+    public InteractionResult use(Player player, InteractionHand hand, BlockHitResult hit) {
+        if (!this.level.isClientSide) {
+            NetworkHooks.openScreen((ServerPlayer) player, this, this.worldPosition);
+        }
+        return InteractionResult.SUCCESS;
+    }
 
     @Override
     public CompoundTag getUpdateTag() {

@@ -24,7 +24,7 @@ public class DisintegrationModuleItem extends ModuleItem {
     }
 
     @Override
-    public int onProject(Projector projector, BlockPos position) {
+    public ProjectAction onProject(Projector projector, BlockPos position) {
         if (projector.getTicks() % 40 == 0) {
             BlockEntity be = (BlockEntity) projector;
 			BlockState block = be.getLevel().getBlockState(position);
@@ -37,13 +37,13 @@ public class DisintegrationModuleItem extends ModuleItem {
                 ((ProjectorBlockEntity) projector).delayedEvents.add(new BlockDropDelayedEvent(39, block.getBlock(), be.getLevel(), position));
 
                 if (this.blockCount++ >= projector.getModuleCount(ModItems.SPEED_MODULE.get()) / 3) {
-                    return 2;
+                    return ProjectAction.INTERRUPT;
                 } else {
-                    return 1;
+                    return ProjectAction.SKIP;
                 }
             }
         }
 
-        return 1;
+        return ProjectAction.SKIP;
     }
 }

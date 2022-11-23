@@ -5,6 +5,7 @@ import net.minecraft.core.Vec3i;
 
 public class HashBlockPos extends BlockPos {
 
+    // TODO Figure out a proper way of sorting the field positions
     public HashBlockPos(Vec3i vec) {
         super(vec);
     }

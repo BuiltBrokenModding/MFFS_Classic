@@ -16,17 +16,12 @@ import dev.su5ed.mffs.util.TransferMode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.network.NetworkHooks;
 import one.util.streamex.StreamEx;
 import org.jetbrains.annotations.Nullable;
 
@@ -65,14 +60,6 @@ public class FortronCapacitorBlockEntity extends ModularBlockEntity implements F
     }
 
     @Override
-    public InteractionResult use(Player player, InteractionHand hand, BlockHitResult hit) {
-        if (!this.level.isClientSide) {
-            NetworkHooks.openScreen((ServerPlayer) player, this, this.worldPosition);
-        }
-        return InteractionResult.SUCCESS;
-    }
-
-    @Override
     public void tickServer() {
         super.tickServer();
 
@@ -83,7 +70,7 @@ public class FortronCapacitorBlockEntity extends ModularBlockEntity implements F
             Set<FortronFrequency> machines = new HashSet<>();
 
             for (ItemStack stack : getCards()) {
-                if (stack.getItem() instanceof CardInfinite) {
+                if (stack.getItem() instanceof CardInfinite) { // Use a tag lol
                     setFortronEnergy(getFortronCapacity());
                 } else if (stack.getItem() instanceof CoordLink coordLink) {
                     BlockPos linkPosition = coordLink.getLink(stack);

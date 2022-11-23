@@ -3,12 +3,12 @@ package dev.su5ed.mffs.item;
 import dev.su5ed.mffs.api.Projector;
 import dev.su5ed.mffs.setup.ModItems;
 import dev.su5ed.mffs.util.CalcUtil;
+import dev.su5ed.mffs.util.ProjectorModeItemRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.DistExecutor;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -60,8 +60,9 @@ public class CubeProjectorModeItem extends ProjectorModeItem {
         return region.contains(rotated.getX(), rotated.getY(), rotated.getZ());
     }
 
+    @Nullable
     @Override
-    public void render(Projector projector, BlockPos pos, float f, long ticks) {
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> ClientRenderHandler.renderCubeMode(projector, pos, f, ticks));
+    public ProjectorModeItemRenderer getRenderer() {
+        return ClientRenderHandler::renderCubeMode;
     }
 }

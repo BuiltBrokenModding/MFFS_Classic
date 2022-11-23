@@ -29,7 +29,7 @@ public interface Module extends FortronCost {
      * @return 0 - Do nothing; 1 - Skip this block and continue; 2 - Cancel rest of projection;
      */
 
-    int onProject(Projector projector, BlockPos position);
+    ProjectAction onProject(Projector projector, BlockPos position);
 
     /**
      * Called when an entity collides with a force field block.
@@ -58,6 +58,11 @@ public interface Module extends FortronCost {
      * @return Does this module require ticking from the force field projector?
      */
     boolean requireTicks(ItemStack moduleStack);
-
+    
+    enum ProjectAction {
+        PROJECT,
+        SKIP,
+        INTERRUPT
+    }
 }
 

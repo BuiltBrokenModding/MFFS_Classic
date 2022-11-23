@@ -12,7 +12,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.AbstractGlassBlock;
 import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
@@ -42,7 +41,7 @@ public class ForceFieldBlockImpl extends AbstractGlassBlock implements ForceFiel
     public void weakenForceField(Level level, BlockPos pos, int joules) {
         Projector projector = getProjector(level, pos);
         if (projector instanceof FortronStorage storage) {
-            storage.provideFortron(joules, IFluidHandler.FluidAction.EXECUTE);
+            storage.insertFortron(joules, false);
         }
         level.removeBlock(pos, false);
     }

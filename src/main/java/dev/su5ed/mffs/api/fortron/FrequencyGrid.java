@@ -10,12 +10,6 @@ import one.util.streamex.StreamEx;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * A grid MFFS uses to search for machines with frequencies that can be linked and spread Fortron
- * energy.
- *
- * @author Calclavia
- */
 public class FrequencyGrid {
     private static FrequencyGrid CLIENT_INSTANCE = new FrequencyGrid();
     private static FrequencyGrid SERVER_INSTANCE = new FrequencyGrid();
@@ -40,11 +34,6 @@ public class FrequencyGrid {
         return this.frequencyGrid;
     }
 
-    /**
-     * Gets a list of TileEntities that has a specific frequency.
-     *
-     * @param frequency - The Frequency
-     */
     public Set<FrequencyBlock> get(int frequency) {
         return StreamEx.of(get())
 			.filter(block -> block != null && !((BlockEntity) block).isRemoved() && block.getFrequency() == frequency)

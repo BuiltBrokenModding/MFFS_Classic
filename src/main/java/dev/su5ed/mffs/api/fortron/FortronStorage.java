@@ -23,11 +23,11 @@ public interface FortronStorage { // TODO Capability
     /**
      * Called to use and consume fortron energy from this storage unit.
      *
-     * @param joules - Amount of fortron energy to use.
-     * @param action
+     * @param joules   - Amount of fortron energy to use.
+     * @param simulate
      * @return joules - The amount of energy that was actually provided.
      */
-    int requestFortron(int joules, IFluidHandler.FluidAction action);
+    int extractFortron(int joules, boolean simulate);
 
     /**
      * Called to use and give fortron energy from this storage unit.
@@ -36,5 +36,5 @@ public interface FortronStorage { // TODO Capability
      * @param action
      * @return joules - The amount of energy that was actually injected.
      */
-    int provideFortron(int joules, IFluidHandler.FluidAction action);
+    int insertFortron(int joules, boolean simulate);
 }

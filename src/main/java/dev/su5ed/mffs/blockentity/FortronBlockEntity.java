@@ -29,6 +29,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import one.util.streamex.StreamEx;
 import org.jetbrains.annotations.NotNull;
@@ -156,11 +157,15 @@ public abstract class FortronBlockEntity extends InventoryBlockEntity implements
 
     @Override
     protected void loadCommonTag(CompoundTag tag) {
+        super.loadCommonTag(tag);
+        
         this.active = tag.getBoolean("active");
     }
 
     @Override
     protected void saveCommonTag(CompoundTag tag) {
+        super.saveCommonTag(tag);
+        
         tag.putBoolean("active", this.active);
     }
 
@@ -199,13 +204,13 @@ public abstract class FortronBlockEntity extends InventoryBlockEntity implements
     }
 
     @Override
-    public int requestFortron(int joules, IFluidHandler.FluidAction action) {
-        return this.fortronTank.drain(joules, action).getAmount();
+    public int extractFortron(int joules, boolean simulate) {
+        return this.fortronTank.drain(joules, simulate ? FluidAction.SIMULATE : FluidAction.EXECUTE).getAmount();
     }
 
     @Override
-    public int provideFortron(int joules, IFluidHandler.FluidAction action) {
-        return this.fortronTank.fill(Fortron.getFortron(joules), action);
+    public int insertFortron(int joules, boolean simulate) {
+        return this.fortronTank.fill(Fortron.getFortron(joules), simulate ? FluidAction.SIMULATE : FluidAction.EXECUTE);
     }
 
     /**
