@@ -39,7 +39,7 @@ public class ProjectorCalculationThread extends Thread {
             int rotationPitch = this.projector.getRotationPitch();
 			
 			StreamEx.of(exteriorPoints)
-				.map(pos -> rotationYaw != 0 || rotationPitch != 0 ? CalcUtil.rotateByAngle(pos, rotationYaw, rotationPitch, 0) : pos)
+				.map(pos -> rotationYaw != 0 || rotationPitch != 0 ? ModUtil.rotateByAngle(pos, rotationYaw, rotationPitch, 0) : pos)
 				.map(pos -> {
                     BlockPos projPos = this.projector.getBlockPos();
                     return pos.offset(projPos).offset(translation);

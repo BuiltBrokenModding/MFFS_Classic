@@ -9,7 +9,6 @@ import dev.su5ed.mffs.util.TransferMode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 
 public class FortronCapacitorMenu extends FortronMenu<FortronCapacitorBlockEntity> {
@@ -22,13 +21,8 @@ public class FortronCapacitorMenu extends FortronMenu<FortronCapacitorBlockEntit
         addDataSlot(new DataSlotWrapper(() -> this.blockEntity.getTransferMode().ordinal(), i -> this.blockEntity.setTransferMode(TransferMode.values()[i])));
 
         this.blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(handler -> {
-            addSlot(new SlotInventory(this.blockEntity.frequencySlot, 9, 74));
-            addSlot(new SlotInventory(this.blockEntity.secondaryCard, 27, 74));
+            addInventorySlot(new SlotInventory(this.blockEntity.frequencySlot, 9, 74));
+            addInventorySlot(new SlotInventory(this.blockEntity.secondaryCard, 27, 74));
         });
-    }
-
-    @Override
-    public ItemStack quickMoveStack(Player player, int index) {
-        return ItemStack.EMPTY;
     }
 }

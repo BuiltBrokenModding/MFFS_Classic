@@ -16,7 +16,7 @@ import dev.su5ed.mffs.setup.ModBlocks;
 import dev.su5ed.mffs.setup.ModItems;
 import dev.su5ed.mffs.setup.ModObjects;
 import dev.su5ed.mffs.setup.ModTags;
-import dev.su5ed.mffs.util.CalcUtil;
+import dev.su5ed.mffs.util.ModUtil;
 import dev.su5ed.mffs.util.DelayedEvent;
 import dev.su5ed.mffs.util.InventorySlot;
 import dev.su5ed.mffs.util.ProjectorCalculationThread;
@@ -288,7 +288,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements MenuProv
             int rotationYaw = getRotationYaw();
             int rotationPitch = getRotationPitch();
             return StreamEx.of(interiorPoints)
-                .map(pos -> rotationYaw != 0 || rotationPitch != 0 ? CalcUtil.rotateByAngle(pos, rotationYaw, rotationPitch) : pos)
+                .map(pos -> rotationYaw != 0 || rotationPitch != 0 ? ModUtil.rotateByAngle(pos, rotationYaw, rotationPitch) : pos)
                 .map(pos -> pos.offset(this.worldPosition).offset(translation))
                 .toSet();
         });

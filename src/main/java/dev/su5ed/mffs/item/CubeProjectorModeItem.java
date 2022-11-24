@@ -2,7 +2,7 @@ package dev.su5ed.mffs.item;
 
 import dev.su5ed.mffs.api.Projector;
 import dev.su5ed.mffs.setup.ModItems;
-import dev.su5ed.mffs.util.CalcUtil;
+import dev.su5ed.mffs.util.ModUtil;
 import dev.su5ed.mffs.util.ProjectorModeItemRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
@@ -55,7 +55,7 @@ public class CubeProjectorModeItem extends ProjectorModeItem {
     public boolean isInField(Projector projector, BlockPos position) {
         BlockPos projectorPos = ((BlockEntity) projector).getBlockPos().offset(projector.getTranslation());
         BlockPos relativePosition = position.subtract(projectorPos);
-        BlockPos rotated = CalcUtil.rotateByAngle(relativePosition, -projector.getRotationYaw(), -projector.getRotationPitch());
+        BlockPos rotated = ModUtil.rotateByAngle(relativePosition, -projector.getRotationYaw(), -projector.getRotationPitch());
         AABB region = new AABB(projector.getNegativeScale().multiply(-1), projector.getPositiveScale());
         return region.contains(rotated.getX(), rotated.getY(), rotated.getZ());
     }
