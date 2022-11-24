@@ -26,7 +26,7 @@ public class ProjectorScreen extends FortronScreen<ProjectorMenu> {
         super.renderLabels(poseStack, mouseX, mouseY);
         
         this.font.draw(poseStack, "Matrix", 32, 20, GuiColors.DARK_GREY);
-        this.font.draw(poseStack, "Fortron: " + this.menu.blockEntity.getFortronEnergy() + " L / " + this.menu.blockEntity.getFortronCapacity() + " L", 8, 110, GuiColors.DARK_GREY);
+        this.font.draw(poseStack, "Fortron: " + this.menu.blockEntity.fortronStorage.getStoredFortron() + " L / " + this.menu.blockEntity.fortronStorage.getFortronCapacity() + " L", 8, 110, GuiColors.DARK_GREY);
         this.font.draw(poseStack, Component.literal("-" + this.menu.blockEntity.getFortronCost() + " L").withStyle(ChatFormatting.DARK_RED), 120, 121, GuiColors.DARK_GREY);
     }
 }

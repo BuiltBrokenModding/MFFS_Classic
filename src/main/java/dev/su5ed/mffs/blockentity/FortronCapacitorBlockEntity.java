@@ -1,16 +1,16 @@
 package dev.su5ed.mffs.blockentity;
 
-import dev.su5ed.mffs.api.FrequencyBlock;
+import dev.su5ed.mffs.api.card.Card;
 import dev.su5ed.mffs.api.card.CardInfinite;
 import dev.su5ed.mffs.api.card.CoordLink;
 import dev.su5ed.mffs.api.fortron.FortronCapacitor;
-import dev.su5ed.mffs.api.fortron.FortronFrequency;
+import dev.su5ed.mffs.api.fortron.FortronStorage;
 import dev.su5ed.mffs.api.fortron.FrequencyGrid;
 import dev.su5ed.mffs.menu.FortronCapacitorMenu;
+import dev.su5ed.mffs.setup.ModCapabilities;
 import dev.su5ed.mffs.setup.ModItems;
 import dev.su5ed.mffs.setup.ModObjects;
 import dev.su5ed.mffs.util.Fortron;
-import dev.su5ed.mffs.util.FrequencyCard;
 import dev.su5ed.mffs.util.InventorySlot;
 import dev.su5ed.mffs.util.TransferMode;
 import net.minecraft.core.BlockPos;
@@ -22,11 +22,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import one.util.streamex.StreamEx;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public class FortronCapacitorBlockEntity extends ModularBlockEntity implements FortronCapacitor, MenuProvider {
@@ -37,7 +37,7 @@ public class FortronCapacitorBlockEntity extends ModularBlockEntity implements F
     public FortronCapacitorBlockEntity(BlockPos pos, BlockState state) {
         super(ModObjects.FORTRON_CAPACITOR_BLOCK_ENTITY.get(), pos, state, 10);
 
-        this.secondaryCard = addSlot("secondaryCard", InventorySlot.Mode.BOTH, stack -> stack.getItem() instanceof FrequencyCard);
+        this.secondaryCard = addSlot("secondaryCard", InventorySlot.Mode.BOTH, stack -> stack.getItem() instanceof Card);
     }
 
     public TransferMode getTransferMode() {
@@ -67,35 +67,30 @@ public class FortronCapacitorBlockEntity extends ModularBlockEntity implements F
 
         // Distribute fortron across the network
         if (isActive() && getTicks() % 10 == 0) {
-            Set<FortronFrequency> machines = new HashSet<>();
+            Set<FortronStorage> machines = new HashSet<>();
 
             for (ItemStack stack : getCards()) {
-                if (stack.getItem() instanceof CardInfinite) { // Use a tag lol
-                    setFortronEnergy(getFortronCapacity());
-                } else if (stack.getItem() instanceof CoordLink coordLink) {
-                    BlockPos linkPosition = coordLink.getLink(stack);
-
-                    if (linkPosition != null && this.level.getBlockEntity(linkPosition) instanceof FortronFrequency f) {
-                        machines.add(this);
-                        machines.add(f);
-                    }
+                if (stack.getItem() instanceof CardInfinite) { // TODO make the interface a class
+                    this.fortronStorage.setStoredFortron(this.fortronStorage.getFortronCapacity());
+                }
+                else if (stack.getItem() instanceof CoordLink coordLink) {
+                    Optional.ofNullable(coordLink.getLink(stack))
+                        .map(linkPosition -> this.level.getBlockEntity(linkPosition))
+                        .flatMap(be -> getCapability(ModCapabilities.FORTRON).resolve())
+                        .ifPresent(fortron -> {
+                            machines.add(this.fortronStorage);
+                            machines.add(fortron);
+                        });
                 }
             }
 
-            if (machines.isEmpty()) {
-                machines = getDevicesByFrequency();
-            }
-
-            Fortron.transferFortron(this, machines, this.transferMode, getTransmissionRate());
+            Fortron.transferFortron(this.fortronStorage, machines.isEmpty() ? getDevicesByFrequency() : machines, this.transferMode, getTransmissionRate());
         }
     }
 
     @Override
-    public Set<FortronFrequency> getDevicesByFrequency() {
-        Set<FrequencyBlock> frequencyBlocks = FrequencyGrid.instance().get(this.level, this.worldPosition, getTransmissionRange(), getFrequency());
-        return StreamEx.of(frequencyBlocks)
-            .select(FortronFrequency.class)
-            .toSet();
+    public Set<FortronStorage> getDevicesByFrequency() {
+        return FrequencyGrid.instance().get(this.level, this.worldPosition, getTransmissionRange(), this.fortronStorage.getFrequency());
     }
 
     @Override

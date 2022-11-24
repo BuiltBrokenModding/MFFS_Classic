@@ -58,7 +58,7 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
 
     public void consumeCost() {
         if (getFortronCost() > 0) {
-            extractFortron(getFortronCost(), false);
+            this.fortronStorage.extractFortron(getFortronCost(), false);
         }
     }
     
@@ -178,7 +178,7 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
 
     private void updateFortronTankCapacity() {
         int capacity = (getModuleCount(ModItems.CAPACITY_MODULE.get()) * this.capacityBoost + getBaseFortronTankCapacity()) * FluidType.BUCKET_VOLUME;
-        this.fortronTank.setCapacity(capacity);
+        this.fortronStorage.setCapacity(capacity);
     }
     
     private StreamEx<ItemStack> getModuleItemsStream(Collection<InventorySlot> slots) {

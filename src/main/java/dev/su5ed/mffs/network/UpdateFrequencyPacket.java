@@ -1,6 +1,6 @@
 package dev.su5ed.mffs.network;
 
-import dev.su5ed.mffs.api.fortron.FortronFrequency;
+import dev.su5ed.mffs.setup.ModCapabilities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.Level;
@@ -23,7 +23,7 @@ public record UpdateFrequencyPacket(BlockPos pos, int frequency) {
 
     public void processServerPacket(Supplier<NetworkEvent.Context> ctx) {
         Level level = ctx.get().getSender().getLevel();
-        Network.findBlockEntity(FortronFrequency.class, level, this.pos)
+        Network.findBlockEntity(ModCapabilities.FORTRON, level, this.pos)
             .ifPresent(be -> be.setFrequency(this.frequency));
     }
 }

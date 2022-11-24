@@ -6,9 +6,10 @@
   "block.mffs.coercion_deriver": "Coercion Deriver",
   "block.mffs.fortron_capacitor": "Fortron Capacitor",
   
+  "item.mffs.cube_mode": "Cube Mode",
+  
   "item.mffs.camouflage_module": "Camouflage Module",
   "item.mffs.capacity_module": "Capacity Module",
-  "item.mffs.cube_module": "Cube Module",
   "item.mffs.disintegration_module": "Disintegration Module",
   "item.mffs.rotation_module": "Rotation Module",
   "item.mffs.scale_module": "Scale Module",

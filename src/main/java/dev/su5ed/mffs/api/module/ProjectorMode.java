@@ -1,9 +1,7 @@
 package dev.su5ed.mffs.api.module;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import dev.su5ed.mffs.api.Projector;
 import dev.su5ed.mffs.util.ProjectorModeItemRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.Nullable;

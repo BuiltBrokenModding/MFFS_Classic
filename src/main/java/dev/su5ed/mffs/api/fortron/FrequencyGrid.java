@@ -1,6 +1,6 @@
 package dev.su5ed.mffs.api.fortron;
 
-import dev.su5ed.mffs.api.FrequencyBlock;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -14,53 +14,61 @@ public class FrequencyGrid {
     private static FrequencyGrid CLIENT_INSTANCE = new FrequencyGrid();
     private static FrequencyGrid SERVER_INSTANCE = new FrequencyGrid();
 
-    private final Set<FrequencyBlock> frequencyGrid = new HashSet<>();
+    private final Set<FortronStorage> frequencyGrid = new HashSet<>();
 
-    public <T extends BlockEntity & FrequencyBlock> void register(T be) {
-		this.frequencyGrid.removeIf(frequency -> frequency == null || ((BlockEntity) frequency).isRemoved() || ((BlockEntity) frequency).getBlockPos().equals(be.getBlockPos()));
-        this.frequencyGrid.add(be);
+    public <T extends FortronStorage> void register(T fortron) {
+        BlockPos pos = fortron.getOwner().getBlockPos();
+		this.frequencyGrid.removeIf(frequency -> {
+            BlockEntity owner = frequency.getOwner();
+            return frequency == null || owner.isRemoved() || owner.getBlockPos().equals(pos);
+        });
+        this.frequencyGrid.add(fortron);
     }
 
     public static FrequencyGrid instance() {
         return EffectiveSide.get().isServer() ? SERVER_INSTANCE : CLIENT_INSTANCE;
     }
 
-    public void unregister(FrequencyBlock tileEntity) {
+    public void unregister(FortronStorage tileEntity) {
         this.frequencyGrid.remove(tileEntity);
         cleanUp();
     }
 
-    public Set<FrequencyBlock> get() {
+    public Set<FortronStorage> get() {
         return this.frequencyGrid;
     }
 
-    public Set<FrequencyBlock> get(int frequency) {
+    public Set<FortronStorage> get(int frequency) {
         return StreamEx.of(get())
-			.filter(block -> block != null && !((BlockEntity) block).isRemoved() && block.getFrequency() == frequency)
+			.filter(fortron -> fortron != null && !fortron.getOwner().isRemoved() && fortron.getFrequency() == frequency)
 			.toSet();
     }
 
 	public void cleanUp() {
-        this.frequencyGrid.removeIf(block -> block == null || ((BlockEntity) block).isRemoved() || ((BlockEntity) block).getLevel().getBlockEntity(((BlockEntity) block).getBlockPos()) != block);
+        this.frequencyGrid.removeIf(fortron -> fortron == null || fortron.getOwner().isRemoved());
     }
 
-    public Set<FrequencyBlock> get(Level level, Vec3i position, int radius, int frequency) {
+    public Set<FortronStorage> get(Level level, Vec3i position, int radius, int frequency) {
         return StreamEx.of(get(frequency))
-            .filter(block -> ((BlockEntity) block).getLevel() == level && position.closerThan(((BlockEntity) block).getBlockPos(), radius))
+            .filter(fortron -> {
+                BlockEntity owner = fortron.getOwner();
+                return owner.getLevel() == level && position.closerThan(owner.getBlockPos(), radius);
+            })
             .toSet();
     }
 
-    public Set<FortronFrequency> getFortronTiles(Level level) {
+    public Set<FortronStorage> getFortronTiles(Level level) {
         return StreamEx.of(get())
-			.filter(block -> ((BlockEntity) block).getLevel() == level && block instanceof FortronFrequency)
-			.map(block -> (FortronFrequency) block)
+			.filter(fortron -> fortron.getOwner().getLevel() == level)
 			.toSet();
     }
 
-    public Set<? extends FortronFrequency> getFortronTiles(Level level, Vec3i position, int radius, int frequency) {
+    public Set<? extends FortronStorage> getFortronTiles(Level level, Vec3i position, int radius, int frequency) {
         return StreamEx.of(get(frequency))
-            .select(FortronFrequency.class)
-			.filter(block -> ((BlockEntity) block).getLevel() == level && ((BlockEntity) block).getBlockPos().closerThan(position, radius))
+			.filter(fortron -> {
+                BlockEntity owner = fortron.getOwner();
+                return owner.getLevel() == level && owner.getBlockPos().closerThan(position, radius);
+            })
 			.toSet();
     }
 

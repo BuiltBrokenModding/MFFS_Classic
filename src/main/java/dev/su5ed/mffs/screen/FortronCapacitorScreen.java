@@ -44,7 +44,7 @@ public class FortronCapacitorScreen extends FortronScreen<FortronCapacitorMenu> 
         this.font.draw(poseStack, "Range: " + this.menu.blockEntity.getTransmissionRange(), 8, 52, GuiColors.DARK_GREY);
 
         this.font.draw(poseStack, "Fortron:", 8, 95, GuiColors.DARK_GREY);
-        this.font.draw(poseStack, this.menu.blockEntity.getFortronEnergy() + " L / " + this.menu.blockEntity.getFortronCapacity() + " L", 8, 105, GuiColors.DARK_GREY);
+        this.font.draw(poseStack, this.menu.blockEntity.fortronStorage.getStoredFortron() + " L / " + this.menu.blockEntity.fortronStorage.getFortronCapacity() + " L", 8, 105, GuiColors.DARK_GREY);
 
         // TODO Fortron cost
     }

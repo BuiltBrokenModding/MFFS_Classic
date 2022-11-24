@@ -1,19 +1,27 @@
 package dev.su5ed.mffs.api.fortron;
 
-import net.minecraftforge.fluids.capability.IFluidHandler;
+import dev.su5ed.mffs.api.FrequencyBlock;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.common.capabilities.AutoRegisterCapability;
+import net.minecraftforge.common.util.INBTSerializable;
 
-public interface FortronStorage { // TODO Capability
+@AutoRegisterCapability
+public interface FortronStorage extends INBTSerializable<CompoundTag>, FrequencyBlock {
+    
+    BlockEntity getOwner();
+    
     /**
      * Sets the amount of fortron energy.
      *
-     * @param joules
+     * @param energy
      */
-	void setFortronEnergy(int joules);
+	void setStoredFortron(int energy);
 
     /**
      * @return Gets the amount of fortron stored.
      */
-    int getFortronEnergy();
+    int getStoredFortron();
 
     /**
      * @return Gets the maximum possible amount of fortron that can be stored.
@@ -33,7 +41,7 @@ public interface FortronStorage { // TODO Capability
      * Called to use and give fortron energy from this storage unit.
      *
      * @param joules - Amount of fortron energy to give.
-     * @param action
+     * @param simulate
      * @return joules - The amount of energy that was actually injected.
      */
     int insertFortron(int joules, boolean simulate);

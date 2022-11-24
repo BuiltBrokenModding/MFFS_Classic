@@ -1,7 +1,6 @@
 package dev.su5ed.mffs.menu;
 
 import dev.su5ed.mffs.api.Activatable;
-import dev.su5ed.mffs.api.fortron.FortronFrequency;
 import dev.su5ed.mffs.blockentity.ModularBlockEntity;
 import dev.su5ed.mffs.util.DataSlotWrapper;
 import dev.su5ed.mffs.util.SlotInventory;
@@ -22,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
 
-public abstract class FortronMenu<T extends ModularBlockEntity & FortronFrequency & Activatable> extends AbstractContainerMenu {
+public abstract class FortronMenu<T extends ModularBlockEntity & Activatable> extends AbstractContainerMenu {
     public final T blockEntity;
     protected final Player player;
     protected final IItemHandler playerInventory;
@@ -35,10 +34,6 @@ public abstract class FortronMenu<T extends ModularBlockEntity & FortronFrequenc
         this.playerInventory = new InvWrapper(playerInventory);
 
         trackPower();
-    }
-
-    public int getFrequency() {
-        return this.blockEntity.getFrequency();
     }
 
     @Override
@@ -79,8 +74,8 @@ public abstract class FortronMenu<T extends ModularBlockEntity & FortronFrequenc
     }
 
     private void trackPower() {
-        addIntDataSlot(this.blockEntity::getFortronEnergy, this.blockEntity::setFortronEnergy);
-        addIntDataSlot(this.blockEntity::getFrequency, this.blockEntity::setFrequency);
+        addIntDataSlot(this.blockEntity.fortronStorage::getStoredFortron, this.blockEntity.fortronStorage::setStoredFortron);
+        addIntDataSlot(this.blockEntity.fortronStorage::getFrequency, this.blockEntity.fortronStorage::setFrequency);
     }
 
     /**
@@ -90,13 +85,17 @@ public abstract class FortronMenu<T extends ModularBlockEntity & FortronFrequenc
      * @author McJty
      */
     protected void addIntDataSlot(IntSupplier gettter, IntConsumer setter) {
-        addDataSlot(new DataSlotWrapper(() -> gettter.getAsInt() & 0xFFFF, value -> {
+        addDataSlot(() -> gettter.getAsInt() & 0xFFFF, value -> {
             int current = gettter.getAsInt() & 0xFFFF0000;
             setter.accept(current + (value & 0xFFFF));
-        }));
-        addDataSlot(new DataSlotWrapper(() -> gettter.getAsInt() >> 16 & 0xFFFF, value -> {
+        });
+        addDataSlot(() -> gettter.getAsInt() >> 16 & 0xFFFF, value -> {
             int current = gettter.getAsInt() & 0x0000FFFF;
             setter.accept(current | value << 16);
-        }));
+        });
+    }
+    
+    protected void addDataSlot(IntSupplier gettter, IntConsumer setter) {
+        addDataSlot(new DataSlotWrapper(gettter, setter));
     }
 }

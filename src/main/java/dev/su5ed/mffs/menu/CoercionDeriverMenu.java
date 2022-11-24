@@ -1,6 +1,7 @@
 package dev.su5ed.mffs.menu;
 
 import dev.su5ed.mffs.blockentity.CoercionDeriverBlockEntity;
+import dev.su5ed.mffs.blockentity.CoercionDeriverBlockEntity.EnergyMode;
 import dev.su5ed.mffs.setup.ModMenus;
 import dev.su5ed.mffs.setup.ModObjects;
 import dev.su5ed.mffs.util.SlotInventory;
@@ -17,6 +18,8 @@ public class CoercionDeriverMenu extends FortronMenu<CoercionDeriverBlockEntity>
 
         layoutPlayerInventorySlots(8, 135);
         addUpgradeSlots();
+        addDataSlot(this.blockEntity::getProcessTime, this.blockEntity::setProcessTime);
+        addDataSlot(() -> this.blockEntity.getEnergyMode().ordinal(), i -> this.blockEntity.setEnergyMode(EnergyMode.values()[i]));
 
         this.blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(handler -> {
             addSlot(new SlotInventory(this.blockEntity.frequencySlot, 9, 41));

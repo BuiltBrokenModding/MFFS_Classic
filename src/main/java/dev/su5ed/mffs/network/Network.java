@@ -6,6 +6,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
@@ -64,7 +65,15 @@ public final class Network {
 
     @SuppressWarnings("unchecked")
     public static <T> Optional<T> findBlockEntity(Class<T> type, Level level, BlockPos pos) {
-        return level.isLoaded(pos) ? Optional.ofNullable(level.getBlockEntity(pos)).map(be -> type.isInstance(be) ? (T) be : null) : Optional.empty();
+        return findBlockEntity(level, pos).map(be -> type.isInstance(be) ? (T) be : null);
+    }
+    
+    public static <T> Optional<T> findBlockEntity(Capability<T> type, Level level, BlockPos pos) {
+        return findBlockEntity(level, pos).flatMap(be -> be.getCapability(type).resolve());
+    }
+    
+    public static Optional<BlockEntity> findBlockEntity(Level level, BlockPos pos) {
+        return level.isLoaded(pos) ? Optional.ofNullable(level.getBlockEntity(pos)) : Optional.empty();
     }
 
     private Network() {}

@@ -8,7 +8,7 @@ import java.util.Set;
  * @author Calclavia
  */
 public interface FortronCapacitor {
-    Set<FortronFrequency> getDevicesByFrequency();
+    Set<FortronStorage> getDevicesByFrequency();
 
     int getTransmissionRange();
 

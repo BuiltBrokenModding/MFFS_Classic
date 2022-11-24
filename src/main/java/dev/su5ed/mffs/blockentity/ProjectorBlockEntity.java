@@ -6,6 +6,7 @@ import dev.su5ed.mffs.MFFSConfig;
 import dev.su5ed.mffs.api.ForceFieldBlock;
 import dev.su5ed.mffs.api.ObjectCache;
 import dev.su5ed.mffs.api.Projector;
+import dev.su5ed.mffs.api.card.Card;
 import dev.su5ed.mffs.api.module.Module;
 import dev.su5ed.mffs.api.module.Module.ProjectAction;
 import dev.su5ed.mffs.api.module.ProjectorMode;
@@ -17,7 +18,6 @@ import dev.su5ed.mffs.setup.ModObjects;
 import dev.su5ed.mffs.setup.ModTags;
 import dev.su5ed.mffs.util.CalcUtil;
 import dev.su5ed.mffs.util.DelayedEvent;
-import dev.su5ed.mffs.util.FrequencyCard;
 import dev.su5ed.mffs.util.InventorySlot;
 import dev.su5ed.mffs.util.ProjectorCalculationThread;
 import net.minecraft.core.BlockPos;
@@ -70,7 +70,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements MenuProv
     public ProjectorBlockEntity(BlockPos pos, BlockState state) {
         super(ModObjects.PROJECTOR_BLOCK_ENTITY.get(), pos, state, 50);
 
-        this.secondaryCard = addSlot("secondaryCard", InventorySlot.Mode.BOTH, stack -> stack.getItem() instanceof FrequencyCard);
+        this.secondaryCard = addSlot("secondaryCard", InventorySlot.Mode.BOTH, stack -> stack.getItem() instanceof Card);
         this.projectorModeSlot = addSlot("projectorMode", InventorySlot.Mode.BOTH, stack -> stack.getItem() instanceof ProjectorMode);
         ImmutableListMultimap.Builder<Direction, InventorySlot> builder = new ImmutableListMultimap.Builder<>();
         StreamEx.of(Direction.values())
@@ -112,7 +112,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements MenuProv
         }
 
         int fortronCost = getFortronCost();
-        if (isActive() && getMode() != null && extractFortron(fortronCost, true) >= fortronCost) {
+        if (isActive() && getMode() != null && this.fortronStorage.extractFortron(fortronCost, true) >= fortronCost) {
             consumeCost();
 
             if (getTicks() % 10 == 0) {
@@ -135,7 +135,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements MenuProv
     @Override
     protected void animate() {
         int fortronCost = getFortronCost();
-        if (isActive() && getMode() != null && extractFortron(fortronCost, true) >= fortronCost) {
+        if (isActive() && getMode() != null && this.fortronStorage.extractFortron(fortronCost, true) >= fortronCost) {
             this.animation += fortronCost / 3;
         }
     }
@@ -333,7 +333,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements MenuProv
                         this.level.getBlockEntity(pos, ModObjects.FORCE_FIELD_BLOCK_ENTITY.get())
                             .ifPresent(be -> be.setProjector(this.worldPosition));
 
-                        extractFortron(1, false);
+                        this.fortronStorage.extractFortron(1, false);
                         this.forceFields.add(pos);
                         constructionCount++;
                     }

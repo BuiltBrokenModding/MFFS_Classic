@@ -34,11 +34,11 @@ public abstract class FortronScreen<T extends FortronMenu<?>> extends BaseScreen
         this.frequency.setEditable(true);
         this.frequency.setMaxLength(6);
         this.frequency.setResponder(this::onFrequencyChanged);
-        this.frequency.setValue(Integer.toString(this.menu.getFrequency()));
+        this.frequency.setValue(Integer.toString(this.menu.blockEntity.fortronStorage.getFrequency()));
         addWidget(this.frequency);
 
         addRenderableWidget(new FortronChargeWidget(this.leftPos + this.fortronEnergyBarPos.leftInt(), this.topPos + this.fortronEnergyBarPos.rightInt(), 107, 11, Component.empty(),
-            () -> this.menu.blockEntity.getFortronEnergy() / (double) this.menu.blockEntity.getFortronCapacity()));
+            () -> this.menu.blockEntity.fortronStorage.getStoredFortron() / (double) this.menu.blockEntity.fortronStorage.getFortronCapacity()));
     }
 
     @Override

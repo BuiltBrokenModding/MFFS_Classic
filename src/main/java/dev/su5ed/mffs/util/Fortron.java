@@ -1,6 +1,6 @@
 package dev.su5ed.mffs.util;
 
-import dev.su5ed.mffs.api.fortron.FortronFrequency;
+import dev.su5ed.mffs.api.fortron.FortronStorage;
 import dev.su5ed.mffs.api.module.ModuleAcceptor;
 import dev.su5ed.mffs.network.DrawBeamPacket;
 import dev.su5ed.mffs.network.Network;
@@ -28,69 +28,59 @@ public final class Fortron {
         return new FluidStack(ModFluids.FORTRON_FLUID.get(), amount);
     }
 
-    public static void transferFortron(FortronFrequency transmitter, Set<? extends FortronFrequency> frequencyTiles, TransferMode transferMode, int limit) {
+    public static void transferFortron(FortronStorage transmitter, Set<? extends FortronStorage> frequencyTiles, TransferMode transferMode, int limit) {
         if (transmitter != null && frequencyTiles.size() > 1) {
             // Check spread mode. Equal, Give All, Take All
             int totalFortron = 0;
             int totalCapacity = 0;
 
-            for (FortronFrequency machine : frequencyTiles) {
-                if (machine != null) {
-                    totalFortron += machine.getFortronEnergy();
-                    totalCapacity += machine.getFortronCapacity();
-                }
+            for (FortronStorage storage : frequencyTiles) {
+                totalFortron += storage.getStoredFortron();
+                totalCapacity += storage.getFortronCapacity();
             }
 
             if (totalFortron > 0 && totalCapacity > 0) {
                 // Test each mode and based on the mode, spread Fortron energy.
                 switch (transferMode) {
                     case EQUALIZE -> {
-                        for (FortronFrequency machine : frequencyTiles) {
-                            if (machine != null) {
-                                double capacityPercentage = (double) machine.getFortronCapacity() / (double) totalCapacity;
-                                int amountToSet = (int) (totalFortron * capacityPercentage);
-                                doTransferFortron(transmitter, machine, amountToSet - machine.getFortronEnergy(), limit);
-                            }
+                        for (FortronStorage machine : frequencyTiles) {
+                            double capacityPercentage = (double) machine.getFortronCapacity() / (double) totalCapacity;
+                            int amountToSet = (int) (totalFortron * capacityPercentage);
+                            doTransferFortron(transmitter, machine, amountToSet - machine.getStoredFortron(), limit);
                         }
                     }
                     case DISTRIBUTE -> {
                         final int amountToSet = totalFortron / frequencyTiles.size();
 
-                        for (FortronFrequency machine : frequencyTiles) {
-                            if (machine != null) {
-                                doTransferFortron(transmitter, machine, amountToSet - machine.getFortronEnergy(), limit);
-                            }
+                        for (FortronStorage machine : frequencyTiles) {
+                            doTransferFortron(transmitter, machine, amountToSet - machine.getStoredFortron(), limit);
                         }
                     }
                     case DRAIN -> {
                         frequencyTiles.remove(transmitter);
 
-                        for (FortronFrequency machine : frequencyTiles) {
-                            if (machine != null) {
-                                double capacityPercentage = (double) machine.getFortronCapacity() / (double) totalCapacity;
-                                int amountToSet = (int) (totalFortron * capacityPercentage);
+                        for (FortronStorage machine : frequencyTiles) {
+                            double capacityPercentage = (double) machine.getFortronCapacity() / (double) totalCapacity;
+                            int amountToSet = (int) (totalFortron * capacityPercentage);
 
-                                if (amountToSet - machine.getFortronEnergy() > 0) {
-                                    doTransferFortron(transmitter, machine, amountToSet - machine.getFortronEnergy(), limit);
-                                }
+                            if (amountToSet - machine.getStoredFortron() > 0) {
+                                doTransferFortron(transmitter, machine, amountToSet - machine.getStoredFortron(), limit);
                             }
                         }
                     }
                     case FILL -> {
-                        if (transmitter.getFortronEnergy() < transmitter.getFortronCapacity()) {
+                        if (transmitter.getStoredFortron() < transmitter.getFortronCapacity()) {
                             frequencyTiles.remove(transmitter);
 
                             // The amount of energy required to be full.
-                            int requiredFortron = transmitter.getFortronCapacity() - transmitter.getFortronEnergy();
+                            int requiredFortron = transmitter.getFortronCapacity() - transmitter.getStoredFortron();
 
-                            for (FortronFrequency machine : frequencyTiles) {
-                                if (machine != null) {
-                                    int amountToConsume = Math.min(requiredFortron, machine.getFortronEnergy());
-                                    int amountToSet = -machine.getFortronEnergy() - amountToConsume;
+                            for (FortronStorage machine : frequencyTiles) {
+                                int amountToConsume = Math.min(requiredFortron, machine.getStoredFortron());
+                                int amountToSet = -machine.getStoredFortron() - amountToConsume;
 
-                                    if (amountToConsume > 0) {
-                                        doTransferFortron(transmitter, machine, amountToSet - machine.getFortronEnergy(), limit);
-                                    }
+                                if (amountToConsume > 0) {
+                                    doTransferFortron(transmitter, machine, amountToSet - machine.getStoredFortron(), limit);
                                 }
                             }
                         }
@@ -107,45 +97,42 @@ public final class Fortron {
      * @param receiver : The machine to be transfered to.
      * @param joules   : The amount of energy to be transfered.
      */
-    public static void doTransferFortron(FortronFrequency transmitter, FortronFrequency receiver, int joules, int limit) {
-        if (transmitter != null && receiver != null) { // TODO stop machines from sending power to themselves
-            boolean isCamo = transmitter instanceof ModuleAcceptor acceptor && acceptor.getModuleCount(ModItems.CAMOUFLAGE_MODULE.get()) > 0;
-            
-            FortronFrequency source, destination;
-            if (joules > 0) {
-                source = transmitter;
-                destination = receiver;
-            } else {
-                source = receiver;
-                destination = transmitter;
-            }
-
-            // Take energy from receiver.
-            int transfer = Math.min(Math.abs(joules), limit);
-            int available = destination.insertFortron(source.extractFortron(transfer, true), true);
-            int transferred = source.extractFortron(destination.insertFortron(available, false), false);
-
-            // Draw Beam Effect
-            if (transferred > 0 && !isCamo) {
-                BlockPos sourcePos = ((BlockEntity) source).getBlockPos();
-                Level level = ((BlockEntity) transmitter).getLevel();
-                Vec3 target = Vec3.atCenterOf(((BlockEntity) destination).getBlockPos());
-                Vec3 position = Vec3.atCenterOf(sourcePos);
-                BeamColor color = BeamColor.BLUE;
-                int lifetime = 20;
-                if (level instanceof ClientLevel clientLevel) {
-                    renderBeam(clientLevel, target, position, color, lifetime);
-                }
-                else {
-                    DrawBeamPacket packet = new DrawBeamPacket(target, position, color, lifetime);
-                    Network.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(sourcePos)), packet);
-                }
-            }
+    public static void doTransferFortron(FortronStorage transmitter, FortronStorage receiver, int joules, int limit) {
+        // TODO stop machines from sending power to themselves
+        boolean isCamo = transmitter instanceof ModuleAcceptor acceptor && acceptor.getModuleCount(ModItems.CAMOUFLAGE_MODULE.get()) > 0;
+        if (joules > 0) {
+            doTransferFortron(transmitter, receiver, joules, limit, isCamo);
+        } else {
+            doTransferFortron(receiver, transmitter, joules, limit, isCamo);
         }
     }
     
     public static void renderBeam(ClientLevel level, Vec3 target, Vec3 position, BeamColor color, int lifetime) {
         level.addParticle(new BeamParticleOptions(target, color, lifetime), position.x(), position.y(), position.z(), 0, 0, 0);
+    }
+    
+    private static void doTransferFortron(FortronStorage source, FortronStorage destination, int joules, int limit, boolean isCamo) {
+        // Take energy from receiver.
+        int transfer = Math.min(Math.abs(joules), limit);
+        int available = destination.insertFortron(source.extractFortron(transfer, true), true);
+        int transferred = source.extractFortron(destination.insertFortron(available, false), false);
+
+        // Draw Beam Effect
+        if (transferred > 0 && !isCamo) {
+            BlockEntity sourceBe = source.getOwner();
+            BlockPos sourcePos = sourceBe.getBlockPos();
+            Level level = sourceBe.getLevel();
+            Vec3 target = Vec3.atCenterOf(destination.getOwner().getBlockPos());
+            Vec3 position = Vec3.atCenterOf(sourcePos);
+            BeamColor color = BeamColor.BLUE;
+            int lifetime = 20;
+            if (level instanceof ClientLevel clientLevel) {
+                renderBeam(clientLevel, target, position, color, lifetime);
+            } else {
+                DrawBeamPacket packet = new DrawBeamPacket(target, position, color, lifetime);
+                Network.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(sourcePos)), packet);
+            }
+        }
     }
 
     private Fortron() {}

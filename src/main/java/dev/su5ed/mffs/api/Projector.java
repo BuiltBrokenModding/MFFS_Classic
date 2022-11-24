@@ -14,10 +14,7 @@ import java.util.Collection;
 import java.util.Set;
 
 /**
- * Also extends IDisableable, IFortronFrequency
- * 
  * @author Calclavia
- * 
  */
 public interface Projector extends ModuleAcceptor, BiometricIdentifierLink
 {
