@@ -31,6 +31,7 @@ import java.util.Set;
 
 public class FortronCapacitorBlockEntity extends ModularBlockEntity implements FortronCapacitor, MenuProvider {
     public final InventorySlot secondaryCard;
+    public final List<InventorySlot> upgradeSlots;
 
     private TransferMode transferMode = TransferMode.EQUALIZE;
 
@@ -38,6 +39,7 @@ public class FortronCapacitorBlockEntity extends ModularBlockEntity implements F
         super(ModObjects.FORTRON_CAPACITOR_BLOCK_ENTITY.get(), pos, state, 10);
 
         this.secondaryCard = addSlot("secondaryCard", InventorySlot.Mode.BOTH, stack -> stack.getItem() instanceof Card);
+        this.upgradeSlots = createUpgradeSlots(3);
     }
 
     public TransferMode getTransferMode() {
@@ -52,6 +54,12 @@ public class FortronCapacitorBlockEntity extends ModularBlockEntity implements F
     @Override
     public int getBaseFortronTankCapacity() {
         return 700;
+    }
+
+    @Override
+    protected void addModuleSlots(List<? super InventorySlot> list) {
+        super.addModuleSlots(list);
+        list.addAll(this.upgradeSlots);
     }
 
     @Override

@@ -20,6 +20,7 @@ public class FortronCapacitorScreen extends FortronScreen<FortronCapacitorMenu> 
         this.frequencyBoxPos = IntIntPair.of(50, 76);
         this.frequencyLabelPos = IntIntPair.of(8, 63);
         this.fortronEnergyBarPos = IntIntPair.of(8, 115);
+        this.fortronEnergyBarWidth = 107;
     }
 
     @Override

@@ -10,7 +10,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -19,9 +18,10 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Set;
 
-public class CoercionDeriverBlockEntity extends ElectricTileEntity implements MenuProvider {
+public class CoercionDeriverBlockEntity extends ElectricTileEntity {
     public static final int FUEL_PROCESS_TIME = 10 * 20;
     public static final int PRODUCTION_MULTIPLIER = 4;
     public static final float FE_FORTRON_RATIO = 0.0025F;
@@ -30,6 +30,7 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity implements Me
 
     public final InventorySlot batterySlot;
     public final InventorySlot fuelSlot;
+    public final List<InventorySlot> upgradeSlots;
 
     // NOTE: Tructated to short when syncing to the client
     private int processTime;
@@ -40,6 +41,7 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity implements Me
 
         this.batterySlot = addSlot("battery", InventorySlot.Mode.BOTH, stack -> stack.getCapability(ForgeCapabilities.ENERGY).isPresent());
         this.fuelSlot = addSlot("fuel", InventorySlot.Mode.BOTH, stack -> stack.is(ModTags.FORTRON_FUEL));
+        this.upgradeSlots = createUpgradeSlots(3);
         this.energy.setMaxTransfer(getMaxTransferRate());
     }
 
@@ -70,6 +72,12 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity implements Me
     @Override
     public int getBaseFortronTankCapacity() {
         return 30;
+    }
+
+    @Override
+    protected void addModuleSlots(List<? super InventorySlot> list) {
+        super.addModuleSlots(list);
+        list.addAll(this.upgradeSlots);
     }
 
     @Override

@@ -37,7 +37,7 @@ public class ModuleItem extends Item implements Module {
 
     @Override
     public float getFortronCost(float amplifier) {
-        return this.fortronCost;
+        return this.fortronCost * amplifier;
     }
 
     @Override

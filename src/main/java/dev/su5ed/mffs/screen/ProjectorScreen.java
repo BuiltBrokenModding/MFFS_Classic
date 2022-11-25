@@ -19,6 +19,7 @@ public class ProjectorScreen extends FortronScreen<ProjectorMenu> {
         this.frequencyBoxPos = IntIntPair.of(48, 91);
         this.frequencyLabelPos = IntIntPair.of(8, 76);
         this.fortronEnergyBarPos = IntIntPair.of(8, 120);
+        this.fortronEnergyBarWidth = 107;
     }
 
     @Override
@@ -27,6 +28,9 @@ public class ProjectorScreen extends FortronScreen<ProjectorMenu> {
         
         this.font.draw(poseStack, "Matrix", 32, 20, GuiColors.DARK_GREY);
         this.font.draw(poseStack, "Fortron: " + this.menu.blockEntity.fortronStorage.getStoredFortron() + " L / " + this.menu.blockEntity.fortronStorage.getFortronCapacity() + " L", 8, 110, GuiColors.DARK_GREY);
-        this.font.draw(poseStack, Component.literal("-" + this.menu.blockEntity.getFortronCost() + " L").withStyle(ChatFormatting.DARK_RED), 120, 121, GuiColors.DARK_GREY);
+        int cost = this.menu.getClientFortronCost() * 20;
+        if (cost > 0) {
+            this.font.draw(poseStack, Component.literal("-" + cost + " L").withStyle(ChatFormatting.DARK_RED), 117, 121, GuiColors.DARK_GREY);
+        }
     }
 }

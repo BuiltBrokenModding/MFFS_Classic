@@ -15,6 +15,7 @@ import net.minecraftforge.fluids.FluidType;
 import one.util.streamex.IntStreamEx;
 import one.util.streamex.StreamEx;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -29,8 +30,7 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
     private static final String MODULE_STACKS_CACHE_KEY = "getModuleStacks_";
     private static final String MODULE_COUNT_CACHE_KEY = "getModuleCount_";
     private static final String MODULE_CACHE_KEY = "getModule_";
-    
-    public final List<InventorySlot> upgradeSlots;
+
     private final int capacityBoost;
     /**
      * Caching for the module stack data. This is used to reduce calculation time. Cache gets reset
@@ -38,22 +38,14 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
      */
     private final Map<String, Object> cache = Collections.synchronizedMap(new HashMap<>());
 
-    /**
-     * Used for client-side only.
-     */
-    public int clientFortronCost;
-    
     protected ModularBlockEntity(BlockEntityType<? extends BaseBlockEntity> type, BlockPos pos, BlockState state) {
         this(type, pos, state, 5);
     }
 
     protected ModularBlockEntity(BlockEntityType<? extends BaseBlockEntity> type, BlockPos pos, BlockState state, int capacityBoost) {
         super(type, pos, state);
-        
+
         this.capacityBoost = capacityBoost;
-        this.upgradeSlots = IntStreamEx.range(3)
-            .mapToObj(i -> addSlot("upgrade_" + i, InventorySlot.Mode.NONE, stack -> stack.getItem() instanceof Module))
-            .toList();
     }
 
     public void consumeCost() {
@@ -61,11 +53,11 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
             this.fortronStorage.extractFortron(getFortronCost(), false);
         }
     }
-    
+
     protected float getAmplifier() {
         return 1;
     }
-    
+
     @Override
     public int getBaseFortronTankCapacity() {
         return 500;
@@ -118,21 +110,21 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
     @SuppressWarnings("unchecked")
     @Override
     public <T extends Item & Module> Set<T> getModules() {
-        return cached(ALL_MODULES_CACHE_KEY, () -> StreamEx.of(this.upgradeSlots)
-            .map(slot -> slot.getItem().getItem())
+        return cached(ALL_MODULES_CACHE_KEY, () -> getModuleItemsStream(List.of())
+            .map(ItemStack::getItem)
             .select(Module.class)
             .map(item -> (T) item)
             .toSet());
     }
 
     /**
-     * Returns Fortron cost in ticks.
+     * Returns Fortron cost per tick.
      */
     @Override
     public final int getFortronCost() {
-        return this.level.isClientSide ? this.clientFortronCost : cached(FOTRON_COST_CACHE_KEY, this::doGetFortronCost);
+        return cached(FOTRON_COST_CACHE_KEY, this::doGetFortronCost);
     }
-    
+
     @Override
     public Object getCache(String cacheID) {
         return this.cache.get(cacheID);
@@ -152,7 +144,7 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
     public void clearCache() {
         this.cache.clear();
     }
-    
+
     @SuppressWarnings("unchecked")
     protected <T> T cached(String key, Supplier<T> calculation) {
         if (MFFSConfig.COMMON.useCache.get()) {
@@ -168,7 +160,7 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
         }
         return calculation.get();
     }
-    
+
     protected int doGetFortronCost() {
         double cost = StreamEx.of(getModuleStacks())
             .mapToDouble(stack -> stack.getCount() * ((Module) stack.getItem()).getFortronCost(getAmplifier()))
@@ -176,13 +168,27 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
         return (int) Math.round(cost);
     }
 
+    protected void addModuleSlots(List<? super InventorySlot> list) {
+
+    }
+
+    protected List<InventorySlot> createUpgradeSlots(int count) {
+        return IntStreamEx.range(count)
+            .mapToObj(i -> addSlot("upgrade_" + i, InventorySlot.Mode.BOTH, stack -> stack.getItem() instanceof Module))
+            .toList();
+    }
+
     private void updateFortronTankCapacity() {
         int capacity = (getModuleCount(ModItems.CAPACITY_MODULE.get()) * this.capacityBoost + getBaseFortronTankCapacity()) * FluidType.BUCKET_VOLUME;
         this.fortronStorage.setCapacity(capacity);
     }
-    
+
     private StreamEx<ItemStack> getModuleItemsStream(Collection<InventorySlot> slots) {
-        return slots.isEmpty() ? StreamEx.of(this.upgradeSlots).map(InventorySlot::getItem)
-            : StreamEx.of(slots).map(InventorySlot::getItem);
+        if (slots.isEmpty()) {
+            List<InventorySlot> moduleSlots = new ArrayList<>();
+            addModuleSlots(moduleSlots);
+            return StreamEx.of(moduleSlots).map(InventorySlot::getItem);
+        }
+        return StreamEx.of(slots).map(InventorySlot::getItem);
     }
 }

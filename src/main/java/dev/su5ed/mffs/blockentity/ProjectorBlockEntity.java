@@ -16,14 +16,13 @@ import dev.su5ed.mffs.setup.ModBlocks;
 import dev.su5ed.mffs.setup.ModItems;
 import dev.su5ed.mffs.setup.ModObjects;
 import dev.su5ed.mffs.setup.ModTags;
-import dev.su5ed.mffs.util.ModUtil;
 import dev.su5ed.mffs.util.DelayedEvent;
 import dev.su5ed.mffs.util.InventorySlot;
+import dev.su5ed.mffs.util.ModUtil;
 import dev.su5ed.mffs.util.ProjectorCalculationThread;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -43,7 +42,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-public class ProjectorBlockEntity extends ModularBlockEntity implements MenuProvider, Projector {
+public class ProjectorBlockEntity extends ModularBlockEntity implements Projector {
     private static final String TRANSLATION_CACHE_KEY = "getTranslation";
     private static final String POSITIVE_SCALE_CACHE_KEY = "getPositiveScale";
     private static final String NEGATIVE_SCALE_CACHE_KEY = "getNegativeScale";
@@ -78,9 +77,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements MenuProv
                 .mapToObj(i -> addSlot("field_module_" + side.getName() + "_" + i, InventorySlot.Mode.BOTH, stack -> stack.getItem() instanceof Module))
                 .forEach(slot -> builder.put(side, slot)));
         this.fieldModuleSlots = builder.build();
-        this.upgradeSlots = IntStreamEx.range(6)
-            .mapToObj(i -> addSlot("upgrade_" + i, InventorySlot.Mode.BOTH, stack -> stack.getItem() instanceof Module))
-            .toList();
+        this.upgradeSlots = createUpgradeSlots(6);
     }
 
     @Override
@@ -88,6 +85,13 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements MenuProv
         super.onLoad();
 
         reCalculateForceField();
+    }
+
+    @Override
+    protected void addModuleSlots(List<? super InventorySlot> list) {
+        super.addModuleSlots(list);
+        list.addAll(this.upgradeSlots);
+        list.addAll(this.fieldModuleSlots.values());
     }
 
     // TODO Stablizer Module Construction FXs

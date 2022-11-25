@@ -112,10 +112,7 @@ public abstract class FortronMenu<T extends ModularBlockEntity & Activatable> ex
     }
     
     protected void addUpgradeSlots() {
-        this.blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(handler -> {
-            EntryStream.of(this.blockEntity.upgradeSlots)
-                .forKeyValue((i, slot) -> addSlot(new SlotInventory(slot, 154, 47 + i * 20)));
-        });
+        ;
     }
 
     private void trackPower() {

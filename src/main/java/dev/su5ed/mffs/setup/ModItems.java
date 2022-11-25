@@ -32,7 +32,7 @@ public final class ModItems {
     
     public static final RegistryObject<ModuleItem> SPEED_MODULE = ITEMS.register("speed_module", () -> new ModuleItem(itemProperties(), 1.0F));
     public static final RegistryObject<ModuleItem> CAMOUFLAGE_MODULE = ITEMS.register("camouflage_module", () -> new ModuleItem(itemProperties().stacksTo(1), 1.5F));
-    public static final RegistryObject<ModuleItem> SCALE_MODULE = ITEMS.register("scale_module", () -> new ModuleItem(itemProperties(), 2.5F));
+    public static final RegistryObject<ModuleItem> SCALE_MODULE = ITEMS.register("scale_module", () -> new ModuleItem(itemProperties(), 1.2F));
     public static final RegistryObject<ModuleItem> CAPACITY_MODULE = ITEMS.register("capacity_module", () -> new ModuleItem(itemProperties(), 0.5F));
     public static final RegistryObject<ModuleItem> DISINTEGRATION_MODULE = ITEMS.register("disintegration_module", DisintegrationModuleItem::new);
     public static final RegistryObject<ModuleItem> TRANSLATION_MODULE = ITEMS.register("translation_module", () -> new ModuleItem(itemProperties(), 1.6F));

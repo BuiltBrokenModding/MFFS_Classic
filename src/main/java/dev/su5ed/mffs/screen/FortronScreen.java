@@ -14,6 +14,7 @@ public abstract class FortronScreen<T extends FortronMenu<?>> extends BaseScreen
     protected IntIntPair frequencyBoxPos = IntIntPair.of(0, 0);
     protected IntIntPair frequencyLabelPos = IntIntPair.of(0, 0);
     protected IntIntPair fortronEnergyBarPos = IntIntPair.of(0, 0);
+    protected int fortronEnergyBarWidth;
 
     private NumericEditBox frequency;
 
@@ -37,7 +38,7 @@ public abstract class FortronScreen<T extends FortronMenu<?>> extends BaseScreen
         this.frequency.setValue(Integer.toString(this.menu.blockEntity.fortronStorage.getFrequency()));
         addWidget(this.frequency);
 
-        addRenderableWidget(new FortronChargeWidget(this.leftPos + this.fortronEnergyBarPos.leftInt(), this.topPos + this.fortronEnergyBarPos.rightInt(), 107, 11, Component.empty(),
+        addRenderableWidget(new FortronChargeWidget(this.leftPos + this.fortronEnergyBarPos.leftInt(), this.topPos + this.fortronEnergyBarPos.rightInt(), this.fortronEnergyBarWidth, 11, Component.empty(),
             () -> this.menu.blockEntity.fortronStorage.getStoredFortron() / (double) this.menu.blockEntity.fortronStorage.getFortronCapacity()));
     }
 
