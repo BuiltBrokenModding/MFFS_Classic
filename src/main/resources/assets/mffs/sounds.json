@@ -1,0 +1,12 @@
+{
+    "field": {
+        "subtitle": "sounds.mffs.field",
+        "sounds": [
+            "mffs:field1",
+            "mffs:field2",
+            "mffs:field3",
+            "mffs:field4",
+            "mffs:field5"
+        ]
+    }
+}

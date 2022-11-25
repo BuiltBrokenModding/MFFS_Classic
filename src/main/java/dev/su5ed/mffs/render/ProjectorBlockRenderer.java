@@ -33,7 +33,7 @@ public class ProjectorBlockRenderer implements BlockEntityRenderer<ProjectorBloc
     }
 
     @Override
-    public void render(ProjectorBlockEntity blockEntity, float pPartialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
+    public void render(ProjectorBlockEntity blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
         renderRotor(blockEntity, poseStack, bufferSource, packedLight, packedOverlay);
         ProjectorMode mode = blockEntity.getMode();
         if (mode != null) {

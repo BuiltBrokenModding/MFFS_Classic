@@ -14,5 +14,7 @@
   "item.mffs.rotation_module": "Rotation Module",
   "item.mffs.scale_module": "Scale Module",
   "item.mffs.speed_module": "Speed Module",
-  "item.mffs.translation_module": "Translation Module"
+  "item.mffs.translation_module": "Translation Module",
+  
+  "sounds.mffs.field": "Field Sound"
 }

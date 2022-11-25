@@ -15,6 +15,7 @@ import dev.su5ed.mffs.menu.ProjectorMenu;
 import dev.su5ed.mffs.setup.ModBlocks;
 import dev.su5ed.mffs.setup.ModItems;
 import dev.su5ed.mffs.setup.ModObjects;
+import dev.su5ed.mffs.setup.ModSounds;
 import dev.su5ed.mffs.setup.ModTags;
 import dev.su5ed.mffs.util.DelayedEvent;
 import dev.su5ed.mffs.util.InventorySlot;
@@ -23,6 +24,7 @@ import dev.su5ed.mffs.util.ProjectorCalculationThread;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -127,10 +129,9 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
                 }
             }
 
-            // TODO Sound
-//            if (getTicks() % (2 * 20) == 0) {
-//                this.worldObj.playSoundEffect(this.xCoord + 0.5D, this.yCoord + 0.5D, this.zCoord + 0.5D, "mffs.field", 0.6f, (1 - this.worldObj.rand.nextFloat() * 0.1f));
-//            }
+            if (getTicks() % (2 * 20) == 0) {
+                this.level.playSound(null, this.worldPosition, ModSounds.FIELD.get(), SoundSource.BLOCKS, 0.4F, 1 - this.level.random.nextFloat() * 0.1F);
+            }
         } else {
             destroyField();
         }

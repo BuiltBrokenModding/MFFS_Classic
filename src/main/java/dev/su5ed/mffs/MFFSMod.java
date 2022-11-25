@@ -7,6 +7,7 @@ import dev.su5ed.mffs.setup.ModMenus;
 import dev.su5ed.mffs.setup.ModFluids;
 import dev.su5ed.mffs.setup.ModItems;
 import dev.su5ed.mffs.setup.ModObjects;
+import dev.su5ed.mffs.setup.ModSounds;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -32,6 +33,7 @@ public final class MFFSMod {
         ModObjects.init(bus);
         ModMenus.init(bus);
         ModFluids.init(bus);
+        ModSounds.init(bus);
 
         Network.registerPackets();
         
