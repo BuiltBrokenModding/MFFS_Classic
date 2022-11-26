@@ -27,6 +27,9 @@ public class FortronStorageImpl implements FortronStorage {
     
     public void setCapacity(int capacity) {
         this.fortronTank.setCapacity(capacity);
+        if (!this.fortronTank.isEmpty()) {
+            this.fortronTank.getFluid().setAmount(Math.min(this.fortronTank.getFluidAmount(), capacity));
+        }
     }
 
     @Override
