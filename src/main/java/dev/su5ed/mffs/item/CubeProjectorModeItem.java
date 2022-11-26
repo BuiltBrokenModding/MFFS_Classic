@@ -3,12 +3,10 @@ package dev.su5ed.mffs.item;
 import dev.su5ed.mffs.api.Projector;
 import dev.su5ed.mffs.setup.ModItems;
 import dev.su5ed.mffs.util.ModUtil;
-import dev.su5ed.mffs.util.ProjectorModeItemRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -58,11 +56,5 @@ public class CubeProjectorModeItem extends ProjectorModeItem {
         BlockPos rotated = ModUtil.rotateByAngle(relativePosition, -projector.getRotationYaw(), -projector.getRotationPitch());
         AABB region = new AABB(projector.getNegativeScale().multiply(-1), projector.getPositiveScale());
         return region.contains(rotated.getX(), rotated.getY(), rotated.getZ());
-    }
-
-    @Nullable
-    @Override
-    public ProjectorModeItemRenderer getRenderer() {
-        return ClientRenderHandler::renderCubeMode;
     }
 }

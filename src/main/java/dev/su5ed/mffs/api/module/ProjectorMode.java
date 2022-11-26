@@ -1,7 +1,6 @@
 package dev.su5ed.mffs.api.module;
 
 import dev.su5ed.mffs.api.Projector;
-import dev.su5ed.mffs.util.ProjectorModeItemRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.Nullable;
@@ -26,7 +25,4 @@ public interface ProjectorMode
 	 * @return Is this specific position inside this force field?
 	 */
 	boolean isInField(Projector projector, BlockPos position);
-
-	@Nullable
-	ProjectorModeItemRenderer getRenderer();
 }

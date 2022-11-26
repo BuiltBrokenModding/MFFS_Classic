@@ -56,7 +56,7 @@ public abstract class FortronBlockEntity extends InventoryBlockEntity implements
         this.frequencySlot = addSlot("frequency", InventorySlot.Mode.NONE, stack -> stack.getItem() instanceof Card);
     }
 
-    public long getAnimation() {
+    public int getAnimation() {
         return this.animation;
     }
 

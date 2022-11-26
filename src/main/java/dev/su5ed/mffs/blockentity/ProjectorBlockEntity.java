@@ -82,6 +82,15 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
         this.upgradeSlots = createUpgradeSlots(6);
     }
 
+    public float getAnimationSpeed() {
+        int speed = 4;
+        int fortronCost = getFortronCost();
+        if (isActive() && getMode() != null && this.fortronStorage.extractFortron(fortronCost, true) >= fortronCost) {
+            speed += fortronCost / 3.0f;
+        }
+        return speed;
+    }
+
     @Override
     public void onLoad() {
         super.onLoad();
@@ -134,14 +143,6 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
             }
         } else {
             destroyField();
-        }
-    }
-
-    @Override
-    protected void animate() {
-        int fortronCost = getFortronCost();
-        if (isActive() && getMode() != null && this.fortronStorage.extractFortron(fortronCost, true) >= fortronCost) {
-            this.animation += fortronCost / 3;
         }
     }
 
@@ -313,7 +314,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
             if (getModules().stream().anyMatch(m -> m.onProject(this, fieldToBeProjected))) {
                 return;
             }
-            
+
             fieldLoop:
             for (BlockPos pos : this.calculatedField) {
                 if (fieldToBeProjected.contains(pos)) {
@@ -352,7 +353,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
             }
         }
     }
-    
+
     private boolean canProjectPos(BlockPos pos) {
         BlockState state = this.level.getBlockState(pos);
         return (state.isAir() || getModuleCount(ModItems.DISINTEGRATION_MODULE.get()) > 0 && state.getDestroySpeed(this.level, pos) != -1 || state.getMaterial().isLiquid() || state.is(ModTags.FORCEFIELD_REPLACEABLE))
