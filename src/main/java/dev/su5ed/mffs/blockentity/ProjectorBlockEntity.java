@@ -86,9 +86,9 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
         int speed = 4;
         int fortronCost = getFortronCost();
         if (isActive() && getMode() != null && this.fortronStorage.extractFortron(fortronCost, true) >= fortronCost) {
-            speed += fortronCost / 3.0f;
+            speed *= fortronCost / 8.0f;
         }
-        return speed;
+        return Math.min(120, speed);
     }
 
     @Override

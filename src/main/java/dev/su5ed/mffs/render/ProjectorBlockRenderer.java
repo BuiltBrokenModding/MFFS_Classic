@@ -20,7 +20,9 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Function;
 
@@ -42,8 +44,7 @@ public class ProjectorBlockRenderer implements BlockEntityRenderer<ProjectorBloc
         renderRotor(blockEntity, partialTick, poseStack, bufferSource, packedLight, packedOverlay);
         ProjectorMode mode = blockEntity.getMode();
         if (mode != null) {
-            renderHolo(blockEntity, poseStack, bufferSource);
-
+            RenderTickHandler.addTransparentRenderer(ModRenderType.STANDARD_TRANSLUCENT_TRIANGLE, new HoloRenderer(blockEntity));
             ModClientSetup.renderLazy((Item) mode, blockEntity, this.modelPartCache);
         }
     }
@@ -61,29 +62,45 @@ public class ProjectorBlockRenderer implements BlockEntityRenderer<ProjectorBloc
 
         poseStack.popPose();
     }
+    
+    private static class HoloRenderer implements LazyRenderer {
+        private final BlockEntity be;
+        private final Vec3 centerPos;
 
-    private void renderHolo(ProjectorBlockEntity blockEntity, PoseStack poseStack, MultiBufferSource bufferSource) {
-        poseStack.pushPose();
+        public HoloRenderer(BlockEntity be) {
+            this.be = be;
+            this.centerPos = Vec3.atCenterOf(be.getBlockPos());
+        }
 
-        poseStack.translate(0.5, 0.5, 0.5);
-        Vec3 playerPos = Minecraft.getInstance().player.position();
-        BlockPos bePos = blockEntity.getBlockPos();
-        double xDifference = playerPos.x - (bePos.getX() + 0.5D);
-        double zDifference = playerPos.z - (bePos.getZ() + 0.5D);
-        float rotation = (float) Math.toDegrees(Math.atan2(zDifference, xDifference));
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(-rotation + 27.0F));
+        @Override
+        public void render(PoseStack poseStack, VertexConsumer buffer, int ticks, float partialTick) {
+            poseStack.pushPose();
 
-        final float height = 2.0F;
-        final float width = 2.0F;
-        VertexConsumer buffer = bufferSource.getBuffer(ModRenderType.HOLO); // TODO find a better solution
-        Matrix4f mat = poseStack.last().pose();
+            poseStack.translate(this.centerPos.x, this.centerPos.y, this.centerPos.z);
+            Vec3 playerPos = Minecraft.getInstance().player.position();
+            BlockPos bePos = this.be.getBlockPos();
+            double xDifference = playerPos.x - (bePos.getX() + 0.5D);
+            double zDifference = playerPos.z - (bePos.getZ() + 0.5D);
+            float rotation = (float) Math.toDegrees(Math.atan2(zDifference, xDifference));
+            poseStack.mulPose(Vector3f.YP.rotationDegrees(-rotation + 27.0F));
 
-        buffer.vertex(mat, 0, 0, 0).color(72, 198, 255, 255).endVertex();
-        buffer.vertex(mat, -0.866F * width, height, -0.5F * width).color(0, 0, 0, 0).endVertex();
-        buffer.vertex(mat, 0.866F * width, height, -0.5F * width).color(0, 0, 0, 0).endVertex();
-        buffer.vertex(mat, 0.0F, height, width).color(0, 0, 0, 0).endVertex();
-        buffer.vertex(mat, -0.866F * width, height, -0.5F * width).color(0, 0, 0, 0).endVertex();
+            float height = 2.0F;
+            float width = 2.0F;
+            Matrix4f mat = poseStack.last().pose();
 
-        poseStack.popPose();
+            buffer.vertex(mat, 0, 0, 0).color(72, 198, 255, 255).endVertex();
+            buffer.vertex(mat, -0.866F * width, height, -0.5F * width).color(0, 0, 0, 0).endVertex();
+            buffer.vertex(mat, 0.866F * width, height, -0.5F * width).color(0, 0, 0, 0).endVertex();
+            buffer.vertex(mat, 0.0F, height, width).color(0, 0, 0, 0).endVertex();
+            buffer.vertex(mat, -0.866F * width, height, -0.5F * width).color(0, 0, 0, 0).endVertex();
+
+            poseStack.popPose();
+        }
+
+        @Nullable
+        @Override
+        public Vec3 getCenterPos(float partialTick) {
+            return this.centerPos;
+        }
     }
 }

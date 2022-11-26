@@ -28,38 +28,38 @@ public final class Fortron {
         return new FluidStack(ModFluids.FORTRON_FLUID.get(), amount);
     }
 
-    public static void transferFortron(FortronStorage transmitter, Set<? extends FortronStorage> frequencyTiles, TransferMode transferMode, int limit) {
-        if (transmitter != null && frequencyTiles.size() > 1) {
+    public static void transferFortron(FortronStorage transmitter, Set<? extends FortronStorage> receivers, TransferMode transferMode, int limit) {
+        if (transmitter != null && receivers.size() > 1) {
             // Check spread mode. Equal, Give All, Take All
             int totalFortron = 0;
             int totalCapacity = 0;
 
-            for (FortronStorage storage : frequencyTiles) {
+            for (FortronStorage storage : receivers) {
                 totalFortron += storage.getStoredFortron();
                 totalCapacity += storage.getFortronCapacity();
             }
+            
+            receivers.remove(transmitter);
 
             if (totalFortron > 0 && totalCapacity > 0) {
                 // Test each mode and based on the mode, spread Fortron energy.
                 switch (transferMode) {
                     case EQUALIZE -> {
-                        for (FortronStorage machine : frequencyTiles) {
+                        for (FortronStorage machine : receivers) {
                             double capacityPercentage = (double) machine.getFortronCapacity() / (double) totalCapacity;
                             int amountToSet = (int) (totalFortron * capacityPercentage);
                             doTransferFortron(transmitter, machine, amountToSet - machine.getStoredFortron(), limit);
                         }
                     }
                     case DISTRIBUTE -> {
-                        final int amountToSet = totalFortron / frequencyTiles.size();
+                        final int amountToSet = totalFortron / receivers.size();
 
-                        for (FortronStorage machine : frequencyTiles) {
+                        for (FortronStorage machine : receivers) {
                             doTransferFortron(transmitter, machine, amountToSet - machine.getStoredFortron(), limit);
                         }
                     }
                     case DRAIN -> {
-                        frequencyTiles.remove(transmitter);
-
-                        for (FortronStorage machine : frequencyTiles) {
+                        for (FortronStorage machine : receivers) {
                             double capacityPercentage = (double) machine.getFortronCapacity() / (double) totalCapacity;
                             int amountToSet = (int) (totalFortron * capacityPercentage);
 
@@ -70,12 +70,10 @@ public final class Fortron {
                     }
                     case FILL -> {
                         if (transmitter.getStoredFortron() < transmitter.getFortronCapacity()) {
-                            frequencyTiles.remove(transmitter);
-
                             // The amount of energy required to be full.
                             int requiredFortron = transmitter.getFortronCapacity() - transmitter.getStoredFortron();
 
-                            for (FortronStorage machine : frequencyTiles) {
+                            for (FortronStorage machine : receivers) {
                                 int amountToConsume = Math.min(requiredFortron, machine.getStoredFortron());
                                 int amountToSet = -machine.getStoredFortron() - amountToConsume;
 
