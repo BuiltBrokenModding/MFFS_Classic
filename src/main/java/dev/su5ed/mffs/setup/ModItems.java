@@ -37,6 +37,7 @@ public final class ModItems {
     public static final RegistryObject<ModuleItem> DISINTEGRATION_MODULE = ITEMS.register("disintegration_module", DisintegrationModuleItem::new);
     public static final RegistryObject<ModuleItem> TRANSLATION_MODULE = ITEMS.register("translation_module", () -> new ModuleItem(itemProperties(), 1.6F));
     public static final RegistryObject<ModuleItem> ROTATION_MODULE = ITEMS.register("rotation_module", () -> new ModuleItem(itemProperties(), 0.1F));
+    public static final RegistryObject<ModuleItem> GLOW_MODULE = ITEMS.register("glow_module", () -> new ModuleItem(itemProperties()));
 
     public static final RegistryObject<ProjectorModeItem> CUBE_MODE = ITEMS.register("cube_mode", CubeProjectorModeItem::new);
     

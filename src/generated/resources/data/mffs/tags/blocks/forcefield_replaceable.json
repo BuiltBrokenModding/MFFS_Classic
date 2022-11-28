@@ -3,6 +3,9 @@
     "minecraft:snow",
     "minecraft:vine",
     "minecraft:tall_grass",
-    "minecraft:dead_bush"
+    "minecraft:dead_bush",
+    "minecraft:glow_lichen",
+    "minecraft:seagrass",
+    "minecraft:tall_grass"
   ]
 }

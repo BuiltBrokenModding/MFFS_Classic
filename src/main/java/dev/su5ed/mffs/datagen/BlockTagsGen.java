@@ -16,7 +16,8 @@ public class BlockTagsGen extends BlockTagsProvider {
 
     @Override
     protected void addTags() {
-        tag(ModTags.FORCEFIELD_REPLACEABLE).add(Blocks.SNOW, Blocks.VINE, Blocks.TALL_GRASS, Blocks.DEAD_BUSH);
+        tag(ModTags.FORCEFIELD_REPLACEABLE)
+            .add(Blocks.SNOW, Blocks.VINE, Blocks.TALL_GRASS, Blocks.DEAD_BUSH, Blocks.GLOW_LICHEN, Blocks.SEAGRASS, Blocks.TALL_GRASS);
     }
 
     @Override

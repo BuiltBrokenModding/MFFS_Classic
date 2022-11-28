@@ -4,6 +4,7 @@ import dev.su5ed.mffs.setup.ModObjects;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
@@ -17,6 +18,7 @@ public class ForceFieldBlockEntity extends BlockEntity {
 
     public void setProjector(BlockPos position) {
         this.projector = position;
+        setChanged();
     }
 
     /**
@@ -34,14 +36,20 @@ public class ForceFieldBlockEntity extends BlockEntity {
         return null;
     }
 
+    @Nullable
     public ProjectorBlockEntity getProjectorSafe() {
-        if (this.projector != null && !this.level.isClientSide && this.level.getBlockEntity(this.projector) instanceof ProjectorBlockEntity projectorBe && projectorBe.getCalculatedField().contains(this.worldPosition)) {
+        return !this.level.isClientSide ? getProjectorSafe(this.level) : null;
+    }
+
+    @Nullable
+    public ProjectorBlockEntity getProjectorSafe(BlockGetter level) {
+        if (this.projector != null && level.getBlockEntity(this.projector) instanceof ProjectorBlockEntity projectorBe && projectorBe.getCalculatedField().contains(this.worldPosition)) {
             return projectorBe;
         }
         return null;
     }
 
-	@Override
+    @Override
 	protected void saveAdditional(CompoundTag tag) {
 		super.saveAdditional(tag);
 		

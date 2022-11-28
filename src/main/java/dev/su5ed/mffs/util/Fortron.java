@@ -96,7 +96,6 @@ public final class Fortron {
      * @param joules   : The amount of energy to be transfered.
      */
     public static void doTransferFortron(FortronStorage transmitter, FortronStorage receiver, int joules, int limit) {
-        // TODO stop machines from sending power to themselves
         boolean isCamo = transmitter instanceof ModuleAcceptor acceptor && acceptor.getModuleCount(ModItems.CAMOUFLAGE_MODULE.get()) > 0;
         if (joules > 0) {
             doTransferFortron(transmitter, receiver, joules, limit, isCamo);

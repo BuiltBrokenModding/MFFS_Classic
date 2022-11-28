@@ -4,6 +4,7 @@ import dev.su5ed.mffs.api.ForceFieldBlock;
 import dev.su5ed.mffs.api.Projector;
 import dev.su5ed.mffs.api.fortron.FortronStorage;
 import dev.su5ed.mffs.blockentity.ForceFieldBlockEntity;
+import dev.su5ed.mffs.setup.ModItems;
 import dev.su5ed.mffs.setup.ModObjects;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
@@ -17,8 +18,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Optional;
+
 public class ForceFieldBlockImpl extends AbstractGlassBlock implements ForceFieldBlock, EntityBlock {
-    
+
     public ForceFieldBlockImpl() {
         super(Properties.of(Material.GLASS)
             .destroyTime(-1)
@@ -50,9 +53,17 @@ public class ForceFieldBlockImpl extends AbstractGlassBlock implements ForceFiel
         return ItemStack.EMPTY;
     }
 
+    @Override
+    public int getLightEmission(BlockState state, BlockGetter level, BlockPos pos) {
+        return Optional.ofNullable(level.getBlockEntity(pos))
+            .map(be -> be instanceof ForceFieldBlockEntity f ? f.getProjectorSafe(level) : null)
+            .map(projector -> (int) ((float) Math.min(projector.getModuleCount(ModItems.GLOW_MODULE.get()), 64) / 64 * 15))
+            .orElseGet(() -> super.getLightEmission(state, level, pos));
+    }
+
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return ModObjects.FORCE_FIELD_BLOCK_ENTITY.get().create(pos, state); 
+        return ModObjects.FORCE_FIELD_BLOCK_ENTITY.get().create(pos, state);
     }
 }

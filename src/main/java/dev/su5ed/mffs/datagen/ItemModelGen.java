@@ -27,6 +27,8 @@ final class ItemModelGen extends ItemModelProvider {
         simpleItem(ModItems.DISINTEGRATION_MODULE);
         simpleItem(ModItems.TRANSLATION_MODULE);
         simpleItem(ModItems.ROTATION_MODULE);
+        simpleItem(ModItems.GLOW_MODULE);
+        
         simpleItem(ModItems.CUBE_MODE);
     }
     

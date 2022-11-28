@@ -178,6 +178,10 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
         super.onInventoryChanged();
 
         destroyField();
+        // Update mode light
+        if (!this.level.isClientSide) {
+            this.level.getChunkSource().getLightEngine().checkBlock(this.worldPosition);
+        }
     }
 
     @Nullable
@@ -334,10 +338,10 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
                         }
 
                         this.level.setBlock(pos, ModBlocks.FORCE_FIELD.get().defaultBlockState(), Block.UPDATE_ALL);
-
-                        // Sets the controlling projector of the force field block to this one.
+                        // Set the controlling projector of the force field block to this one
                         this.level.getBlockEntity(pos, ModObjects.FORCE_FIELD_BLOCK_ENTITY.get())
                             .ifPresent(be -> be.setProjector(this.worldPosition));
+                        this.level.getChunkSource().getLightEngine().checkBlock(pos);
 
                         this.fortronStorage.extractFortron(1, false);
                         this.forceFields.add(pos);
@@ -366,7 +370,10 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
         if (!this.level.isClientSide && this.isCalculated && !this.isCalculating) {
             StreamEx.of(this.calculatedField)
                 .filter(pos -> this.level.getBlockState(pos).is(ModBlocks.FORCE_FIELD.get()))
-                .forEach(pos -> this.level.removeBlock(pos, false));
+                .forEach(pos -> {
+                    this.level.removeBlock(pos, false);
+                    this.level.getChunkSource().getLightEngine().checkBlock(pos);
+                });
         }
 
         this.forceFields.clear();

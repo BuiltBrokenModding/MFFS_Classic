@@ -46,7 +46,7 @@ public class ProjectorCalculationThread extends Thread {
                 })
 				.forEach(pos -> {
 					if (pos.getY() <= this.projector.getLevel().getHeight()) {
-						this.projector.getCalculatedField().add(new HashBlockPos(pos));
+						this.projector.getCalculatedField().add(new BlockPos(pos));
 					}
 				});
 
