@@ -1,6 +1,9 @@
 {
   "itemGroup.mffs": "MFFS",
   
+  "info.mffs.coercion_deriver.mode.integrate": "Integrate",
+  "info.mffs.coercion_deriver.mode.derive": "Derive",
+  
   "block.mffs.machine_block": "Base Machine Block",
   "block.mffs.projector": "Force Field Projector",
   "block.mffs.coercion_deriver": "Coercion Deriver",
@@ -27,11 +30,21 @@
   "mffs.projector_menu.west": "West",
   "mffs.projector_menu.east": "East",
   
-  "screen.mffs.frequency": "Frequency: ",
+  "screen.mffs.frequency": "Frequency:",
   "screen.mffs.frequency.tooltip": "Machines with the same frequency will share Fortron energy.",
   "screen.mffs.matrix": "Matrix",
   "screen.mffs.matrix.tooltip": "The projection matrix is used to determine how the projection should be created.",
   "screen.mffs.fortron": "Fortron: %s L / %s L",
+  "screen.mffs.fortron.name": "Fortron:",
+  "screen.mffs.fortron.value": "%s L / %s L",
+  "screen.mffs.fortron.short": "Fortron: %s L",
   "screen.mffs.fortron.tooltip": "Fortron is the type of force energy used in MFFS machines.",
-  "screen.mffs.fortron_cost": "%s%s L"
+  "screen.mffs.fortron_cost": "%s%s L/s",
+  "screen.mffs.upgrade": "Upgrade",
+  "screen.mffs.linked_devices": "Linked Devices: %s",
+  "screen.mffs.transmission_rate": "Transmission rate: %s L/s",
+  "screen.mffs.range": "Range: %s ",
+  "screen.mffs.progress": "Progress: ",
+  "screen.mffs.progress.running": "Running",
+  "screen.mffs.progress.idle": "Idle"
 }

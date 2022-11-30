@@ -6,10 +6,12 @@ import dev.su5ed.mffs.setup.ModItems;
 import dev.su5ed.mffs.setup.ModObjects;
 import dev.su5ed.mffs.setup.ModTags;
 import dev.su5ed.mffs.util.InventorySlot;
+import dev.su5ed.mffs.util.ModUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -19,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 public class CoercionDeriverBlockEntity extends ElectricTileEntity {
@@ -183,6 +186,10 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity {
 
         public EnergyMode next() {
             return VALUES[(ordinal() + 1) % VALUES.length];
+        }
+        
+        public MutableComponent translate() {
+            return ModUtil.translate("info", "coercion_deriver.mode." + name().toLowerCase(Locale.ROOT));
         }
     }
 }

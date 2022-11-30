@@ -6,6 +6,7 @@ import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.menu.FortronCapacitorMenu;
 import dev.su5ed.mffs.network.Network;
 import dev.su5ed.mffs.network.SwitchTransferModePacket;
+import dev.su5ed.mffs.util.ModUtil;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -37,15 +38,15 @@ public class FortronCapacitorScreen extends FortronScreen<FortronCapacitorMenu> 
 
         poseStack.pushPose();
         poseStack.mulPose(Vector3f.ZP.rotationDegrees(-90));
-        this.font.draw(poseStack, "Upgrade", -95, 140, GuiColors.DARK_GREY);
+        this.font.draw(poseStack, ModUtil.translate("screen", "upgrade"), -95, 140, GuiColors.DARK_GREY);
         poseStack.popPose();
 
-        this.font.draw(poseStack, "Linked Devices: " + this.menu.blockEntity.getDevicesByFrequency().size(), 8, 28, GuiColors.DARK_GREY);
-        this.font.draw(poseStack, "Transmission rate: " + this.menu.blockEntity.getTransmissionRate() * 10 + " L/s", 8, 40, GuiColors.DARK_GREY);
-        this.font.draw(poseStack, "Range: " + this.menu.blockEntity.getTransmissionRange(), 8, 52, GuiColors.DARK_GREY);
+        this.font.draw(poseStack, ModUtil.translate("screen", "linked_devices", this.menu.blockEntity.getDevicesByFrequency().size()), 8, 28, GuiColors.DARK_GREY);
+        this.font.draw(poseStack, ModUtil.translate("screen", "transmission_rate", this.menu.blockEntity.getTransmissionRate() * 10), 8, 40, GuiColors.DARK_GREY);
+        this.font.draw(poseStack, ModUtil.translate("screen", "range", this.menu.blockEntity.getTransmissionRange()), 8, 52, GuiColors.DARK_GREY);
 
-        this.font.draw(poseStack, "Fortron:", 8, 95, GuiColors.DARK_GREY);
-        this.font.draw(poseStack, this.menu.blockEntity.fortronStorage.getStoredFortron() + " L / " + this.menu.blockEntity.fortronStorage.getFortronCapacity() + " L", 8, 105, GuiColors.DARK_GREY);
+        this.font.draw(poseStack, ModUtil.translate("screen", "fortron.name"), 8, 95, GuiColors.DARK_GREY);
+        this.font.draw(poseStack, ModUtil.translate("screen", "fortron.value", this.menu.blockEntity.fortronStorage.getStoredFortron(), this.menu.blockEntity.fortronStorage.getFortronCapacity()), 8, 105, GuiColors.DARK_GREY);
 
         // TODO Fortron cost
     }
