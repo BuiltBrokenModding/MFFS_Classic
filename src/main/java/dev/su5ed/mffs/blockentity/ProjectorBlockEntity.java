@@ -10,6 +10,7 @@ import dev.su5ed.mffs.api.card.Card;
 import dev.su5ed.mffs.api.module.Module;
 import dev.su5ed.mffs.api.module.Module.ProjectAction;
 import dev.su5ed.mffs.api.module.ProjectorMode;
+import dev.su5ed.mffs.item.CustomModeItem;
 import dev.su5ed.mffs.item.ModuleItem;
 import dev.su5ed.mffs.menu.ProjectorMenu;
 import dev.su5ed.mffs.setup.ModBlocks;
@@ -28,9 +29,11 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 import one.util.streamex.IntStreamEx;
 import one.util.streamex.StreamEx;
@@ -42,6 +45,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 public class ProjectorBlockEntity extends ModularBlockEntity implements Projector {
@@ -337,11 +342,18 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
                             }
                         }
 
-                        this.level.setBlock(pos, ModBlocks.FORCE_FIELD.get().defaultBlockState(), Block.UPDATE_ALL);
+                        BlockState state = ModBlocks.FORCE_FIELD.get().defaultBlockState();
+                        this.level.setBlock(pos, state, Block.UPDATE_ALL);
                         // Set the controlling projector of the force field block to this one
                         this.level.getBlockEntity(pos, ModObjects.FORCE_FIELD_BLOCK_ENTITY.get())
-                            .ifPresent(be -> be.setProjector(this.worldPosition));
-                        this.level.getChunkSource().getLightEngine().checkBlock(pos);
+                            .ifPresent(be -> {
+                                be.setProjector(this.worldPosition);
+                                Block camouflage = getCamoBlock(pos);
+                                if (camouflage != null) {
+                                    be.setCamouflage(camouflage);
+                                }
+                            });
+                        this.level.getLightEngine().checkBlock(pos);
 
                         this.fortronStorage.extractFortron(1, false);
                         this.forceFields.add(pos);
@@ -402,5 +414,37 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
             // Start multi-threading calculation
             new ProjectorCalculationThread(this, callBack).start();
         }
+    }
+
+    public Block getCamoBlock(BlockPos pos) {
+        if (!this.level.isClientSide && getModuleCount(ModItems.CAMOUFLAGE_MODULE.get()) > 0) {
+            if (getMode() instanceof CustomModeItem custom) {
+                Map<BlockPos, Block> map = custom.getFieldBlockMap(this, getModeStack());
+                if (map != null) {
+                    BlockPos fieldCenter = this.worldPosition.offset(getTranslation());
+                    BlockPos relativePosition = pos.subtract(fieldCenter);
+                    BlockPos rotated = ModUtil.rotateByAngle(relativePosition, -getRotationYaw(), -getRotationPitch());
+                    Block block = map.get(rotated);
+                    if (block != null) {
+                        return block;
+                    }
+                }
+            }
+            return getModuleItemsStream()
+                .mapPartial(ProjectorBlockEntity::getFilterBlock)
+                .findFirst()
+                .orElse(null);
+        }
+        return null;
+    }
+
+    public static Optional<Block> getFilterBlock(ItemStack stack) {
+        if (stack.getItem() instanceof BlockItem blockItem) {
+            Block block = blockItem.getBlock();
+            if (block.defaultBlockState().getRenderShape() == RenderShape.MODEL) {
+                return Optional.of(block);
+            }
+        }
+        return Optional.empty();
     }
 }

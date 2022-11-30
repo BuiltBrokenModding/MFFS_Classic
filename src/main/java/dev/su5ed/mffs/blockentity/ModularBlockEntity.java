@@ -174,13 +174,17 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
 
     protected List<InventorySlot> createUpgradeSlots(int count) {
         return IntStreamEx.range(count)
-            .mapToObj(i -> addSlot("upgrade_" + i, InventorySlot.Mode.BOTH, stack -> stack.getItem() instanceof Module))
+            .mapToObj(i -> addSlot("upgrade_" + i, InventorySlot.Mode.BOTH, stack -> true)) // TODO
             .toList();
     }
 
     private void updateFortronTankCapacity() {
         int capacity = (getModuleCount(ModItems.CAPACITY_MODULE.get()) * this.capacityBoost + getBaseFortronTankCapacity()) * FluidType.BUCKET_VOLUME;
         this.fortronStorage.setCapacity(capacity);
+    }
+    
+    public StreamEx<ItemStack> getModuleItemsStream() {
+        return getModuleItemsStream(List.of());
     }
 
     private StreamEx<ItemStack> getModuleItemsStream(Collection<InventorySlot> slots) {

@@ -57,7 +57,7 @@ public class ForceFieldBlockImpl extends AbstractGlassBlock implements ForceFiel
     public int getLightEmission(BlockState state, BlockGetter level, BlockPos pos) {
         return Optional.ofNullable(level.getBlockEntity(pos))
             .map(be -> be instanceof ForceFieldBlockEntity f ? f.getProjectorSafe(level) : null)
-            .map(projector -> (int) ((float) Math.min(projector.getModuleCount(ModItems.GLOW_MODULE.get()), 64) / 64 * 15))
+            .map(projector -> Math.round((float) Math.min(projector.getModuleCount(ModItems.GLOW_MODULE.get()), 64) / 64 * 15))
             .orElseGet(() -> super.getLightEmission(state, level, pos));
     }
 

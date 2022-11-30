@@ -6,6 +6,7 @@ import dev.su5ed.mffs.render.LazyRendererFactory;
 import dev.su5ed.mffs.render.ProjectorBlockRenderer;
 import dev.su5ed.mffs.render.model.CoercionDeriverTopModel;
 import dev.su5ed.mffs.render.model.ForceCubeModel;
+import dev.su5ed.mffs.render.model.ForceFieldBlockModelLoader;
 import dev.su5ed.mffs.render.model.ProjectorRotorModel;
 import dev.su5ed.mffs.render.particle.BeamParticleProvider;
 import dev.su5ed.mffs.screen.CoercionDeriverScreen;
@@ -18,6 +19,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -70,6 +72,11 @@ public final class ModClientSetup {
         event.registerLayerDefinition(ProjectorRotorModel.LAYER_LOCATION, ProjectorRotorModel::createBodyLayer);
         event.registerLayerDefinition(CoercionDeriverTopModel.LAYER_LOCATION, CoercionDeriverTopModel::createBodyLayer);
         event.registerLayerDefinition(ForceCubeModel.LAYER_LOCATION, ForceCubeModel::createBodyLayer);
+    }
+
+    @SubscribeEvent
+    public static void registerGeometryLoaders(ModelEvent.RegisterGeometryLoaders event) {
+        event.register(ForceFieldBlockModelLoader.NAME.getPath(), new ForceFieldBlockModelLoader());
     }
 
     private ModClientSetup() {}

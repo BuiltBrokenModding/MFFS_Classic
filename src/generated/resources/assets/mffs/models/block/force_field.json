@@ -1,7 +1,4 @@
 {
-  "parent": "minecraft:block/cube_all",
-  "render_type": "minecraft:translucent",
-  "textures": {
-    "all": "mffs:block/force_field"
-  }
+  "default_model": "mffs:block/force_field_default",
+  "loader": "mffs:force_field"
 }
