@@ -84,7 +84,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
                 .mapToObj(i -> addSlot("field_module_" + side.getName() + "_" + i, InventorySlot.Mode.BOTH, stack -> stack.getItem() instanceof Module))
                 .forEach(slot -> builder.put(side, slot)));
         this.fieldModuleSlots = builder.build();
-        this.upgradeSlots = createUpgradeSlots(6);
+        this.upgradeSlots = createUpgradeSlots(6, true);
     }
 
     public float getAnimationSpeed() {

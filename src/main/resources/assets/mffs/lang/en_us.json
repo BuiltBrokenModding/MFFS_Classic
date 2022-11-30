@@ -17,5 +17,21 @@
   "item.mffs.translation_module": "Translation Module",
   "item.mffs.glow_module": "Glow Module",
   
-  "sounds.mffs.field": "Field Sound"
+  "sounds.mffs.field": "Field Sound",
+
+  "mffs.projector_menu.mode": "Mode",
+  "mffs.projector_menu.down": "Down",
+  "mffs.projector_menu.up": "Up",
+  "mffs.projector_menu.north": "North",
+  "mffs.projector_menu.south": "South",
+  "mffs.projector_menu.west": "West",
+  "mffs.projector_menu.east": "East",
+  
+  "screen.mffs.frequency": "Frequency: ",
+  "screen.mffs.frequency.tooltip": "Machines with the same frequency will share Fortron energy.",
+  "screen.mffs.matrix": "Matrix",
+  "screen.mffs.matrix.tooltip": "The projection matrix is used to determine how the projection should be created.",
+  "screen.mffs.fortron": "Fortron: %s L / %s L",
+  "screen.mffs.fortron.tooltip": "Fortron is the type of force energy used in MFFS machines.",
+  "screen.mffs.fortron_cost": "%s%s L"
 }

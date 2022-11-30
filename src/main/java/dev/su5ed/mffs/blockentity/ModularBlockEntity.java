@@ -173,8 +173,12 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
     }
 
     protected List<InventorySlot> createUpgradeSlots(int count) {
+        return createUpgradeSlots(count, false);
+    }
+
+    protected List<InventorySlot> createUpgradeSlots(int count, boolean allowAny) {
         return IntStreamEx.range(count)
-            .mapToObj(i -> addSlot("upgrade_" + i, InventorySlot.Mode.BOTH, stack -> true)) // TODO
+            .mapToObj(i -> addSlot("upgrade_" + i, InventorySlot.Mode.BOTH, stack -> allowAny || stack.getItem() instanceof Module))
             .toList();
     }
 

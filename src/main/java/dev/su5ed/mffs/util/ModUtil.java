@@ -1,6 +1,9 @@
 package dev.su5ed.mffs.util;
 
+import dev.su5ed.mffs.MFFSMod;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
@@ -74,6 +77,14 @@ public final class ModUtil {
         }
 
         return success;
+    }
+    
+    public static MutableComponent translate(String prefix, String key, Object... args) {
+        return Component.translatable(translationKey(prefix, key), args);
+    }
+    
+    public static String translationKey(String prefix, String key) {
+        return prefix + "." + MFFSMod.MODID + "." + key;
     }
 
     private ModUtil() {}

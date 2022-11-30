@@ -52,7 +52,6 @@ public class ForceFieldBlockEntity extends BlockEntity {
      */
     @Nullable
     public ProjectorBlockEntity getProjector() {
-        // TODO make return optional
         if (getProjectorSafe() != null) {
             return getProjectorSafe();
         } else if (!this.level.isClientSide) {

@@ -1,21 +1,32 @@
 package dev.su5ed.mffs.util;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public class SlotInventory extends Slot {
+import java.util.List;
+
+public class SlotInventory extends Slot implements TooltipSlot {
     private static final Container EMPTY_INVENTORY = new SimpleContainer(0);
 
     private final InventorySlot inventorySlot;
+    @Nullable
+    private final Component tooltip;
 
     public SlotInventory(InventorySlot inventorySlot, int x, int y) {
+        this(inventorySlot, x, y, null);
+    }
+    
+    public SlotInventory(InventorySlot inventorySlot, int x, int y, @Nullable Component tooltip) {
         super(EMPTY_INVENTORY, -1, x, y);
 
         this.inventorySlot = inventorySlot;
+        this.tooltip = tooltip;
     }
 
     @Override
@@ -63,5 +74,10 @@ public class SlotInventory extends Slot {
     @NotNull
     public ItemStack remove(int amount) {
         return this.inventorySlot.extract(amount);
+    }
+
+    @Override
+    public List<Component> getTooltips() {
+        return this.tooltip != null ? List.of(this.tooltip) : List.of();
     }
 }

@@ -5,6 +5,7 @@ import dev.su5ed.mffs.menu.FortronMenu;
 import dev.su5ed.mffs.network.Network;
 import dev.su5ed.mffs.network.ToggleModePacket;
 import dev.su5ed.mffs.network.UpdateFrequencyPacket;
+import dev.su5ed.mffs.util.ModUtil;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -29,7 +30,7 @@ public abstract class FortronScreen<T extends FortronMenu<?>> extends BaseScreen
         addRenderableWidget(new ToggleButton(this.width / 2 - 82, this.height / 2 - 104, this.menu.blockEntity::isActive,
             () -> Network.INSTANCE.sendToServer(new ToggleModePacket(this.menu.blockEntity.getBlockPos(), !this.menu.blockEntity.isActive()))));
 
-        this.frequency = new NumericEditBox(this.font, this.leftPos + this.frequencyBoxPos.leftInt(), this.topPos + this.frequencyBoxPos.rightInt(), 50, 12, Component.literal("Frequency:"));
+        this.frequency = new NumericEditBox(this.font, this.leftPos + this.frequencyBoxPos.leftInt(), this.topPos + this.frequencyBoxPos.rightInt(), 50, 12, ModUtil.translate("screen", "frequency"));
         this.frequency.setCanLoseFocus(true);
         this.frequency.setBordered(true);
         this.frequency.setEditable(true);
@@ -57,7 +58,7 @@ public abstract class FortronScreen<T extends FortronMenu<?>> extends BaseScreen
     protected void renderLabels(PoseStack poseStack, int mouseX, int mouseY) {
         super.renderLabels(poseStack, mouseX, mouseY);
 
-        this.font.draw(poseStack, this.frequency.getMessage(), this.frequencyLabelPos.leftInt(), this.frequencyLabelPos.rightInt(), GuiColors.DARK_GREY);
+        drawWithTooltip(poseStack, this.frequencyLabelPos.leftInt(), this.frequencyLabelPos.rightInt(), GuiColors.DARK_GREY, this.frequency.getMessage(), ModUtil.translate("screen", "frequency.tooltip"));
     }
 
     private void onFrequencyChanged(String str) {
