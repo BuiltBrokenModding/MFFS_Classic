@@ -38,7 +38,7 @@ public class FortronCapacitorBlockEntity extends ModularBlockEntity implements F
     public FortronCapacitorBlockEntity(BlockPos pos, BlockState state) {
         super(ModObjects.FORTRON_CAPACITOR_BLOCK_ENTITY.get(), pos, state, 10);
 
-        this.secondaryCard = addSlot("secondaryCard", InventorySlot.Mode.BOTH, stack -> stack.getItem() instanceof Card);
+        this.secondaryCard = addSlot("secondaryCard", InventorySlot.Mode.BOTH, stack -> stack.getItem() instanceof Card, this::onFrequencySlotChanged);
         this.upgradeSlots = createUpgradeSlots(3);
     }
 

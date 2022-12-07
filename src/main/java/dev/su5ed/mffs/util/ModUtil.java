@@ -32,7 +32,7 @@ public final class ModUtil {
     public static boolean moveItemStackTo(ItemStack stack, List<Slot> slots) {
         int i = 0;
         boolean success = false;
-        
+
         if (stack.isStackable()) {
             while (!stack.isEmpty() && i < slots.size()) {
                 Slot slot = slots.get(i);
@@ -78,13 +78,20 @@ public final class ModUtil {
 
         return success;
     }
-    
+
     public static MutableComponent translate(String prefix, String key, Object... args) {
         return Component.translatable(translationKey(prefix, key), args);
     }
-    
+
     public static String translationKey(String prefix, String key) {
         return prefix + "." + MFFSMod.MODID + "." + key;
+    }
+
+    public static double distance(BlockPos first, BlockPos second) {
+        double d0 = second.getX() - first.getX();
+        double d1 = second.getY() - first.getY();
+        double d2 = second.getZ() - first.getZ();
+        return Math.sqrt(d0 * d0 + d1 * d1 + d2 * d2);
     }
 
     private ModUtil() {}

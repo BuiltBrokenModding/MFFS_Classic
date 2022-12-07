@@ -4,6 +4,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.INBTSerializable;
 
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public class InventorySlot implements INBTSerializable<CompoundTag> {
@@ -11,14 +12,16 @@ public class InventorySlot implements INBTSerializable<CompoundTag> {
     private final String name;
     private final Mode mode;
     private final Predicate<ItemStack> filter;
+    private final Consumer<ItemStack> onChanged;
 
     private ItemStack content = ItemStack.EMPTY;
     
-    public InventorySlot(SlotItemHandler parent, String name, Mode mode, Predicate<ItemStack> filter) {
+    public InventorySlot(SlotItemHandler parent, String name, Mode mode, Predicate<ItemStack> filter, Consumer<ItemStack> onChanged) {
         this.parent = parent;
         this.name = name;
         this.mode = mode;
         this.filter = filter;
+        this.onChanged = onChanged;
     }
 
     public String getName() {
@@ -43,19 +46,24 @@ public class InventorySlot implements INBTSerializable<CompoundTag> {
     
     public void setItem(ItemStack stack, boolean notify) {
         this.content = stack;
-        if (notify) {
-            this.parent.setChanged();
-        }
+        onChanged(notify);
     }
     
     public ItemStack extract(int amount) {
         ItemStack stack = this.content.split(amount);
-        this.parent.setChanged();
+        onChanged(true);
         return stack;
     }
     
     public boolean isEmpty() {
         return this.content.isEmpty();
+    }
+    
+    protected void onChanged(boolean notify) {
+        if (notify) {
+            this.parent.onChanged();
+        }
+        this.onChanged.accept(getItem());
     }
 
     @Override

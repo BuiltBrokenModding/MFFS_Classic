@@ -2,6 +2,7 @@ package dev.su5ed.mffs.item;
 
 import dev.su5ed.mffs.api.Projector;
 import dev.su5ed.mffs.api.module.Module;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
@@ -32,7 +33,7 @@ public class ModuleItem extends Item implements Module {
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
         super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
         
-        tooltipComponents.add(Component.literal("Fortron: " + getFortronCost(1) * 20 + " L/s"));
+        tooltipComponents.add(Component.literal("Fortron: " + getFortronCost(1) * 20 + " L/s").withStyle(ChatFormatting.GRAY));
     }
 
     @Override

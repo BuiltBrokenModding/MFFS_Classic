@@ -2,10 +2,11 @@ package dev.su5ed.mffs.menu;
 
 import dev.su5ed.mffs.api.Activatable;
 import dev.su5ed.mffs.blockentity.ModularBlockEntity;
+import dev.su5ed.mffs.setup.ModItems;
 import dev.su5ed.mffs.util.DataSlotWrapper;
 import dev.su5ed.mffs.util.ModUtil;
-import dev.su5ed.mffs.util.SlotInventory;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -14,11 +15,9 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
-import one.util.streamex.EntryStream;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -34,6 +33,8 @@ public abstract class FortronMenu<T extends ModularBlockEntity & Activatable> ex
     private final List<Slot> hotBarSlots = new ArrayList<>();
     private final List<Slot> playerInventorySlots = new ArrayList<>();
     private final List<Slot> blockEntitySlots = new ArrayList<>();
+    
+    private boolean isRemoteAccess;
 
     protected FortronMenu(@Nullable MenuType<?> type, BlockEntityType<T> blockEntityType, int containerId, BlockPos pos, Player player, Inventory playerInventory) {
         super(type, containerId);
@@ -51,9 +52,15 @@ public abstract class FortronMenu<T extends ModularBlockEntity & Activatable> ex
         return ret;
     }
 
+    public void setRemoteAccess(boolean remoteAccess) {
+        this.isRemoteAccess = remoteAccess;
+    }
+
     @Override
     public boolean stillValid(Player player) {
-        return stillValid(ContainerLevelAccess.create(this.blockEntity.getLevel(), this.blockEntity.getBlockPos()), this.player, this.blockEntity.getBlockState().getBlock());
+        return ContainerLevelAccess.create(this.blockEntity.getLevel(), this.blockEntity.getBlockPos())
+            .evaluate((level, pos) -> (!isRemoteAccess || player.getItemInHand(InteractionHand.MAIN_HAND).is(ModItems.REMOTE_CONTROLLER_ITEM.get()))
+                && level.getBlockState(pos).is(this.blockEntity.getBlockState().getBlock()), true);
     }
 
     @Override
@@ -109,10 +116,6 @@ public abstract class FortronMenu<T extends ModularBlockEntity & Activatable> ex
             slots.add(addSlot(new SlotItemHandler(handler, index, x, y)));
         }
         return slots;
-    }
-    
-    protected void addUpgradeSlots() {
-        ;
     }
 
     private void trackPower() {

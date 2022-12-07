@@ -3,12 +3,19 @@
   
   "info.mffs.coercion_deriver.mode.integrate": "Integrate",
   "info.mffs.coercion_deriver.mode.derive": "Derive",
+  "info.mffs.frequency": "Frequency: %s",
+  "info.mffs.link.none": "Not Linked",
+  "info.mffs.link.name": "Linked with: %s",
+  "info.mffs.link.create": "Linked to %s at %s",
+  "info.mffs.cannot_harness": "Cannot harness %s FE from the Fortron field.",
+  "info.mffs.frequency.generated": "Generated random frequency: %s",
   
   "block.mffs.machine_block": "Base Machine Block",
   "block.mffs.projector": "Force Field Projector",
   "block.mffs.coercion_deriver": "Coercion Deriver",
   "block.mffs.fortron_capacitor": "Fortron Capacitor",
   
+  "item.mffs.remote_controller": "Remote Controller",
   "item.mffs.cube_mode": "Cube Mode",
   
   "item.mffs.camouflage_module": "Camouflage Module",

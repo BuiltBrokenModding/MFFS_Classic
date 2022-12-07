@@ -3,6 +3,7 @@ package dev.su5ed.mffs.blockentity;
 import dev.su5ed.mffs.api.Activatable;
 import dev.su5ed.mffs.api.card.Card;
 import dev.su5ed.mffs.api.card.CoordLink;
+import dev.su5ed.mffs.api.card.FrequencyCard;
 import dev.su5ed.mffs.api.fortron.FortronStorage;
 import dev.su5ed.mffs.api.fortron.FrequencyGrid;
 import dev.su5ed.mffs.api.security.BiometricIdentifier;
@@ -53,7 +54,7 @@ public abstract class FortronBlockEntity extends InventoryBlockEntity implements
         this.fortronStorage = new FortronStorageImpl(this, getBaseFortronTankCapacity() * FluidType.BUCKET_VOLUME, this::setChanged);
         this.fortronCap = LazyOptional.of(() -> this.fortronStorage);
         this.fluidCap = LazyOptional.of(this.fortronStorage::getFortronTank);
-        this.frequencySlot = addSlot("frequency", InventorySlot.Mode.NONE, stack -> stack.getItem() instanceof Card);
+        this.frequencySlot = addSlot("frequency", InventorySlot.Mode.BOTH, stack -> stack.getItem() instanceof Card, this::onFrequencySlotChanged);
     }
 
     public int getAnimation() {
@@ -78,6 +79,12 @@ public abstract class FortronBlockEntity extends InventoryBlockEntity implements
     protected void animate() {
         if (isActive()) {
             this.animation++;
+        }
+    }
+    
+    protected void onFrequencySlotChanged(ItemStack stack) {
+        if (stack.getItem() instanceof FrequencyCard frequencyCard) {
+            frequencyCard.setFrequency(stack, this.fortronStorage.getFrequency());
         }
     }
 

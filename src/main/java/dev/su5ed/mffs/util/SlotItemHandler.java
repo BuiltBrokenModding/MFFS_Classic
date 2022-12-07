@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public class SlotItemHandler implements IItemHandler, IItemHandlerModifiable, INBTSerializable<CompoundTag> {
@@ -20,12 +21,16 @@ public class SlotItemHandler implements IItemHandler, IItemHandlerModifiable, IN
     }
     
     public InventorySlot addSlot(String name, InventorySlot.Mode mode, Predicate<ItemStack> filter) {
-        InventorySlot slot = new InventorySlot(this, name, mode, filter);
+        return addSlot(name, mode, filter, stack -> {});
+    }
+    
+    public InventorySlot addSlot(String name, InventorySlot.Mode mode, Predicate<ItemStack> filter, Consumer<ItemStack> onChanged) {
+        InventorySlot slot = new InventorySlot(this, name, mode, filter, onChanged);
         this.slots.add(slot);
         return slot;
     }
     
-    public void setChanged() {
+    public void onChanged() {
         this.onChanged.run();
     }
 

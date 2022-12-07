@@ -5,6 +5,7 @@ import dev.su5ed.mffs.item.CubeProjectorModeItem;
 import dev.su5ed.mffs.item.DisintegrationModuleItem;
 import dev.su5ed.mffs.item.ModuleItem;
 import dev.su5ed.mffs.item.ProjectorModeItem;
+import dev.su5ed.mffs.item.RemoteControllerItem;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -29,6 +30,7 @@ public final class ModItems {
     public static final RegistryObject<Item> PROJECTOR_ITEM = fromBlock(ModBlocks.PROJECTOR);
     public static final RegistryObject<Item> COERCION_DERIVER_ITEM = fromBlock(ModBlocks.COERCION_DERIVER);
     public static final RegistryObject<Item> FORTRON_CAPACITOR_ITEM = fromBlock(ModBlocks.FORTRON_CAPACITOR);
+    public static final RegistryObject<Item> REMOTE_CONTROLLER_ITEM = ITEMS.register("remote_controller", RemoteControllerItem::new);
     
     public static final RegistryObject<ModuleItem> SPEED_MODULE = ITEMS.register("speed_module", () -> new ModuleItem(itemProperties(), 1.0F));
     public static final RegistryObject<ModuleItem> CAMOUFLAGE_MODULE = ITEMS.register("camouflage_module", () -> new ModuleItem(itemProperties().stacksTo(1), 1.5F));

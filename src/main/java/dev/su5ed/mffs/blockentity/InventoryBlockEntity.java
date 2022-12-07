@@ -15,6 +15,7 @@ import net.minecraftforge.items.IItemHandler;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public abstract class InventoryBlockEntity extends BaseBlockEntity {
@@ -34,6 +35,10 @@ public abstract class InventoryBlockEntity extends BaseBlockEntity {
 
     protected InventorySlot addSlot(String name, InventorySlot.Mode mode, Predicate<ItemStack> filter) {
         return this.items.addSlot(name, mode, filter);
+    }
+
+    protected InventorySlot addSlot(String name, InventorySlot.Mode mode, Predicate<ItemStack> filter, Consumer<ItemStack> onChanged) {
+        return this.items.addSlot(name, mode, filter, onChanged);
     }
 
     protected void onInventoryChanged() {}

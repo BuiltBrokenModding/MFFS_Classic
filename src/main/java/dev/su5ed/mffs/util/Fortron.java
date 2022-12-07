@@ -38,7 +38,7 @@ public final class Fortron {
                 totalFortron += storage.getStoredFortron();
                 totalCapacity += storage.getFortronCapacity();
             }
-            
+
             receivers.remove(transmitter);
 
             if (totalFortron > 0 && totalCapacity > 0) {
@@ -103,11 +103,16 @@ public final class Fortron {
             doTransferFortron(receiver, transmitter, joules, limit, isCamo);
         }
     }
-    
+
     public static void renderBeam(ClientLevel level, Vec3 target, Vec3 position, BeamColor color, int lifetime) {
         level.addParticle(new BeamParticleOptions(target, color, lifetime), position.x(), position.y(), position.z(), 0, 0, 0);
     }
-    
+
+    public static void renderClientBeam(Level level, Vec3 target, Vec3 position, BlockPos chunkPos, BeamColor color, int lifetime) {
+        DrawBeamPacket packet = new DrawBeamPacket(target, position, color, lifetime);
+        Network.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(chunkPos)), packet);
+    }
+
     private static void doTransferFortron(FortronStorage source, FortronStorage destination, int joules, int limit, boolean isCamo) {
         // Take energy from receiver.
         int transfer = Math.min(Math.abs(joules), limit);
@@ -126,8 +131,7 @@ public final class Fortron {
             if (level instanceof ClientLevel clientLevel) {
                 renderBeam(clientLevel, target, position, color, lifetime);
             } else {
-                DrawBeamPacket packet = new DrawBeamPacket(target, position, color, lifetime);
-                Network.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(sourcePos)), packet);
+                renderClientBeam(level, target, position, sourcePos, color, lifetime);
             }
         }
     }
