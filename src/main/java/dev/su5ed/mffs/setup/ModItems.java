@@ -32,7 +32,7 @@ public final class ModItems {
     public static final RegistryObject<Item> FORTRON_CAPACITOR_ITEM = fromBlock(ModBlocks.FORTRON_CAPACITOR);
     public static final RegistryObject<Item> REMOTE_CONTROLLER_ITEM = ITEMS.register("remote_controller", RemoteControllerItem::new);
     
-    public static final RegistryObject<ModuleItem> SPEED_MODULE = ITEMS.register("speed_module", () -> new ModuleItem(itemProperties(), 1.0F));
+    public static final RegistryObject<ModuleItem> SPEED_MODULE = ITEMS.register("speed_module", () -> new ModuleItem(itemProperties(), 1.0F).autoDescription());
     public static final RegistryObject<ModuleItem> CAMOUFLAGE_MODULE = ITEMS.register("camouflage_module", () -> new ModuleItem(itemProperties().stacksTo(1), 1.5F));
     public static final RegistryObject<ModuleItem> SCALE_MODULE = ITEMS.register("scale_module", () -> new ModuleItem(itemProperties(), 1.2F));
     public static final RegistryObject<ModuleItem> CAPACITY_MODULE = ITEMS.register("capacity_module", () -> new ModuleItem(itemProperties(), 0.5F));
@@ -40,6 +40,7 @@ public final class ModItems {
     public static final RegistryObject<ModuleItem> TRANSLATION_MODULE = ITEMS.register("translation_module", () -> new ModuleItem(itemProperties(), 1.6F));
     public static final RegistryObject<ModuleItem> ROTATION_MODULE = ITEMS.register("rotation_module", () -> new ModuleItem(itemProperties(), 0.1F));
     public static final RegistryObject<ModuleItem> GLOW_MODULE = ITEMS.register("glow_module", () -> new ModuleItem(itemProperties()));
+    public static final RegistryObject<ModuleItem> SILENCE_MODULE = ITEMS.register("silence_module", () -> new ModuleItem(itemProperties().stacksTo(1), 1).autoDescription());
 
     public static final RegistryObject<ProjectorModeItem> CUBE_MODE = ITEMS.register("cube_mode", CubeProjectorModeItem::new);
     

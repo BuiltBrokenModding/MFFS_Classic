@@ -20,12 +20,19 @@
   
   "item.mffs.camouflage_module": "Camouflage Module",
   "item.mffs.capacity_module": "Capacity Module",
+  "item.mffs.capacity_module.description": "Increases the capacity of a certain device.",
   "item.mffs.disintegration_module": "Disintegration Module",
   "item.mffs.rotation_module": "Rotation Module",
+  "item.mffs.rotation_module.description": "Rotates the field by a specific angle.",
   "item.mffs.scale_module": "Scale Module",
+  "item.mffs.scale_module.description": "Increases the scale of a certain component.",
   "item.mffs.speed_module": "Speed Module",
+  "item.mffs.speed_module.description": "Increases the speed of a device.",
   "item.mffs.translation_module": "Translation Module",
+  "item.mffs.translation_module.description": "Translates the field, displacing it away from the origin.",
   "item.mffs.glow_module": "Glow Module",
+  "item.mffs.silence_module": "Silence Module",
+  "item.mffs.silence_module.description": "Silences the force field and prevents it from making sound.",
   
   "sounds.mffs.field": "Field Sound",
 

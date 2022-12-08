@@ -11,6 +11,8 @@ import java.util.Set;
 public interface ModuleAcceptor {
     <T extends Item & Module> ItemStack getModule(T module);
     
+    <T extends Item & Module> boolean hasModule(T module);
+    
     default <T extends Item & Module> int getModuleCount(T module) {
         return getModuleCount(module, List.of());
     }

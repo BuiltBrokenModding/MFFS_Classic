@@ -80,14 +80,15 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
     @Override
     public <T extends Item & Module> ItemStack getModule(T module) {
         String key = MODULE_CACHE_KEY + module.hashCode();
-        return cached(key, () -> {
-            ItemStack stack = new ItemStack(module, 0);
-            getModuleStacks().stream()
-                .filter(item -> item.is(module))
-                .map(ItemStack::getCount)
-                .forEach(stack::grow);
-            return stack;
-        });
+        return cached(key, () -> getModuleItemsStream()
+            .filter(item -> item.is(module))
+            .map(ItemStack::getCount)
+            .reduce(new ItemStack(module, 0), ModularBlockEntity::growStack, (one, two) -> one));
+    }
+
+    @Override
+    public <T extends Item & Module> boolean hasModule(T module) {
+        return getModuleItemsStream().anyMatch(item -> item.is(module));
     }
 
     @Override
@@ -186,7 +187,7 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
         int capacity = (getModuleCount(ModItems.CAPACITY_MODULE.get()) * this.capacityBoost + getBaseFortronTankCapacity()) * FluidType.BUCKET_VOLUME;
         this.fortronStorage.setCapacity(capacity);
     }
-    
+
     public StreamEx<ItemStack> getModuleItemsStream() {
         return getModuleItemsStream(List.of());
     }
@@ -198,5 +199,10 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
             return StreamEx.of(moduleSlots).map(InventorySlot::getItem);
         }
         return StreamEx.of(slots).map(InventorySlot::getItem);
+    }
+
+    private static ItemStack growStack(ItemStack first, int count) {
+        first.grow(count);
+        return first;
     }
 }
