@@ -6,10 +6,6 @@ package dev.su5ed.mffs.api;
  * @author Calclavia
  */
 public interface ObjectCache {
-    Object getCache(String cacheID);
-    
-    void putCache(String cacheID, Object obj);
-
     void clearCache(String cacheID);
 
     void clearCache();

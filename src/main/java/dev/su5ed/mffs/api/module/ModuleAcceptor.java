@@ -18,12 +18,8 @@ public interface ModuleAcceptor {
     }
 
     <T extends Item & Module> int getModuleCount(T module, Collection<InventorySlot> slots);
-    
-    default Set<ItemStack> getModuleStacks() {
-        return getModuleStacks(List.of());
-    }
 
-    Set<ItemStack> getModuleStacks(Collection<InventorySlot> slots);
+    Set<ItemStack> getModuleStacks();
 
     <T extends Item & Module> Set<T> getModules();
 

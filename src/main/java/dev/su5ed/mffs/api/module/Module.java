@@ -36,7 +36,7 @@ public interface Module extends FortronCost {
      *
      * @return True to stop the default process of entity collision.
      */
-    boolean onCollideWithForceField(Level level, int x, int y, int z, Entity entity, ItemStack moduleStack);
+    boolean onCollideWithForceField(Level level, BlockPos pos, Entity entity, ItemStack moduleStack);
 
     /**
      * Called in this module when it is being calculated by the projector. Called BEFORE

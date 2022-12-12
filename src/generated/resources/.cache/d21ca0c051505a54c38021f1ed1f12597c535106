@@ -1,4 +1,4 @@
-// 1.19.2	2022-12-08T19:39:45.0744491	Item Models: mffs
+// 1.19.2	2022-12-12T17:04:41.7819668	Item Models: mffs
 eb9cdb4e2d3ca6a3a69366e0eae54972889518b4 assets/mffs/models/item/camouflage_module.json
 7c5fcaaad7f10eff8edf71b60c3f9d8a935b4a93 assets/mffs/models/item/capacity_module.json
 692c042cdd518f4a680d3119aba838e28d1c72e1 assets/mffs/models/item/cube_mode.json
@@ -7,6 +7,7 @@ eb9cdb4e2d3ca6a3a69366e0eae54972889518b4 assets/mffs/models/item/camouflage_modu
 76baad335c648f858089b517cbd37f5b7f0cd99f assets/mffs/models/item/remote_controller.json
 b7788010994d94eec524c736ab935692bd9cb483 assets/mffs/models/item/rotation_module.json
 c7c8b7135a5033dd5ddf5be9905e743855d6cdde assets/mffs/models/item/scale_module.json
+ab07a91144e92141e9fe75ca31ea3c213aa1d7dd assets/mffs/models/item/shock_module.json
 5a3a07ae3692a396c0281c128356827221f78491 assets/mffs/models/item/silence_module.json
 7d4c919633731c3a0c9b906fc0ceb0bf220783fd assets/mffs/models/item/speed_module.json
 f6f5aa3901030ee11713f7bbb30e7dc7318be37e assets/mffs/models/item/translation_module.json

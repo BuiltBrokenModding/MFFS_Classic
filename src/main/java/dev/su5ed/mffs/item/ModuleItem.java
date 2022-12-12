@@ -76,7 +76,7 @@ public class ModuleItem extends Item implements Module {
     }
 
     @Override
-    public boolean onCollideWithForceField(Level level, int x, int y, int z, Entity entity, ItemStack moduleStack) {
+    public boolean onCollideWithForceField(Level level, BlockPos pos, Entity entity, ItemStack moduleStack) {
         return false;
     }
 

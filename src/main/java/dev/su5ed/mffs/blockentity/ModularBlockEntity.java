@@ -27,7 +27,6 @@ import java.util.function.Supplier;
 public abstract class ModularBlockEntity extends FortronBlockEntity implements ModuleAcceptor, ObjectCache {
     private static final String FOTRON_COST_CACHE_KEY = "getFortronCost";
     private static final String ALL_MODULES_CACHE_KEY = "getModules";
-    private static final String MODULE_STACKS_CACHE_KEY = "getModuleStacks_";
     private static final String MODULE_COUNT_CACHE_KEY = "getModuleCount_";
     private static final String MODULE_CACHE_KEY = "getModule_";
 
@@ -83,7 +82,7 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
         return cached(key, () -> getModuleItemsStream()
             .filter(item -> item.is(module))
             .map(ItemStack::getCount)
-            .reduce(new ItemStack(module, 0), ModularBlockEntity::growStack, (one, two) -> one));
+            .foldLeft(new ItemStack(module, 0), ModularBlockEntity::growStack));
     }
 
     @Override
@@ -101,11 +100,10 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
     }
 
     @Override
-    public Set<ItemStack> getModuleStacks(Collection<InventorySlot> slots) {
-        String key = MODULE_STACKS_CACHE_KEY + slots.hashCode();
-        return cached(key, () -> getModuleItemsStream(slots)
+    public Set<ItemStack> getModuleStacks() {
+        return getModuleItemsStream()
             .filter(stack -> stack.getItem() instanceof Module)
-            .toSet());
+            .toSet();
     }
 
     @SuppressWarnings("unchecked")
@@ -124,16 +122,6 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
     @Override
     public final int getFortronCost() {
         return cached(FOTRON_COST_CACHE_KEY, this::doGetFortronCost);
-    }
-
-    @Override
-    public Object getCache(String cacheID) {
-        return this.cache.get(cacheID);
-    }
-
-    @Override
-    public void putCache(String cacheID, Object obj) {
-        this.cache.put(cacheID, obj);
     }
 
     @Override

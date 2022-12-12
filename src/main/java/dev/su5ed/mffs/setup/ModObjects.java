@@ -8,6 +8,7 @@ import dev.su5ed.mffs.blockentity.ProjectorBlockEntity;
 import dev.su5ed.mffs.render.ModParticleType;
 import dev.su5ed.mffs.render.particle.BeamParticleOptions;
 import net.minecraft.core.particles.ParticleType;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -29,6 +30,8 @@ public final class ModObjects {
 
     public static final RegistryObject<ModParticleType<BeamParticleOptions>> BEAM_PARTICLE = PARTICLES.register("beam", () -> new ModParticleType<>(true, BeamParticleOptions.DESERIALIZER, BeamParticleOptions.CODEC));
 
+    public static final DamageSource FIELD_SHOCK = new DamageSource("mffs.field_shock").bypassArmor();
+    
     public static void init(final IEventBus bus) {
         BLOCK_ENTITY_TYPES.register(bus);
         PARTICLES.register(bus);
