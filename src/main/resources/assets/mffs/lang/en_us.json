@@ -36,6 +36,7 @@
   "item.mffs.silence_module": "Silence Module",
   "item.mffs.silence_module.description": "Silences the force field and prevents it from making sound.",
   "item.mffs.shock_module": "Shock Module",
+  "item.mffs.sponge_module": "Sponge Module",
   
   "sounds.mffs.field": "Field Sound",
 
