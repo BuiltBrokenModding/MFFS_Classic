@@ -1,8 +1,9 @@
-// 1.19.2	2022-12-17T15:05:47.117037	Item Models: mffs
+// 1.19.2	2022-12-17T15:33:22.1599321	Item Models: mffs
 eb9cdb4e2d3ca6a3a69366e0eae54972889518b4 assets/mffs/models/item/camouflage_module.json
 7c5fcaaad7f10eff8edf71b60c3f9d8a935b4a93 assets/mffs/models/item/capacity_module.json
 692c042cdd518f4a680d3119aba838e28d1c72e1 assets/mffs/models/item/cube_mode.json
 2a51806509fc4835d7a5508f3d9a12a4c5eabf85 assets/mffs/models/item/disintegration_module.json
+4805d2ba97a72693cd975e4e29e7f1d85ae5e29b assets/mffs/models/item/fusion_module.json
 1c4dbec086433dabd209e32ee939ccf37ac2ca64 assets/mffs/models/item/glow_module.json
 76baad335c648f858089b517cbd37f5b7f0cd99f assets/mffs/models/item/remote_controller.json
 b7788010994d94eec524c736ab935692bd9cb483 assets/mffs/models/item/rotation_module.json

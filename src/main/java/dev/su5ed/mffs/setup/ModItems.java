@@ -3,6 +3,7 @@ package dev.su5ed.mffs.setup;
 import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.item.CubeProjectorModeItem;
 import dev.su5ed.mffs.item.DisintegrationModuleItem;
+import dev.su5ed.mffs.item.FusionModule;
 import dev.su5ed.mffs.item.ModuleItem;
 import dev.su5ed.mffs.item.ProjectorModeItem;
 import dev.su5ed.mffs.item.RemoteControllerItem;
@@ -45,6 +46,7 @@ public final class ModItems {
     public static final RegistryObject<ModuleItem> SILENCE_MODULE = ITEMS.register("silence_module", () -> new ModuleItem(itemProperties().stacksTo(1), 1).autoDescription());
     public static final RegistryObject<ModuleItem> SHOCK_MODULE = ITEMS.register("shock_module", ShockModuleItem::new);
     public static final RegistryObject<ModuleItem> SPONGE_MODULE = ITEMS.register("sponge_module", SpongeModuleItem::new);
+    public static final RegistryObject<ModuleItem> FUSION_MODULE = ITEMS.register("fusion_module", FusionModule::new);
 
     public static final RegistryObject<ProjectorModeItem> CUBE_MODE = ITEMS.register("cube_mode", CubeProjectorModeItem::new);
     

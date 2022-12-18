@@ -54,7 +54,7 @@ public class CubeProjectorModeItem extends ProjectorModeItem {
         BlockPos projectorPos = ((BlockEntity) projector).getBlockPos().offset(projector.getTranslation());
         BlockPos relativePosition = position.subtract(projectorPos);
         BlockPos rotated = ModUtil.rotateByAngle(relativePosition, -projector.getRotationYaw(), -projector.getRotationPitch());
-        AABB region = new AABB(projector.getNegativeScale().multiply(-1), projector.getPositiveScale());
+        AABB region = new AABB(projector.getNegativeScale().multiply(-1).offset(1, 1, 1), projector.getPositiveScale());
         return region.contains(rotated.getX(), rotated.getY(), rotated.getZ());
     }
 }
