@@ -32,11 +32,13 @@ public class ProjectorBlockRenderer implements BlockEntityRenderer<ProjectorBloc
 
     private final ModelPart rotor;
     private final Function<ModelLayerLocation, ModelPart> modelPartCache;
+    private final Function<BlockEntity, HoloRenderer> holoRenderer;
 
     public ProjectorBlockRenderer(BlockEntityRendererProvider.Context context) {
         this.rotor = context.bakeLayer(ProjectorRotorModel.LAYER_LOCATION);
-        
+
         this.modelPartCache = Util.memoize(context::bakeLayer);
+        this.holoRenderer = Util.memoize(HoloRenderer::new);
     }
 
     @Override
@@ -44,7 +46,7 @@ public class ProjectorBlockRenderer implements BlockEntityRenderer<ProjectorBloc
         renderRotor(blockEntity, partialTick, poseStack, bufferSource, packedLight, packedOverlay);
         ProjectorMode mode = blockEntity.getMode();
         if (mode != null) {
-            RenderTickHandler.addTransparentRenderer(ModRenderType.STANDARD_TRANSLUCENT_TRIANGLE, new HoloRenderer(blockEntity));
+            RenderTickHandler.addTransparentRenderer(ModRenderType.STANDARD_TRANSLUCENT_TRIANGLE, this.holoRenderer.apply(blockEntity));
             ModClientSetup.renderLazy((Item) mode, blockEntity, this.modelPartCache);
         }
     }
@@ -62,7 +64,7 @@ public class ProjectorBlockRenderer implements BlockEntityRenderer<ProjectorBloc
 
         poseStack.popPose();
     }
-    
+
     private static class HoloRenderer implements LazyRenderer {
         private final BlockEntity be;
         private final Vec3 centerPos;
@@ -91,6 +93,12 @@ public class ProjectorBlockRenderer implements BlockEntityRenderer<ProjectorBloc
             buffer.vertex(mat, 0, 0, 0).color(72, 198, 255, 255).endVertex();
             buffer.vertex(mat, -0.866F * width, height, -0.5F * width).color(0, 0, 0, 0).endVertex();
             buffer.vertex(mat, 0.866F * width, height, -0.5F * width).color(0, 0, 0, 0).endVertex();
+
+            buffer.vertex(mat, 0, 0, 0).color(72, 198, 255, 255).endVertex();
+            buffer.vertex(mat, 0.866F * width, height, -0.5F * width).color(0, 0, 0, 0).endVertex();
+            buffer.vertex(mat, 0.0F, height, width).color(0, 0, 0, 0).endVertex();
+
+            buffer.vertex(mat, 0, 0, 0).color(72, 198, 255, 255).endVertex();
             buffer.vertex(mat, 0.0F, height, width).color(0, 0, 0, 0).endVertex();
             buffer.vertex(mat, -0.866F * width, height, -0.5F * width).color(0, 0, 0, 0).endVertex();
 

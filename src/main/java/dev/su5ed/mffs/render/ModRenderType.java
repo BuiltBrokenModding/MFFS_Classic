@@ -29,7 +29,7 @@ public class ModRenderType extends RenderType {
 
     public static final RenderType STANDARD_TRANSLUCENT_TRIANGLE = create(
         "mffs:standard_translucent_triangle",
-        DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.TRIANGLE_FAN,
+        DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.TRIANGLES,
         256, true, true,
         RenderType.CompositeState.builder()
             .setShaderState(POSITION_COLOR_SHADER)
