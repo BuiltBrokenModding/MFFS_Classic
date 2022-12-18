@@ -50,7 +50,7 @@ public class CoercionDeriverScreen extends FortronScreen<CoercionDeriverMenu> {
         poseStack.popPose();
 
         this.font.draw(poseStack, ModUtil.translate("screen", "progress")
-            .append(ModUtil.translate("screen", "progress." + (this.menu.blockEntity.isActive() ? "running" : "fidle"))), 8, 70, GuiColors.DARK_GREY);
+            .append(ModUtil.translate("screen", "progress." + (this.menu.blockEntity.isActive() ? "running" : "idle"))), 8, 70, GuiColors.DARK_GREY);
 
         int energy = this.menu.blockEntity.fortronStorage.getStoredFortron();
         this.font.draw(poseStack, ModUtil.translate("screen", "fortron.short", energy), 8, 105, GuiColors.DARK_GREY);

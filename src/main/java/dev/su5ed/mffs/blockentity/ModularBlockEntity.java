@@ -120,7 +120,7 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
      * Returns Fortron cost per tick.
      */
     @Override
-    public final int getFortronCost() {
+    public int getFortronCost() {
         return cached(FOTRON_COST_CACHE_KEY, this::doGetFortronCost);
     }
 

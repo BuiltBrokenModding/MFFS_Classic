@@ -120,7 +120,7 @@ public abstract class FortronBlockEntity extends InventoryBlockEntity implements
         if (state.getValue(BaseEntityBlock.ACTIVE) != active) {
             this.level.setBlock(this.worldPosition, state.setValue(BaseEntityBlock.ACTIVE, active), Block.UPDATE_ALL);
 
-            if (!this.level.isClientSide()) {
+            if (!this.level.isClientSide) {
                 sendToChunk(new ToggleModePacketClient(this.worldPosition, active));
             }
         }
@@ -144,24 +144,10 @@ public abstract class FortronBlockEntity extends InventoryBlockEntity implements
     }
 
     @Override
-    protected void saveTag(CompoundTag tag) {
-        super.saveTag(tag);
-
-        tag.put("fortronStorage", this.fortronStorage.serializeNBT());
-    }
-
-    @Override
-    protected void loadTag(CompoundTag tag) {
-        super.loadTag(tag);
-
-        this.fortronStorage.deserializeNBT(tag.getCompound("fortronStorage"));
-        
-    }
-
-    @Override
     protected void loadCommonTag(CompoundTag tag) {
         super.loadCommonTag(tag);
         
+        this.fortronStorage.deserializeNBT(tag.getCompound("fortronStorage"));
         this.active = tag.getBoolean("active");
     }
 
@@ -169,6 +155,7 @@ public abstract class FortronBlockEntity extends InventoryBlockEntity implements
     protected void saveCommonTag(CompoundTag tag) {
         super.saveCommonTag(tag);
         
+        tag.put("fortronStorage", this.fortronStorage.serializeNBT());
         tag.putBoolean("active", this.active);
     }
 

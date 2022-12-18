@@ -1,3 +1,4 @@
+import net.minecraftforge.gradle.userdev.tasks.JarJar
 import java.time.LocalDateTime
 
 plugins {
@@ -92,16 +93,29 @@ repositories {
 
 dependencies {
     minecraft(group = "net.minecraftforge", name = "forge", version = "1.19.2-43.1.47")
-    
-    minecraftLibrary("one.util:streamex:0.8.1") // Streams galore!
+
+    minecraftLibrary(jarJar(group = "one.util", name = "streamex", version = "0.8.1")) { // Streams galore!
+        jarJar.ranged(this, "[0.8.1, 0.9)")
+    }
 
     runtimeOnly(fg.deobf("mekanism:Mekanism:1.19.2-10.3.5.474"))
     runtimeOnly(fg.deobf("mekanism:Mekanism:1.19.2-10.3.5.474:generators"))
 }
 
+reobf {
+    create("jarJar")
+}
+
 tasks {
     jar {
         finalizedBy("reobfJar")
+    }
+    
+    named<JarJar>("jarJar") {
+        finalizedBy("reobfJarJar")
+    }
+    
+    withType<Jar> {
         manifest {
             attributes(
                 "Specification-Title" to project.name,

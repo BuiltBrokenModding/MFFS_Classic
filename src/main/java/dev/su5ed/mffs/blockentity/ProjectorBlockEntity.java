@@ -13,6 +13,7 @@ import dev.su5ed.mffs.api.module.ProjectorMode;
 import dev.su5ed.mffs.item.CustomModeItem;
 import dev.su5ed.mffs.item.ModuleItem;
 import dev.su5ed.mffs.menu.ProjectorMenu;
+import dev.su5ed.mffs.network.UpdateAnimationSpeed;
 import dev.su5ed.mffs.setup.ModBlocks;
 import dev.su5ed.mffs.setup.ModItems;
 import dev.su5ed.mffs.setup.ModObjects;
@@ -24,6 +25,7 @@ import dev.su5ed.mffs.util.ModUtil;
 import dev.su5ed.mffs.util.ProjectorCalculationThread;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Inventory;
@@ -72,6 +74,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
 
     public boolean isCalculating = false;
     public boolean isCalculated = false;
+    public int clientAnimationSpeed;
 
     public ProjectorBlockEntity(BlockPos pos, BlockState state) {
         super(ModObjects.PROJECTOR_BLOCK_ENTITY.get(), pos, state, 50);
@@ -87,13 +90,17 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
         this.upgradeSlots = createUpgradeSlots(6, true);
     }
 
-    public float getAnimationSpeed() {
+    public int computeAnimationSpeed() {
         int speed = 4;
         int fortronCost = getFortronCost();
         if (isActive() && getMode() != null && this.fortronStorage.extractFortron(fortronCost, true) >= fortronCost) {
             speed *= fortronCost / 8.0f;
         }
         return Math.min(120, speed);
+    }
+
+    public int getAnimationSpeed() {
+        return this.clientAnimationSpeed;
     }
 
     @Override
@@ -149,6 +156,12 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
         } else {
             destroyField();
         }
+        
+        int speed = computeAnimationSpeed();
+        if (speed != this.clientAnimationSpeed) {
+            this.clientAnimationSpeed = speed;
+            sendToChunk(new UpdateAnimationSpeed(this.worldPosition, speed));
+        }
     }
 
     @Override
@@ -187,6 +200,19 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
         if (!this.level.isClientSide) {
             this.level.getChunkSource().getLightEngine().checkBlock(this.worldPosition);
         }
+    }
+
+    @Override
+    public CompoundTag getUpdateTag() {
+        CompoundTag tag = super.getUpdateTag();
+        tag.putInt("animationSpeed", computeAnimationSpeed());
+        return tag;
+    }
+
+    @Override
+    public void handleUpdateTag(CompoundTag tag) {
+        super.handleUpdateTag(tag);
+        this.clientAnimationSpeed = tag.getInt("animationSpeed");
     }
 
     @Nullable
