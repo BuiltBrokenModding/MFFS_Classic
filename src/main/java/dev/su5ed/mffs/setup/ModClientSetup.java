@@ -9,6 +9,7 @@ import dev.su5ed.mffs.render.model.ForceCubeModel;
 import dev.su5ed.mffs.render.model.ForceFieldBlockModelLoader;
 import dev.su5ed.mffs.render.model.ProjectorRotorModel;
 import dev.su5ed.mffs.render.particle.BeamParticleProvider;
+import dev.su5ed.mffs.render.particle.MovingHologramParticleProvider;
 import dev.su5ed.mffs.screen.CoercionDeriverScreen;
 import dev.su5ed.mffs.screen.FortronCapacitorScreen;
 import dev.su5ed.mffs.screen.ProjectorScreen;
@@ -20,6 +21,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.ModelEvent;
+import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -65,6 +67,7 @@ public final class ModClientSetup {
     @SubscribeEvent
     public static void registerParticleFactory(RegisterParticleProvidersEvent event) {
         event.register(ModObjects.BEAM_PARTICLE.get(), new BeamParticleProvider());
+        event.register(ModObjects.MOVING_HOLOGRAM_PARTICLE.get(), new MovingHologramParticleProvider());
     }
 
     @SubscribeEvent
@@ -77,6 +80,11 @@ public final class ModClientSetup {
     @SubscribeEvent
     public static void registerGeometryLoaders(ModelEvent.RegisterGeometryLoaders event) {
         event.register(ForceFieldBlockModelLoader.NAME.getPath(), new ForceFieldBlockModelLoader());
+    }
+
+    @SubscribeEvent
+    public static void registerBlockColor(RegisterColorHandlersEvent.Block event) {
+        event.register((state, level, pos, tintIndex) -> 3473151, ModBlocks.FORCE_FIELD.get());
     }
 
     private ModClientSetup() {}

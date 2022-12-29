@@ -7,6 +7,7 @@ import dev.su5ed.mffs.blockentity.FortronCapacitorBlockEntity;
 import dev.su5ed.mffs.blockentity.ProjectorBlockEntity;
 import dev.su5ed.mffs.render.ModParticleType;
 import dev.su5ed.mffs.render.particle.BeamParticleOptions;
+import dev.su5ed.mffs.render.particle.MovingHologramParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.level.block.Block;
@@ -29,6 +30,7 @@ public final class ModObjects {
     public static final RegistryObject<BlockEntityType<ForceFieldBlockEntity>> FORCE_FIELD_BLOCK_ENTITY = blockEntity("force_field", ForceFieldBlockEntity::new, ModBlocks.FORCE_FIELD::get);
 
     public static final RegistryObject<ModParticleType<BeamParticleOptions>> BEAM_PARTICLE = PARTICLES.register("beam", () -> new ModParticleType<>(true, BeamParticleOptions.DESERIALIZER, BeamParticleOptions.CODEC));
+    public static final RegistryObject<ModParticleType<MovingHologramParticleOptions>> MOVING_HOLOGRAM_PARTICLE = PARTICLES.register("moving_hologram", () -> new ModParticleType<>(true, MovingHologramParticleOptions.DESERIALIZER, MovingHologramParticleOptions.CODEC));
 
     public static final DamageSource FIELD_SHOCK = new DamageSource("mffs.field_shock").bypassArmor();
     

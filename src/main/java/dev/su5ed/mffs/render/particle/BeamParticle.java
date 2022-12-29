@@ -61,17 +61,17 @@ public class BeamParticle extends Particle {
     }
 
     @Override
-    public void render(VertexConsumer pBuffer, Camera pRenderInfo, float pPartialTicks) {
+    public void render(VertexConsumer buffer, Camera renderInfo, float partialTicks) {
         Matrix4f mat = new Matrix4f();
         mat.setIdentity();
 
         int deg = 360 / ROTATION_SPEED;
-        float rot = this.level.getGameTime() % deg * ROTATION_SPEED + ROTATION_SPEED * pPartialTicks;
+        float rot = this.level.getGameTime() % deg * ROTATION_SPEED + ROTATION_SPEED * partialTicks;
 
         float size = 1.0f;
         if (PULSE) {
             size = Math.min(this.age / 4.0F, 1.0F);
-            size = Mth.lerp(pPartialTicks, this.prevSize, size);
+            size = Mth.lerp(partialTicks, this.prevSize, size);
         }
 
         float opacity = 0.5F;
@@ -79,17 +79,17 @@ public class BeamParticle extends Particle {
             opacity = 0.5F - (4 - (this.lifetime - this.age)) * 0.1F;
         }
 
-        float tickSlide = this.level.getGameTime() + pPartialTicks;
+        float tickSlide = this.level.getGameTime() + partialTicks;
         float vOffset = -tickSlide * 0.2F - Mth.floor(-tickSlide * 0.1F);
 
-        Vec3 vec3 = pRenderInfo.getPosition();
-        float xx = (float) (Mth.lerp(pPartialTicks, this.xo, this.x) - vec3.x());
-        float yy = (float) (Mth.lerp(pPartialTicks, this.yo, this.y) - vec3.y());
-        float zz = (float) (Mth.lerp(pPartialTicks, this.zo, this.z) - vec3.z());
+        Vec3 vec3 = renderInfo.getPosition();
+        float xx = (float) (Mth.lerp(partialTicks, this.xo, this.x) - vec3.x());
+        float yy = (float) (Mth.lerp(partialTicks, this.yo, this.y) - vec3.y());
+        float zz = (float) (Mth.lerp(partialTicks, this.zo, this.z) - vec3.z());
         mat.translate(new Vector3f(xx, yy, zz));
 
-        float ry = Mth.lerp(pPartialTicks, this.prevYaw, this.rotYaw);
-        float rp = Mth.lerp(pPartialTicks, this.prevPitch, this.rotPitch);
+        float ry = Mth.lerp(partialTicks, this.prevYaw, this.rotYaw);
+        float rp = Mth.lerp(partialTicks, this.prevPitch, this.rotPitch);
         mat.multiply(Vector3f.XP.rotationDegrees(90));
         mat.multiply(Vector3f.ZN.rotationDegrees(180 + ry));
         mat.multiply(Vector3f.XP.rotationDegrees(rp));
@@ -118,10 +118,10 @@ public class BeamParticle extends Particle {
 
             mat.multiply(Vector3f.YP.rotationDegrees(60));
 
-            pBuffer.vertex(mat, vectors[0].x(), vectors[0].y(), vectors[0].z()).uv(u1, v1).color(this.rCol, this.gCol, this.bCol, opacity).uv2(brightness).endVertex();
-            pBuffer.vertex(mat, vectors[1].x(), vectors[1].y(), vectors[1].z()).uv(u1, v0).color(this.rCol, this.gCol, this.bCol, opacity).uv2(brightness).endVertex();
-            pBuffer.vertex(mat, vectors[2].x(), vectors[2].y(), vectors[2].z()).uv(u0, v0).color(this.rCol, this.gCol, this.bCol, opacity).uv2(brightness).endVertex();
-            pBuffer.vertex(mat, vectors[3].x(), vectors[3].y(), vectors[3].z()).uv(u0, v1).color(this.rCol, this.gCol, this.bCol, opacity).uv2(brightness).endVertex();
+            buffer.vertex(mat, vectors[0].x(), vectors[0].y(), vectors[0].z()).uv(u1, v1).color(this.rCol, this.gCol, this.bCol, opacity).uv2(brightness).endVertex();
+            buffer.vertex(mat, vectors[1].x(), vectors[1].y(), vectors[1].z()).uv(u1, v0).color(this.rCol, this.gCol, this.bCol, opacity).uv2(brightness).endVertex();
+            buffer.vertex(mat, vectors[2].x(), vectors[2].y(), vectors[2].z()).uv(u0, v0).color(this.rCol, this.gCol, this.bCol, opacity).uv2(brightness).endVertex();
+            buffer.vertex(mat, vectors[3].x(), vectors[3].y(), vectors[3].z()).uv(u0, v1).color(this.rCol, this.gCol, this.bCol, opacity).uv2(brightness).endVertex();
         }
 
         this.prevSize = size;
@@ -136,7 +136,7 @@ public class BeamParticle extends Particle {
         public static final BeamParticleRenderType INSTANCE = new BeamParticleRenderType();
 
         @Override
-        public void begin(BufferBuilder pBuilder, TextureManager pTextureManager) {
+        public void begin(BufferBuilder builder, TextureManager textureManager) {
             RenderSystem.enableBlend();
             RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
 
@@ -145,12 +145,12 @@ public class BeamParticle extends Particle {
 
             RenderSystem.setShaderTexture(0, FORTRON_TEXTURE);
 
-            pBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.PARTICLE);
+            builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.PARTICLE);
         }
 
         @Override
-        public void end(Tesselator pTesselator) {
-            pTesselator.end();
+        public void end(Tesselator tesselator) {
+            tesselator.end();
         }
     }
 }

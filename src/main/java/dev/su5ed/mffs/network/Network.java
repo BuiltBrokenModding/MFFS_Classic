@@ -62,6 +62,11 @@ public final class Network {
             .decoder(UpdateAnimationSpeed::decode)
             .consumerMainThread(UpdateAnimationSpeed::processClientPacket)
             .add();
+        INSTANCE.messageBuilder(DisintegrateBlockPacket.class, id++, NetworkDirection.PLAY_TO_CLIENT)
+            .encoder(DisintegrateBlockPacket::encode)
+            .decoder(DisintegrateBlockPacket::decode)
+            .consumerMainThread(DisintegrateBlockPacket::processClientPacket)
+            .add();
     }
 
     public static <T extends BlockEntity> Optional<T> findBlockEntity(BlockEntityType<T> type, Level level, BlockPos pos) {

@@ -2,7 +2,8 @@ package dev.su5ed.mffs.render.particle;
 
 public enum BeamColor {
     BLUE(0.6F, 0.6F, 1),
-    RED(1, 0, 0);
+    RED(1, 0, 0),
+    WHITE(1, 1, 1);
     
     private final float red;
     private final float green;
