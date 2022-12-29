@@ -34,6 +34,7 @@ final class ItemModelGen extends ItemModelProvider {
         simpleItem(ModItems.SPONGE_MODULE);
         simpleItem(ModItems.FUSION_MODULE);
         simpleItem(ModItems.DOME_MODULE);
+        simpleItem(ModItems.COLLECTION_MODULE);
         
         simpleItem(ModItems.CUBE_MODE);
     }

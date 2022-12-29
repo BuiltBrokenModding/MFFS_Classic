@@ -6,6 +6,7 @@ import dev.su5ed.mffs.network.DisintegrateBlockPacket;
 import dev.su5ed.mffs.network.Network;
 import dev.su5ed.mffs.setup.ModItems;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -37,7 +38,7 @@ public class DisintegrationModuleItem extends ModuleItem {
             BlockState block = level.getBlockState(position);
 
             if (!block.isAir()) {
-                if (projector.getModuleCount(ModItems.CAMOUFLAGE_MODULE.get()) > 0) {
+                if (projector.hasModule(ModItems.CAMOUFLAGE_MODULE.get())) {
                     Item blockItem = block.getBlock().asItem();
                     boolean contains = projector.getAllModuleItemsStream()
                         .anyMatch(stack -> ProjectorBlockEntity.getFilterBlock(stack).isPresent() && stack.is(blockItem));
@@ -49,10 +50,15 @@ public class DisintegrationModuleItem extends ModuleItem {
                 Vec3 pos = Vec3.atLowerCornerOf(be.getBlockPos());
                 Vec3 target = Vec3.atLowerCornerOf(position);
                 Network.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(position)), new DisintegrateBlockPacket(pos, target, 2));
-                
-                // TODO Collection Module
 
-                projector.schedule(39, () -> destroyBlock(level, position, block.getBlock()));
+                projector.schedule(39, () -> {
+                    if (projector.hasModule(ModItems.COLLECTION_MODULE.get())) {
+                        collectBlock(projector, level, position, block.getBlock());
+                    }
+                    else {
+                        destroyBlock(level, position, block.getBlock());
+                    }
+                });
 
                 if (this.blockCount++ >= projector.getModuleCount(ModItems.SPEED_MODULE.get()) / 3) {
                     return ProjectAction.INTERRUPT;
@@ -69,6 +75,14 @@ public class DisintegrationModuleItem extends ModuleItem {
         BlockState state = level.getBlockState(pos);
         if (state.is(block)) {
             Block.dropResources(state, level, pos);
+            level.removeBlock(pos, false);
+        }
+    }
+    
+    private static void collectBlock(Projector projector, Level level, BlockPos pos, Block block) {
+        BlockState state = level.getBlockState(pos);
+        if (level instanceof ServerLevel serverLevel && state.is(block)) {
+            Block.getDrops(state, serverLevel, pos, level.getBlockEntity(pos)).forEach(projector::mergeIntoInventory);
             level.removeBlock(pos, false);
         }
     }

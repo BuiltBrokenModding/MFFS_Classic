@@ -39,6 +39,8 @@
   "item.mffs.sponge_module": "Sponge Module",
   "item.mffs.fusion_module": "Field Fusion Module",
   "item.mffs.dome_module": "Dome Module",
+  "item.mffs.collection_module": "Collection Module",
+  "item.mffs.collection_module.description": "Collects dropped blocks from the disintegration module.",
   
   "sounds.mffs.field": "Field Sound",
 

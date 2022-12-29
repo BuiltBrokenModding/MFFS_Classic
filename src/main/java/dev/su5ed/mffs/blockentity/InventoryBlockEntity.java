@@ -5,6 +5,7 @@ import dev.su5ed.mffs.util.SlotItemHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -12,9 +13,11 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -42,6 +45,30 @@ public abstract class InventoryBlockEntity extends BaseBlockEntity {
     }
 
     protected void onInventoryChanged() {}
+    
+    public boolean mergeIntoInventory(ItemStack stack) {
+        if (!this.level.isClientSide) {
+            for (Direction side : Direction.values()) {
+                if (stack.isEmpty()) {
+                    break;
+                }
+                
+                IItemHandler handler = Optional.ofNullable(this.level.getBlockEntity(this.worldPosition.relative(side)))
+                    .flatMap(be -> be.getCapability(ForgeCapabilities.ITEM_HANDLER, side.getOpposite()).resolve())
+                    .orElse(null);
+                if (handler != null) {
+                    stack = ItemHandlerHelper.insertItem(handler, stack, false);
+                }
+            }
+            
+            if (!stack.isEmpty()) {
+                ItemEntity item = new ItemEntity(this.level, this.worldPosition.getX() + 0.5, this.worldPosition.getY() + 1, this.worldPosition.getZ() + 0.5, stack);
+                this.level.addFreshEntity(item);
+            }
+        }
+
+        return false;
+    }
 
     @Nonnull
     @Override
