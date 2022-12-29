@@ -5,9 +5,10 @@ import dev.su5ed.mffs.blockentity.ProjectorBlockEntity;
 import dev.su5ed.mffs.network.DisintegrateBlockPacket;
 import dev.su5ed.mffs.network.Network;
 import dev.su5ed.mffs.setup.ModItems;
-import dev.su5ed.mffs.util.BlockDropDelayedEvent;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
@@ -32,17 +33,26 @@ public class DisintegrationModuleItem extends ModuleItem {
     public ProjectAction onProject(Projector projector, BlockPos position) {
         if (projector.getTicks() % 40 == 0) {
             BlockEntity be = (BlockEntity) projector;
-            BlockPos bePos = be.getBlockPos();
             Level level = be.getLevel();
-			BlockState block = level.getBlockState(position);
+            BlockState block = level.getBlockState(position);
 
             if (!block.isAir()) {
-                Vec3 pos = Vec3.atLowerCornerOf(bePos);
+                if (projector.getModuleCount(ModItems.CAMOUFLAGE_MODULE.get()) > 0) {
+                    Item blockItem = block.getBlock().asItem();
+                    boolean contains = projector.getAllModuleItemsStream()
+                        .anyMatch(stack -> ProjectorBlockEntity.getFilterBlock(stack).isPresent() && stack.is(blockItem));
+                    if (!contains) {
+                        return ProjectAction.SKIP;
+                    }
+                }
+
+                Vec3 pos = Vec3.atLowerCornerOf(be.getBlockPos());
                 Vec3 target = Vec3.atLowerCornerOf(position);
                 Network.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(position)), new DisintegrateBlockPacket(pos, target, 2));
+                
+                // TODO Collection Module
 
-                // TODO: Modularize this
-                ((ProjectorBlockEntity) projector).delayedEvents.add(new BlockDropDelayedEvent(39, block.getBlock(), be.getLevel(), position));
+                projector.schedule(39, () -> destroyBlock(level, position, block.getBlock()));
 
                 if (this.blockCount++ >= projector.getModuleCount(ModItems.SPEED_MODULE.get()) / 3) {
                     return ProjectAction.INTERRUPT;
@@ -53,5 +63,13 @@ public class DisintegrationModuleItem extends ModuleItem {
         }
 
         return ProjectAction.SKIP;
+    }
+
+    private static void destroyBlock(Level level, BlockPos pos, Block block) {
+        BlockState state = level.getBlockState(pos);
+        if (state.is(block)) {
+            Block.dropResources(state, level, pos);
+            level.removeBlock(pos, false);
+        }
     }
 }

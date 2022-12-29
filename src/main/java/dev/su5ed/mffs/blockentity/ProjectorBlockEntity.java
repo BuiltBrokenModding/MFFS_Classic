@@ -19,7 +19,6 @@ import dev.su5ed.mffs.setup.ModItems;
 import dev.su5ed.mffs.setup.ModObjects;
 import dev.su5ed.mffs.setup.ModSounds;
 import dev.su5ed.mffs.setup.ModTags;
-import dev.su5ed.mffs.util.DelayedEvent;
 import dev.su5ed.mffs.util.InventorySlot;
 import dev.su5ed.mffs.util.ModUtil;
 import dev.su5ed.mffs.util.ProjectorCalculationThread;
@@ -59,7 +58,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
     private static final String ROTATION_PITCH_CACHE_KEY = "getRotationPitch";
     private static final String INTERIOR_POINTS_CACHE_KEY = "getInteriorPoints";
 
-    public final List<DelayedEvent> delayedEvents = new ArrayList<>();
+    private final List<ScheduledEvent> scheduledEvents = new ArrayList<>();
     public final InventorySlot secondaryCard;
     public final InventorySlot projectorModeSlot;
     public final ListMultimap<Direction, InventorySlot> fieldModuleSlots;
@@ -127,14 +126,13 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
     public void tickServer() {
         super.tickServer();
 
-        Iterator<DelayedEvent> it = this.delayedEvents.iterator();
+        Iterator<ScheduledEvent> it = this.scheduledEvents.iterator();
         while (it.hasNext()) {
-            DelayedEvent event = it.next();
+            ScheduledEvent event = it.next();
 
-            if (event.ticks <= 0) {
+            if (event.countDown()) {
+                event.runnable.run();
                 it.remove();
-            } else {
-                event.update();
             }
         }
 
@@ -396,6 +394,11 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
         }
     }
 
+    @Override
+    public void schedule(int delay, Runnable runnable) {
+        this.scheduledEvents.add(new ScheduledEvent(delay, runnable));
+    }
+
     private boolean canProjectPos(BlockPos pos) {
         BlockState state = this.level.getBlockState(pos);
         return (state.isAir() || getModuleCount(ModItems.DISINTEGRATION_MODULE.get()) > 0 && state.getDestroySpeed(this.level, pos) != -1 || state.getMaterial().isLiquid() || state.is(ModTags.FORCEFIELD_REPLACEABLE))
@@ -456,7 +459,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
                     }
                 }
             }
-            return getModuleItemsStream()
+            return getAllModuleItemsStream()
                 .mapPartial(ProjectorBlockEntity::getFilterBlock)
                 .findFirst()
                 .orElse(null);
@@ -472,5 +475,19 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
             }
         }
         return Optional.empty();
+    }
+    
+    private static class ScheduledEvent {
+        public final Runnable runnable;
+        public int ticks;
+
+        public ScheduledEvent(int ticks, Runnable runnable) {
+            this.ticks = ticks;
+            this.runnable = runnable;
+        }
+
+        public boolean countDown() {
+            return --this.ticks <= 0;
+        }
     }
 }

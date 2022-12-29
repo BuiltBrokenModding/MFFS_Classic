@@ -79,7 +79,7 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
     @Override
     public <T extends Item & Module> ItemStack getModule(T module) {
         String key = MODULE_CACHE_KEY + module.hashCode();
-        return cached(key, () -> getModuleItemsStream()
+        return cached(key, () -> getAllModuleItemsStream()
             .filter(item -> item.is(module))
             .map(ItemStack::getCount)
             .foldLeft(new ItemStack(module, 0), ModularBlockEntity::growStack));
@@ -87,7 +87,7 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
 
     @Override
     public <T extends Item & Module> boolean hasModule(T module) {
-        return getModuleItemsStream().anyMatch(item -> item.is(module));
+        return getAllModuleItemsStream().anyMatch(item -> item.is(module));
     }
 
     @Override
@@ -101,7 +101,7 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
 
     @Override
     public Set<ItemStack> getModuleStacks() {
-        return getModuleItemsStream()
+        return getAllModuleItemsStream()
             .filter(stack -> stack.getItem() instanceof Module)
             .toSet();
     }
@@ -114,6 +114,11 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
             .select(Module.class)
             .map(item -> (T) item)
             .toSet());
+    }
+
+    @Override
+    public StreamEx<ItemStack> getAllModuleItemsStream() {
+        return getModuleItemsStream(List.of());
     }
 
     /**
@@ -174,10 +179,6 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
     private void updateFortronTankCapacity() {
         int capacity = (getModuleCount(ModItems.CAPACITY_MODULE.get()) * this.capacityBoost + getBaseFortronTankCapacity()) * FluidType.BUCKET_VOLUME;
         this.fortronStorage.setCapacity(capacity);
-    }
-
-    public StreamEx<ItemStack> getModuleItemsStream() {
-        return getModuleItemsStream(List.of());
     }
 
     private StreamEx<ItemStack> getModuleItemsStream(Collection<InventorySlot> slots) {

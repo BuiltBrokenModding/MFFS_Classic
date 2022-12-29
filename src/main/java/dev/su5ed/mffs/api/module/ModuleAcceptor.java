@@ -3,6 +3,7 @@ package dev.su5ed.mffs.api.module;
 import dev.su5ed.mffs.util.InventorySlot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import one.util.streamex.StreamEx;
 
 import java.util.Collection;
 import java.util.List;
@@ -22,6 +23,8 @@ public interface ModuleAcceptor {
     Set<ItemStack> getModuleStacks();
 
     <T extends Item & Module> Set<T> getModules();
+    
+    StreamEx<ItemStack> getAllModuleItemsStream();
 
     int getFortronCost();
 }

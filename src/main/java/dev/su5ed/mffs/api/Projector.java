@@ -89,4 +89,6 @@ public interface Projector extends ModuleAcceptor, BiometricIdentifierLink
 	 * * @return The amount of ticks this projector has existed in the world.
 	 */
 	long getTicks();
+	
+	void schedule(int delay, Runnable runnable);
 }
