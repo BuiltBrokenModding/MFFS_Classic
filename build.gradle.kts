@@ -6,12 +6,19 @@ plugins {
     `maven-publish`
     id("net.minecraftforge.gradle") version "5.1.+"
     id("org.parchmentmc.librarian.forgegradle") version "1.+"
+    id("me.qoomon.git-versioning") version "6.3.+"
 }
 
-version = "1.0"
+version = "0.0.0-SNAPSHOT"
 group = "dev.su5ed.mffs"
 
 java.toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+
+gitVersioning.apply {
+    rev {
+        version = "\${describe.tag.version.major}.\${describe.tag.version.minor}.\${describe.tag.version.patch.plus.describe.distance}"
+    }
+}
 
 minecraft {
     mappings("parchment", "2022.10.16-1.19.2")
