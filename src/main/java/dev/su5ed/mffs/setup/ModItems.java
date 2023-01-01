@@ -10,6 +10,7 @@ import dev.su5ed.mffs.item.ProjectorModeItem;
 import dev.su5ed.mffs.item.RemoteControllerItem;
 import dev.su5ed.mffs.item.ShockModuleItem;
 import dev.su5ed.mffs.item.SpongeModuleItem;
+import dev.su5ed.mffs.item.StabilizationModuleItem;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -36,20 +37,21 @@ public final class ModItems {
     public static final RegistryObject<Item> FORTRON_CAPACITOR_ITEM = fromBlock(ModBlocks.FORTRON_CAPACITOR);
     public static final RegistryObject<Item> REMOTE_CONTROLLER_ITEM = ITEMS.register("remote_controller", RemoteControllerItem::new);
     
-    public static final RegistryObject<ModuleItem> SPEED_MODULE = ITEMS.register("speed_module", () -> new ModuleItem(itemProperties(), 1.0F).autoDescription());
+    public static final RegistryObject<ModuleItem> SPEED_MODULE = ITEMS.register("speed_module", () -> new ModuleItem(itemProperties(), 1.0F).withDescription());
     public static final RegistryObject<ModuleItem> CAMOUFLAGE_MODULE = ITEMS.register("camouflage_module", () -> new ModuleItem(itemProperties().stacksTo(1), 1.5F));
-    public static final RegistryObject<ModuleItem> SCALE_MODULE = ITEMS.register("scale_module", () -> new ModuleItem(itemProperties(), 1.2F).autoDescription());
-    public static final RegistryObject<ModuleItem> CAPACITY_MODULE = ITEMS.register("capacity_module", () -> new ModuleItem(itemProperties(), 0.5F).autoDescription());
+    public static final RegistryObject<ModuleItem> SCALE_MODULE = ITEMS.register("scale_module", () -> new ModuleItem(itemProperties(), 1.2F).withDescription());
+    public static final RegistryObject<ModuleItem> CAPACITY_MODULE = ITEMS.register("capacity_module", () -> new ModuleItem(itemProperties(), 0.5F).withDescription());
     public static final RegistryObject<ModuleItem> DISINTEGRATION_MODULE = ITEMS.register("disintegration_module", DisintegrationModuleItem::new);
-    public static final RegistryObject<ModuleItem> TRANSLATION_MODULE = ITEMS.register("translation_module", () -> new ModuleItem(itemProperties(), 1.6F).autoDescription());
-    public static final RegistryObject<ModuleItem> ROTATION_MODULE = ITEMS.register("rotation_module", () -> new ModuleItem(itemProperties(), 0.1F).autoDescription());
+    public static final RegistryObject<ModuleItem> TRANSLATION_MODULE = ITEMS.register("translation_module", () -> new ModuleItem(itemProperties(), 1.6F).withDescription());
+    public static final RegistryObject<ModuleItem> ROTATION_MODULE = ITEMS.register("rotation_module", () -> new ModuleItem(itemProperties(), 0.1F).withDescription());
     public static final RegistryObject<ModuleItem> GLOW_MODULE = ITEMS.register("glow_module", () -> new ModuleItem(itemProperties()));
-    public static final RegistryObject<ModuleItem> SILENCE_MODULE = ITEMS.register("silence_module", () -> new ModuleItem(itemProperties().stacksTo(1), 1).autoDescription());
+    public static final RegistryObject<ModuleItem> SILENCE_MODULE = ITEMS.register("silence_module", () -> new ModuleItem(itemProperties().stacksTo(1), 1).withDescription());
     public static final RegistryObject<ModuleItem> SHOCK_MODULE = ITEMS.register("shock_module", ShockModuleItem::new);
     public static final RegistryObject<ModuleItem> SPONGE_MODULE = ITEMS.register("sponge_module", SpongeModuleItem::new);
     public static final RegistryObject<ModuleItem> FUSION_MODULE = ITEMS.register("fusion_module", FusionModule::new);
     public static final RegistryObject<ModuleItem> DOME_MODULE = ITEMS.register("dome_module", DomeModuleItem::new);
-    public static final RegistryObject<ModuleItem> COLLECTION_MODULE = ITEMS.register("collection_module", () -> new ModuleItem(itemProperties().stacksTo(1), 15).autoDescription());
+    public static final RegistryObject<ModuleItem> COLLECTION_MODULE = ITEMS.register("collection_module", () -> new ModuleItem(itemProperties().stacksTo(1), 15).withDescription());
+    public static final RegistryObject<ModuleItem> STABILIZATION_MODULE = ITEMS.register("stabilization_module", StabilizationModuleItem::new);
 
     public static final RegistryObject<ProjectorModeItem> CUBE_MODE = ITEMS.register("cube_mode", CubeProjectorModeItem::new);
     

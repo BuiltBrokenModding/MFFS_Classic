@@ -18,7 +18,7 @@ public class FusionModule extends ModuleItem {
     }
 
     @Override
-    public boolean onProject(Projector projector, Set<BlockPos> field) {
+    public boolean beforeProject(Projector projector, Set<BlockPos> field) {
         int frequency = ((BlockEntity) projector).getCapability(ModCapabilities.FORTRON)
             .map(FrequencyBlock::getFrequency)
             .orElseThrow();
@@ -31,6 +31,6 @@ public class FusionModule extends ModuleItem {
                 field.removeIf(pos -> compareProjector.getMode().isInField(compareProjector, pos));
             }
         }
-        return super.onProject(projector, field);
+        return super.beforeProject(projector, field);
     }
 }

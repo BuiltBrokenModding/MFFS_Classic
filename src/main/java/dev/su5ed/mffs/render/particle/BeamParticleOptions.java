@@ -9,8 +9,8 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.registries.ForgeRegistries;
 
-public record BeamParticleOptions(Vec3 target, BeamColor color, int lifetime) implements ParticleOptions {
-    public static final BeamParticleOptions DEFAULT = new BeamParticleOptions(Vec3.ZERO, BeamColor.BLUE, 20);
+public record BeamParticleOptions(Vec3 target, ParticleColor color, int lifetime) implements ParticleOptions {
+    public static final BeamParticleOptions DEFAULT = new BeamParticleOptions(Vec3.ZERO, ParticleColor.BLUE_BEAM, 20);
     @SuppressWarnings("deprecation")
     public static final Deserializer<BeamParticleOptions> DESERIALIZER = new Deserializer<>() {
         public BeamParticleOptions fromCommand(ParticleType<BeamParticleOptions> type, StringReader reader) {

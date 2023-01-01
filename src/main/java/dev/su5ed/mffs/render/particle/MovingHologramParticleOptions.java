@@ -6,11 +6,10 @@ import dev.su5ed.mffs.setup.ModObjects;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.registries.ForgeRegistries;
 
-public record MovingHologramParticleOptions(Vec3 target, BeamColor color, int lifetime) implements ParticleOptions {
-    public static final MovingHologramParticleOptions DEFAULT = new MovingHologramParticleOptions(Vec3.ZERO, BeamColor.BLUE, 20);
+public record MovingHologramParticleOptions(ParticleColor color, int lifetime) implements ParticleOptions {
+    public static final MovingHologramParticleOptions DEFAULT = new MovingHologramParticleOptions(ParticleColor.WHITE, 20);
     @SuppressWarnings("deprecation")
     public static final Deserializer<MovingHologramParticleOptions> DESERIALIZER = new Deserializer<>() {
         public MovingHologramParticleOptions fromCommand(ParticleType<MovingHologramParticleOptions> type, StringReader reader) {

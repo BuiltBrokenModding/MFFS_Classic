@@ -2,7 +2,7 @@ package dev.su5ed.mffs.item;
 
 import dev.su5ed.mffs.api.Projector;
 import dev.su5ed.mffs.blockentity.ProjectorBlockEntity;
-import dev.su5ed.mffs.network.DisintegrateBlockPacket;
+import dev.su5ed.mffs.network.DrawHologramPacket;
 import dev.su5ed.mffs.network.Network;
 import dev.su5ed.mffs.setup.ModItems;
 import net.minecraft.core.BlockPos;
@@ -25,7 +25,7 @@ public class DisintegrationModuleItem extends ModuleItem {
     }
 
     @Override
-    public boolean onProject(Projector projector, Set<BlockPos> fields) {
+    public boolean beforeProject(Projector projector, Set<BlockPos> fields) {
         this.blockCount = 0;
         return false;
     }
@@ -49,7 +49,7 @@ public class DisintegrationModuleItem extends ModuleItem {
 
                 Vec3 pos = Vec3.atLowerCornerOf(be.getBlockPos());
                 Vec3 target = Vec3.atLowerCornerOf(position);
-                Network.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(position)), new DisintegrateBlockPacket(pos, target, 2));
+                Network.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(position)), new DrawHologramPacket(pos, target, DrawHologramPacket.Type.DESTROY));
 
                 projector.schedule(39, () -> {
                     if (projector.hasModule(ModItems.COLLECTION_MODULE.get())) {

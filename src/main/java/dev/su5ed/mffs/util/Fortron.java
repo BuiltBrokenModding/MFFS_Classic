@@ -4,7 +4,7 @@ import dev.su5ed.mffs.api.fortron.FortronStorage;
 import dev.su5ed.mffs.api.module.ModuleAcceptor;
 import dev.su5ed.mffs.network.DrawBeamPacket;
 import dev.su5ed.mffs.network.Network;
-import dev.su5ed.mffs.render.particle.BeamColor;
+import dev.su5ed.mffs.render.particle.ParticleColor;
 import dev.su5ed.mffs.render.particle.BeamParticleOptions;
 import dev.su5ed.mffs.setup.ModFluids;
 import dev.su5ed.mffs.setup.ModItems;
@@ -104,11 +104,11 @@ public final class Fortron {
         }
     }
 
-    public static void renderBeam(ClientLevel level, Vec3 target, Vec3 position, BeamColor color, int lifetime) {
+    public static void renderBeam(ClientLevel level, Vec3 target, Vec3 position, ParticleColor color, int lifetime) {
         level.addParticle(new BeamParticleOptions(target, color, lifetime), position.x(), position.y(), position.z(), 0, 0, 0);
     }
 
-    public static void renderClientBeam(Level level, Vec3 target, Vec3 position, BlockPos chunkPos, BeamColor color, int lifetime) {
+    public static void renderClientBeam(Level level, Vec3 target, Vec3 position, BlockPos chunkPos, ParticleColor color, int lifetime) {
         DrawBeamPacket packet = new DrawBeamPacket(target, position, color, lifetime);
         Network.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(chunkPos)), packet);
     }
@@ -126,7 +126,7 @@ public final class Fortron {
             Level level = sourceBe.getLevel();
             Vec3 target = Vec3.atCenterOf(destination.getOwner().getBlockPos());
             Vec3 position = Vec3.atCenterOf(sourcePos);
-            BeamColor color = BeamColor.BLUE;
+            ParticleColor color = ParticleColor.BLUE_BEAM;
             int lifetime = 20;
             if (level instanceof ClientLevel clientLevel) {
                 renderBeam(clientLevel, target, position, color, lifetime);

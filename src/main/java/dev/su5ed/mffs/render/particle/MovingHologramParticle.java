@@ -31,8 +31,8 @@ import net.minecraftforge.client.model.data.ModelData;
 
 public class MovingHologramParticle extends Particle {
 
-    public MovingHologramParticle(ClientLevel level, Vec3 start, Vec3 target, BeamColor color, int lifetime) {
-        super(level, start.x(), start.y(), start.z(), 0, 0, 0);
+    public MovingHologramParticle(ClientLevel level, Vec3 pos, ParticleColor color, int lifetime) {
+        super(level, pos.x(), pos.y(), pos.z(), 0, 0, 0);
 
         setColor(color.getRed(), color.getGreen(), color.getBlue());
         setLifetime(lifetime);
@@ -75,7 +75,7 @@ public class MovingHologramParticle extends Particle {
         ModelBlockRenderer modelRenderer = blockRenderer.getModelRenderer();
         BlockState state = ModBlocks.FORCE_FIELD.get().defaultBlockState();
         BakedModel model = blockRenderer.getBlockModel(state);
-        modelRenderer.renderModel(pose.last(), new TranslucentVertexConsumer(buffer, alpha), state, model, 1, 0, 0, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, ModelData.EMPTY, RenderType.translucent());
+        modelRenderer.renderModel(pose.last(), new TranslucentVertexConsumer(buffer, alpha), state, model, this.rCol, this.gCol, this.bCol, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, ModelData.EMPTY, RenderType.translucent());
         
         pose.popPose();
     }

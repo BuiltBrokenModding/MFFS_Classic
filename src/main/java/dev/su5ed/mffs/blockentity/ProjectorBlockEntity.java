@@ -344,7 +344,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
             int constructionSpeed = Math.min(getProjectionSpeed(), MFFSConfig.COMMON.maxFFGenPerTick.get());
 
             Set<BlockPos> fieldToBeProjected = new HashSet<>(this.calculatedField);
-            if (getModules().stream().anyMatch(m -> m.onProject(this, fieldToBeProjected))) {
+            if (getModules().stream().anyMatch(m -> m.beforeProject(this, fieldToBeProjected))) {
                 return;
             }
 

@@ -62,10 +62,10 @@ public final class Network {
             .decoder(UpdateAnimationSpeed::decode)
             .consumerMainThread(UpdateAnimationSpeed::processClientPacket)
             .add();
-        INSTANCE.messageBuilder(DisintegrateBlockPacket.class, id++, NetworkDirection.PLAY_TO_CLIENT)
-            .encoder(DisintegrateBlockPacket::encode)
-            .decoder(DisintegrateBlockPacket::decode)
-            .consumerMainThread(DisintegrateBlockPacket::processClientPacket)
+        INSTANCE.messageBuilder(DrawHologramPacket.class, id++, NetworkDirection.PLAY_TO_CLIENT)
+            .encoder(DrawHologramPacket::encode)
+            .decoder(DrawHologramPacket::decode)
+            .consumerMainThread(DrawHologramPacket::processClientPacket)
             .add();
     }
 

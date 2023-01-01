@@ -41,6 +41,8 @@
   "item.mffs.dome_module": "Dome Module",
   "item.mffs.collection_module": "Collection Module",
   "item.mffs.collection_module.description": "Collects dropped blocks from the disintegration module.",
+  "item.mffs.stabilization_module": "Stabilization Module",
+  "item.mffs.stabilization_module.description": "Stabilizes the projected force field and crystallizes the field into solid blocks. Place a chest next the projector with blocks to stablize the field.",
   
   "sounds.mffs.field": "Field Sound",
 

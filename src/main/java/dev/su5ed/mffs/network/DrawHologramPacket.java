@@ -8,7 +8,7 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public record DisintegrateBlockPacket(Vec3 pos, Vec3 target, int type) {
+public record DrawHologramPacket(Vec3 pos, Vec3 target, Type type) {
     public void encode(FriendlyByteBuf buf) {
         buf.writeDouble(this.pos.x());
         buf.writeDouble(this.pos.y());
@@ -18,17 +18,22 @@ public record DisintegrateBlockPacket(Vec3 pos, Vec3 target, int type) {
         buf.writeDouble(this.target.y());
         buf.writeDouble(this.target.z());
 
-        buf.writeInt(this.type);
+        buf.writeEnum(this.type);
     }
 
-    public static DisintegrateBlockPacket decode(FriendlyByteBuf buf) {
+    public static DrawHologramPacket decode(FriendlyByteBuf buf) {
         Vec3 pos = new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble());
         Vec3 target = new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble());
-        int type = buf.readInt();
-        return new DisintegrateBlockPacket(pos, target, type);
+        Type type = buf.readEnum(Type.class);
+        return new DrawHologramPacket(pos, target, type);
     }
 
     public void processClientPacket(Supplier<NetworkEvent.Context> ctx) {
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> ClientPacketHandler.handleDisintegrateBlockPacket(this));
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> ClientPacketHandler.handleDrawHologramPacket(this));
+    }
+    
+    public enum Type {
+        CONSTRUCT,
+        DESTROY
     }
 }

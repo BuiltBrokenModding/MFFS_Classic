@@ -37,7 +37,7 @@ public class ModuleItem extends Item implements Module {
         this.fortronCost = fortronCost;
     }
     
-    public ModuleItem autoDescription() {
+    public ModuleItem withDescription() {
         this.description = Lazy.of(() -> {
             String name = ForgeRegistries.ITEMS.getKey(this).getPath();
             return ModUtil.translate("item", name + ".description").withStyle(ChatFormatting.GRAY);
@@ -61,7 +61,7 @@ public class ModuleItem extends Item implements Module {
     }
 
     @Override
-    public boolean onProject(Projector projector, Set<BlockPos> field) {
+    public boolean beforeProject(Projector projector, Set<BlockPos> field) {
         return false;
     }
 

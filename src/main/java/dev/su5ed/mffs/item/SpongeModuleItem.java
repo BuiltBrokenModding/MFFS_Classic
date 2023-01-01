@@ -19,7 +19,7 @@ public class SpongeModuleItem extends ModuleItem {
     }
 
     @Override
-    public boolean onProject(Projector projector, Set<BlockPos> field) {
+    public boolean beforeProject(Projector projector, Set<BlockPos> field) {
         if (projector.getTicks() % 60 == 0) {
             Level level = ((BlockEntity) projector).getLevel();
 
@@ -31,6 +31,6 @@ public class SpongeModuleItem extends ModuleItem {
                 }
             }
         }
-        return super.onProject(projector, field);
+        return super.beforeProject(projector, field);
     }
 }

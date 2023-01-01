@@ -4,7 +4,7 @@ import dev.su5ed.mffs.api.card.CoordLink;
 import dev.su5ed.mffs.api.fortron.FortronStorage;
 import dev.su5ed.mffs.api.fortron.FrequencyGrid;
 import dev.su5ed.mffs.menu.FortronMenu;
-import dev.su5ed.mffs.render.particle.BeamColor;
+import dev.su5ed.mffs.render.particle.ParticleColor;
 import dev.su5ed.mffs.setup.ModItems;
 import dev.su5ed.mffs.util.Fortron;
 import dev.su5ed.mffs.util.ModUtil;
@@ -77,7 +77,7 @@ public class RemoteControllerItem extends FrequencyCardItem implements CoordLink
                         int consumedEnergy = fortron.extractFortron((int) Math.ceil(requiredEnergy / fortronTiles.size()), false);
 
                         if (consumedEnergy > 0) {
-                            Fortron.renderClientBeam(level, player.position().add(0, player.getEyeHeight() - 0.2, 0), Vec3.atCenterOf(fortronPos), fortronPos, BeamColor.BLUE, 20);
+                            Fortron.renderClientBeam(level, player.position().add(0, player.getEyeHeight() - 0.2, 0), Vec3.atCenterOf(fortronPos), fortronPos, ParticleColor.BLUE_BEAM, 20);
                             receivedEnergy += consumedEnergy;
                         }
 

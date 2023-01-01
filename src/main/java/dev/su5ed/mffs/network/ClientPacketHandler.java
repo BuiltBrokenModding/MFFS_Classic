@@ -2,7 +2,7 @@ package dev.su5ed.mffs.network;
 
 import dev.su5ed.mffs.api.Activatable;
 import dev.su5ed.mffs.blockentity.ProjectorBlockEntity;
-import dev.su5ed.mffs.render.particle.BeamColor;
+import dev.su5ed.mffs.render.particle.ParticleColor;
 import dev.su5ed.mffs.render.particle.BeamParticleOptions;
 import dev.su5ed.mffs.render.particle.MovingHologramParticleOptions;
 import net.minecraft.client.Minecraft;
@@ -26,19 +26,19 @@ public final class ClientPacketHandler {
             .ifPresent(be -> be.clientAnimationSpeed = packet.animationSpeed());
     }
     
-    public static void handleDisintegrateBlockPacket(DisintegrateBlockPacket packet) {
+    public static void handleDrawHologramPacket(DrawHologramPacket packet) {
         Minecraft minecraft = Minecraft.getInstance();
-        int type = packet.type();
+        DrawHologramPacket.Type type = packet.type();
         Vec3 pos = packet.pos().add(0.5, 0.5, 0.5);
         Vec3 target = packet.target();
         Vec3 targetCenter = packet.target().add(0.5, 0.5, 0.5);
-        if (type == 1) {
-            minecraft.level.addParticle(new BeamParticleOptions(targetCenter, BeamColor.BLUE, 40), pos.x(), pos.y(), pos.z(), 0, 0, 0);
-            minecraft.level.addParticle(new MovingHologramParticleOptions(target, BeamColor.WHITE, 40), target.x(), target.y(), target.z(), 0, 0, 0);
+        if (type == DrawHologramPacket.Type.CONSTRUCT) {
+            minecraft.level.addParticle(new BeamParticleOptions(targetCenter, ParticleColor.BLUE_BEAM, 40), pos.x(), pos.y(), pos.z(), 0, 0, 0);
+            minecraft.level.addParticle(new MovingHologramParticleOptions(ParticleColor.BLUE_FIELD, 40), target.x(), target.y(), target.z(), 0, 0, 0);
         }
-        else if (type == 2) {
-            minecraft.level.addParticle(new BeamParticleOptions(targetCenter, BeamColor.RED, 40), pos.x(), pos.y(), pos.z(), 0, 0, 0);
-            minecraft.level.addParticle(new MovingHologramParticleOptions(target, BeamColor.RED, 40), target.x(), target.y(), target.z(), 0, 0, 0);
+        else if (type == DrawHologramPacket.Type.DESTROY) {
+            minecraft.level.addParticle(new BeamParticleOptions(targetCenter, ParticleColor.RED, 40), pos.x(), pos.y(), pos.z(), 0, 0, 0);
+            minecraft.level.addParticle(new MovingHologramParticleOptions(ParticleColor.RED, 40), target.x(), target.y(), target.z(), 0, 0, 0);
         }
     }
 

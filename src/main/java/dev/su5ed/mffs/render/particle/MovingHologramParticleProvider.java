@@ -11,6 +11,6 @@ public class MovingHologramParticleProvider implements ParticleProvider<MovingHo
     @Nullable
     @Override
     public Particle createParticle(MovingHologramParticleOptions options, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-        return new MovingHologramParticle(level, new Vec3(x, y, z), options.target(), options.color(), options.lifetime());
+        return new MovingHologramParticle(level, new Vec3(x, y, z), options.color(), options.lifetime());
     }
 }

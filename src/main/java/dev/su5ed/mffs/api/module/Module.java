@@ -17,7 +17,7 @@ public interface Module extends FortronCost {
      * @param projector
      * @return True to stop projecting.
      */
-    boolean onProject(Projector projector, Set<BlockPos> field);
+    boolean beforeProject(Projector projector, Set<BlockPos> field);
 
     boolean onDestroy(Projector projector, Set<BlockPos> field);
 

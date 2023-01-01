@@ -34,7 +34,7 @@ public class BeamParticle extends Particle {
 
     private float prevSize;
 
-    public BeamParticle(ClientLevel level, Vec3 start, Vec3 target, BeamColor color, int lifetime) {
+    public BeamParticle(ClientLevel level, Vec3 start, Vec3 target, ParticleColor color, int lifetime) {
         super(level, start.x(), start.y(), start.z(), 0, 0, 0);
 
         setColor(color.getRed(), color.getGreen(), color.getBlue());
