@@ -3,6 +3,7 @@ package dev.su5ed.mffs.api.module;
 import dev.su5ed.mffs.api.Projector;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
@@ -14,7 +15,7 @@ public interface ProjectorMode
 	 *
 	 * @param projector - The Projector Object
 	 */
-	<T extends BlockEntity & Projector> Set<BlockPos> getExteriorPoints(T projector);
+	<T extends BlockEntity & Projector> Set<Vec3> getExteriorPoints(T projector);
 
 	/**
 	 * @return Gets all interior points. Not translated or rotated.

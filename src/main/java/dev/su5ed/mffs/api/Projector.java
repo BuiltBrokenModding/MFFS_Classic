@@ -42,6 +42,8 @@ public interface Projector extends ModuleAcceptor, BiometricIdentifierLink
 	int getRotationYaw();
 
 	int getRotationPitch();
+	
+	int getRotationRoll();
 
 	/**
 	 * Projects a force field.

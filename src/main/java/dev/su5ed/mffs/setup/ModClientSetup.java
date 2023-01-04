@@ -7,6 +7,7 @@ import dev.su5ed.mffs.render.ProjectorBlockRenderer;
 import dev.su5ed.mffs.render.model.CoercionDeriverTopModel;
 import dev.su5ed.mffs.render.model.ForceCubeModel;
 import dev.su5ed.mffs.render.model.ForceFieldBlockModelLoader;
+import dev.su5ed.mffs.render.model.ForceTubeModel;
 import dev.su5ed.mffs.render.model.ProjectorRotorModel;
 import dev.su5ed.mffs.render.particle.BeamParticleProvider;
 import dev.su5ed.mffs.render.particle.MovingHologramParticleProvider;
@@ -46,6 +47,7 @@ public final class ModClientSetup {
     private static void registerLazyRenderers() {
         LAZY_RENDERERS.put(ModItems.CUBE_MODE.get(), ClientRenderHandler::renderCubeMode);
         LAZY_RENDERERS.put(ModItems.SPHERE_MODE.get(), ClientRenderHandler::renderSphereMode);
+        LAZY_RENDERERS.put(ModItems.TUBE_MODE.get(), ClientRenderHandler::renderTubeMode);
     }
 
     @SubscribeEvent
@@ -76,6 +78,7 @@ public final class ModClientSetup {
         event.registerLayerDefinition(ProjectorRotorModel.LAYER_LOCATION, ProjectorRotorModel::createBodyLayer);
         event.registerLayerDefinition(CoercionDeriverTopModel.LAYER_LOCATION, CoercionDeriverTopModel::createBodyLayer);
         event.registerLayerDefinition(ForceCubeModel.LAYER_LOCATION, ForceCubeModel::createBodyLayer);
+        event.registerLayerDefinition(ForceTubeModel.LAYER_LOCATION, ForceTubeModel::createBodyLayer);
     }
 
     @SubscribeEvent

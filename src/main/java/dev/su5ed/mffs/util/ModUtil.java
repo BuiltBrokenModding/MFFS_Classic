@@ -6,13 +6,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 
 public final class ModUtil {
-    public static BlockPos rotateByAngle(BlockPos pos, double yaw, double pitch) {
-        return rotateByAngle(pos, yaw, pitch, 0.0D);
-    }
 
     public static BlockPos rotateByAngle(BlockPos pos, double yaw, double pitch, double roll) {
         double yawRadians = Math.toRadians(yaw);
@@ -26,7 +24,22 @@ public final class ModUtil {
         double mulZ = x * Math.sin(yawRadians) * Math.cos(pitchRadians) + z * (Math.sin(yawRadians) * Math.sin(pitchRadians) * Math.sin(rollRadians) + Math.cos(yawRadians) * Math.cos(rollRadians)) + y * (Math.sin(yawRadians) * Math.sin(pitchRadians) * Math.cos(rollRadians) - Math.cos(yawRadians) * Math.sin(rollRadians));
         double mulY = -x * Math.sin(pitchRadians) + z * Math.cos(pitchRadians) * Math.sin(rollRadians) + y * Math.cos(pitchRadians) * Math.cos(rollRadians);
 
-        return new BlockPos(mulX, mulY, mulZ);
+        return new BlockPos(Math.round(mulX), Math.round(mulY), Math.round(mulZ));
+    }
+
+    public static Vec3 rotateByAngleVec(Vec3 pos, double yaw, double pitch, double roll) {
+        double yawRadians = Math.toRadians(yaw);
+        double pitchRadians = Math.toRadians(pitch);
+        double rollRadians = Math.toRadians(roll);
+        double x = pos.x();
+        double y = pos.y();
+        double z = pos.z();
+
+        double mulX = x * Math.cos(yawRadians) * Math.cos(pitchRadians) + z * (Math.cos(yawRadians) * Math.sin(pitchRadians) * Math.sin(rollRadians) - Math.sin(yawRadians) * Math.cos(rollRadians)) + y * (Math.cos(yawRadians) * Math.sin(pitchRadians) * Math.cos(rollRadians) + Math.sin(yawRadians) * Math.sin(rollRadians));
+        double mulZ = x * Math.sin(yawRadians) * Math.cos(pitchRadians) + z * (Math.sin(yawRadians) * Math.sin(pitchRadians) * Math.sin(rollRadians) + Math.cos(yawRadians) * Math.cos(rollRadians)) + y * (Math.sin(yawRadians) * Math.sin(pitchRadians) * Math.cos(rollRadians) - Math.cos(yawRadians) * Math.sin(rollRadians));
+        double mulY = -x * Math.sin(pitchRadians) + z * Math.cos(pitchRadians) * Math.sin(rollRadians) + y * Math.cos(pitchRadians) * Math.cos(rollRadians);
+
+        return new Vec3(mulX, mulY, mulZ);
     }
 
     public static boolean moveItemStackTo(ItemStack stack, List<Slot> slots) {

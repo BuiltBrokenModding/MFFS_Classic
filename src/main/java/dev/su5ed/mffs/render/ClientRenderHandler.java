@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
 import dev.su5ed.mffs.render.model.ForceCubeModel;
+import dev.su5ed.mffs.render.model.ForceTubeModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.LightTexture;
@@ -27,7 +28,13 @@ public final class ClientRenderHandler {
         RenderTickHandler.addTransparentRenderer(ForceCubeModel.RENDER_TYPE, new SphereModeRenderer(centerPos, cubeModel));
     }
 
-    private record CubeModeRenderer(Vec3 centerPos, ModelPart cubeModel) implements LazyRenderer {
+    public static void renderTubeMode(BlockEntity be, Function<ModelLayerLocation, ModelPart> modelFactory) {
+        Vec3 centerPos = Vec3.atCenterOf(be.getBlockPos());
+        ModelPart tubeModel = modelFactory.apply(ForceTubeModel.LAYER_LOCATION);
+        RenderTickHandler.addTransparentRenderer(ForceTubeModel.RENDER_TYPE, new CubeModeRenderer(centerPos, tubeModel));
+    }
+
+    private record CubeModeRenderer(Vec3 centerPos, ModelPart model) implements LazyRenderer {
         @Override
         public void render(PoseStack poseStack, VertexConsumer buffer, int renderTick, float partialTick) {
             float ticks = renderTick + partialTick;
@@ -44,7 +51,7 @@ public final class ClientRenderHandler {
             poseStack.mulPose(Vector3f.YP.rotationDegrees(ticks * 4L));
             poseStack.mulPose(Vector3f.ZP.rotationDegrees(36 + ticks * 4L));
 
-            this.cubeModel.render(poseStack, buffer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 1, 1, 1, Math.min(alpha, 1));
+            this.model.render(poseStack, buffer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 1, 1, 1, Math.min(alpha, 1));
 
             poseStack.popPose();
         }
@@ -56,7 +63,7 @@ public final class ClientRenderHandler {
         }
     }
 
-    private record SphereModeRenderer(Vec3 centerPos, ModelPart cubeModel) implements LazyRenderer {
+    private record SphereModeRenderer(Vec3 centerPos, ModelPart model) implements LazyRenderer {
         @Override
         public void render(PoseStack poseStack, VertexConsumer buffer, int renderTick, float partialTick) {
             float ticks = renderTick + partialTick;
@@ -70,7 +77,7 @@ public final class ClientRenderHandler {
             poseStack.translate(0, 1 + Math.sin(Math.toRadians(ticks * 3L)) / 7.0, 0);
 
             poseStack.scale(scale, scale, scale);
-            
+
             poseStack.mulPose(Vector3f.YP.rotationDegrees(ticks * 4L));
             poseStack.mulPose(Vector3f.ZP.rotationDegrees(36 + ticks * 4L));
 
@@ -81,7 +88,7 @@ public final class ClientRenderHandler {
 
                     Vec3 vec = new Vec3(Math.sin(theta) * Math.cos(phi), Math.cos(theta), Math.sin(theta) * Math.sin(phi)).multiply(radius, radius, radius);
                     poseStack.translate(vec.x, vec.y, vec.z);
-                    this.cubeModel.render(poseStack, buffer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 1, 1, 1, Math.min(alpha, 1) / 5f);
+                    this.model.render(poseStack, buffer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 1, 1, 1, Math.min(alpha, 1) / 5f);
                     poseStack.translate(-vec.x, -vec.y, -vec.z);
                 }
             }

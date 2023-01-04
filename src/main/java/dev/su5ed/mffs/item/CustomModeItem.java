@@ -5,6 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.Vec3;
 import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.Map;
@@ -17,7 +18,7 @@ public class CustomModeItem extends ProjectorModeItem {
     }
 
     @Override
-    public <T extends BlockEntity & Projector> Set<BlockPos> getExteriorPoints(T projector) {
+    public <T extends BlockEntity & Projector> Set<Vec3> getExteriorPoints(T projector) {
         throw new NotImplementedException();
     }
 

@@ -3,6 +3,7 @@ package dev.su5ed.mffs.util;
 import dev.su5ed.mffs.api.module.Module;
 import dev.su5ed.mffs.blockentity.ProjectorBlockEntity;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec3;
 import one.util.streamex.StreamEx;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,23 +29,21 @@ public class ProjectorCalculationThread extends Thread {
         this.projector.isCalculating = true;
 
         try {
-            Set<BlockPos> exteriorPoints = this.projector.getMode().getExteriorPoints(this.projector);
+            Set<Vec3> exteriorPoints = this.projector.getMode().getExteriorPoints(this.projector);
 
             BlockPos translation = this.projector.getTranslation();
             int rotationYaw = this.projector.getRotationYaw();
             int rotationPitch = this.projector.getRotationPitch();
-			
+            int rotationRoll = this.projector.getRotationRoll();
+
 			StreamEx.of(exteriorPoints)
-				.map(pos -> rotationYaw != 0 || rotationPitch != 0 ? ModUtil.rotateByAngle(pos, rotationYaw, rotationPitch, 0) : pos)
+				.map(pos -> rotationYaw != 0 || rotationPitch != 0 || rotationRoll != 0 ? ModUtil.rotateByAngleVec(pos, rotationYaw, rotationPitch, rotationRoll) : pos)
 				.map(pos -> {
                     BlockPos projPos = this.projector.getBlockPos();
-                    return pos.offset(projPos).offset(translation);
+                    return pos.add(projPos.getX(), projPos.getY(), projPos.getZ()).add(translation.getX(), translation.getY(), translation.getZ());
                 })
-				.forEach(pos -> {
-					if (pos.getY() <= this.projector.getLevel().getHeight()) {
-						this.projector.getCalculatedField().add(new BlockPos(pos));
-					}
-				});
+                .filter(pos -> pos.y() <= this.projector.getLevel().getHeight())
+				.forEach(pos -> this.projector.getCalculatedField().add(new BlockPos(Math.round(pos.x), Math.round(pos.y), Math.round(pos.z))));
 
             for (Module module : this.projector.getModules()) {
                 module.onCalculate(this.projector, this.projector.getCalculatedField());

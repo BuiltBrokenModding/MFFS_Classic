@@ -12,6 +12,7 @@ import dev.su5ed.mffs.item.ShockModuleItem;
 import dev.su5ed.mffs.item.SphereProjectorModeItem;
 import dev.su5ed.mffs.item.SpongeModuleItem;
 import dev.su5ed.mffs.item.StabilizationModuleItem;
+import dev.su5ed.mffs.item.TubeProjectorModeItem;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -56,6 +57,7 @@ public final class ModItems {
 
     public static final RegistryObject<ProjectorModeItem> CUBE_MODE = ITEMS.register("cube_mode", CubeProjectorModeItem::new);
     public static final RegistryObject<ProjectorModeItem> SPHERE_MODE = ITEMS.register("sphere_mode", SphereProjectorModeItem::new);
+    public static final RegistryObject<ProjectorModeItem> TUBE_MODE = ITEMS.register("tube_mode", TubeProjectorModeItem::new);
     
     public static final RegistryObject<Item> REDSTONE_TORCH_OFF = ITEMS.register("redstone_torch_off", () -> new Item(new Item.Properties()));
 

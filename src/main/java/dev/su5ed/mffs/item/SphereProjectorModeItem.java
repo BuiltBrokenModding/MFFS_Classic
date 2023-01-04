@@ -4,6 +4,7 @@ import dev.su5ed.mffs.api.Projector;
 import dev.su5ed.mffs.setup.ModItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -15,8 +16,8 @@ public class SphereProjectorModeItem extends ProjectorModeItem {
     }
 
     @Override
-    public <T extends BlockEntity & Projector> Set<BlockPos> getExteriorPoints(T projector) {
-        Set<BlockPos> fieldBlocks = new HashSet<>();
+    public <T extends BlockEntity & Projector> Set<Vec3> getExteriorPoints(T projector) {
+        Set<Vec3> fieldBlocks = new HashSet<>();
         int radius = projector.getModuleCount(ModItems.SCALE_MODULE.get());
         int steps = (int) Math.ceil(Math.PI / Math.atan(1.0D / radius / 2));
         for (int phi_n = 0; phi_n < 2 * steps; phi_n++) {
@@ -27,8 +28,7 @@ public class SphereProjectorModeItem extends ProjectorModeItem {
                 double x = Math.sin(theta) * Math.cos(phi) * radius;
                 double y = Math.cos(theta) * radius;
                 double z = Math.sin(theta) * Math.sin(phi) * radius;
-                BlockPos point = new BlockPos(Math.floor(x), Math.floor(y), Math.floor(z));
-                fieldBlocks.add(point);
+                fieldBlocks.add(new Vec3(x, y, z));
             }
         }
         return fieldBlocks;

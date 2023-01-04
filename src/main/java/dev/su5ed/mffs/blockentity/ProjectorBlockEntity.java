@@ -56,6 +56,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
     private static final String NEGATIVE_SCALE_CACHE_KEY = "getNegativeScale";
     private static final String ROTATION_YAW_CACHE_KEY = "getRotationYaw";
     private static final String ROTATION_PITCH_CACHE_KEY = "getRotationPitch";
+    private static final String ROTATION_ROLL_CACHE_KEY = "getRotationRoll";
     private static final String INTERIOR_POINTS_CACHE_KEY = "getInteriorPoints";
 
     private final List<ScheduledEvent> scheduledEvents = new ArrayList<>();
@@ -298,10 +299,9 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
     public int getRotationYaw() {
         return cached(ROTATION_YAW_CACHE_KEY, () -> {
             ModuleItem rotationModule = ModItems.ROTATION_MODULE.get();
-            return getModuleCount(rotationModule, getSlotsFromSide(Direction.EAST))
-                - getModuleCount(rotationModule, getSlotsFromSide(Direction.WEST))
-                + getModuleCount(rotationModule, getSlotsFromSide(Direction.SOUTH))
-                - getModuleCount(rotationModule, getSlotsFromSide(Direction.NORTH));
+            int rotation = getModuleCount(rotationModule, getSlotsFromSide(Direction.EAST)) 
+                - getModuleCount(rotationModule, getSlotsFromSide(Direction.WEST));
+            return rotation * 2;
         });
     }
 
@@ -309,8 +309,19 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
     public int getRotationPitch() {
         return cached(ROTATION_PITCH_CACHE_KEY, () -> {
             ModuleItem rotationModule = ModItems.ROTATION_MODULE.get();
-            return getModuleCount(rotationModule, getSlotsFromSide(Direction.UP))
+            int rotation = getModuleCount(rotationModule, getSlotsFromSide(Direction.UP)) 
                 - getModuleCount(rotationModule, getSlotsFromSide(Direction.DOWN));
+            return rotation * 2;
+        });
+    }
+
+    @Override
+    public int getRotationRoll() {
+        return cached(ROTATION_ROLL_CACHE_KEY, () -> {
+            ModuleItem rotationModule = ModItems.ROTATION_MODULE.get();
+            int rotation = getModuleCount(rotationModule, getSlotsFromSide(Direction.SOUTH))
+                - getModuleCount(rotationModule, getSlotsFromSide(Direction.NORTH));
+            return rotation * 2;
         });
     }
 
@@ -326,8 +337,9 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
             BlockPos translation = getTranslation();
             int rotationYaw = getRotationYaw();
             int rotationPitch = getRotationPitch();
+            int rotationRoll = getRotationRoll();
             return StreamEx.of(interiorPoints)
-                .map(pos -> rotationYaw != 0 || rotationPitch != 0 ? ModUtil.rotateByAngle(pos, rotationYaw, rotationPitch) : pos)
+                .map(pos -> rotationYaw != 0 || rotationPitch != 0 || rotationRoll != 0 ? ModUtil.rotateByAngle(pos, rotationYaw, rotationPitch, rotationRoll) : pos)
                 .map(pos -> pos.offset(this.worldPosition).offset(translation))
                 .toSet();
         });
@@ -448,7 +460,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
                 if (map != null) {
                     BlockPos fieldCenter = this.worldPosition.offset(getTranslation());
                     BlockPos relativePosition = pos.subtract(fieldCenter);
-                    BlockPos rotated = ModUtil.rotateByAngle(relativePosition, -getRotationYaw(), -getRotationPitch());
+                    BlockPos rotated = ModUtil.rotateByAngle(relativePosition, -getRotationYaw(), -getRotationPitch(), -getRotationRoll());
                     Block block = map.get(rotated);
                     if (block != null) {
                         return block;
