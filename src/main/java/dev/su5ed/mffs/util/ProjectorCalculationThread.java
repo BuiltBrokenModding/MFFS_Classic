@@ -18,10 +18,6 @@ public class ProjectorCalculationThread extends Thread {
     @Nullable
     private final Runnable callBack;
 
-    public ProjectorCalculationThread(ProjectorBlockEntity projector) {
-        this(projector, null);
-    }
-
     public ProjectorCalculationThread(ProjectorBlockEntity projector, @Nullable Runnable callBack) {
 		this.projector = projector;
         this.callBack = callBack;

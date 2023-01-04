@@ -1,14 +1,13 @@
 package dev.su5ed.mffs.blockentity;
 
 import dev.su5ed.mffs.api.ForceFieldBlock;
+import dev.su5ed.mffs.network.InitialDataRequestPacket;
+import dev.su5ed.mffs.network.Network;
+import dev.su5ed.mffs.setup.ModItems;
 import dev.su5ed.mffs.setup.ModObjects;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
-import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
@@ -21,9 +20,14 @@ import org.jetbrains.annotations.Nullable;
 public class ForceFieldBlockEntity extends BlockEntity {
     private BlockPos projector;
     private Block camouflage;
+    private int clientBlockLight;
 
     public ForceFieldBlockEntity(BlockPos pos, BlockState state) {
         super(ModObjects.FORCE_FIELD_BLOCK_ENTITY.get(), pos, state);
+    }
+
+    public int getClientBlockLight() {
+        return this.clientBlockLight;
     }
 
     public void setProjector(BlockPos position) {
@@ -34,6 +38,16 @@ public class ForceFieldBlockEntity extends BlockEntity {
     public void setCamouflage(Block camouflage) {
         this.camouflage = camouflage;
         setChanged();
+    }
+
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        
+        if (this.level.isClientSide) {
+            InitialDataRequestPacket packet = new InitialDataRequestPacket(this.worldPosition);
+            Network.INSTANCE.sendToServer(packet);
+        }
     }
 
     @Override
@@ -77,24 +91,18 @@ public class ForceFieldBlockEntity extends BlockEntity {
     public CompoundTag getUpdateTag() {
         CompoundTag tag = new CompoundTag();
         saveAdditional(tag);
+        tag.putInt("clientBlockLight", Math.round((float) Math.min(getProjectorSafe().getModuleCount(ModItems.GLOW_MODULE.get()), 64) / 64 * 15));
         return tag;
-    }
-
-    @Override
-    public Packet<ClientGamePacketListener> getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
-    }
-
-    @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        super.onDataPacket(net, pkt);
-        updateRenderClient();
     }
 
     @Override
     public void handleUpdateTag(CompoundTag tag) {
         super.handleUpdateTag(tag);
         load(tag);
+        this.clientBlockLight = tag.getInt("clientBlockLight");
+
+        updateRenderClient();
+        this.level.getLightEngine().checkBlock(this.worldPosition);
     }
 
     @Override
@@ -124,6 +132,6 @@ public class ForceFieldBlockEntity extends BlockEntity {
     public void updateRenderClient() {
         requestModelDataUpdate();
         BlockState state = getBlockState();
-        this.level.sendBlockUpdated(this.worldPosition, state, state, Block.UPDATE_IMMEDIATE);
+        this.level.sendBlockUpdated(this.worldPosition, state, state, Block.UPDATE_ALL);
     }
 }

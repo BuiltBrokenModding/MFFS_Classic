@@ -377,7 +377,6 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
                                     be.setCamouflage(camouflage);
                                 }
                             });
-                        this.level.getLightEngine().checkBlock(pos);
 
                         this.fortronStorage.extractFortron(1, false);
                         this.forceFields.add(pos);
@@ -411,10 +410,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
         if (!this.level.isClientSide && this.isCalculated && !this.isCalculating) {
             StreamEx.of(this.calculatedField)
                 .filter(pos -> this.level.getBlockState(pos).is(ModBlocks.FORCE_FIELD.get()))
-                .forEach(pos -> {
-                    this.level.removeBlock(pos, false);
-                    this.level.getChunkSource().getLightEngine().checkBlock(pos);
-                });
+                .forEach(pos -> this.level.removeBlock(pos, false));
         }
 
         this.forceFields.clear();

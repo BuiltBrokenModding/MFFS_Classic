@@ -45,6 +45,7 @@ public final class ModClientSetup {
 
     private static void registerLazyRenderers() {
         LAZY_RENDERERS.put(ModItems.CUBE_MODE.get(), ClientRenderHandler::renderCubeMode);
+        LAZY_RENDERERS.put(ModItems.SPHERE_MODE.get(), ClientRenderHandler::renderSphereMode);
     }
 
     @SubscribeEvent

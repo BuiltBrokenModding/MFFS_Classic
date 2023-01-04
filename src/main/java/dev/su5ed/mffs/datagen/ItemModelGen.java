@@ -38,6 +38,7 @@ final class ItemModelGen extends ItemModelProvider {
         simpleItem(ModItems.STABILIZATION_MODULE);
         
         simpleItem(ModItems.CUBE_MODE);
+        simpleItem(ModItems.SPHERE_MODE);
     }
     
     private void simpleItem(RegistryObject<? extends Item> item) {

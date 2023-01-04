@@ -5,7 +5,6 @@ import dev.su5ed.mffs.api.Projector;
 import dev.su5ed.mffs.api.fortron.FortronStorage;
 import dev.su5ed.mffs.api.module.Module;
 import dev.su5ed.mffs.blockentity.ForceFieldBlockEntity;
-import dev.su5ed.mffs.setup.ModItems;
 import dev.su5ed.mffs.setup.ModObjects;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
@@ -63,8 +62,7 @@ public class ForceFieldBlockImpl extends AbstractGlassBlock implements ForceFiel
     @Override
     public int getLightEmission(BlockState state, BlockGetter level, BlockPos pos) {
         return Optional.ofNullable(level.getBlockEntity(pos))
-            .map(be -> be instanceof ForceFieldBlockEntity f ? f.getProjectorSafe(level) : null)
-            .map(projector -> Math.round((float) Math.min(projector.getModuleCount(ModItems.GLOW_MODULE.get()), 64) / 64 * 15))
+            .map(be -> be instanceof ForceFieldBlockEntity f ? f.getClientBlockLight() : null)
             .orElseGet(() -> super.getLightEmission(state, level, pos));
     }
 

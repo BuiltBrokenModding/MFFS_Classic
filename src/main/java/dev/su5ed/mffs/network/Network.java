@@ -46,6 +46,11 @@ public final class Network {
             .decoder(SwitchTransferModePacket::decode)
             .consumerMainThread(SwitchTransferModePacket::processServerPacket)
             .add();
+        INSTANCE.messageBuilder(InitialDataRequestPacket.class, id++, NetworkDirection.PLAY_TO_SERVER)
+            .encoder(InitialDataRequestPacket::encode)
+            .decoder(InitialDataRequestPacket::decode)
+            .consumerMainThread(InitialDataRequestPacket::processPacket)
+            .add();
 
         INSTANCE.messageBuilder(ToggleModePacketClient.class, id++, NetworkDirection.PLAY_TO_CLIENT)
             .encoder(ToggleModePacketClient::encode)
@@ -66,6 +71,11 @@ public final class Network {
             .encoder(DrawHologramPacket::encode)
             .decoder(DrawHologramPacket::decode)
             .consumerMainThread(DrawHologramPacket::processClientPacket)
+            .add();
+        INSTANCE.messageBuilder(UpdateBlockEntityPacket.class, id++, NetworkDirection.PLAY_TO_CLIENT)
+            .encoder(UpdateBlockEntityPacket::encode)
+            .decoder(UpdateBlockEntityPacket::decode)
+            .consumerMainThread(UpdateBlockEntityPacket::processClientPacket)
             .add();
     }
 
