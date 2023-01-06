@@ -40,6 +40,7 @@ final class ItemModelGen extends ItemModelProvider {
         simpleItem(ModItems.CUBE_MODE);
         simpleItem(ModItems.SPHERE_MODE);
         simpleItem(ModItems.TUBE_MODE);
+        simpleItem(ModItems.PYRAMID_MODE);
     }
     
     private void simpleItem(RegistryObject<? extends Item> item) {

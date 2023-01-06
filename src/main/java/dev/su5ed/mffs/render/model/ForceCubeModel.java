@@ -19,7 +19,7 @@ import static dev.su5ed.mffs.MFFSMod.location;
 public class ForceCubeModel extends Model {
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(location("force_cube"), "main");
     
-    private static final ResourceLocation CORE_TEXTURE = location("textures/model/force_cube.png");
+    public static final ResourceLocation CORE_TEXTURE = location("textures/model/force_cube.png");
     public static final RenderType RENDER_TYPE = ModRenderType.STANDARD_TRANSLUCENT_ENTITY.apply(CORE_TEXTURE);
 
     private final ModelPart root;

@@ -35,9 +35,9 @@ public class SphereProjectorModeItem extends ProjectorModeItem {
     }
 
     @Override
-    public Set<BlockPos> getInteriorPoints(Projector projector) {
+    public <T extends BlockEntity & Projector> Set<BlockPos> getInteriorPoints(T projector) {
         Set<BlockPos> fieldBlocks = new HashSet<>();
-        BlockPos projectorPos = ((BlockEntity) projector).getBlockPos();
+        BlockPos projectorPos = projector.getBlockPos();
         BlockPos translation = projector.getTranslation();
         int radius = projector.getModuleCount(ModItems.SCALE_MODULE.get());
         for (int x = -radius; x <= radius; x++) {

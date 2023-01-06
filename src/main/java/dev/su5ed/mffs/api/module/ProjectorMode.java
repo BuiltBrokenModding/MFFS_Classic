@@ -4,7 +4,6 @@ import dev.su5ed.mffs.api.Projector;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
 
@@ -20,7 +19,7 @@ public interface ProjectorMode
 	/**
 	 * @return Gets all interior points. Not translated or rotated.
 	 */
-	Set<BlockPos> getInteriorPoints(Projector projector);
+	<T extends BlockEntity & Projector> Set<BlockPos> getInteriorPoints(T projector);
 
 	/**
 	 * @return Is this specific position inside this force field?

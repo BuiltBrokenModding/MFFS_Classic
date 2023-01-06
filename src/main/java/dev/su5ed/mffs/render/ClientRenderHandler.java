@@ -2,6 +2,7 @@ package dev.su5ed.mffs.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 import dev.su5ed.mffs.render.model.ForceCubeModel;
 import dev.su5ed.mffs.render.model.ForceTubeModel;
@@ -32,6 +33,11 @@ public final class ClientRenderHandler {
         Vec3 centerPos = Vec3.atCenterOf(be.getBlockPos());
         ModelPart tubeModel = modelFactory.apply(ForceTubeModel.LAYER_LOCATION);
         RenderTickHandler.addTransparentRenderer(ForceTubeModel.RENDER_TYPE, new CubeModeRenderer(centerPos, tubeModel));
+    }
+
+    public static void renderPyramidMode(BlockEntity be, Function<ModelLayerLocation, ModelPart> modelFactory) {
+        Vec3 centerPos = Vec3.atCenterOf(be.getBlockPos());
+        RenderTickHandler.addTransparentRenderer(ModRenderType.POS_TEX_TRANSLUCENT_UNCULLED_TRIANGLE.apply(ForceCubeModel.CORE_TEXTURE), new PyramidModeRenderer(centerPos));
     }
 
     private record CubeModeRenderer(Vec3 centerPos, ModelPart model) implements LazyRenderer {
@@ -92,6 +98,61 @@ public final class ClientRenderHandler {
                     poseStack.translate(-vec.x, -vec.y, -vec.z);
                 }
             }
+
+            poseStack.popPose();
+        }
+
+        @Nullable
+        @Override
+        public Vec3 getCenterPos(float partialTick) {
+            return this.centerPos;
+        }
+    }
+
+    private record PyramidModeRenderer(Vec3 centerPos) implements LazyRenderer {
+        @Override
+        public void render(PoseStack poseStack, VertexConsumer buffer, int renderTick, float partialTick) {
+            float ticks = renderTick + partialTick;
+            float height = 0.5f;
+            float width = 0.3f;
+            int uvMaxX = 2;
+            int uvMaxY = 2;
+            
+            poseStack.pushPose();
+            poseStack.translate(this.centerPos.x, this.centerPos.y, this.centerPos.z);
+            poseStack.translate(0, 1 + Math.sin(Math.toRadians(ticks * 3L)) / 7.0, 0);
+
+            poseStack.mulPose(Vector3f.YP.rotationDegrees(ticks * 4L));
+            poseStack.mulPose(Vector3f.ZP.rotationDegrees(36 + ticks * 4L));
+
+            poseStack.mulPose(Vector3f.ZP.rotationDegrees(180));
+
+            Vector3f translation = new Vector3f(0, -0.4F, 0);
+            Matrix4f mat = poseStack.last().pose();
+            
+            buffer.vertex(mat, translation.x(), translation.y(), translation.z()).uv(0, 0).endVertex();
+            buffer.vertex(mat, -width + translation.x(), height + translation.y(), -width + translation.z()).uv(-uvMaxX, -uvMaxY).endVertex();
+            buffer.vertex(mat, -width + translation.x(), height + translation.y(), width + translation.z()).uv(-uvMaxX, uvMaxY).endVertex();
+            
+            buffer.vertex(mat, translation.x(), translation.y(), translation.z()).uv(0, 0).endVertex();
+            buffer.vertex(mat, -width + translation.x(), height + translation.y(), width + translation.z()).uv(-uvMaxX, uvMaxY).endVertex();
+            buffer.vertex(mat, width + translation.x(), height + translation.y(), width + translation.z()).uv(uvMaxX, uvMaxY).endVertex();
+            
+            buffer.vertex(mat, translation.x(), translation.y(), translation.z()).uv(0, 0).endVertex();
+            buffer.vertex(mat, width + translation.x(), height + translation.y(), width + translation.z()).uv(uvMaxX, uvMaxY).endVertex();
+            buffer.vertex(mat, width + translation.x(), height + translation.y(), -width + translation.z()).uv(uvMaxX, -uvMaxY).endVertex();
+            
+            buffer.vertex(mat, translation.x(), translation.y(), translation.z()).uv(0, 0).endVertex();
+            buffer.vertex(mat, width + translation.x(), height + translation.y(), -width + translation.z()).uv(uvMaxX, -uvMaxY).endVertex();
+            buffer.vertex(mat, -width + translation.x(), height + translation.y(), -width + translation.z()).uv(-uvMaxX, -uvMaxY).endVertex();
+            
+            buffer.vertex(mat, -width + translation.x(), height + translation.y(), -width + translation.z()).uv(-uvMaxX, -uvMaxY).endVertex();
+            buffer.vertex(mat, -width + translation.x(), height + translation.y(), width + translation.z()).uv(-uvMaxX, uvMaxY).endVertex();
+            buffer.vertex(mat, width + translation.x(), height + translation.y(), width + translation.z()).uv(uvMaxX, uvMaxY).endVertex();
+            
+            buffer.vertex(mat, width + translation.x(), height + translation.y(), width + translation.z()).uv(uvMaxX, uvMaxY).endVertex();
+            buffer.vertex(mat, width + translation.x(), height + translation.y(), -width + translation.z()).uv(uvMaxX, -uvMaxY).endVertex();
+            buffer.vertex(mat, -width + translation.x(), height + translation.y(), -width + translation.z()).uv(-uvMaxX, -uvMaxY).endVertex();
 
             poseStack.popPose();
         }

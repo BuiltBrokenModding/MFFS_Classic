@@ -23,7 +23,7 @@ public class CustomModeItem extends ProjectorModeItem {
     }
 
     @Override
-    public Set<BlockPos> getInteriorPoints(Projector projector) {
+    public <T extends BlockEntity & Projector> Set<BlockPos> getInteriorPoints(T projector) {
         throw new NotImplementedException();
     }
     

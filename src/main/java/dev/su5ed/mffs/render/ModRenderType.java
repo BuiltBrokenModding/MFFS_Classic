@@ -37,6 +37,19 @@ public class ModRenderType extends RenderType {
             .setOutputState(TRANSLUCENT_TARGET)
             .createCompositeState(true)
     );
+    
+    public static final Function<ResourceLocation, RenderType> POS_TEX_TRANSLUCENT_UNCULLED_TRIANGLE = Util.memoize(location -> create(
+        "mffs:standard_translucent_triangle_fan",
+        DefaultVertexFormat.POSITION_TEX, VertexFormat.Mode.TRIANGLES,
+        256, true, true,
+        RenderType.CompositeState.builder()
+            .setShaderState(POSITION_TEX_SHADER)
+            .setTextureState(new RenderStateShard.TextureStateShard(location, false, false))
+            .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+            .setOutputState(TRANSLUCENT_TARGET)
+            .setCullState(NO_CULL)
+            .createCompositeState(true)
+    ));
 
     private ModRenderType(String name, VertexFormat format, VertexFormat.Mode mode, int bufferSize, boolean affectsCrumbling, boolean sortOnUpload, Runnable setupState, Runnable clearState) {
         super(name, format, mode, bufferSize, affectsCrumbling, sortOnUpload, setupState, clearState);
