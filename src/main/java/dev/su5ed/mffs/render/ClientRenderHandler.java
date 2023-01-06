@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
+import dev.su5ed.mffs.item.CylinderProjectorModeItem;
 import dev.su5ed.mffs.render.model.ForceCubeModel;
 import dev.su5ed.mffs.render.model.ForceTubeModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -38,6 +39,12 @@ public final class ClientRenderHandler {
     public static void renderPyramidMode(BlockEntity be, Function<ModelLayerLocation, ModelPart> modelFactory) {
         Vec3 centerPos = Vec3.atCenterOf(be.getBlockPos());
         RenderTickHandler.addTransparentRenderer(ModRenderType.POS_TEX_TRANSLUCENT_UNCULLED_TRIANGLE.apply(ForceCubeModel.CORE_TEXTURE), new PyramidModeRenderer(centerPos));
+    }
+    
+    public static void renderCylinderMode(BlockEntity be, Function<ModelLayerLocation, ModelPart> modelFactory) {
+        Vec3 centerPos = Vec3.atCenterOf(be.getBlockPos());
+        ModelPart tubeModel = modelFactory.apply(ForceCubeModel.LAYER_LOCATION);
+        RenderTickHandler.addTransparentRenderer(ForceCubeModel.RENDER_TYPE, new CylinderModeRenderer(centerPos, tubeModel));
     }
 
     private record CubeModeRenderer(Vec3 centerPos, ModelPart model) implements LazyRenderer {
@@ -117,7 +124,7 @@ public final class ClientRenderHandler {
             float width = 0.3f;
             int uvMaxX = 2;
             int uvMaxY = 2;
-            
+
             poseStack.pushPose();
             poseStack.translate(this.centerPos.x, this.centerPos.y, this.centerPos.z);
             poseStack.translate(0, 1 + Math.sin(Math.toRadians(ticks * 3L)) / 7.0, 0);
@@ -129,30 +136,77 @@ public final class ClientRenderHandler {
 
             Vector3f translation = new Vector3f(0, -0.4F, 0);
             Matrix4f mat = poseStack.last().pose();
-            
+
             buffer.vertex(mat, translation.x(), translation.y(), translation.z()).uv(0, 0).endVertex();
             buffer.vertex(mat, -width + translation.x(), height + translation.y(), -width + translation.z()).uv(-uvMaxX, -uvMaxY).endVertex();
             buffer.vertex(mat, -width + translation.x(), height + translation.y(), width + translation.z()).uv(-uvMaxX, uvMaxY).endVertex();
-            
+
             buffer.vertex(mat, translation.x(), translation.y(), translation.z()).uv(0, 0).endVertex();
             buffer.vertex(mat, -width + translation.x(), height + translation.y(), width + translation.z()).uv(-uvMaxX, uvMaxY).endVertex();
             buffer.vertex(mat, width + translation.x(), height + translation.y(), width + translation.z()).uv(uvMaxX, uvMaxY).endVertex();
-            
+
             buffer.vertex(mat, translation.x(), translation.y(), translation.z()).uv(0, 0).endVertex();
             buffer.vertex(mat, width + translation.x(), height + translation.y(), width + translation.z()).uv(uvMaxX, uvMaxY).endVertex();
             buffer.vertex(mat, width + translation.x(), height + translation.y(), -width + translation.z()).uv(uvMaxX, -uvMaxY).endVertex();
-            
+
             buffer.vertex(mat, translation.x(), translation.y(), translation.z()).uv(0, 0).endVertex();
             buffer.vertex(mat, width + translation.x(), height + translation.y(), -width + translation.z()).uv(uvMaxX, -uvMaxY).endVertex();
             buffer.vertex(mat, -width + translation.x(), height + translation.y(), -width + translation.z()).uv(-uvMaxX, -uvMaxY).endVertex();
-            
+
             buffer.vertex(mat, -width + translation.x(), height + translation.y(), -width + translation.z()).uv(-uvMaxX, -uvMaxY).endVertex();
             buffer.vertex(mat, -width + translation.x(), height + translation.y(), width + translation.z()).uv(-uvMaxX, uvMaxY).endVertex();
             buffer.vertex(mat, width + translation.x(), height + translation.y(), width + translation.z()).uv(uvMaxX, uvMaxY).endVertex();
-            
+
             buffer.vertex(mat, width + translation.x(), height + translation.y(), width + translation.z()).uv(uvMaxX, uvMaxY).endVertex();
             buffer.vertex(mat, width + translation.x(), height + translation.y(), -width + translation.z()).uv(uvMaxX, -uvMaxY).endVertex();
             buffer.vertex(mat, -width + translation.x(), height + translation.y(), -width + translation.z()).uv(-uvMaxX, -uvMaxY).endVertex();
+
+            poseStack.popPose();
+        }
+
+        @Nullable
+        @Override
+        public Vec3 getCenterPos(float partialTick) {
+            return this.centerPos;
+        }
+    }
+
+    private record CylinderModeRenderer(Vec3 centerPos, ModelPart model) implements LazyRenderer {
+        @Override
+        public void render(PoseStack poseStack, VertexConsumer buffer, int renderTick, float partialTick) {
+            float ticks = renderTick + partialTick;
+            float scale = 0.15f;
+            float radius = 1.5f;
+            float detail = 0.5f;
+            float alpha = (float) (Math.sin(ticks / 10.0) / 2.0 + 1.0);
+
+            poseStack.pushPose();
+            poseStack.translate(this.centerPos.x, this.centerPos.y, this.centerPos.z);
+            poseStack.translate(0, 1 + Math.sin(Math.toRadians(ticks * 3L)) / 7.0, 0);
+
+            poseStack.scale(scale, scale, scale);
+
+            poseStack.mulPose(Vector3f.YP.rotationDegrees(ticks * 4L));
+            poseStack.mulPose(Vector3f.ZP.rotationDegrees(36 + ticks * 4L));
+
+            int i = 0;
+
+            for (float renderX = -radius; renderX <= radius; renderX += detail) {
+                for (float renderZ = -radius; renderZ <= radius; renderZ += detail) {
+                    for (float renderY = -radius; renderY <= radius; renderY += detail) {
+                        float area = renderX * renderX + renderZ * renderZ + CylinderProjectorModeItem.RADIUS_EXPANSION;
+                        if (area <= radius * radius && area >= (radius - 1) * (radius - 1) || (renderY == 0 || renderY == radius - 1) && area <= radius * radius) {
+                            if (i % 2 == 0) {
+                                Vec3 vector = new Vec3(renderX, renderY, renderZ);
+                                poseStack.translate(vector.x, vector.y, vector.z);
+                                this.model.render(poseStack, buffer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 1, 1, 1, Math.min(alpha, 1));
+                                poseStack.translate(-vector.x, -vector.y, -vector.z);
+                            }
+                            i++;
+                        }
+                    }
+                }
+            }
 
             poseStack.popPose();
         }

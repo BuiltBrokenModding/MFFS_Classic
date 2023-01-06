@@ -2,6 +2,7 @@ package dev.su5ed.mffs.setup;
 
 import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.item.CubeProjectorModeItem;
+import dev.su5ed.mffs.item.CylinderProjectorModeItem;
 import dev.su5ed.mffs.item.DisintegrationModuleItem;
 import dev.su5ed.mffs.item.DomeModuleItem;
 import dev.su5ed.mffs.item.FusionModule;
@@ -60,6 +61,7 @@ public final class ModItems {
     public static final RegistryObject<ProjectorModeItem> SPHERE_MODE = ITEMS.register("sphere_mode", SphereProjectorModeItem::new);
     public static final RegistryObject<ProjectorModeItem> TUBE_MODE = ITEMS.register("tube_mode", TubeProjectorModeItem::new);
     public static final RegistryObject<ProjectorModeItem> PYRAMID_MODE = ITEMS.register("pyramid_mode", PyramidProjectorModeItem::new);
+    public static final RegistryObject<ProjectorModeItem> CYLINDER_MODE = ITEMS.register("cylinder_mode", CylinderProjectorModeItem::new);
     
     public static final RegistryObject<Item> REDSTONE_TORCH_OFF = ITEMS.register("redstone_torch_off", () -> new Item(new Item.Properties()));
 

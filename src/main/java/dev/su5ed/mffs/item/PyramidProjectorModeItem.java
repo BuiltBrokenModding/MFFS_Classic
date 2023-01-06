@@ -102,21 +102,21 @@ public class PyramidProjectorModeItem extends ProjectorModeItem {
             .offset(0, -negScale.getY(), 0);
 
         BlockPos relativePosition = position.subtract(projectorPos);
-        ModUtil.rotateByAngle(relativePosition, -projector.getRotationYaw(), -projector.getRotationPitch(), 0);
-        
+        BlockPos relativeRotated = ModUtil.rotateByAngle(relativePosition, -projector.getRotationYaw(), -projector.getRotationPitch(), 0);
+
         BlockPos min = negScale.multiply(-1);
 
-        if (isIn(min, posScale, relativePosition) && relativePosition.getY() > 0) {
-            if (1 - Math.abs(relativePosition.getX()) / xStretch - Math.abs(relativePosition.getZ()) / zStretch > relativePosition.getY() / yStretch) {
+        if (isIn(min, posScale, relativeRotated) && relativeRotated.getY() > 0) {
+            if (1 - Math.abs(relativeRotated.getX()) / xStretch - Math.abs(relativeRotated.getZ()) / zStretch > relativeRotated.getY() / yStretch) {
                 return true;
             }
         }
 
         return false;
     }
-    
+
     private static boolean isIn(Vec3i min, Vec3i max, Vec3i vec) {
-        return vec.getX() > min.getX() && vec.getX() < max.getX() 
+        return vec.getX() > min.getX() && vec.getX() < max.getX()
             && vec.getY() > min.getY() && vec.getY() < max.getY()
             && vec.getZ() > min.getZ() && vec.getZ() < max.getZ();
     }
