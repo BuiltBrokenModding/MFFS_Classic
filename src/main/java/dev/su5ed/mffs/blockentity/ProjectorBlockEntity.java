@@ -169,11 +169,6 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
         super.blockRemoved();
     }
 
-    @Override
-    public Component getDisplayName() {
-        return getBlockState().getBlock().getName();
-    }
-
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int containerId, Inventory inventory, Player player) {

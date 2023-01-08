@@ -128,11 +128,6 @@ public class FortronCapacitorBlockEntity extends ModularBlockEntity implements F
         this.transferMode = TransferMode.valueOf(tag.getString("transferMode"));
     }
 
-    @Override
-    public Component getDisplayName() {
-        return getBlockState().getBlock().getName();
-    }
-
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int containerId, Inventory inventory, Player player) {

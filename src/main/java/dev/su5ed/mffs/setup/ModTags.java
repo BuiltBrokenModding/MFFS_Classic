@@ -12,6 +12,9 @@ public final class ModTags {
     public static final TagKey<Item> FORTRON_FUEL = itemTag("fortron_fuel");
     public static final TagKey<Block> FORCEFIELD_REPLACEABLE = blockTag("forcefield_replaceable");
 
+    public static final TagKey<Block> STABILIZATION_BLACKLIST = blockTag("stabilization_blacklist");
+    public static final TagKey<Block> DISINTEGRATION_BLACKLIST = blockTag("disintegration_blacklist");
+
     private static TagKey<Item> itemTag(String name) {
         return ItemTags.create(location(name));
     }

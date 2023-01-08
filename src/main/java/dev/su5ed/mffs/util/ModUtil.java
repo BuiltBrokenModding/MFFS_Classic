@@ -6,25 +6,18 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.fluids.IFluidBlock;
 
 import java.util.List;
 
 public final class ModUtil {
 
-    public static BlockPos rotateByAngle(BlockPos pos, double yaw, double pitch, double roll) {
-        double yawRadians = Math.toRadians(yaw);
-        double pitchRadians = Math.toRadians(pitch);
-        double rollRadians = Math.toRadians(roll);
-        double x = pos.getX();
-        double y = pos.getY();
-        double z = pos.getZ();
-
-        double mulX = x * Math.cos(yawRadians) * Math.cos(pitchRadians) + z * (Math.cos(yawRadians) * Math.sin(pitchRadians) * Math.sin(rollRadians) - Math.sin(yawRadians) * Math.cos(rollRadians)) + y * (Math.cos(yawRadians) * Math.sin(pitchRadians) * Math.cos(rollRadians) + Math.sin(yawRadians) * Math.sin(rollRadians));
-        double mulZ = x * Math.sin(yawRadians) * Math.cos(pitchRadians) + z * (Math.sin(yawRadians) * Math.sin(pitchRadians) * Math.sin(rollRadians) + Math.cos(yawRadians) * Math.cos(rollRadians)) + y * (Math.sin(yawRadians) * Math.sin(pitchRadians) * Math.cos(rollRadians) - Math.cos(yawRadians) * Math.sin(rollRadians));
-        double mulY = -x * Math.sin(pitchRadians) + z * Math.cos(pitchRadians) * Math.sin(rollRadians) + y * Math.cos(pitchRadians) * Math.cos(rollRadians);
-
-        return new BlockPos(Math.round(mulX), Math.round(mulY), Math.round(mulZ));
+    public static BlockPos rotateByAngle(BlockPos pos, double yaw, double pitch, double roll) { // TODO replace with vec variant
+        Vec3 vec = rotateByAngleVec(Vec3.atLowerCornerOf(pos), yaw, pitch, roll);
+        return new BlockPos(Math.round(vec.x()), Math.round(vec.y()), Math.round(vec.z()));
     }
 
     public static Vec3 rotateByAngleVec(Vec3 pos, double yaw, double pitch, double roll) {
@@ -105,6 +98,10 @@ public final class ModUtil {
         double d1 = second.getY() - first.getY();
         double d2 = second.getZ() - first.getZ();
         return Math.sqrt(d0 * d0 + d1 * d1 + d2 * d2);
+    }
+
+    public static boolean isLiquidBlock(Block block) {
+        return block instanceof LiquidBlock || block instanceof IFluidBlock;
     }
 
     private ModUtil() {}

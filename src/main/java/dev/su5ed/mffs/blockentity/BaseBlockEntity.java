@@ -3,6 +3,7 @@ package dev.su5ed.mffs.blockentity;
 import dev.su5ed.mffs.network.Network;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -41,6 +42,10 @@ public abstract class BaseBlockEntity extends BlockEntity implements MenuProvide
             NetworkHooks.openScreen((ServerPlayer) player, this, this.worldPosition);
         }
         return InteractionResult.SUCCESS;
+    }
+
+    public Component getDisplayName() {
+        return getBlockState().getBlock().getName();
     }
 
     @Override

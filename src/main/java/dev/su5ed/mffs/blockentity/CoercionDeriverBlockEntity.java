@@ -10,7 +10,6 @@ import dev.su5ed.mffs.util.ModUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -139,11 +138,6 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity {
 
     public boolean hasFuel() {
         return !this.fuelSlot.isEmpty();
-    }
-
-    @Override
-    public Component getDisplayName() {
-        return getBlockState().getBlock().getName();
     }
 
     @Nullable
