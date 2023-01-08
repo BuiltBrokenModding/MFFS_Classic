@@ -76,12 +76,12 @@ public class ForceFieldBlockEntity extends BlockEntity {
 
     @Nullable
     public ProjectorBlockEntity getProjectorSafe() {
-        return !this.level.isClientSide ? getProjectorSafe(this.level) : null;
+        return getProjectorSafe(this.level);
     }
 
     @Nullable
     public ProjectorBlockEntity getProjectorSafe(BlockGetter level) {
-        if (this.projector != null && level.getBlockEntity(this.projector) instanceof ProjectorBlockEntity projectorBe && projectorBe.getCalculatedField().contains(this.worldPosition)) {
+        if (this.projector != null && level.getBlockEntity(this.projector) instanceof ProjectorBlockEntity projectorBe && (this.level.isClientSide || projectorBe.getCalculatedField().contains(this.worldPosition))) {
             return projectorBe;
         }
         return null;
@@ -91,6 +91,7 @@ public class ForceFieldBlockEntity extends BlockEntity {
     public CompoundTag getUpdateTag() {
         CompoundTag tag = new CompoundTag();
         saveAdditional(tag);
+        tag.put("projector", NbtUtils.writeBlockPos(this.projector));
         tag.putInt("clientBlockLight", Math.round((float) Math.min(getProjectorSafe().getModuleCount(ModItems.GLOW_MODULE.get()), 64) / 64 * 15));
         return tag;
     }
@@ -99,6 +100,7 @@ public class ForceFieldBlockEntity extends BlockEntity {
     public void handleUpdateTag(CompoundTag tag) {
         super.handleUpdateTag(tag);
         load(tag);
+        this.projector = NbtUtils.readBlockPos(tag.getCompound("projector"));
         this.clientBlockLight = tag.getInt("clientBlockLight");
 
         updateRenderClient();
