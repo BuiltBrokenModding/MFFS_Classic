@@ -124,5 +124,9 @@ public final class ModUtil {
             .isPresent();
     }
 
+    public static boolean isProjectorMode(ItemStack stack) {
+        return stack.getCapability(ModCapabilities.PROJECTOR_MODE).isPresent();
+    }
+
     private ModUtil() {}
 }

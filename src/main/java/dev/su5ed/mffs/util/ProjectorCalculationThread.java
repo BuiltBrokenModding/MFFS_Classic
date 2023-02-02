@@ -30,7 +30,7 @@ public class ProjectorCalculationThread extends Thread {
         this.projector.isCalculating = true;
 
         try {
-            Set<Vec3> exteriorPoints = this.projector.getMode().getExteriorPoints(this.projector);
+            Set<Vec3> exteriorPoints = this.projector.getMode().orElseThrow().getExteriorPoints(this.projector);
 
             BlockPos translation = this.projector.getTranslation();
             int rotationYaw = this.projector.getRotationYaw();

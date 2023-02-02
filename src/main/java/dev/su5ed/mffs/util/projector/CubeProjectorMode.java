@@ -1,7 +1,7 @@
-package dev.su5ed.mffs.item;
+package dev.su5ed.mffs.util.projector;
 
 import dev.su5ed.mffs.api.Projector;
-import dev.su5ed.mffs.setup.ModItems;
+import dev.su5ed.mffs.api.module.ProjectorMode;
 import dev.su5ed.mffs.util.ModUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
@@ -12,12 +12,7 @@ import net.minecraft.world.phys.Vec3;
 import java.util.HashSet;
 import java.util.Set;
 
-public class CubeProjectorModeItem extends ProjectorModeItem {
-
-    public CubeProjectorModeItem() {
-        super(ModItems.itemProperties());
-    }
-
+public class CubeProjectorMode implements ProjectorMode {
     @Override
     public Set<Vec3> getExteriorPoints(Projector projector) {
         Set<Vec3> fieldBlocks = new HashSet<>();

@@ -1,7 +1,7 @@
-package dev.su5ed.mffs.item;
+package dev.su5ed.mffs.util.projector;
 
 import dev.su5ed.mffs.api.Projector;
-import dev.su5ed.mffs.setup.ModItems;
+import dev.su5ed.mffs.api.module.ProjectorMode;
 import dev.su5ed.mffs.util.ModUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -10,13 +10,9 @@ import net.minecraft.world.phys.Vec3;
 import java.util.HashSet;
 import java.util.Set;
 
-public class CylinderProjectorModeItem extends ProjectorModeItem {
+public class CylinderProjectorMode implements ProjectorMode {
     public static final int RADIUS_EXPANSION = 0;
-
-    public CylinderProjectorModeItem() {
-        super(ModItems.itemProperties());
-    }
-
+    
     @Override
     public Set<Vec3> getExteriorPoints(Projector projector) {
         Set<Vec3> fieldBlocks = new HashSet<>();

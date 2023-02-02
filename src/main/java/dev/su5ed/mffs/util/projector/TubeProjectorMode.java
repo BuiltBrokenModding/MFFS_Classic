@@ -1,4 +1,4 @@
-package dev.su5ed.mffs.item;
+package dev.su5ed.mffs.util.projector;
 
 import dev.su5ed.mffs.api.Projector;
 import net.minecraft.core.BlockPos;
@@ -7,8 +7,7 @@ import net.minecraft.world.phys.Vec3;
 import java.util.HashSet;
 import java.util.Set;
 
-public class TubeProjectorModeItem extends CubeProjectorModeItem {
-
+public class TubeProjectorMode extends CubeProjectorMode {
     @Override
     public Set<Vec3> getExteriorPoints(Projector projector) {
         Set<Vec3> fieldBlocks = new HashSet<>();

@@ -2,14 +2,11 @@ package dev.su5ed.mffs.setup;
 
 import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.api.module.Module;
-import dev.su5ed.mffs.item.CubeProjectorModeItem;
-import dev.su5ed.mffs.item.CylinderProjectorModeItem;
+import dev.su5ed.mffs.api.module.ProjectorMode;
 import dev.su5ed.mffs.item.ModuleItem;
 import dev.su5ed.mffs.item.ProjectorModeItem;
-import dev.su5ed.mffs.item.PyramidProjectorModeItem;
 import dev.su5ed.mffs.item.RemoteControllerItem;
-import dev.su5ed.mffs.item.SphereProjectorModeItem;
-import dev.su5ed.mffs.item.TubeProjectorModeItem;
+import dev.su5ed.mffs.util.projector.ModProjectorModes;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -54,11 +51,11 @@ public final class ModItems {
     public static final RegistryObject<ModuleItem> COLLECTION_MODULE = module("collection_module", ModModules.COLLECTION, singleStack());
     public static final RegistryObject<ModuleItem> STABILIZATION_MODULE = module("stabilization_module", ModModules.STABILIZAZION, singleStack(), ModuleItem::withDescription);
 
-    public static final RegistryObject<ProjectorModeItem> CUBE_MODE = ITEMS.register("cube_mode", CubeProjectorModeItem::new);
-    public static final RegistryObject<ProjectorModeItem> SPHERE_MODE = ITEMS.register("sphere_mode", SphereProjectorModeItem::new);
-    public static final RegistryObject<ProjectorModeItem> TUBE_MODE = ITEMS.register("tube_mode", TubeProjectorModeItem::new);
-    public static final RegistryObject<ProjectorModeItem> PYRAMID_MODE = ITEMS.register("pyramid_mode", PyramidProjectorModeItem::new);
-    public static final RegistryObject<ProjectorModeItem> CYLINDER_MODE = ITEMS.register("cylinder_mode", CylinderProjectorModeItem::new);
+    public static final RegistryObject<ProjectorModeItem> CUBE_MODE = projectorMode("cube_mode", ModProjectorModes.CUBE);
+    public static final RegistryObject<ProjectorModeItem> SPHERE_MODE = projectorMode("sphere_mode", ModProjectorModes.SPHERE);
+    public static final RegistryObject<ProjectorModeItem> TUBE_MODE = projectorMode("tube_mode", ModProjectorModes.TUBE);
+    public static final RegistryObject<ProjectorModeItem> PYRAMID_MODE = projectorMode("pyramid_mode", ModProjectorModes.PYRAMID);
+    public static final RegistryObject<ProjectorModeItem> CYLINDER_MODE = projectorMode("cylinder_mode", ModProjectorModes.CYLINDER);
 
     public static final RegistryObject<Item> REDSTONE_TORCH_OFF = ITEMS.register("redstone_torch_off", () -> new Item(new Item.Properties()));
 
@@ -88,6 +85,10 @@ public final class ModItems {
             consumer.accept(item);
             return item;
         });
+    }
+    
+    private static RegistryObject<ProjectorModeItem> projectorMode(String name, ProjectorMode projectorMode) {
+        return ITEMS.register(name, () -> new ProjectorModeItem(itemProperties(), projectorMode));
     }
 
     public static Item.Properties singleStack() {

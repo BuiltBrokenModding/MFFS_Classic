@@ -9,7 +9,6 @@ import dev.su5ed.mffs.api.Projector;
 import dev.su5ed.mffs.api.module.Module;
 import dev.su5ed.mffs.api.module.Module.ProjectAction;
 import dev.su5ed.mffs.api.module.ProjectorMode;
-import dev.su5ed.mffs.item.CustomModeItem;
 import dev.su5ed.mffs.menu.ProjectorMenu;
 import dev.su5ed.mffs.network.UpdateAnimationSpeed;
 import dev.su5ed.mffs.setup.ModBlocks;
@@ -21,6 +20,7 @@ import dev.su5ed.mffs.setup.ModTags;
 import dev.su5ed.mffs.util.ModUtil;
 import dev.su5ed.mffs.util.ProjectorCalculationThread;
 import dev.su5ed.mffs.util.inventory.InventorySlot;
+import dev.su5ed.mffs.util.projector.CustomProjectorMode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -83,7 +83,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
         super(ModObjects.PROJECTOR_BLOCK_ENTITY.get(), pos, state, 50);
 
         this.secondaryCard = addSlot("secondaryCard", InventorySlot.Mode.BOTH, ModUtil::isCard);
-        this.projectorModeSlot = addSlot("projectorMode", InventorySlot.Mode.BOTH, stack -> stack.getItem() instanceof ProjectorMode);
+        this.projectorModeSlot = addSlot("projectorMode", InventorySlot.Mode.BOTH, ModUtil::isProjectorMode);
         ImmutableListMultimap.Builder<Direction, InventorySlot> builder = new ImmutableListMultimap.Builder<>();
         StreamEx.of(Direction.values())
             .forEach(side -> IntStreamEx.range(2)
@@ -96,7 +96,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
     public int computeAnimationSpeed() {
         int speed = 4;
         int fortronCost = getFortronCost();
-        if (isActive() && getMode() != null && this.fortronStorage.extractFortron(fortronCost, true) >= fortronCost) {
+        if (isActive() && getMode().isPresent() && this.fortronStorage.extractFortron(fortronCost, true) >= fortronCost) {
             speed *= fortronCost / 8.0f;
         }
         return Math.min(120, speed);
@@ -151,7 +151,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
         }
 
         int fortronCost = getFortronCost();
-        if (isActive() && getMode() != null && this.fortronStorage.extractFortron(fortronCost, true) >= fortronCost) {
+        if (isActive() && getMode().isPresent() && this.fortronStorage.extractFortron(fortronCost, true) >= fortronCost) {
             consumeCost();
 
             if (getTicks() % 10 == 0) {
@@ -222,10 +222,9 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
         this.clientAnimationSpeed = tag.getInt("animationSpeed");
     }
 
-    @Nullable
     @Override
-    public ProjectorMode getMode() {
-        return getModeStack().getItem() instanceof ProjectorMode mode ? mode : null;
+    public Optional<ProjectorMode> getMode() {
+        return getModeStack().getCapability(ModCapabilities.PROJECTOR_MODE).resolve();
     }
 
     @Override
@@ -335,7 +334,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
     @Override
     public Set<BlockPos> getInteriorPoints() {
         return cached(INTERIOR_POINTS_CACHE_KEY, () -> {
-            Set<BlockPos> interiorPoints = getMode().getInteriorPoints(this);
+            Set<BlockPos> interiorPoints = getMode().orElseThrow().getInteriorPoints(this);
             BlockPos translation = getTranslation();
             int rotationYaw = getRotationYaw();
             int rotationPitch = getRotationPitch();
@@ -443,7 +442,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
     }
 
     private void reCalculateForceField(@Nullable Runnable callBack) {
-        if (!this.level.isClientSide && !this.isCalculating && getMode() != null) {
+        if (!this.level.isClientSide && !this.isCalculating && getMode().isPresent()) {
             if (getModeStack().getItem() instanceof ObjectCache cache) {
                 cache.clearCache();
             }
@@ -458,7 +457,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
 
     public Block getCamoBlock(BlockPos pos) {
         if (!this.level.isClientSide && getModuleCount(ModModules.CAMOUFLAGE) > 0) {
-            if (getMode() instanceof CustomModeItem custom) {
+            if (getMode().orElse(null) instanceof CustomProjectorMode custom) {
                 Map<BlockPos, Block> map = custom.getFieldBlockMap(this, getModeStack());
                 if (map != null) {
                     BlockPos fieldCenter = this.worldPosition.offset(getTranslation());

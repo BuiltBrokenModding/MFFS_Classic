@@ -4,9 +4,9 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
-import dev.su5ed.mffs.item.CylinderProjectorModeItem;
 import dev.su5ed.mffs.render.model.ForceCubeModel;
 import dev.su5ed.mffs.render.model.ForceTubeModel;
+import dev.su5ed.mffs.util.projector.CylinderProjectorMode;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.LightTexture;
@@ -194,7 +194,7 @@ public final class ClientRenderHandler {
             for (float renderX = -radius; renderX <= radius; renderX += detail) {
                 for (float renderZ = -radius; renderZ <= radius; renderZ += detail) {
                     for (float renderY = -radius; renderY <= radius; renderY += detail) {
-                        float area = renderX * renderX + renderZ * renderZ + CylinderProjectorModeItem.RADIUS_EXPANSION;
+                        float area = renderX * renderX + renderZ * renderZ + CylinderProjectorMode.RADIUS_EXPANSION;
                         if (area <= radius * radius && area >= (radius - 1) * (radius - 1) || (renderY == 0 || renderY == radius - 1) && area <= radius * radius) {
                             if (i % 2 == 0) {
                                 Vec3 vector = new Vec3(renderX, renderY, renderZ);

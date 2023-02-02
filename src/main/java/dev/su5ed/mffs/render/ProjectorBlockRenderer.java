@@ -5,7 +5,6 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 import dev.su5ed.mffs.MFFSMod;
-import dev.su5ed.mffs.api.module.ProjectorMode;
 import dev.su5ed.mffs.blockentity.ProjectorBlockEntity;
 import dev.su5ed.mffs.render.model.ProjectorRotorModel;
 import dev.su5ed.mffs.setup.ModClientSetup;
@@ -44,11 +43,10 @@ public class ProjectorBlockRenderer implements BlockEntityRenderer<ProjectorBloc
     @Override
     public void render(ProjectorBlockEntity blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
         renderRotor(blockEntity, partialTick, poseStack, bufferSource, packedLight, packedOverlay);
-        ProjectorMode mode = blockEntity.getMode();
-        if (mode != null) {
+        blockEntity.getMode().ifPresent(mode -> {
             RenderTickHandler.addTransparentRenderer(ModRenderType.STANDARD_TRANSLUCENT_TRIANGLE, this.holoRenderer.apply(blockEntity));
             ModClientSetup.renderLazy((Item) mode, blockEntity, this.modelPartCache);
-        }
+        });
     }
 
     private void renderRotor(ProjectorBlockEntity blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {

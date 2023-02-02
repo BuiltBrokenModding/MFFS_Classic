@@ -33,7 +33,7 @@ public class ProjectorBlock extends BaseEntityBlock {
     public int getLightEmission(BlockState state, BlockGetter level, BlockPos pos) {
         return Optional.ofNullable(level.getBlockEntity(pos))
             .flatMap(be -> be.getCapability(ModCapabilities.PROJECTOR).resolve())
-            .map(projector -> projector.getMode() != null ? 10 : 0)
+            .map(projector -> projector.getMode().isPresent() ? 10 : 0)
             .orElseGet(() -> super.getLightEmission(state, level, pos));
     }
 }

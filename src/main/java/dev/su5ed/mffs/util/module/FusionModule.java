@@ -27,8 +27,8 @@ public class FusionModule extends ModuleBase {
             storage.getOwner().getCapability(ModCapabilities.PROJECTOR)
                 .filter(compareProjector ->  compareProjector != projector
                     && ((BlockEntity) compareProjector).getLevel() == ((BlockEntity) projector).getLevel()
-                    && compareProjector.isActive() && compareProjector.getMode() != null)
-                .ifPresent(compareProjector -> field.removeIf(pos -> compareProjector.getMode().isInField(compareProjector, pos)));
+                    && compareProjector.isActive() && compareProjector.getMode().isPresent())
+                .ifPresent(compareProjector -> field.removeIf(pos -> compareProjector.getMode().orElseThrow().isInField(compareProjector, pos)));
         }
         return super.beforeProject(projector, field);
     }

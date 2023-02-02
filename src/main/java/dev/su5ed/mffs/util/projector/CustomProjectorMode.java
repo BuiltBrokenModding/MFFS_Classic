@@ -1,6 +1,7 @@
-package dev.su5ed.mffs.item;
+package dev.su5ed.mffs.util.projector;
 
 import dev.su5ed.mffs.api.Projector;
+import dev.su5ed.mffs.api.module.ProjectorMode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -10,12 +11,7 @@ import org.apache.commons.lang3.NotImplementedException;
 import java.util.Map;
 import java.util.Set;
 
-public class CustomModeItem extends ProjectorModeItem {
-
-    public CustomModeItem(Properties properties) {
-        super(properties);
-    }
-
+public class CustomProjectorMode implements ProjectorMode {
     @Override
     public Set<Vec3> getExteriorPoints(Projector projector) {
         throw new NotImplementedException();
@@ -25,7 +21,12 @@ public class CustomModeItem extends ProjectorModeItem {
     public Set<BlockPos> getInteriorPoints(Projector projector) {
         throw new NotImplementedException();
     }
-    
+
+    @Override
+    public boolean isInField(Projector projector, BlockPos position) {
+        throw new NotImplementedException();
+    }
+
     public Map<BlockPos, Block> getFieldBlockMap(Projector projector, ItemStack itemStack) {
         throw new NotImplementedException();
     }

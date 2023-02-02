@@ -12,6 +12,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -28,7 +29,7 @@ public interface Projector extends ModuleAcceptor, BiometricIdentifierLink {
     /**
      * Gets the mode of the projector, mainly the shape and size of it.
      */
-    ProjectorMode getMode();
+    Optional<ProjectorMode> getMode();
 
     ItemStack getModeStack();
 
