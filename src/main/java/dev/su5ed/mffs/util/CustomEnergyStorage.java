@@ -10,7 +10,7 @@ public class CustomEnergyStorage extends EnergyStorage {
 
     public CustomEnergyStorage(int capacity, int maxTransfer, BooleanSupplier canReceive, Runnable onChanged) {
         super(capacity, maxTransfer, maxTransfer);
-        
+
         this.canReceive = canReceive;
         this.onChanged = onChanged;
     }
@@ -27,7 +27,7 @@ public class CustomEnergyStorage extends EnergyStorage {
         }
         return rc;
     }
-    
+
     public int extractEnergy() {
         return extractEnergy(this.maxExtract, false);
     }
@@ -66,16 +66,16 @@ public class CustomEnergyStorage extends EnergyStorage {
         }
         onEnergyChanged();
     }
-    
+
     public void setMaxTransfer(int maxTransfer) {
         this.maxReceive = maxTransfer;
         this.maxExtract = maxTransfer;
     }
-    
+
     public int getRequestedEnergy() {
         return getMaxEnergyStored() - getEnergyStored();
     }
-    
+
     public boolean canExtract(int extract) {
         return extractEnergy(extract, true) >= extract;
     }

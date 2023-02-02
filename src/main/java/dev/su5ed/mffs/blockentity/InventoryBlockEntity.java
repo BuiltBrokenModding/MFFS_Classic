@@ -45,14 +45,14 @@ public abstract class InventoryBlockEntity extends BaseBlockEntity {
     }
 
     protected void onInventoryChanged() {}
-    
+
     public boolean mergeIntoInventory(ItemStack stack) {
         if (!this.level.isClientSide) {
             for (Direction side : Direction.values()) {
                 if (stack.isEmpty()) {
                     break;
                 }
-                
+
                 IItemHandler handler = Optional.ofNullable(this.level.getBlockEntity(this.worldPosition.relative(side)))
                     .flatMap(be -> be.getCapability(ForgeCapabilities.ITEM_HANDLER, side.getOpposite()).resolve())
                     .orElse(null);
@@ -60,7 +60,7 @@ public abstract class InventoryBlockEntity extends BaseBlockEntity {
                     stack = ItemHandlerHelper.insertItem(handler, stack, false);
                 }
             }
-            
+
             if (!stack.isEmpty()) {
                 ItemEntity item = new ItemEntity(this.level, this.worldPosition.getX() + 0.5, this.worldPosition.getY() + 1, this.worldPosition.getZ() + 0.5, stack);
                 this.level.addFreshEntity(item);
@@ -89,7 +89,7 @@ public abstract class InventoryBlockEntity extends BaseBlockEntity {
     @Override
     protected void loadCommonTag(CompoundTag tag) {
         super.loadCommonTag(tag);
-        
+
         this.items.deserializeNBT(tag.getCompound("items"));
     }
 }

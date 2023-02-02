@@ -87,11 +87,11 @@ public final class Network {
     public static <T> Optional<T> findBlockEntity(Class<T> type, Level level, BlockPos pos) {
         return findBlockEntity(level, pos).map(be -> type.isInstance(be) ? (T) be : null);
     }
-    
+
     public static <T> Optional<T> findBlockEntity(Capability<T> type, Level level, BlockPos pos) {
         return findBlockEntity(level, pos).flatMap(be -> be.getCapability(type).resolve());
     }
-    
+
     public static Optional<BlockEntity> findBlockEntity(Level level, BlockPos pos) {
         return level.isLoaded(pos) ? Optional.ofNullable(level.getBlockEntity(pos)) : Optional.empty();
     }

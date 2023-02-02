@@ -37,7 +37,7 @@ public class ModRenderType extends RenderType {
             .setOutputState(TRANSLUCENT_TARGET)
             .createCompositeState(true)
     );
-    
+
     public static final Function<ResourceLocation, RenderType> POS_TEX_TRANSLUCENT_UNCULLED_TRIANGLE = Util.memoize(location -> create(
         "mffs:standard_translucent_triangle_fan",
         DefaultVertexFormat.POSITION_TEX, VertexFormat.Mode.TRIANGLES,

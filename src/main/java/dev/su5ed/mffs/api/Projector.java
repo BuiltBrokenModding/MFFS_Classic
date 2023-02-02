@@ -17,85 +17,84 @@ import java.util.Set;
 /**
  * @author Calclavia
  */
-public interface Projector extends ModuleAcceptor, BiometricIdentifierLink
-{
-	BlockEntity be();
-	
-	/**
-	 * @return Is the projector active?
-	 */
-	boolean isActive();
+public interface Projector extends ModuleAcceptor, BiometricIdentifierLink {
+    BlockEntity be();
 
-	/**
-	 * Gets the mode of the projector, mainly the shape and size of it.
-	 */
-	ProjectorMode getMode();
+    /**
+     * @return Is the projector active?
+     */
+    boolean isActive();
 
-	ItemStack getModeStack();
+    /**
+     * Gets the mode of the projector, mainly the shape and size of it.
+     */
+    ProjectorMode getMode();
 
-	/**
-	 * Transformation information functions. Returns CACHED information unless the cache is cleared.
-	 */
-	BlockPos getTranslation();
+    ItemStack getModeStack();
 
-	BlockPos getPositiveScale();
+    /**
+     * Transformation information functions. Returns CACHED information unless the cache is cleared.
+     */
+    BlockPos getTranslation();
 
-	BlockPos getNegativeScale();
+    BlockPos getPositiveScale();
 
-	int getRotationYaw();
+    BlockPos getNegativeScale();
 
-	int getRotationPitch();
-	
-	int getRotationRoll();
+    int getRotationYaw();
 
-	/**
-	 * Projects a force field.
-	 */
-	void projectField();
+    int getRotationPitch();
 
-	/**
-	 * Destroys a force field.
-	 */
-	void destroyField();
+    int getRotationRoll();
 
-	/**
-	 * Gets the unspecified, direction-unspecific module slots on the left side of the GUI.
-	 */
-	Collection<InventorySlot> getUpgradeSlots();
+    /**
+     * Projects a force field.
+     */
+    void projectField();
 
-	/**
-	 * @param module - The module instance.
-	 * @param sides - The direction facing.
-	 * @return Gets the amount of modules based on the side.
-	 */
-	<T extends Item & Module> int getSidedModuleCount(T module, Direction... sides);
+    /**
+     * Destroys a force field.
+     */
+    void destroyField();
 
-	/**
-	 * Gets the slot IDs based on the direction given.
-	 */
-	Collection<InventorySlot> getSlotsFromSide(Direction side);
+    /**
+     * Gets the unspecified, direction-unspecific module slots on the left side of the GUI.
+     */
+    Collection<InventorySlot> getUpgradeSlots();
 
-	/**
-	 * * @return Gets all the blocks that are occupying the force field.
-	 */
-	Set<BlockPos> getCalculatedField();
+    /**
+     * @param module - The module instance.
+     * @param sides  - The direction facing.
+     * @return Gets the amount of modules based on the side.
+     */
+    <T extends Item & Module> int getSidedModuleCount(T module, Direction... sides);
 
-	/**
-	 * @return The speed in which a force field is constructed.
-	 */
-	int getProjectionSpeed();
+    /**
+     * Gets the slot IDs based on the direction given.
+     */
+    Collection<InventorySlot> getSlotsFromSide(Direction side);
 
-	/**
-	 * Gets the interior points of the projector. This might cause lag so call sparingly.
-	 */
-	Set<BlockPos> getInteriorPoints();
+    /**
+     * * @return Gets all the blocks that are occupying the force field.
+     */
+    Set<BlockPos> getCalculatedField();
 
-	/**
-	 * * @return The amount of ticks this projector has existed in the world.
-	 */
-	long getTicks();
-	
-	void schedule(int delay, Runnable runnable);
-	
-	boolean mergeIntoInventory(ItemStack stack);
+    /**
+     * @return The speed in which a force field is constructed.
+     */
+    int getProjectionSpeed();
+
+    /**
+     * Gets the interior points of the projector. This might cause lag so call sparingly.
+     */
+    Set<BlockPos> getInteriorPoints();
+
+    /**
+     * * @return The amount of ticks this projector has existed in the world.
+     */
+    long getTicks();
+
+    void schedule(int delay, Runnable runnable);
+
+    boolean mergeIntoInventory(ItemStack stack);
 }

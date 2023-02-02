@@ -1,6 +1,6 @@
 package dev.su5ed.mffs.block;
 
-import dev.su5ed.mffs.api.Projector;
+import dev.su5ed.mffs.setup.ModCapabilities;
 import dev.su5ed.mffs.setup.ModObjects;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
@@ -32,7 +32,8 @@ public class ProjectorBlock extends BaseEntityBlock {
     @Override
     public int getLightEmission(BlockState state, BlockGetter level, BlockPos pos) {
         return Optional.ofNullable(level.getBlockEntity(pos))
-            .map(be -> be instanceof Projector p && p.getMode() != null ? 10 : 0)
+            .flatMap(be -> be.getCapability(ModCapabilities.PROJECTOR).resolve())
+            .map(projector -> projector.getMode() != null ? 10 : 0)
             .orElseGet(() -> super.getLightEmission(state, level, pos));
     }
 }

@@ -29,11 +29,11 @@ public abstract class FortronMenu<T extends ModularBlockEntity & Activatable> ex
     public final T blockEntity;
     protected final Player player;
     protected final IItemHandler playerInventory;
-    
+
     private final List<Slot> hotBarSlots = new ArrayList<>();
     private final List<Slot> playerInventorySlots = new ArrayList<>();
     private final List<Slot> blockEntitySlots = new ArrayList<>();
-    
+
     private boolean isRemoteAccess;
 
     protected FortronMenu(@Nullable MenuType<?> type, BlockEntityType<T> blockEntityType, int containerId, BlockPos pos, Player player, Inventory playerInventory) {
@@ -45,7 +45,7 @@ public abstract class FortronMenu<T extends ModularBlockEntity & Activatable> ex
 
         trackPower();
     }
-    
+
     protected Slot addInventorySlot(Slot slot) {
         Slot ret = addSlot(slot);
         this.blockEntitySlots.add(ret);
@@ -139,7 +139,7 @@ public abstract class FortronMenu<T extends ModularBlockEntity & Activatable> ex
             setter.accept(current | value << 16);
         });
     }
-    
+
     protected void addDataSlot(IntSupplier gettter, IntConsumer setter) {
         addDataSlot(new DataSlotWrapper(gettter, setter));
     }

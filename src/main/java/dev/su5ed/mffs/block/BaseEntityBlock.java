@@ -76,8 +76,11 @@ public class BaseEntityBlock extends Block implements EntityBlock {
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
         return (lvl, pos, stt, te) -> {
             if (te instanceof BaseBlockEntity machine) {
-                if (lvl.isClientSide()) machine.tickClient();
-                else machine.tickServer();
+                if (lvl.isClientSide()) {
+                    machine.tickClient();
+                } else {
+                    machine.tickServer();
+                }
             }
         };
     }

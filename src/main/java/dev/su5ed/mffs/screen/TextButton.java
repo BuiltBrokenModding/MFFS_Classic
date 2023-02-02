@@ -10,7 +10,7 @@ public class TextButton extends Button {
 
     public TextButton(int x, int y, int width, int height, Supplier<Component> messageSupplier, OnPress onPress) {
         super(x, y, width, height, null, onPress);
-        
+
         this.messageSupplier = messageSupplier;
     }
 

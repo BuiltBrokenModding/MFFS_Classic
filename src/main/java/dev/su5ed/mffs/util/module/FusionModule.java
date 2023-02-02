@@ -24,11 +24,11 @@ public class FusionModule extends ModuleBase {
         Set<FortronStorage> machines = FrequencyGrid.instance().get(frequency);
 
         for (FortronStorage storage : machines) {
-            if (storage.getOwner() instanceof Projector compareProjector && compareProjector != projector
-                && ((BlockEntity) compareProjector).getLevel() == ((BlockEntity) projector).getLevel()
-                && compareProjector.isActive() && compareProjector.getMode() != null) {
-                field.removeIf(pos -> compareProjector.getMode().isInField(compareProjector, pos));
-            }
+            storage.getOwner().getCapability(ModCapabilities.PROJECTOR)
+                .filter(compareProjector ->  compareProjector != projector
+                    && ((BlockEntity) compareProjector).getLevel() == ((BlockEntity) projector).getLevel()
+                    && compareProjector.isActive() && compareProjector.getMode() != null)
+                .ifPresent(compareProjector -> field.removeIf(pos -> compareProjector.getMode().isInField(compareProjector, pos)));
         }
         return super.beforeProject(projector, field);
     }

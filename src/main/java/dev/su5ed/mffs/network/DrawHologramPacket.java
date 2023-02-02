@@ -31,7 +31,7 @@ public record DrawHologramPacket(Vec3 pos, Vec3 target, Type type) {
     public void processClientPacket(Supplier<NetworkEvent.Context> ctx) {
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> ClientPacketHandler.handleDrawHologramPacket(this));
     }
-    
+
     public enum Type {
         CONSTRUCT,
         DESTROY

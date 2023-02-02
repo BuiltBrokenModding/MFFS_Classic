@@ -49,7 +49,7 @@ public class MFFSConfig {
     public static final class Client {
 
         private Client(ForgeConfigSpec.Builder builder) {
-            
+
         }
     }
 }

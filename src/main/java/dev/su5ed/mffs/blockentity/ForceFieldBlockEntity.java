@@ -1,8 +1,10 @@
 package dev.su5ed.mffs.blockentity;
 
 import dev.su5ed.mffs.api.ForceFieldBlock;
+import dev.su5ed.mffs.api.Projector;
 import dev.su5ed.mffs.network.InitialDataRequestPacket;
 import dev.su5ed.mffs.network.Network;
+import dev.su5ed.mffs.setup.ModCapabilities;
 import dev.su5ed.mffs.setup.ModModules;
 import dev.su5ed.mffs.setup.ModObjects;
 import net.minecraft.core.BlockPos;
@@ -15,7 +17,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.registries.ForgeRegistries;
-import org.jetbrains.annotations.Nullable;
+
+import java.util.Optional;
 
 public class ForceFieldBlockEntity extends BlockEntity {
     private BlockPos projector;
@@ -43,7 +46,7 @@ public class ForceFieldBlockEntity extends BlockEntity {
     @Override
     public void onLoad() {
         super.onLoad();
-        
+
         if (this.level.isClientSide) {
             InitialDataRequestPacket packet = new InitialDataRequestPacket(this.worldPosition);
             Network.INSTANCE.sendToServer(packet);
@@ -64,27 +67,27 @@ public class ForceFieldBlockEntity extends BlockEntity {
      * @return Gets the projector block controlling this force field. Removes the force field if no
      * projector can be found.
      */
-    @Nullable
-    public ProjectorBlockEntity getProjector() {
-        if (getProjectorSafe() != null) {
-            return getProjectorSafe();
-        } else if (!this.level.isClientSide) {
+    public Optional<Projector> getProjector() {
+        Optional<Projector> projector = getProjectorSafe();
+        if (projector.isPresent()) {
+            return projector;
+        }
+        else if (!this.level.isClientSide) {
             this.level.removeBlock(this.worldPosition, false);
         }
-        return null;
+        return Optional.empty();
     }
 
-    @Nullable
-    public ProjectorBlockEntity getProjectorSafe() {
+    public Optional<Projector> getProjectorSafe() {
         return getProjectorSafe(this.level);
     }
 
-    @Nullable
-    public ProjectorBlockEntity getProjectorSafe(BlockGetter level) {
-        if (this.projector != null && level.getBlockEntity(this.projector) instanceof ProjectorBlockEntity projectorBe && (this.level.isClientSide || projectorBe.getCalculatedField().contains(this.worldPosition))) {
-            return projectorBe;
-        }
-        return null;
+    public Optional<Projector> getProjectorSafe(BlockGetter level) {
+        return this.projector != null
+            ? Optional.ofNullable(level.getBlockEntity(this.projector))
+                .flatMap(be -> be.getCapability(ModCapabilities.PROJECTOR).resolve())
+                .filter(projector -> this.level.isClientSide || projector.getCalculatedField().contains(this.worldPosition))
+            : Optional.empty();
     }
 
     @Override
@@ -92,7 +95,8 @@ public class ForceFieldBlockEntity extends BlockEntity {
         CompoundTag tag = new CompoundTag();
         saveAdditional(tag);
         tag.put("projector", NbtUtils.writeBlockPos(this.projector));
-        tag.putInt("clientBlockLight", Math.round((float) Math.min(getProjectorSafe().getModuleCount(ModModules.GLOW), 64) / 64 * 15));
+        int clientBlockLight = getProjectorSafe().map(projector -> Math.round((float) Math.min(projector.getModuleCount(ModModules.GLOW), 64) / 64 * 15)).orElse(0);
+        tag.putInt("clientBlockLight", clientBlockLight);
         return tag;
     }
 

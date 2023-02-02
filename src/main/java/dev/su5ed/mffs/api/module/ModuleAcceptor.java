@@ -10,7 +10,7 @@ import java.util.Set;
 
 public interface ModuleAcceptor {
     boolean hasModule(Module module);
-    
+
     default int getModuleCount(Module module) {
         return getModuleCount(module, List.of());
     }
@@ -20,7 +20,7 @@ public interface ModuleAcceptor {
     Set<ItemStack> getModuleStacks();
 
     Set<Module> getModules();
-    
+
     StreamEx<ItemStack> getAllModuleItemsStream();
 
     int getFortronCost();

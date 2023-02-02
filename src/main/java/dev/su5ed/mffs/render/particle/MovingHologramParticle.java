@@ -55,7 +55,7 @@ public class MovingHologramParticle extends Particle {
         float yy = (float) (Mth.lerp(partialTicks, this.yo, this.y) - vec3.y());
         float zz = (float) (Mth.lerp(partialTicks, this.zo, this.z) - vec3.z());
         pose.translate(xx, yy, zz);
-        
+
         pose.translate(0.5, 0.5, 0.5);
         pose.scale(1.01f, 1.01f, 1.01f);
         pose.translate(-0.5, -0.5, -0.5);
@@ -76,7 +76,7 @@ public class MovingHologramParticle extends Particle {
         BlockState state = ModBlocks.FORCE_FIELD.get().defaultBlockState();
         BakedModel model = blockRenderer.getBlockModel(state);
         modelRenderer.renderModel(pose.last(), new TranslucentVertexConsumer(buffer, alpha), state, model, this.rCol, this.gCol, this.bCol, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, ModelData.EMPTY, RenderType.translucent());
-        
+
         pose.popPose();
     }
 

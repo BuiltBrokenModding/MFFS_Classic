@@ -19,7 +19,7 @@ public final class ModMenus {
     public static final RegistryObject<MenuType<FortronCapacitorMenu>> FORTRON_CAPACITOR_MENU = MENU_TYPES.register("fortron_capacitor",
         () -> IForgeMenuType.create((windowId, inv, data) -> new FortronCapacitorMenu(windowId, data.readBlockPos(), inv.player, inv)));
     public static final RegistryObject<MenuType<ProjectorMenu>> PROJECTOR_MENU = MENU_TYPES.register("projector",
-           () -> IForgeMenuType.create((windowId, inv, data) -> new ProjectorMenu(windowId, data.readBlockPos(), inv.player, inv)));
+        () -> IForgeMenuType.create((windowId, inv, data) -> new ProjectorMenu(windowId, data.readBlockPos(), inv.player, inv)));
 
     public static void init(final IEventBus bus) {
         MENU_TYPES.register(bus);

@@ -77,7 +77,7 @@ public final class ModItems {
     private static RegistryObject<ModuleItem> module(String name, Module module, Item.Properties properties) {
         return module(name, module, properties, item -> {});
     }
-    
+
     private static RegistryObject<ModuleItem> module(String name, Module module, Consumer<ModuleItem> consumer) {
         return module(name, module, itemProperties(), consumer);
     }
@@ -89,7 +89,7 @@ public final class ModItems {
             return item;
         });
     }
-    
+
     public static Item.Properties singleStack() {
         return itemProperties().stacksTo(1);
     }

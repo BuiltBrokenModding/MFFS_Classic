@@ -16,10 +16,10 @@ public final class ModDataGen {
     public static void gatherData(GatherDataEvent event) {
         DataGenerator generator = event.getGenerator();
         ExistingFileHelper helper = event.getExistingFileHelper();
-        
+
         generator.addProvider(event.includeClient(), new BlockStateGen(generator, helper));
         generator.addProvider(event.includeClient(), new ItemModelGen(generator, helper));
-        
+
         BlockTagsProvider blockTags = new BlockTagsGen(generator, helper);
         generator.addProvider(event.includeServer(), blockTags);
         generator.addProvider(event.includeServer(), new ItemTagsGen(generator, blockTags, helper));

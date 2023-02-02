@@ -12,7 +12,7 @@ public class FortronStorageImpl implements FortronStorage {
     private final BlockEntity owner;
     private final FluidTank fortronTank;
     private final Runnable onContentsChanged;
-    
+
     private int frequency;
 
     public FortronStorageImpl(BlockEntity owner, int capacity, Runnable onContentsChanged) {
@@ -24,7 +24,7 @@ public class FortronStorageImpl implements FortronStorage {
     public FluidTank getFortronTank() {
         return this.fortronTank;
     }
-    
+
     public void setCapacity(int capacity) {
         this.fortronTank.setCapacity(capacity);
         if (!this.fortronTank.isEmpty()) {

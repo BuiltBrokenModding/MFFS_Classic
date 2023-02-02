@@ -18,7 +18,7 @@ public class CylinderProjectorModeItem extends ProjectorModeItem {
     }
 
     @Override
-    public <T extends BlockEntity & Projector> Set<Vec3> getExteriorPoints(T projector) {
+    public Set<Vec3> getExteriorPoints(Projector projector) {
         Set<Vec3> fieldBlocks = new HashSet<>();
 
         BlockPos posScale = projector.getPositiveScale();
@@ -43,13 +43,14 @@ public class CylinderProjectorModeItem extends ProjectorModeItem {
     }
 
     @Override
-    public <T extends BlockEntity & Projector> Set<BlockPos> getInteriorPoints(T projector) {
+    public Set<BlockPos> getInteriorPoints(Projector projector) {
         Set<BlockPos> fieldBlocks = new HashSet<>();
 
         BlockPos translation = projector.getTranslation();
 
         BlockPos posScale = projector.getPositiveScale();
         BlockPos negScale = projector.getNegativeScale();
+        BlockPos projectorPos = projector.be().getBlockPos();
 
         int radius = (posScale.getX() + negScale.getX() + posScale.getZ() + negScale.getZ()) / 2;
         int height = posScale.getY() + negScale.getY();
@@ -59,7 +60,7 @@ public class CylinderProjectorModeItem extends ProjectorModeItem {
                 for (int y = 0; y < height; y++) {
                     BlockPos position = new BlockPos(x, y, z);
 
-                    if (isInField(projector, position.offset(projector.getBlockPos()).offset(translation))) {
+                    if (isInField(projector, position.offset(projectorPos).offset(translation))) {
                         fieldBlocks.add(position);
                     }
                 }

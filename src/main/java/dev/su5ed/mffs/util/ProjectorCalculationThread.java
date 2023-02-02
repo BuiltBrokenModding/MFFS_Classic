@@ -21,7 +21,7 @@ public class ProjectorCalculationThread extends Thread {
     private final Runnable callBack;
 
     public ProjectorCalculationThread(ProjectorBlockEntity projector, @Nullable Runnable callBack) {
-		this.projector = projector;
+        this.projector = projector;
         this.callBack = callBack;
     }
 
@@ -37,14 +37,14 @@ public class ProjectorCalculationThread extends Thread {
             int rotationPitch = this.projector.getRotationPitch();
             int rotationRoll = this.projector.getRotationRoll();
 
-			StreamEx.of(exteriorPoints)
-				.map(pos -> rotationYaw != 0 || rotationPitch != 0 || rotationRoll != 0 ? ModUtil.rotateByAngleVec(pos, rotationYaw, rotationPitch, rotationRoll) : pos)
-				.map(pos -> {
+            StreamEx.of(exteriorPoints)
+                .map(pos -> rotationYaw != 0 || rotationPitch != 0 || rotationRoll != 0 ? ModUtil.rotateByAngleVec(pos, rotationYaw, rotationPitch, rotationRoll) : pos)
+                .map(pos -> {
                     BlockPos projPos = this.projector.getBlockPos();
                     return pos.add(projPos.getX(), projPos.getY(), projPos.getZ()).add(translation.getX(), translation.getY(), translation.getZ());
                 })
                 .filter(pos -> pos.y() <= this.projector.getLevel().getHeight())
-				.forEach(pos -> this.projector.getCalculatedField().add(new BlockPos(Math.round(pos.x), Math.round(pos.y), Math.round(pos.z))));
+                .forEach(pos -> this.projector.getCalculatedField().add(new BlockPos(Math.round(pos.x), Math.round(pos.y), Math.round(pos.z))));
 
             for (Module module : this.projector.getModules()) {
                 module.onCalculate(this.projector, this.projector.getCalculatedField());

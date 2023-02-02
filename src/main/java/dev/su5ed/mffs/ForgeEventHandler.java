@@ -14,12 +14,12 @@ public class ForgeEventHandler {
         FrequencyGrid.reinitiate();
     }
 
-	@SubscribeEvent
+    @SubscribeEvent
     public static void eventPreForceManipulate(EventForceManipulate.EventPreForceManipulate event) {
-		BlockEntity be = event.getLevel().getBlockEntity(event.getBeforePos());
+        BlockEntity be = event.getLevel().getBlockEntity(event.getBeforePos());
 
         if (be instanceof FortronBlockEntity fortronBlockEntity) {
-			fortronBlockEntity.setMarkSendFortron(false);
+            fortronBlockEntity.setMarkSendFortron(false);
         }
     }
 }

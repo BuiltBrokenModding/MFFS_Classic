@@ -11,12 +11,12 @@ import java.util.function.BooleanSupplier;
 public class ToggleButton extends BaseButton {
     private final ItemStack itemOff = new ItemStack(ModItems.REDSTONE_TORCH_OFF.get());
     private final ItemStack itemOn = new ItemStack(Items.REDSTONE_TORCH);
-    
+
     private final BooleanSupplier enabled;
 
     public ToggleButton(int x, int y, BooleanSupplier enabled, Runnable onPress) {
         super(x, y, 20, 20, onPress);
-        
+
         this.enabled = enabled;
     }
 

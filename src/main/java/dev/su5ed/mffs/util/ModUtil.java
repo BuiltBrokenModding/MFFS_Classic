@@ -113,11 +113,11 @@ public final class ModUtil {
         Item item = stack.getItem();
         return item instanceof FrequencyCard || item instanceof InfiniteCardItem;
     }
-    
+
     public static boolean isModule(ItemStack stack) {
         return stack.getCapability(ModCapabilities.MODULE).isPresent();
     }
-    
+
     public static boolean isModule(ItemStack stack, Module module) {
         return stack.getCapability(ModCapabilities.MODULE)
             .filter(mod -> mod == module)

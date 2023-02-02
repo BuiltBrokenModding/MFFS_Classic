@@ -18,9 +18,9 @@ public interface ForceFieldBlock {
 
     /**
      * Get the projector that created this force field block
-     * 
+     *
      * @param level the level to look in
-     * @param pos the position to search
+     * @param pos   the position to search
      * @return the force field block's projector
      */
     Optional<Projector> getProjector(BlockGetter level, BlockPos pos);

@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
 
 public interface LazyRenderer {
     void render(PoseStack poseStack, VertexConsumer buffer, int ticks, float partialTick);
-    
+
     @Nullable
     Vec3 getCenterPos(float partialTick);
 }

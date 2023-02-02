@@ -15,10 +15,10 @@ import net.minecraftforge.eventbus.api.Cancelable;
  */
 public abstract class EventForceManipulate extends LevelEvent {
     private final BlockPos beforePos;
-	
+
     public EventForceManipulate(LevelAccessor level, BlockPos beforePos) {
         super(level);
-        
+
         this.beforePos = beforePos;
     }
 

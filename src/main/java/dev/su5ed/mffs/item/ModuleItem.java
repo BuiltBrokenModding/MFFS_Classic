@@ -23,17 +23,17 @@ import java.util.List;
 
 public class ModuleItem extends Item {
     private static final DecimalFormat FORTRON_COST_FORMAT = new DecimalFormat("#.##");
-    
+
     private final Module module;
 
     private Lazy<Component> description;
 
     public ModuleItem(Properties properties, Module module) {
         super(properties);
-        
+
         this.module = module;
     }
-    
+
     public ModuleItem withDescription() {
         this.description = Lazy.of(() -> {
             String name = ForgeRegistries.ITEMS.getKey(this).getPath();
@@ -45,7 +45,7 @@ public class ModuleItem extends Item {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
         super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
-        
+
         tooltipComponents.add(Component.literal("Fortron: " + FORTRON_COST_FORMAT.format(this.module.getFortronCost(1) * 20) + " L/s").withStyle(ChatFormatting.GRAY));
         if (this.description != null) {
             tooltipComponents.add(this.description.get());

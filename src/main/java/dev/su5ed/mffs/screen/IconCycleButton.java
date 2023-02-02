@@ -15,14 +15,14 @@ import java.util.function.Supplier;
 
 public class IconCycleButton<T extends Enum<T>> extends AbstractButton {
     public static final ResourceLocation GUI_BUTTONS = new ResourceLocation(MFFSMod.MODID, "textures/gui/buttons.png");
-    
+
     private final ResourceLocation image;
     private final int imageU;
     private final int imageV;
     private final int yStep;
     private final Supplier<T> value;
     private final Consumer<T> onPress;
-    
+
     public IconCycleButton(int x, int y, int width, int height, int imageU, int imageV, int yStep, Supplier<T> value, Consumer<T> onPress) {
         this(x, y, width, height, GUI_BUTTONS, imageU, imageV, yStep, value, onPress);
     }

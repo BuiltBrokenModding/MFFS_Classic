@@ -74,7 +74,7 @@ public final class RenderTickHandler {
             int ticks = event.getRenderTick();
             float partialTicks = event.getPartialTick();
             MultiBufferSource.BufferSource bufferSource = minecraft.renderBuffers().bufferSource();
-            
+
             poseStack.pushPose();
             // here we translate based on the inverse position of the client viewing camera to get back to 0, 0, 0
             Vec3 camPos = camera.getPosition();

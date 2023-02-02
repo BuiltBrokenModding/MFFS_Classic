@@ -4,7 +4,6 @@ import dev.su5ed.mffs.api.Activatable;
 import dev.su5ed.mffs.api.card.CoordLink;
 import dev.su5ed.mffs.api.card.FrequencyCard;
 import dev.su5ed.mffs.api.fortron.FortronStorage;
-import dev.su5ed.mffs.util.FrequencyGrid;
 import dev.su5ed.mffs.api.security.BiometricIdentifier;
 import dev.su5ed.mffs.api.security.BiometricIdentifierLink;
 import dev.su5ed.mffs.block.BaseEntityBlock;
@@ -12,9 +11,10 @@ import dev.su5ed.mffs.network.ToggleModePacketClient;
 import dev.su5ed.mffs.setup.ModCapabilities;
 import dev.su5ed.mffs.util.Fortron;
 import dev.su5ed.mffs.util.FortronStorageImpl;
-import dev.su5ed.mffs.util.inventory.InventorySlot;
+import dev.su5ed.mffs.util.FrequencyGrid;
 import dev.su5ed.mffs.util.ModUtil;
 import dev.su5ed.mffs.util.TransferMode;
+import dev.su5ed.mffs.util.inventory.InventorySlot;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -71,17 +71,17 @@ public abstract class FortronBlockEntity extends InventoryBlockEntity implements
     public int getBaseFortronTankCapacity() {
         return 1;
     }
-    
+
     protected List<ItemStack> getCards() {
         return List.of(this.frequencySlot.getItem());
     }
-    
+
     protected void animate() {
         if (isActive()) {
             this.animation++;
         }
     }
-    
+
     protected void onFrequencySlotChanged(ItemStack stack) {
         if (stack.getItem() instanceof FrequencyCard frequencyCard) {
             frequencyCard.setFrequency(stack, this.fortronStorage.getFrequency());
@@ -139,14 +139,14 @@ public abstract class FortronBlockEntity extends InventoryBlockEntity implements
             // Let remaining Fortron escape.
             Fortron.transferFortron(this.fortronStorage, FrequencyGrid.instance().getFortronBlocks(this.level, this.worldPosition, 100, this.fortronStorage.getFrequency()), TransferMode.DRAIN, Integer.MAX_VALUE);
         }
-        
+
         super.setRemoved();
     }
 
     @Override
     protected void loadCommonTag(CompoundTag tag) {
         super.loadCommonTag(tag);
-        
+
         this.fortronStorage.deserializeNBT(tag.getCompound("fortronStorage"));
         this.active = tag.getBoolean("active");
     }
@@ -154,7 +154,7 @@ public abstract class FortronBlockEntity extends InventoryBlockEntity implements
     @Override
     protected void saveCommonTag(CompoundTag tag) {
         super.saveCommonTag(tag);
-        
+
         tag.put("fortronStorage", this.fortronStorage.serializeNBT());
         tag.putBoolean("active", this.active);
     }

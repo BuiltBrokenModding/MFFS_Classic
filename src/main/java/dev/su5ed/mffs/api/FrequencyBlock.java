@@ -1,7 +1,7 @@
 package dev.su5ed.mffs.api;
 
 public interface FrequencyBlock {
-   int getFrequency();
+    int getFrequency();
 
-   void setFrequency(int frequency);
+    void setFrequency(int frequency);
 }

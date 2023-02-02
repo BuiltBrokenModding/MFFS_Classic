@@ -4,13 +4,11 @@ import java.util.Set;
 
 /**
  * Applied to TileEntities that can be linked with a Biometric Identifier.
- * 
+ *
  * @author Calclavia
- * 
  */
-public interface BiometricIdentifierLink
-{
-	BiometricIdentifier getBiometricIdentifier();
+public interface BiometricIdentifierLink {
+    BiometricIdentifier getBiometricIdentifier();
 
-	Set<BiometricIdentifier> getBiometricIdentifiers();
+    Set<BiometricIdentifier> getBiometricIdentifiers();
 }

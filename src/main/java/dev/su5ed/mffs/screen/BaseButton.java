@@ -35,7 +35,7 @@ public abstract class BaseButton extends AbstractButton {
 
         renderFg(poseStack, minecraft, mouseX, mouseY, partialTick);
     }
-    
+
     protected abstract void renderFg(PoseStack poseStack, Minecraft minecraft, int mouseX, int mouseY, float partialTick);
 
     @Override

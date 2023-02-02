@@ -15,21 +15,21 @@ import java.util.function.Predicate;
 public class InventorySlotItemHandler implements IItemHandler, IItemHandlerModifiable, INBTSerializable<CompoundTag> {
     private final Runnable onChanged;
     private final List<InventorySlot> slots = new ArrayList<>();
-    
+
     public InventorySlotItemHandler(Runnable onChanged) {
         this.onChanged = onChanged;
     }
-    
+
     public InventorySlot addSlot(String name, InventorySlot.Mode mode, Predicate<ItemStack> filter) {
         return addSlot(name, mode, filter, stack -> {});
     }
-    
+
     public InventorySlot addSlot(String name, InventorySlot.Mode mode, Predicate<ItemStack> filter, Consumer<ItemStack> onChanged) {
         InventorySlot slot = new InventorySlot(this, name, mode, filter, onChanged);
         this.slots.add(slot);
         return slot;
     }
-    
+
     public void onChanged() {
         this.onChanged.run();
     }
@@ -88,7 +88,7 @@ public class InventorySlotItemHandler implements IItemHandler, IItemHandlerModif
         validateSlotIndex(slot);
         return this.slots.get(slot).canInsert(stack);
     }
-    
+
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag nbt = new CompoundTag();

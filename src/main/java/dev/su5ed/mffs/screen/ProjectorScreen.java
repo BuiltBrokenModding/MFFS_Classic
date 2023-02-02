@@ -25,7 +25,7 @@ public class ProjectorScreen extends FortronScreen<ProjectorMenu> {
     @Override
     protected void renderLabels(PoseStack poseStack, int mouseX, int mouseY) {
         super.renderLabels(poseStack, mouseX, mouseY);
-        
+
         drawWithTooltip(poseStack, 32, 20, GuiColors.DARK_GREY, "matrix");
         drawWithTooltip(poseStack, 8, 110, GuiColors.DARK_GREY, "fortron", this.menu.blockEntity.fortronStorage.getStoredFortron(), this.menu.blockEntity.fortronStorage.getFortronCapacity());
         int cost = this.menu.getClientFortronCost() * 20;

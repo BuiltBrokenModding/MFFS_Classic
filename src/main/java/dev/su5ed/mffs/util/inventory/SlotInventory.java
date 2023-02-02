@@ -22,7 +22,7 @@ public class SlotInventory extends Slot implements TooltipSlot {
     public SlotInventory(InventorySlot inventorySlot, int x, int y) {
         this(inventorySlot, x, y, null);
     }
-    
+
     public SlotInventory(InventorySlot inventorySlot, int x, int y, @Nullable Component tooltip) {
         super(EMPTY_INVENTORY, -1, x, y);
 

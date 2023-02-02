@@ -85,7 +85,7 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity {
     @Override
     protected void onInventoryChanged() {
         super.onInventoryChanged();
-        
+
         this.energy.setMaxTransfer(getMaxTransferRate());
     }
 
@@ -181,7 +181,7 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity {
         public EnergyMode next() {
             return VALUES[(ordinal() + 1) % VALUES.length];
         }
-        
+
         public MutableComponent translate() {
             return ModUtil.translate("info", "coercion_deriver.mode." + name().toLowerCase(Locale.ROOT));
         }

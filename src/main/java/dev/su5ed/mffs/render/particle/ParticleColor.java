@@ -5,7 +5,7 @@ public enum ParticleColor {
     BLUE_FIELD(52 / 255.0F, 254 / 255.0F, 1),
     RED(1, 0, 0),
     WHITE(1, 1, 1);
-    
+
     private final float red;
     private final float green;
     private final float blue;

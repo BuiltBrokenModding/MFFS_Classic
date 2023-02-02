@@ -6,7 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.Item;
 
 public abstract class ProjectorModeItem extends Item implements ProjectorMode {
-    
+
     public ProjectorModeItem(Properties properties) {
         super(properties.stacksTo(1));
     }

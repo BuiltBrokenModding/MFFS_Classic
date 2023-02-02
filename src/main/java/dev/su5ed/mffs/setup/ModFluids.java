@@ -17,8 +17,8 @@ public final class ModFluids {
     private static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(ForgeRegistries.FLUIDS, MFFSMod.MODID);
 
     public static final FluidRegistryObject FORTRON = new FluidRegistryObject(new FluidProperties()
-            .density(1000)
-            .texture(location("fluid/fortron")));
+        .density(1000)
+        .texture(location("fluid/fortron")));
     public static final RegistryObject<FluidType> FORTRON_FLUID_TYPE = FLUID_TYPES.register("fortron", FORTRON.fluidType());
     public static final RegistryObject<Fluid> FORTRON_FLUID = FLUIDS.register("fortron_fluid", FORTRON.sourceFluid());
     public static final RegistryObject<Fluid> FLOWING_FORTRON = FLUIDS.register("flowing_fortron", FORTRON.flowingFluid());

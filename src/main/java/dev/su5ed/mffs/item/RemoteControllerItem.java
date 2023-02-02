@@ -2,11 +2,11 @@ package dev.su5ed.mffs.item;
 
 import dev.su5ed.mffs.api.card.CoordLink;
 import dev.su5ed.mffs.api.fortron.FortronStorage;
-import dev.su5ed.mffs.util.FrequencyGrid;
 import dev.su5ed.mffs.menu.FortronMenu;
 import dev.su5ed.mffs.render.particle.ParticleColor;
 import dev.su5ed.mffs.setup.ModItems;
 import dev.su5ed.mffs.util.Fortron;
+import dev.su5ed.mffs.util.FrequencyGrid;
 import dev.su5ed.mffs.util.ModUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;

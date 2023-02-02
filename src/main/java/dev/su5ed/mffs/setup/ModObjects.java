@@ -33,7 +33,7 @@ public final class ModObjects {
     public static final RegistryObject<ModParticleType<MovingHologramParticleOptions>> MOVING_HOLOGRAM_PARTICLE = PARTICLES.register("moving_hologram", () -> new ModParticleType<>(true, MovingHologramParticleOptions.DESERIALIZER, MovingHologramParticleOptions.CODEC));
 
     public static final DamageSource FIELD_SHOCK = new DamageSource("mffs.field_shock").bypassArmor();
-    
+
     public static void init(final IEventBus bus) {
         BLOCK_ENTITY_TYPES.register(bus);
         PARTICLES.register(bus);

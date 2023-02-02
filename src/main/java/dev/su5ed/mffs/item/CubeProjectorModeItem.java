@@ -19,7 +19,7 @@ public class CubeProjectorModeItem extends ProjectorModeItem {
     }
 
     @Override
-    public <T extends BlockEntity & Projector> Set<Vec3> getExteriorPoints(T projector) {
+    public Set<Vec3> getExteriorPoints(Projector projector) {
         Set<Vec3> fieldBlocks = new HashSet<>();
         Vec3i posScale = projector.getPositiveScale();
         Vec3i negScale = projector.getNegativeScale();
@@ -36,7 +36,7 @@ public class CubeProjectorModeItem extends ProjectorModeItem {
     }
 
     @Override
-    public <T extends BlockEntity & Projector> Set<BlockPos> getInteriorPoints(T projector) {
+    public Set<BlockPos> getInteriorPoints(Projector projector) {
         Set<BlockPos> fieldBlocks = new HashSet<>();
         Vec3i posScale = projector.getPositiveScale();
         Vec3i negScale = projector.getNegativeScale();

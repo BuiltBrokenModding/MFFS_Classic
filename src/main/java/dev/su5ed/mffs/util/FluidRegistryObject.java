@@ -14,7 +14,7 @@ public class FluidRegistryObject {
 
     public FluidRegistryObject(ModFluidType.FluidProperties properties) {
         this.fluidType = Lazy.of(() -> new ModFluidType(properties));
-        
+
         ForgeFlowingFluid.Properties fluidProperties = new ForgeFlowingFluid.Properties(this.fluidType, this::getSourceFluid, this::getFlowingFluid);
         this.sourceFluid = Lazy.of(() -> new ForgeFlowingFluid.Source(fluidProperties));
         this.flowingFluid = Lazy.of(() -> new ForgeFlowingFluid.Flowing(fluidProperties));
@@ -23,11 +23,11 @@ public class FluidRegistryObject {
     public Supplier<FluidType> fluidType() {
         return this.fluidType;
     }
-    
+
     public Supplier<Fluid> sourceFluid() {
         return this.sourceFluid;
     }
-    
+
     public Supplier<Fluid> flowingFluid() {
         return this.flowingFluid;
     }
@@ -35,7 +35,7 @@ public class FluidRegistryObject {
     public Fluid getSourceFluid() {
         return this.sourceFluid.get();
     }
-    
+
     public Fluid getFlowingFluid() {
         return this.flowingFluid.get();
     }

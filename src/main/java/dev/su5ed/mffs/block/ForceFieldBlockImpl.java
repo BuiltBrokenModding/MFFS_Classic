@@ -44,7 +44,7 @@ public class ForceFieldBlockImpl extends AbstractGlassBlock implements ForceFiel
     @Override
     public Optional<Projector> getProjector(BlockGetter level, BlockPos pos) {
         BlockEntity be = level.getBlockEntity(pos);
-        return be instanceof ForceFieldBlockEntity forceField ? Optional.of(forceField.getProjector()) : Optional.empty();
+        return be instanceof ForceFieldBlockEntity forceField ? forceField.getProjector() : Optional.empty();
     }
 
     @Override

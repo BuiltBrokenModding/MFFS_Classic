@@ -11,7 +11,7 @@ import java.util.Set;
 
 public class ModuleBase implements Module {
     private final float fortronCost;
-    
+
     public ModuleBase() {
         this(0.5F);
     }

@@ -40,7 +40,7 @@ public final class ClientRenderHandler {
         Vec3 centerPos = Vec3.atCenterOf(be.getBlockPos());
         RenderTickHandler.addTransparentRenderer(ModRenderType.POS_TEX_TRANSLUCENT_UNCULLED_TRIANGLE.apply(ForceCubeModel.CORE_TEXTURE), new PyramidModeRenderer(centerPos));
     }
-    
+
     public static void renderCylinderMode(BlockEntity be, Function<ModelLayerLocation, ModelPart> modelFactory) {
         Vec3 centerPos = Vec3.atCenterOf(be.getBlockPos());
         ModelPart tubeModel = modelFactory.apply(ForceCubeModel.LAYER_LOCATION);

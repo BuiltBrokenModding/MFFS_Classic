@@ -10,7 +10,7 @@ public enum TransferMode {
     FILL;
 
     private static final TransferMode[] VALUES = values();
-    
+
     public TransferMode next() {
         return VALUES[(ordinal() + 1) % VALUES.length];
     }

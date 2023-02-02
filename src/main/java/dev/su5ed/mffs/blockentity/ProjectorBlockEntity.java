@@ -13,6 +13,7 @@ import dev.su5ed.mffs.item.CustomModeItem;
 import dev.su5ed.mffs.menu.ProjectorMenu;
 import dev.su5ed.mffs.network.UpdateAnimationSpeed;
 import dev.su5ed.mffs.setup.ModBlocks;
+import dev.su5ed.mffs.setup.ModCapabilities;
 import dev.su5ed.mffs.setup.ModModules;
 import dev.su5ed.mffs.setup.ModObjects;
 import dev.su5ed.mffs.setup.ModSounds;
@@ -34,6 +35,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 import one.util.streamex.IntStreamEx;
 import one.util.streamex.StreamEx;
 import org.jetbrains.annotations.Nullable;
@@ -56,6 +59,8 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
     private static final String ROTATION_PITCH_CACHE_KEY = "getRotationPitch";
     private static final String ROTATION_ROLL_CACHE_KEY = "getRotationRoll";
     private static final String INTERIOR_POINTS_CACHE_KEY = "getInteriorPoints";
+
+    private final LazyOptional<Projector> projectorOptional = LazyOptional.of(() -> this);
 
     private final List<ScheduledEvent> scheduledEvents = new ArrayList<>();
     public final InventorySlot secondaryCard;
@@ -114,6 +119,11 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
     }
 
     @Override
+    public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
+        return ModCapabilities.PROJECTOR.orEmpty(cap, this.projectorOptional);
+    }
+
+    @Override
     protected void addModuleSlots(List<? super InventorySlot> list) {
         super.addModuleSlots(list);
         list.addAll(this.upgradeSlots);
@@ -158,7 +168,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
         } else {
             destroyField();
         }
-        
+
         int speed = computeAnimationSpeed();
         if (speed != this.clientAnimationSpeed) {
             this.clientAnimationSpeed = speed;
@@ -293,7 +303,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
     @Override
     public int getRotationYaw() {
         return cached(ROTATION_YAW_CACHE_KEY, () -> {
-            int rotation = getModuleCount(ModModules.ROTATION, getSlotsFromSide(Direction.EAST)) 
+            int rotation = getModuleCount(ModModules.ROTATION, getSlotsFromSide(Direction.EAST))
                 - getModuleCount(ModModules.ROTATION, getSlotsFromSide(Direction.WEST));
             return rotation * 2;
         });
@@ -302,7 +312,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
     @Override
     public int getRotationPitch() {
         return cached(ROTATION_PITCH_CACHE_KEY, () -> {
-            int rotation = getModuleCount(ModModules.ROTATION, getSlotsFromSide(Direction.UP)) 
+            int rotation = getModuleCount(ModModules.ROTATION, getSlotsFromSide(Direction.UP))
                 - getModuleCount(ModModules.ROTATION, getSlotsFromSide(Direction.DOWN));
             return rotation * 2;
         });
@@ -477,7 +487,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
         }
         return Optional.empty();
     }
-    
+
     private static class ScheduledEvent {
         public final Runnable runnable;
         public int ticks;

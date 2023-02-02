@@ -36,14 +36,14 @@ final class ItemModelGen extends ItemModelProvider {
         simpleItem(ModItems.DOME_MODULE);
         simpleItem(ModItems.COLLECTION_MODULE);
         simpleItem(ModItems.STABILIZATION_MODULE);
-        
+
         simpleItem(ModItems.CUBE_MODE);
         simpleItem(ModItems.SPHERE_MODE);
         simpleItem(ModItems.TUBE_MODE);
         simpleItem(ModItems.PYRAMID_MODE);
         simpleItem(ModItems.CYLINDER_MODE);
     }
-    
+
     private void simpleItem(RegistryObject<? extends Item> item) {
         String name = item.getId().getPath();
         singleTexture(name, this.generatedParent, "layer0", location("item/" + name));

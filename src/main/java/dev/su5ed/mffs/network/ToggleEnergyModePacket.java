@@ -26,7 +26,7 @@ public record ToggleEnergyModePacket(BlockPos pos, CoercionDeriverBlockEntity.En
         Network.findBlockEntity(ModObjects.COERCION_DERIVER_BLOCK_ENTITY.get(), level, this.pos)
             .ifPresent(this::process);
     }
-    
+
     public void process(CoercionDeriverBlockEntity be) {
         be.setEnergyMode(this.mode);
     }

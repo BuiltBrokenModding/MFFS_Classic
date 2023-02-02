@@ -38,7 +38,7 @@ public final class MFFSMod {
         ModSounds.init(bus);
 
         Network.registerPackets();
-        
+
         ModLoadingContext ctx = ModLoadingContext.get();
         ctx.registerConfig(ModConfig.Type.CLIENT, MFFSConfig.CLIENT_SPEC);
         ctx.registerConfig(ModConfig.Type.COMMON, MFFSConfig.COMMON_SPEC);
@@ -49,7 +49,7 @@ public final class MFFSMod {
     private void setup(final FMLCommonSetupEvent event) {
 
     }
-    
+
     public static ResourceLocation location(String path) {
         return new ResourceLocation(MODID, path);
     }
