@@ -1,10 +1,10 @@
-package dev.su5ed.mffs.item;
+package dev.su5ed.mffs.util.module;
 
 import dev.su5ed.mffs.api.Projector;
 import dev.su5ed.mffs.blockentity.ProjectorBlockEntity;
 import dev.su5ed.mffs.network.DrawHologramPacket;
 import dev.su5ed.mffs.network.Network;
-import dev.su5ed.mffs.setup.ModItems;
+import dev.su5ed.mffs.setup.ModModules;
 import dev.su5ed.mffs.setup.ModTags;
 import dev.su5ed.mffs.util.ModUtil;
 import net.minecraft.core.BlockPos;
@@ -19,11 +19,11 @@ import net.minecraftforge.network.PacketDistributor;
 
 import java.util.Set;
 
-public class DisintegrationModuleItem extends ModuleItem {
+public class DisintegrationModule extends ModuleBase {
     private int blockCount = 0;
 
-    public DisintegrationModuleItem() {
-        super(ModItems.itemProperties().stacksTo(1), 20);
+    public DisintegrationModule() {
+        super(20);
     }
 
     @Override
@@ -42,7 +42,7 @@ public class DisintegrationModuleItem extends ModuleItem {
             if (!state.isAir()) {
                 Block block = state.getBlock();
 
-                if (projector.hasModule(ModItems.CAMOUFLAGE_MODULE.get())) {
+                if (projector.hasModule(ModModules.CAMOUFLAGE)) {
                     Item blockItem = block.asItem();
                     boolean contains = projector.getAllModuleItemsStream()
                         .anyMatch(stack -> ProjectorBlockEntity.getFilterBlock(stack).isPresent() && stack.is(blockItem));
@@ -57,14 +57,14 @@ public class DisintegrationModuleItem extends ModuleItem {
                     Network.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(position)), new DrawHologramPacket(pos, target, DrawHologramPacket.Type.DESTROY));
 
                     projector.schedule(39, () -> {
-                        if (projector.hasModule(ModItems.COLLECTION_MODULE.get())) {
+                        if (projector.hasModule(ModModules.COLLECTION)) {
                             collectBlock(projector, level, position, state.getBlock());
                         } else {
                             destroyBlock(level, position, state.getBlock());
                         }
                     });
 
-                    return this.blockCount++ >= projector.getModuleCount(ModItems.SPEED_MODULE.get()) / 3 ? ProjectAction.INTERRUPT : ProjectAction.SKIP;
+                    return this.blockCount++ >= projector.getModuleCount(ModModules.SPEED) / 3 ? ProjectAction.INTERRUPT : ProjectAction.SKIP;
                 }
             }
         }

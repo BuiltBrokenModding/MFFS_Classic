@@ -1,7 +1,6 @@
 package dev.su5ed.mffs.api.module;
 
-import dev.su5ed.mffs.util.InventorySlot;
-import net.minecraft.world.item.Item;
+import dev.su5ed.mffs.util.inventory.InventorySlot;
 import net.minecraft.world.item.ItemStack;
 import one.util.streamex.StreamEx;
 
@@ -10,19 +9,17 @@ import java.util.List;
 import java.util.Set;
 
 public interface ModuleAcceptor {
-    <T extends Item & Module> ItemStack getModule(T module);
+    boolean hasModule(Module module);
     
-    <T extends Item & Module> boolean hasModule(T module);
-    
-    default <T extends Item & Module> int getModuleCount(T module) {
+    default int getModuleCount(Module module) {
         return getModuleCount(module, List.of());
     }
 
-    <T extends Item & Module> int getModuleCount(T module, Collection<InventorySlot> slots);
+    int getModuleCount(Module module, Collection<InventorySlot> slots);
 
     Set<ItemStack> getModuleStacks();
 
-    <T extends Item & Module> Set<T> getModules();
+    Set<Module> getModules();
     
     StreamEx<ItemStack> getAllModuleItemsStream();
 

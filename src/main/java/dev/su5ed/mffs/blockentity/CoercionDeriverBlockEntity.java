@@ -2,11 +2,11 @@ package dev.su5ed.mffs.blockentity;
 
 import dev.su5ed.mffs.MFFSConfig;
 import dev.su5ed.mffs.menu.CoercionDeriverMenu;
-import dev.su5ed.mffs.setup.ModItems;
+import dev.su5ed.mffs.setup.ModModules;
 import dev.su5ed.mffs.setup.ModObjects;
 import dev.su5ed.mffs.setup.ModTags;
-import dev.su5ed.mffs.util.InventorySlot;
 import dev.su5ed.mffs.util.ModUtil;
+import dev.su5ed.mffs.util.inventory.InventorySlot;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -56,7 +56,7 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity {
     }
 
     public int getMaxTransferRate() {
-        return (int) (DEFAULT_FE_CAPACITY + DEFAULT_FE_CAPACITY * (getModuleCount(ModItems.SPEED_MODULE.get()) / 8.0F));
+        return (int) (DEFAULT_FE_CAPACITY + DEFAULT_FE_CAPACITY * (getModuleCount(ModModules.SPEED) / 8.0F));
     }
 
     public boolean isInversed() {
@@ -117,7 +117,7 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity {
                     // TODO Fuel display
                     if (this.processTime == 0 && hasFuel()) {
                         this.fuelSlot.getItem().shrink(1);
-                        this.processTime = FUEL_PROCESS_TIME * Math.max(getModuleCount(ModItems.SCALE_MODULE.get()) / 20, 1);
+                        this.processTime = FUEL_PROCESS_TIME * Math.max(getModuleCount(ModModules.SCALE) / 20, 1);
                     }
                     this.processTime = Math.max(--this.processTime, 0);
                 }

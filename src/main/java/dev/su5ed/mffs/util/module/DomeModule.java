@@ -1,18 +1,12 @@
-package dev.su5ed.mffs.item;
+package dev.su5ed.mffs.util.module;
 
 import dev.su5ed.mffs.api.Projector;
-import dev.su5ed.mffs.setup.ModItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.Set;
 
-public class DomeModuleItem extends ModuleItem {
-
-    public DomeModuleItem() {
-        super(ModItems.itemProperties());
-    }
-
+public class DomeModule extends ModuleBase {
     @Override
     public void onCalculate(Projector projector, Set<BlockPos> fieldDefinition) {
         super.onCalculate(projector, fieldDefinition);

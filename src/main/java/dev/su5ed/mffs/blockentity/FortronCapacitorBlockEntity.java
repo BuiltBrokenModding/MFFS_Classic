@@ -1,21 +1,20 @@
 package dev.su5ed.mffs.blockentity;
 
-import dev.su5ed.mffs.api.card.Card;
-import dev.su5ed.mffs.api.card.CardInfinite;
 import dev.su5ed.mffs.api.card.CoordLink;
 import dev.su5ed.mffs.api.fortron.FortronCapacitor;
 import dev.su5ed.mffs.api.fortron.FortronStorage;
-import dev.su5ed.mffs.api.fortron.FrequencyGrid;
+import dev.su5ed.mffs.item.InfiniteCardItem;
 import dev.su5ed.mffs.menu.FortronCapacitorMenu;
 import dev.su5ed.mffs.setup.ModCapabilities;
-import dev.su5ed.mffs.setup.ModItems;
+import dev.su5ed.mffs.setup.ModModules;
 import dev.su5ed.mffs.setup.ModObjects;
 import dev.su5ed.mffs.util.Fortron;
-import dev.su5ed.mffs.util.InventorySlot;
+import dev.su5ed.mffs.util.FrequencyGrid;
+import dev.su5ed.mffs.util.ModUtil;
 import dev.su5ed.mffs.util.TransferMode;
+import dev.su5ed.mffs.util.inventory.InventorySlot;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -38,7 +37,7 @@ public class FortronCapacitorBlockEntity extends ModularBlockEntity implements F
     public FortronCapacitorBlockEntity(BlockPos pos, BlockState state) {
         super(ModObjects.FORTRON_CAPACITOR_BLOCK_ENTITY.get(), pos, state, 10);
 
-        this.secondaryCard = addSlot("secondaryCard", InventorySlot.Mode.BOTH, stack -> stack.getItem() instanceof Card, this::onFrequencySlotChanged);
+        this.secondaryCard = addSlot("secondaryCard", InventorySlot.Mode.BOTH, ModUtil::isCard, this::onFrequencySlotChanged);
         this.upgradeSlots = createUpgradeSlots(3);
     }
 
@@ -78,7 +77,7 @@ public class FortronCapacitorBlockEntity extends ModularBlockEntity implements F
             Set<FortronStorage> machines = new HashSet<>();
 
             for (ItemStack stack : getCards()) {
-                if (stack.getItem() instanceof CardInfinite) { // TODO make the interface a class
+                if (stack.getItem() instanceof InfiniteCardItem) {
                     this.fortronStorage.setStoredFortron(this.fortronStorage.getFortronCapacity());
                 }
                 else if (stack.getItem() instanceof CoordLink coordLink) {
@@ -108,12 +107,12 @@ public class FortronCapacitorBlockEntity extends ModularBlockEntity implements F
 
     @Override
     public int getTransmissionRange() {
-        return 15 + getModuleCount(ModItems.SCALE_MODULE.get());
+        return 15 + getModuleCount(ModModules.SCALE);
     }
 
     @Override
     public int getTransmissionRate() {
-        return 250 + 50 * getModuleCount(ModItems.SPEED_MODULE.get());
+        return 250 + 50 * getModuleCount(ModModules.SPEED);
     }
 
     @Override

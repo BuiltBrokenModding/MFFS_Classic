@@ -2,6 +2,7 @@ package dev.su5ed.mffs.item;
 
 import dev.su5ed.mffs.api.Projector;
 import dev.su5ed.mffs.setup.ModItems;
+import dev.su5ed.mffs.setup.ModModules;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
@@ -18,7 +19,7 @@ public class SphereProjectorModeItem extends ProjectorModeItem {
     @Override
     public <T extends BlockEntity & Projector> Set<Vec3> getExteriorPoints(T projector) {
         Set<Vec3> fieldBlocks = new HashSet<>();
-        int radius = projector.getModuleCount(ModItems.SCALE_MODULE.get());
+        int radius = projector.getModuleCount(ModModules.SCALE);
         int steps = (int) Math.ceil(Math.PI / Math.atan(1.0D / radius / 2));
         for (int phi_n = 0; phi_n < 2 * steps; phi_n++) {
             for (int theta_n = 0; theta_n < steps; theta_n++) {
@@ -39,7 +40,7 @@ public class SphereProjectorModeItem extends ProjectorModeItem {
         Set<BlockPos> fieldBlocks = new HashSet<>();
         BlockPos projectorPos = projector.getBlockPos();
         BlockPos translation = projector.getTranslation();
-        int radius = projector.getModuleCount(ModItems.SCALE_MODULE.get());
+        int radius = projector.getModuleCount(ModModules.SCALE);
         for (int x = -radius; x <= radius; x++) {
             for (int z = -radius; z <= radius; z++) {
                 for (int y = -radius; y <= radius; y++) {
@@ -56,7 +57,7 @@ public class SphereProjectorModeItem extends ProjectorModeItem {
     @Override
     public boolean isInField(Projector projector, BlockPos position) {
         BlockPos projectorPos = ((BlockEntity) projector).getBlockPos();
-        int radius = projector.getModuleCount(ModItems.SCALE_MODULE.get());
+        int radius = projector.getModuleCount(ModModules.SCALE);
         return projectorPos.offset(projector.getTranslation()).closerThan(position, radius);
     }
 }

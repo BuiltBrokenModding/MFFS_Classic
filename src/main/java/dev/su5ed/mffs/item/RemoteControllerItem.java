@@ -2,7 +2,7 @@ package dev.su5ed.mffs.item;
 
 import dev.su5ed.mffs.api.card.CoordLink;
 import dev.su5ed.mffs.api.fortron.FortronStorage;
-import dev.su5ed.mffs.api.fortron.FrequencyGrid;
+import dev.su5ed.mffs.util.FrequencyGrid;
 import dev.su5ed.mffs.menu.FortronMenu;
 import dev.su5ed.mffs.render.particle.ParticleColor;
 import dev.su5ed.mffs.setup.ModItems;
@@ -70,7 +70,7 @@ public class RemoteControllerItem extends FrequencyCardItem implements CoordLink
                     double requiredEnergy = ModUtil.distance(player.blockPosition(), pos) * (FluidType.BUCKET_VOLUME / 100.0);
                     int receivedEnergy = 0;
 
-                    Set<? extends FortronStorage> fortronTiles = FrequencyGrid.instance().getFortronTiles(level, player.blockPosition(), 50, getFrequency(stack));
+                    Set<? extends FortronStorage> fortronTiles = FrequencyGrid.instance().getFortronBlocks(level, player.blockPosition(), 50, getFrequency(stack));
 
                     for (FortronStorage fortron : fortronTiles) {
                         BlockPos fortronPos = fortron.getOwner().getBlockPos();

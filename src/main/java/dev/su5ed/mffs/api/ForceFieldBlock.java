@@ -2,22 +2,26 @@ package dev.su5ed.mffs.api;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.client.model.data.ModelProperty;
-import org.jetbrains.annotations.Nullable;
 
+import java.util.Optional;
+
+/**
+ * Force Field Block that is projected as part of a force field
+ */
 public interface ForceFieldBlock {
+    /**
+     * Model Property holding a block whose model is used for camouflaging force field blocks
+     */
     ModelProperty<Block> CAMOUFLAGE_BLOCK = new ModelProperty<>();
 
-    @Nullable
-    Projector getProjector(BlockGetter level, BlockPos pos);
-
     /**
-     * Weakens a force field block, destroying it temporarily and draining power from the projector.
-     *
-     * @param joules - Power to drain.
+     * Get the projector that created this force field block
+     * 
+     * @param level the level to look in
+     * @param pos the position to search
+     * @return the force field block's projector
      */
-    void weakenForceField(Level level, BlockPos pos, int joules);
+    Optional<Projector> getProjector(BlockGetter level, BlockPos pos);
 }

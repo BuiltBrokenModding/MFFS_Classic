@@ -1,9 +1,9 @@
-package dev.su5ed.mffs.item;
+package dev.su5ed.mffs.util.module;
 
 import dev.su5ed.mffs.api.Projector;
 import dev.su5ed.mffs.network.DrawHologramPacket;
 import dev.su5ed.mffs.network.Network;
-import dev.su5ed.mffs.setup.ModItems;
+import dev.su5ed.mffs.setup.ModModules;
 import dev.su5ed.mffs.setup.ModTags;
 import dev.su5ed.mffs.util.ModUtil;
 import net.minecraft.core.BlockPos;
@@ -22,12 +22,11 @@ import net.minecraftforge.network.PacketDistributor;
 import java.util.Optional;
 import java.util.Set;
 
-public class StabilizationModuleItem extends ModuleItem {
+public class StabilizationModule extends ModuleBase {
     private int blockCount = 0;
 
-    public StabilizationModuleItem() {
-        super(ModItems.itemProperties().stacksTo(1), 20);
-        withDescription();
+    public StabilizationModule() {
+        super(20);
     }
 
     @Override
@@ -60,7 +59,7 @@ public class StabilizationModuleItem extends ModuleItem {
                                 Vec3 target = Vec3.atLowerCornerOf(position);
                                 Network.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(position)), new DrawHologramPacket(start, target, DrawHologramPacket.Type.CONSTRUCT));
 
-                                return this.blockCount++ >= projector.getModuleCount(ModItems.SPEED_MODULE.get()) / 3 ? ProjectAction.INTERRUPT : ProjectAction.SKIP;
+                                return this.blockCount++ >= projector.getModuleCount(ModModules.SPEED) / 3 ? ProjectAction.INTERRUPT : ProjectAction.SKIP;
                             }
                         }
                     }

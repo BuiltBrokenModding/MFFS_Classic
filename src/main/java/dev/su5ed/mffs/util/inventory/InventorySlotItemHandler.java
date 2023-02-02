@@ -1,4 +1,4 @@
-package dev.su5ed.mffs.util;
+package dev.su5ed.mffs.util.inventory;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
@@ -12,11 +12,11 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public class SlotItemHandler implements IItemHandler, IItemHandlerModifiable, INBTSerializable<CompoundTag> {
+public class InventorySlotItemHandler implements IItemHandler, IItemHandlerModifiable, INBTSerializable<CompoundTag> {
     private final Runnable onChanged;
     private final List<InventorySlot> slots = new ArrayList<>();
     
-    public SlotItemHandler(Runnable onChanged) {
+    public InventorySlotItemHandler(Runnable onChanged) {
         this.onChanged = onChanged;
     }
     

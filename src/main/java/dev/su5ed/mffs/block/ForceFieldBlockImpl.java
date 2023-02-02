@@ -2,7 +2,6 @@ package dev.su5ed.mffs.block;
 
 import dev.su5ed.mffs.api.ForceFieldBlock;
 import dev.su5ed.mffs.api.Projector;
-import dev.su5ed.mffs.api.fortron.FortronStorage;
 import dev.su5ed.mffs.api.module.Module;
 import dev.su5ed.mffs.api.security.BiometricIdentifier;
 import dev.su5ed.mffs.api.security.Permission;
@@ -42,20 +41,10 @@ public class ForceFieldBlockImpl extends AbstractGlassBlock implements ForceFiel
             .isViewBlocking((state, level, pos) -> false));
     }
 
-    @Nullable
     @Override
-    public Projector getProjector(BlockGetter level, BlockPos pos) {
+    public Optional<Projector> getProjector(BlockGetter level, BlockPos pos) {
         BlockEntity be = level.getBlockEntity(pos);
-        return be instanceof ForceFieldBlockEntity forceField ? forceField.getProjector() : null;
-    }
-
-    @Override
-    public void weakenForceField(Level level, BlockPos pos, int joules) {
-        Projector projector = getProjector(level, pos);
-        if (projector instanceof FortronStorage storage) {
-            storage.insertFortron(joules, false);
-        }
-        level.removeBlock(pos, false);
+        return be instanceof ForceFieldBlockEntity forceField ? Optional.of(forceField.getProjector()) : Optional.empty();
     }
 
     @Override
@@ -77,37 +66,38 @@ public class ForceFieldBlockImpl extends AbstractGlassBlock implements ForceFiel
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        Projector projector = getProjector(level, pos);
-        int x = pos.getX();
-        int y = pos.getY();
-        int z = pos.getZ();
-        if (projector != null && level instanceof EntityGetter entityGetter) {
-            BiometricIdentifier bioIndentified = projector.getBiometricIdentifier();
-            List<Player> entities = entityGetter.getEntitiesOfClass(Player.class, Shapes.box(x, y, z, x + 1, y + 0.9, z + 1).bounds());
+        return getProjector(level, pos)
+            .map(projector -> {
+                int x = pos.getX();
+                int y = pos.getY();
+                int z = pos.getZ();
+                if (level instanceof EntityGetter entityGetter) {
+                    BiometricIdentifier bioIndentified = projector.getBiometricIdentifier();
+                    List<Player> entities = entityGetter.getEntitiesOfClass(Player.class, Shapes.box(x, y, z, x + 1, y + 0.9, z + 1).bounds());
 
-            for (Player player : entities) {
-                if (player.isShiftKeyDown() && (player.isCreative() || bioIndentified != null && bioIndentified.isAccessGranted(player.getGameProfile().getName(), Permission.FORCE_FIELD_WARP))) {
-                    return Shapes.empty();
+                    for (Player player : entities) {
+                        if (player.isShiftKeyDown() && (player.isCreative() || bioIndentified != null && bioIndentified.isAccessGranted(player.getGameProfile().getName(), Permission.FORCE_FIELD_WARP))) {
+                            return Shapes.empty();
+                        }
+                    }
                 }
-            }
-        }
-        return COLLIDABLE_BLOCK;
+                return null;
+            })
+            .orElse(COLLIDABLE_BLOCK);
     }
 
     @Override
     public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
         super.entityInside(state, level, pos, entity);
 
-        if (level.getBlockEntity(pos) instanceof ForceFieldBlockEntity) {
-            Projector projector = getProjector(level, pos);
-            if (projector != null) {
+        getProjector(level, pos)
+            .ifPresent(projector -> {
                 for (ItemStack stack : projector.getModuleStacks()) {
                     if (((Module) stack.getItem()).onCollideWithForceField(level, pos, entity, stack)) {
                         return;
                     }
                 }
-            }
-        }
+            });
     }
 
     @Nullable

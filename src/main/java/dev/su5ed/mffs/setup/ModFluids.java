@@ -1,7 +1,7 @@
 package dev.su5ed.mffs.setup;
 
 import dev.su5ed.mffs.MFFSMod;
-import dev.su5ed.mffs.util.FluidContainer;
+import dev.su5ed.mffs.util.FluidRegistryObject;
 import dev.su5ed.mffs.util.ModFluidType.FluidProperties;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -16,7 +16,7 @@ public final class ModFluids {
     private static final DeferredRegister<FluidType> FLUID_TYPES = DeferredRegister.create(ForgeRegistries.Keys.FLUID_TYPES, MFFSMod.MODID);
     private static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(ForgeRegistries.FLUIDS, MFFSMod.MODID);
 
-    public static final FluidContainer FORTRON = new FluidContainer(new FluidProperties()
+    public static final FluidRegistryObject FORTRON = new FluidRegistryObject(new FluidProperties()
             .density(1000)
             .texture(location("fluid/fortron")));
     public static final RegistryObject<FluidType> FORTRON_FLUID_TYPE = FLUID_TYPES.register("fortron", FORTRON.fluidType());

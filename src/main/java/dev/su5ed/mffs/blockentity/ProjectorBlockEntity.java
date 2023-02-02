@@ -6,26 +6,23 @@ import dev.su5ed.mffs.MFFSConfig;
 import dev.su5ed.mffs.api.ForceFieldBlock;
 import dev.su5ed.mffs.api.ObjectCache;
 import dev.su5ed.mffs.api.Projector;
-import dev.su5ed.mffs.api.card.Card;
 import dev.su5ed.mffs.api.module.Module;
 import dev.su5ed.mffs.api.module.Module.ProjectAction;
 import dev.su5ed.mffs.api.module.ProjectorMode;
 import dev.su5ed.mffs.item.CustomModeItem;
-import dev.su5ed.mffs.item.ModuleItem;
 import dev.su5ed.mffs.menu.ProjectorMenu;
 import dev.su5ed.mffs.network.UpdateAnimationSpeed;
 import dev.su5ed.mffs.setup.ModBlocks;
-import dev.su5ed.mffs.setup.ModItems;
+import dev.su5ed.mffs.setup.ModModules;
 import dev.su5ed.mffs.setup.ModObjects;
 import dev.su5ed.mffs.setup.ModSounds;
 import dev.su5ed.mffs.setup.ModTags;
-import dev.su5ed.mffs.util.InventorySlot;
 import dev.su5ed.mffs.util.ModUtil;
 import dev.su5ed.mffs.util.ProjectorCalculationThread;
+import dev.su5ed.mffs.util.inventory.InventorySlot;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -35,6 +32,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import one.util.streamex.IntStreamEx;
 import one.util.streamex.StreamEx;
@@ -79,12 +77,12 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
     public ProjectorBlockEntity(BlockPos pos, BlockState state) {
         super(ModObjects.PROJECTOR_BLOCK_ENTITY.get(), pos, state, 50);
 
-        this.secondaryCard = addSlot("secondaryCard", InventorySlot.Mode.BOTH, stack -> stack.getItem() instanceof Card);
+        this.secondaryCard = addSlot("secondaryCard", InventorySlot.Mode.BOTH, ModUtil::isCard);
         this.projectorModeSlot = addSlot("projectorMode", InventorySlot.Mode.BOTH, stack -> stack.getItem() instanceof ProjectorMode);
         ImmutableListMultimap.Builder<Direction, InventorySlot> builder = new ImmutableListMultimap.Builder<>();
         StreamEx.of(Direction.values())
             .forEach(side -> IntStreamEx.range(2)
-                .mapToObj(i -> addSlot("field_module_" + side.getName() + "_" + i, InventorySlot.Mode.BOTH, stack -> stack.getItem() instanceof Module))
+                .mapToObj(i -> addSlot("field_module_" + side.getName() + "_" + i, InventorySlot.Mode.BOTH, ModUtil::isModule))
                 .forEach(slot -> builder.put(side, slot)));
         this.fieldModuleSlots = builder.build();
         this.upgradeSlots = createUpgradeSlots(6, true);
@@ -101,6 +99,11 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
 
     public int getAnimationSpeed() {
         return this.clientAnimationSpeed;
+    }
+
+    @Override
+    public BlockEntity be() {
+        return this;
     }
 
     @Override
@@ -149,7 +152,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
                 }
             }
 
-            if (getTicks() % (2 * 20) == 0 && !hasModule(ModItems.SILENCE_MODULE.get())) {
+            if (getTicks() % (2 * 20) == 0 && !hasModule(ModModules.SILENCE)) {
                 this.level.playSound(null, this.worldPosition, ModSounds.FIELD.get(), SoundSource.BLOCKS, 0.4F, 1 - this.level.random.nextFloat() * 0.1F);
             }
         } else {
@@ -240,15 +243,14 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
     @Override
     public BlockPos getTranslation() {
         return cached(TRANSLATION_CACHE_KEY, () -> {
-            ModuleItem translationModule = ModItems.TRANSLATION_MODULE.get();
-            int zTranslationNeg = getModuleCount(translationModule, getSlotsFromSide(Direction.NORTH));
-            int zTranslationPos = getModuleCount(translationModule, getSlotsFromSide(Direction.SOUTH));
+            int zTranslationNeg = getModuleCount(ModModules.TRANSLATION, getSlotsFromSide(Direction.NORTH));
+            int zTranslationPos = getModuleCount(ModModules.TRANSLATION, getSlotsFromSide(Direction.SOUTH));
 
-            int xTranslationNeg = getModuleCount(translationModule, getSlotsFromSide(Direction.WEST));
-            int xTranslationPos = getModuleCount(translationModule, getSlotsFromSide(Direction.EAST));
+            int xTranslationNeg = getModuleCount(ModModules.TRANSLATION, getSlotsFromSide(Direction.WEST));
+            int xTranslationPos = getModuleCount(ModModules.TRANSLATION, getSlotsFromSide(Direction.EAST));
 
-            int yTranslationPos = getModuleCount(translationModule, getSlotsFromSide(Direction.UP));
-            int yTranslationNeg = getModuleCount(translationModule, getSlotsFromSide(Direction.DOWN));
+            int yTranslationPos = getModuleCount(ModModules.TRANSLATION, getSlotsFromSide(Direction.UP));
+            int yTranslationNeg = getModuleCount(ModModules.TRANSLATION, getSlotsFromSide(Direction.DOWN));
 
             return new BlockPos(xTranslationPos - xTranslationNeg, yTranslationPos - yTranslationNeg, zTranslationPos - zTranslationNeg);
         });
@@ -257,12 +259,11 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
     @Override
     public BlockPos getPositiveScale() {
         return cached(POSITIVE_SCALE_CACHE_KEY, () -> {
-            ModuleItem scaleModule = ModItems.SCALE_MODULE.get();
-            int zScalePos = getModuleCount(scaleModule, getSlotsFromSide(Direction.SOUTH));
-            int xScalePos = getModuleCount(scaleModule, getSlotsFromSide(Direction.EAST));
-            int yScalePos = getModuleCount(scaleModule, getSlotsFromSide(Direction.UP));
+            int zScalePos = getModuleCount(ModModules.SCALE, getSlotsFromSide(Direction.SOUTH));
+            int xScalePos = getModuleCount(ModModules.SCALE, getSlotsFromSide(Direction.EAST));
+            int yScalePos = getModuleCount(ModModules.SCALE, getSlotsFromSide(Direction.UP));
 
-            int omnidirectionalScale = getModuleCount(scaleModule, getUpgradeSlots());
+            int omnidirectionalScale = getModuleCount(ModModules.SCALE, getUpgradeSlots());
 
             zScalePos += omnidirectionalScale;
             xScalePos += omnidirectionalScale;
@@ -275,12 +276,11 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
     @Override
     public BlockPos getNegativeScale() {
         return cached(NEGATIVE_SCALE_CACHE_KEY, () -> {
-            ModuleItem scaleModule = ModItems.SCALE_MODULE.get();
-            int zScaleNeg = getModuleCount(scaleModule, getSlotsFromSide(Direction.NORTH));
-            int xScaleNeg = getModuleCount(scaleModule, getSlotsFromSide(Direction.WEST));
-            int yScaleNeg = getModuleCount(scaleModule, getSlotsFromSide(Direction.DOWN));
+            int zScaleNeg = getModuleCount(ModModules.SCALE, getSlotsFromSide(Direction.NORTH));
+            int xScaleNeg = getModuleCount(ModModules.SCALE, getSlotsFromSide(Direction.WEST));
+            int yScaleNeg = getModuleCount(ModModules.SCALE, getSlotsFromSide(Direction.DOWN));
 
-            int omnidirectionalScale = getModuleCount(scaleModule, getUpgradeSlots());
+            int omnidirectionalScale = getModuleCount(ModModules.SCALE, getUpgradeSlots());
 
             zScaleNeg += omnidirectionalScale;
             xScaleNeg += omnidirectionalScale;
@@ -293,9 +293,8 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
     @Override
     public int getRotationYaw() {
         return cached(ROTATION_YAW_CACHE_KEY, () -> {
-            ModuleItem rotationModule = ModItems.ROTATION_MODULE.get();
-            int rotation = getModuleCount(rotationModule, getSlotsFromSide(Direction.EAST)) 
-                - getModuleCount(rotationModule, getSlotsFromSide(Direction.WEST));
+            int rotation = getModuleCount(ModModules.ROTATION, getSlotsFromSide(Direction.EAST)) 
+                - getModuleCount(ModModules.ROTATION, getSlotsFromSide(Direction.WEST));
             return rotation * 2;
         });
     }
@@ -303,9 +302,8 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
     @Override
     public int getRotationPitch() {
         return cached(ROTATION_PITCH_CACHE_KEY, () -> {
-            ModuleItem rotationModule = ModItems.ROTATION_MODULE.get();
-            int rotation = getModuleCount(rotationModule, getSlotsFromSide(Direction.UP)) 
-                - getModuleCount(rotationModule, getSlotsFromSide(Direction.DOWN));
+            int rotation = getModuleCount(ModModules.ROTATION, getSlotsFromSide(Direction.UP)) 
+                - getModuleCount(ModModules.ROTATION, getSlotsFromSide(Direction.DOWN));
             return rotation * 2;
         });
     }
@@ -313,9 +311,8 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
     @Override
     public int getRotationRoll() {
         return cached(ROTATION_ROLL_CACHE_KEY, () -> {
-            ModuleItem rotationModule = ModItems.ROTATION_MODULE.get();
-            int rotation = getModuleCount(rotationModule, getSlotsFromSide(Direction.SOUTH))
-                - getModuleCount(rotationModule, getSlotsFromSide(Direction.NORTH));
+            int rotation = getModuleCount(ModModules.ROTATION, getSlotsFromSide(Direction.SOUTH))
+                - getModuleCount(ModModules.ROTATION, getSlotsFromSide(Direction.NORTH));
             return rotation * 2;
         });
     }
@@ -392,7 +389,8 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
                 } else {
                     BlockState state = this.level.getBlockState(pos);
 
-                    if (state.getBlock() instanceof ForceFieldBlock forceFieldBlock && forceFieldBlock.getProjector(this.level, pos) == this) {
+
+                    if (state.getBlock() instanceof ForceFieldBlock forceFieldBlock && forceFieldBlock.getProjector(this.level, pos).orElse(null) == this) {
                         this.level.removeBlock(pos, false);
                     }
                 }
@@ -407,7 +405,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
 
     private boolean canProjectPos(BlockPos pos) {
         BlockState state = this.level.getBlockState(pos);
-        return (state.isAir() || getModuleCount(ModItems.DISINTEGRATION_MODULE.get()) > 0 && state.getDestroySpeed(this.level, pos) != -1 || state.getMaterial().isLiquid() || state.is(ModTags.FORCEFIELD_REPLACEABLE))
+        return (state.isAir() || getModuleCount(ModModules.DISINTEGRATION) > 0 && state.getDestroySpeed(this.level, pos) != -1 || state.getMaterial().isLiquid() || state.is(ModTags.FORCEFIELD_REPLACEABLE))
             && !state.is(ModBlocks.FORCE_FIELD.get()) && !pos.equals(this.worldPosition)
             && this.level.isLoaded(pos);
     }
@@ -427,11 +425,11 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
 
     @Override
     public int getProjectionSpeed() {
-        return 28 + 28 * getModuleCount(ModItems.SPEED_MODULE.get(), getUpgradeSlots());
+        return 28 + 28 * getModuleCount(ModModules.SPEED, getUpgradeSlots());
     }
 
     private void reCalculateForceField() {
-        reCalculateForceField(null);
+        reCalculateForceField(this::onThreadComplete);
     }
 
     private void reCalculateForceField(@Nullable Runnable callBack) {
@@ -449,7 +447,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
     }
 
     public Block getCamoBlock(BlockPos pos) {
-        if (!this.level.isClientSide && getModuleCount(ModItems.CAMOUFLAGE_MODULE.get()) > 0) {
+        if (!this.level.isClientSide && getModuleCount(ModModules.CAMOUFLAGE) > 0) {
             if (getMode() instanceof CustomModeItem custom) {
                 Map<BlockPos, Block> map = custom.getFieldBlockMap(this, getModeStack());
                 if (map != null) {

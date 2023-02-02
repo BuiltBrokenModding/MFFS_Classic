@@ -3,6 +3,7 @@ package dev.su5ed.mffs;
 import com.mojang.logging.LogUtils;
 import dev.su5ed.mffs.network.Network;
 import dev.su5ed.mffs.setup.ModBlocks;
+import dev.su5ed.mffs.setup.ModCapabilities;
 import dev.su5ed.mffs.setup.ModFluids;
 import dev.su5ed.mffs.setup.ModItems;
 import dev.su5ed.mffs.setup.ModMenus;
@@ -28,6 +29,7 @@ public final class MFFSMod {
     public MFFSMod() {
         final IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         bus.addListener(this::setup);
+        bus.addListener(ModCapabilities::registerCaps);
         ModBlocks.init(bus);
         ModItems.init(bus);
         ModObjects.init(bus);

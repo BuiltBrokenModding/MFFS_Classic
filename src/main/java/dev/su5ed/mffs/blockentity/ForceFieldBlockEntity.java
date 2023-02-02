@@ -3,7 +3,7 @@ package dev.su5ed.mffs.blockentity;
 import dev.su5ed.mffs.api.ForceFieldBlock;
 import dev.su5ed.mffs.network.InitialDataRequestPacket;
 import dev.su5ed.mffs.network.Network;
-import dev.su5ed.mffs.setup.ModItems;
+import dev.su5ed.mffs.setup.ModModules;
 import dev.su5ed.mffs.setup.ModObjects;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -92,7 +92,7 @@ public class ForceFieldBlockEntity extends BlockEntity {
         CompoundTag tag = new CompoundTag();
         saveAdditional(tag);
         tag.put("projector", NbtUtils.writeBlockPos(this.projector));
-        tag.putInt("clientBlockLight", Math.round((float) Math.min(getProjectorSafe().getModuleCount(ModItems.GLOW_MODULE.get()), 64) / 64 * 15));
+        tag.putInt("clientBlockLight", Math.round((float) Math.min(getProjectorSafe().getModuleCount(ModModules.GLOW), 64) / 64 * 15));
         return tag;
     }
 

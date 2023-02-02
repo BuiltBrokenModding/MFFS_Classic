@@ -1,20 +1,19 @@
-package dev.su5ed.mffs.item;
+package dev.su5ed.mffs.util.module;
 
 import dev.su5ed.mffs.api.FrequencyBlock;
 import dev.su5ed.mffs.api.Projector;
 import dev.su5ed.mffs.api.fortron.FortronStorage;
-import dev.su5ed.mffs.api.fortron.FrequencyGrid;
 import dev.su5ed.mffs.setup.ModCapabilities;
-import dev.su5ed.mffs.setup.ModItems;
+import dev.su5ed.mffs.util.FrequencyGrid;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.Set;
 
-public class FusionModule extends ModuleItem {
+public class FusionModule extends ModuleBase {
 
     public FusionModule() {
-        super(ModItems.itemProperties().stacksTo(1), 1);
+        super(1);
     }
 
     @Override

@@ -4,11 +4,10 @@ import dev.su5ed.mffs.blockentity.CoercionDeriverBlockEntity;
 import dev.su5ed.mffs.blockentity.CoercionDeriverBlockEntity.EnergyMode;
 import dev.su5ed.mffs.setup.ModMenus;
 import dev.su5ed.mffs.setup.ModObjects;
-import dev.su5ed.mffs.util.SlotInventory;
+import dev.su5ed.mffs.util.inventory.SlotInventory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import one.util.streamex.EntryStream;
 
 public class CoercionDeriverMenu extends FortronMenu<CoercionDeriverBlockEntity> {

@@ -1,4 +1,4 @@
-package dev.su5ed.mffs.util;
+package dev.su5ed.mffs.util.inventory;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
@@ -8,7 +8,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public class InventorySlot implements INBTSerializable<CompoundTag> {
-    private final SlotItemHandler parent;
+    private final InventorySlotItemHandler parent;
     private final String name;
     private final Mode mode;
     private final Predicate<ItemStack> filter;
@@ -16,7 +16,7 @@ public class InventorySlot implements INBTSerializable<CompoundTag> {
 
     private ItemStack content = ItemStack.EMPTY;
     
-    public InventorySlot(SlotItemHandler parent, String name, Mode mode, Predicate<ItemStack> filter, Consumer<ItemStack> onChanged) {
+    public InventorySlot(InventorySlotItemHandler parent, String name, Mode mode, Predicate<ItemStack> filter, Consumer<ItemStack> onChanged) {
         this.parent = parent;
         this.name = name;
         this.mode = mode;

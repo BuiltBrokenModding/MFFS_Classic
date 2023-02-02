@@ -4,11 +4,12 @@ import dev.su5ed.mffs.api.module.Module;
 import dev.su5ed.mffs.api.module.ModuleAcceptor;
 import dev.su5ed.mffs.api.module.ProjectorMode;
 import dev.su5ed.mffs.api.security.BiometricIdentifierLink;
-import dev.su5ed.mffs.util.InventorySlot;
+import dev.su5ed.mffs.util.inventory.InventorySlot;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.Collection;
 import java.util.Set;
@@ -18,6 +19,8 @@ import java.util.Set;
  */
 public interface Projector extends ModuleAcceptor, BiometricIdentifierLink
 {
+	BlockEntity be();
+	
 	/**
 	 * @return Is the projector active?
 	 */

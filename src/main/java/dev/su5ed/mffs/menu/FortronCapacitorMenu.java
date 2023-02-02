@@ -4,7 +4,7 @@ import dev.su5ed.mffs.blockentity.FortronCapacitorBlockEntity;
 import dev.su5ed.mffs.setup.ModMenus;
 import dev.su5ed.mffs.setup.ModObjects;
 import dev.su5ed.mffs.util.DataSlotWrapper;
-import dev.su5ed.mffs.util.SlotInventory;
+import dev.su5ed.mffs.util.inventory.SlotInventory;
 import dev.su5ed.mffs.util.TransferMode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;

@@ -1,10 +1,15 @@
 package dev.su5ed.mffs.util;
 
 import dev.su5ed.mffs.MFFSMod;
+import dev.su5ed.mffs.api.card.FrequencyCard;
+import dev.su5ed.mffs.api.module.Module;
+import dev.su5ed.mffs.item.InfiniteCardItem;
+import dev.su5ed.mffs.setup.ModCapabilities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
@@ -102,6 +107,21 @@ public final class ModUtil {
 
     public static boolean isLiquidBlock(Block block) {
         return block instanceof LiquidBlock || block instanceof IFluidBlock;
+    }
+
+    public static boolean isCard(ItemStack stack) {
+        Item item = stack.getItem();
+        return item instanceof FrequencyCard || item instanceof InfiniteCardItem;
+    }
+    
+    public static boolean isModule(ItemStack stack) {
+        return stack.getCapability(ModCapabilities.MODULE).isPresent();
+    }
+    
+    public static boolean isModule(ItemStack stack, Module module) {
+        return stack.getCapability(ModCapabilities.MODULE)
+            .filter(mod -> mod == module)
+            .isPresent();
     }
 
     private ModUtil() {}

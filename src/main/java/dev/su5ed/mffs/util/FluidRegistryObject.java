@@ -7,12 +7,12 @@ import net.minecraftforge.fluids.ForgeFlowingFluid;
 
 import java.util.function.Supplier;
 
-public class FluidContainer {
+public class FluidRegistryObject {
     private final Supplier<FluidType> fluidType;
     private final Lazy<Fluid> sourceFluid;
     private final Lazy<Fluid> flowingFluid;
 
-    public FluidContainer(ModFluidType.FluidProperties properties) {
+    public FluidRegistryObject(ModFluidType.FluidProperties properties) {
         this.fluidType = Lazy.of(() -> new ModFluidType(properties));
         
         ForgeFlowingFluid.Properties fluidProperties = new ForgeFlowingFluid.Properties(this.fluidType, this::getSourceFluid, this::getFlowingFluid);

@@ -1,5 +1,6 @@
-package dev.su5ed.mffs.api.fortron;
+package dev.su5ed.mffs.util;
 
+import dev.su5ed.mffs.api.fortron.FortronStorage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.world.level.Level;
@@ -57,13 +58,7 @@ public class FrequencyGrid {
             .toSet();
     }
 
-    public Set<FortronStorage> getFortronTiles(Level level) {
-        return StreamEx.of(get())
-			.filter(fortron -> fortron.getOwner().getLevel() == level)
-			.toSet();
-    }
-
-    public Set<? extends FortronStorage> getFortronTiles(Level level, Vec3i position, int radius, int frequency) {
+    public Set<? extends FortronStorage> getFortronBlocks(Level level, Vec3i position, int radius, int frequency) {
         return StreamEx.of(get(frequency))
 			.filter(fortron -> {
                 BlockEntity owner = fortron.getOwner();

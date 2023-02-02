@@ -4,10 +4,10 @@ import dev.su5ed.mffs.api.fortron.FortronStorage;
 import dev.su5ed.mffs.api.module.ModuleAcceptor;
 import dev.su5ed.mffs.network.DrawBeamPacket;
 import dev.su5ed.mffs.network.Network;
-import dev.su5ed.mffs.render.particle.ParticleColor;
 import dev.su5ed.mffs.render.particle.BeamParticleOptions;
+import dev.su5ed.mffs.render.particle.ParticleColor;
 import dev.su5ed.mffs.setup.ModFluids;
-import dev.su5ed.mffs.setup.ModItems;
+import dev.su5ed.mffs.setup.ModModules;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
@@ -96,7 +96,7 @@ public final class Fortron {
      * @param joules   : The amount of energy to be transfered.
      */
     public static void doTransferFortron(FortronStorage transmitter, FortronStorage receiver, int joules, int limit) {
-        boolean isCamo = transmitter instanceof ModuleAcceptor acceptor && acceptor.getModuleCount(ModItems.CAMOUFLAGE_MODULE.get()) > 0;
+        boolean isCamo = transmitter instanceof ModuleAcceptor acceptor && acceptor.getModuleCount(ModModules.CAMOUFLAGE) > 0;
         if (joules > 0) {
             doTransferFortron(transmitter, receiver, joules, limit, isCamo);
         } else {

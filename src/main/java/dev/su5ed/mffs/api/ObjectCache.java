@@ -6,7 +6,5 @@ package dev.su5ed.mffs.api;
  * @author Calclavia
  */
 public interface ObjectCache {
-    void clearCache(String cacheID);
-
     void clearCache();
 }

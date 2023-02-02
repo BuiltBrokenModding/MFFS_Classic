@@ -1,11 +1,10 @@
 package dev.su5ed.mffs.blockentity;
 
 import dev.su5ed.mffs.api.Activatable;
-import dev.su5ed.mffs.api.card.Card;
 import dev.su5ed.mffs.api.card.CoordLink;
 import dev.su5ed.mffs.api.card.FrequencyCard;
 import dev.su5ed.mffs.api.fortron.FortronStorage;
-import dev.su5ed.mffs.api.fortron.FrequencyGrid;
+import dev.su5ed.mffs.util.FrequencyGrid;
 import dev.su5ed.mffs.api.security.BiometricIdentifier;
 import dev.su5ed.mffs.api.security.BiometricIdentifierLink;
 import dev.su5ed.mffs.block.BaseEntityBlock;
@@ -13,7 +12,8 @@ import dev.su5ed.mffs.network.ToggleModePacketClient;
 import dev.su5ed.mffs.setup.ModCapabilities;
 import dev.su5ed.mffs.util.Fortron;
 import dev.su5ed.mffs.util.FortronStorageImpl;
-import dev.su5ed.mffs.util.InventorySlot;
+import dev.su5ed.mffs.util.inventory.InventorySlot;
+import dev.su5ed.mffs.util.ModUtil;
 import dev.su5ed.mffs.util.TransferMode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -54,7 +54,7 @@ public abstract class FortronBlockEntity extends InventoryBlockEntity implements
         this.fortronStorage = new FortronStorageImpl(this, getBaseFortronTankCapacity() * FluidType.BUCKET_VOLUME, this::setChanged);
         this.fortronCap = LazyOptional.of(() -> this.fortronStorage);
         this.fluidCap = LazyOptional.of(this.fortronStorage::getFortronTank);
-        this.frequencySlot = addSlot("frequency", InventorySlot.Mode.BOTH, stack -> stack.getItem() instanceof Card, this::onFrequencySlotChanged);
+        this.frequencySlot = addSlot("frequency", InventorySlot.Mode.BOTH, ModUtil::isCard, this::onFrequencySlotChanged);
     }
 
     public int getAnimation() {
@@ -137,7 +137,7 @@ public abstract class FortronBlockEntity extends InventoryBlockEntity implements
     public void setRemoved() {
         if (this.markSendFortron) {
             // Let remaining Fortron escape.
-            Fortron.transferFortron(this.fortronStorage, FrequencyGrid.instance().getFortronTiles(this.level, this.worldPosition, 100, this.fortronStorage.getFrequency()), TransferMode.DRAIN, Integer.MAX_VALUE);
+            Fortron.transferFortron(this.fortronStorage, FrequencyGrid.instance().getFortronBlocks(this.level, this.worldPosition, 100, this.fortronStorage.getFrequency()), TransferMode.DRAIN, Integer.MAX_VALUE);
         }
         
         super.setRemoved();

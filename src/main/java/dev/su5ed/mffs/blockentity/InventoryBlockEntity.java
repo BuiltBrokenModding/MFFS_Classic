@@ -1,7 +1,7 @@
 package dev.su5ed.mffs.blockentity;
 
-import dev.su5ed.mffs.util.InventorySlot;
-import dev.su5ed.mffs.util.SlotItemHandler;
+import dev.su5ed.mffs.util.inventory.InventorySlot;
+import dev.su5ed.mffs.util.inventory.InventorySlotItemHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -22,13 +22,13 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public abstract class InventoryBlockEntity extends BaseBlockEntity {
-    protected final SlotItemHandler items;
+    protected final InventorySlotItemHandler items;
     private final LazyOptional<IItemHandler> itemCap;
 
     protected InventoryBlockEntity(BlockEntityType<? extends BaseBlockEntity> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
 
-        this.items = new SlotItemHandler(this::onInventoryChanged);
+        this.items = new InventorySlotItemHandler(this::onInventoryChanged);
         this.itemCap = LazyOptional.of(() -> this.items);
     }
 

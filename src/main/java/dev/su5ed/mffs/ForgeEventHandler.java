@@ -1,8 +1,8 @@
 package dev.su5ed.mffs;
 
 import dev.su5ed.mffs.api.EventForceManipulate;
-import dev.su5ed.mffs.api.fortron.FrequencyGrid;
 import dev.su5ed.mffs.blockentity.FortronBlockEntity;
+import dev.su5ed.mffs.util.FrequencyGrid;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;

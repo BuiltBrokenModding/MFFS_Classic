@@ -4,7 +4,7 @@ import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.blockentity.ProjectorBlockEntity;
 import dev.su5ed.mffs.setup.ModMenus;
 import dev.su5ed.mffs.setup.ModObjects;
-import dev.su5ed.mffs.util.SlotInventory;
+import dev.su5ed.mffs.util.inventory.SlotInventory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;

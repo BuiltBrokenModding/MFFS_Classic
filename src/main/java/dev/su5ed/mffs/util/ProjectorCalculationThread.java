@@ -1,5 +1,6 @@
 package dev.su5ed.mffs.util;
 
+import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.api.module.Module;
 import dev.su5ed.mffs.blockentity.ProjectorBlockEntity;
 import net.minecraft.core.BlockPos;
@@ -49,7 +50,7 @@ public class ProjectorCalculationThread extends Thread {
                 module.onCalculate(this.projector, this.projector.getCalculatedField());
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            MFFSMod.LOGGER.error("Error calculating force field", e);
         }
 
         this.projector.isCalculating = false;

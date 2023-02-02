@@ -1,5 +1,6 @@
-package dev.su5ed.mffs.util;
+package dev.su5ed.mffs.util.inventory;
 
+import dev.su5ed.mffs.util.TooltipSlot;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
