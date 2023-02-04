@@ -130,12 +130,6 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
         list.addAll(this.fieldModuleSlots.values());
     }
 
-    // TODO Stablizer Module Construction FXs
-
-    public void onThreadComplete() {
-        destroyField();
-    }
-
     @Override
     public void tickServer() {
         super.tickServer();
@@ -438,10 +432,6 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
     }
 
     private void reCalculateForceField() {
-        reCalculateForceField(this::onThreadComplete);
-    }
-
-    private void reCalculateForceField(@Nullable Runnable callBack) {
         if (!this.level.isClientSide && !this.isCalculating && getMode().isPresent()) {
             if (getModeStack().getItem() instanceof ObjectCache cache) {
                 cache.clearCache();
@@ -451,7 +441,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
             this.calculatedField.clear();
 
             // Start multi-threading calculation
-            new ProjectorCalculationThread(this, callBack).start();
+            new ProjectorCalculationThread(this).start();
         }
     }
 

@@ -40,7 +40,7 @@ public final class ModItems {
     public static final RegistryObject<ModuleItem> SCALE_MODULE = module("scale_module", ModModules.SCALE, ModuleItem::withDescription);
     public static final RegistryObject<ModuleItem> CAPACITY_MODULE = module("capacity_module", ModModules.CAPACITY);
     public static final RegistryObject<ModuleItem> DISINTEGRATION_MODULE = module("disintegration_module", ModModules.DISINTEGRATION, singleStack());
-    public static final RegistryObject<ModuleItem> TRANSLATION_MODULE = module("disintegration_module", ModModules.TRANSLATION, ModuleItem::withDescription);
+    public static final RegistryObject<ModuleItem> TRANSLATION_MODULE = module("translation_module", ModModules.TRANSLATION, ModuleItem::withDescription);
     public static final RegistryObject<ModuleItem> ROTATION_MODULE = module("rotation_module", ModModules.ROTATION, ModuleItem::withDescription);
     public static final RegistryObject<ModuleItem> GLOW_MODULE = module("glow_module", ModModules.GLOW);
     public static final RegistryObject<ModuleItem> SILENCE_MODULE = module("silence_module", ModModules.SILENCE, singleStack(), ModuleItem::withDescription);

@@ -83,6 +83,11 @@ public class ModFluidType extends FluidType {
             return this;
         }
 
+        public FluidProperties lightLevel(int lightLevel) {
+            this.properties.lightLevel(lightLevel);
+            return this;
+        }
+
         public FluidProperties texture(ResourceLocation texture) {
             stillTexture(texture);
             flowingTexture(texture);

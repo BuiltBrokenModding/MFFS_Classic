@@ -85,9 +85,9 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
     public int getModuleCount(Module module, Collection<InventorySlot> slots) {
         String key = MODULE_COUNT_CACHE_KEY + module.hashCode() + "_" + slots.hashCode();
         return cached(key, () -> getModuleItemsStream(slots)
-            .filter(stack -> ModUtil.isModule(stack, module)))
+            .filter(stack -> ModUtil.isModule(stack, module))
             .mapToInt(ItemStack::getCount)
-            .sum();
+            .sum());
     }
 
     @Override
@@ -140,7 +140,9 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
 
     protected int doGetFortronCost() {
         double cost = StreamEx.of(getModuleStacks())
-            .mapToDouble(stack -> stack.getCount() * ((Module) stack.getItem()).getFortronCost(getAmplifier()))
+            .mapToDouble(stack -> stack.getCount() * stack.getCapability(ModCapabilities.MODULE)
+                .map(module -> (double) module.getFortronCost(getAmplifier()))
+                .orElse(0.0))
             .sum();
         return (int) Math.round(cost);
     }

@@ -2,10 +2,10 @@ package dev.su5ed.mffs.block;
 
 import dev.su5ed.mffs.api.ForceFieldBlock;
 import dev.su5ed.mffs.api.Projector;
-import dev.su5ed.mffs.api.module.Module;
 import dev.su5ed.mffs.api.security.BiometricIdentifier;
 import dev.su5ed.mffs.api.security.Permission;
 import dev.su5ed.mffs.blockentity.ForceFieldBlockEntity;
+import dev.su5ed.mffs.setup.ModCapabilities;
 import dev.su5ed.mffs.setup.ModObjects;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
@@ -93,7 +93,10 @@ public class ForceFieldBlockImpl extends AbstractGlassBlock implements ForceFiel
         getProjector(level, pos)
             .ifPresent(projector -> {
                 for (ItemStack stack : projector.getModuleStacks()) {
-                    if (((Module) stack.getItem()).onCollideWithForceField(level, pos, entity, stack)) {
+                    boolean collided = stack.getCapability(ModCapabilities.MODULE)
+                        .map(module -> module.onCollideWithForceField(level, pos, entity, stack))
+                        .orElse(false);
+                    if (collided) {
                         return;
                     }
                 }

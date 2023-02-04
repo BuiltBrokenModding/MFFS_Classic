@@ -18,6 +18,7 @@ public final class ModFluids {
 
     public static final FluidRegistryObject FORTRON = new FluidRegistryObject(new FluidProperties()
         .density(1000)
+        .lightLevel(8)
         .texture(location("fluid/fortron")));
     public static final RegistryObject<FluidType> FORTRON_FLUID_TYPE = FLUID_TYPES.register("fortron", FORTRON.fluidType());
     public static final RegistryObject<Fluid> FORTRON_FLUID = FLUIDS.register("fortron_fluid", FORTRON.sourceFluid());

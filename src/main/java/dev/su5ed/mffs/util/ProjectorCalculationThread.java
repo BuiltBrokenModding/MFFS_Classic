@@ -17,12 +17,9 @@ import java.util.Set;
  */
 public class ProjectorCalculationThread extends Thread {
     private final ProjectorBlockEntity projector;
-    @Nullable
-    private final Runnable callBack;
 
-    public ProjectorCalculationThread(ProjectorBlockEntity projector, @Nullable Runnable callBack) {
+    public ProjectorCalculationThread(ProjectorBlockEntity projector) {
         this.projector = projector;
-        this.callBack = callBack;
     }
 
     @Override
@@ -55,9 +52,5 @@ public class ProjectorCalculationThread extends Thread {
 
         this.projector.isCalculating = false;
         this.projector.isCalculated = true;
-
-        if (this.callBack != null) {
-            this.callBack.run();
-        }
     }
 }
