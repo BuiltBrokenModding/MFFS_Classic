@@ -9,6 +9,7 @@
   "info.mffs.link.create": "Linked to %s at %s",
   "info.mffs.cannot_harness": "Cannot harness %s FE from the Fortron field.",
   "info.mffs.frequency.generated": "Generated random frequency: %s",
+  "info.mffs.stored_energy": "Stored Energy: %s / %s FE",
   
   "death.attack.mffs.field_shock": "%1$s was disintegrated by a force field.",
   
@@ -47,6 +48,8 @@
   "item.mffs.collection_module.description": "Collects dropped blocks from the disintegration module.",
   "item.mffs.stabilization_module": "Stabilization Module",
   "item.mffs.stabilization_module.description": "Stabilizes the projected force field and crystallizes the field into solid blocks. Place a chest next the projector with blocks to stablize the field.",
+  
+  "item.mffs.battery": "Battery",
   
   "sounds.mffs.field": "Field Sound",
 

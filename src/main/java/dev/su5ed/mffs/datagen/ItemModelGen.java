@@ -42,6 +42,8 @@ final class ItemModelGen extends ItemModelProvider {
         simpleItem(ModItems.TUBE_MODE);
         simpleItem(ModItems.PYRAMID_MODE);
         simpleItem(ModItems.CYLINDER_MODE);
+        
+        simpleItem(ModItems.BATTERY);
     }
 
     private void simpleItem(RegistryObject<? extends Item> item) {
