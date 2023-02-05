@@ -1,0 +1,9 @@
+// 1.19.2	2023-02-05T12:25:28.2858752	Recipes
+db632e53c2dab7cde4ef224fdc20b8503601bbb7 data/mffs/advancements/recipes/mffs/battery.json
+bccc206462d19f760c129423e72de66a42cb61ab data/mffs/advancements/recipes/mffs/focus_matrix.json
+1969d389287673ce061a792137524d608a772dbc data/mffs/advancements/recipes/mffs/steel_compound.json
+928d4df981a28b524d815bb3a94360d2202b26c4 data/mffs/advancements/recipes/mffs/steel_ingot.json
+3fb41d27a583108493d7afbdfe31e756d5ac5432 data/mffs/recipes/battery.json
+16fd2cdb6dfaadaf2ee8e5743b0e02fde9668998 data/mffs/recipes/focus_matrix.json
+efc02e42dcc331ace2ba1ba8f975f10d1ad570fe data/mffs/recipes/steel_compound.json
+67a92a96162646110c40671118f01d3e54fe7d24 data/mffs/recipes/steel_ingot.json

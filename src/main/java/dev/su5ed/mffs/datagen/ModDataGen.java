@@ -23,6 +23,7 @@ public final class ModDataGen {
         BlockTagsProvider blockTags = new BlockTagsGen(generator, helper);
         generator.addProvider(event.includeServer(), blockTags);
         generator.addProvider(event.includeServer(), new ItemTagsGen(generator, blockTags, helper));
+        generator.addProvider(event.includeServer(), new RecipesGen(generator));
     }
 
     private ModDataGen() {}

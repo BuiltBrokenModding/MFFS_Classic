@@ -43,6 +43,7 @@ final class ItemModelGen extends ItemModelProvider {
         simpleItem(ModItems.PYRAMID_MODE);
         simpleItem(ModItems.CYLINDER_MODE);
         
+        simpleItem(ModItems.FOCUS_MATRIX);
         simpleItem(ModItems.BATTERY);
         simpleItem(ModItems.STEEL_COMPOUND);
         simpleItem(ModItems.STEEL_INGOT);

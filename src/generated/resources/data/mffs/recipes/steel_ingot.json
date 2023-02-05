@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smelting",
+  "cookingtime": 200,
+  "experience": 0.5,
+  "ingredient": {
+    "item": "mffs:steel_compound"
+  },
+  "result": "mffs:steel_ingot"
+}

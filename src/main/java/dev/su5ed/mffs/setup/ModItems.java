@@ -57,10 +57,11 @@ public final class ModItems {
     public static final RegistryObject<ProjectorModeItem> TUBE_MODE = projectorMode("tube_mode", ModProjectorModes.TUBE);
     public static final RegistryObject<ProjectorModeItem> PYRAMID_MODE = projectorMode("pyramid_mode", ModProjectorModes.PYRAMID);
     public static final RegistryObject<ProjectorModeItem> CYLINDER_MODE = projectorMode("cylinder_mode", ModProjectorModes.CYLINDER);
-    
+
+    public static final RegistryObject<Item> FOCUS_MATRIX = ITEMS.register("focus_matrix", ModItems::simpleItem);
     public static final RegistryObject<BatteryItem> BATTERY = ITEMS.register("battery", BatteryItem::new);
-    public static final RegistryObject<Item> STEEL_COMPOUND = ITEMS.register("steel_compound", () -> new Item(itemProperties()));
-    public static final RegistryObject<Item> STEEL_INGOT = ITEMS.register("steel_ingot", () -> new Item(itemProperties()));
+    public static final RegistryObject<Item> STEEL_COMPOUND = ITEMS.register("steel_compound", ModItems::simpleItem);
+    public static final RegistryObject<Item> STEEL_INGOT = ITEMS.register("steel_ingot", ModItems::simpleItem);
 
     public static final RegistryObject<Item> REDSTONE_TORCH_OFF = ITEMS.register("redstone_torch_off", () -> new Item(new Item.Properties()));
 
@@ -94,6 +95,10 @@ public final class ModItems {
     
     private static RegistryObject<ProjectorModeItem> projectorMode(String name, ProjectorMode projectorMode) {
         return ITEMS.register(name, () -> new ProjectorModeItem(itemProperties(), projectorMode));
+    }
+    
+    public static Item simpleItem() {
+        return new Item(itemProperties());
     }
 
     public static Item.Properties singleStack() {
