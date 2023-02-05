@@ -1,5 +1,6 @@
 package dev.su5ed.mffs.setup;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
@@ -15,8 +16,14 @@ public final class ModTags {
     public static final TagKey<Block> STABILIZATION_BLACKLIST = blockTag("stabilization_blacklist");
     public static final TagKey<Block> DISINTEGRATION_BLACKLIST = blockTag("disintegration_blacklist");
 
+    public static final TagKey<Item> INGOTS_STEEL = forgeItemTag("ingots/steel");
+
     private static TagKey<Item> itemTag(String name) {
         return ItemTags.create(location(name));
+    }
+
+    private static TagKey<Item> forgeItemTag(String name) {
+        return ItemTags.create(new ResourceLocation("forge", name));
     }
 
     private static TagKey<Block> blockTag(String name) {

@@ -50,8 +50,12 @@
   "item.mffs.stabilization_module.description": "Stabilizes the projected force field and crystallizes the field into solid blocks. Place a chest next the projector with blocks to stablize the field.",
   
   "item.mffs.battery": "Battery",
+  "item.mffs.steel_compound": "Steel Compound",
+  "item.mffs.steel_ingot": "Steel Ingot",
   
   "sounds.mffs.field": "Field Sound",
+  
+  "fluid_type.mffs.fortron": "Fortron",
 
   "mffs.projector_menu.mode": "Mode",
   "mffs.projector_menu.down": "Down",

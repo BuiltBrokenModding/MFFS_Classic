@@ -59,6 +59,8 @@ public final class ModItems {
     public static final RegistryObject<ProjectorModeItem> CYLINDER_MODE = projectorMode("cylinder_mode", ModProjectorModes.CYLINDER);
     
     public static final RegistryObject<BatteryItem> BATTERY = ITEMS.register("battery", BatteryItem::new);
+    public static final RegistryObject<Item> STEEL_COMPOUND = ITEMS.register("steel_compound", () -> new Item(itemProperties()));
+    public static final RegistryObject<Item> STEEL_INGOT = ITEMS.register("steel_ingot", () -> new Item(itemProperties()));
 
     public static final RegistryObject<Item> REDSTONE_TORCH_OFF = ITEMS.register("redstone_torch_off", () -> new Item(new Item.Properties()));
 
