@@ -38,7 +38,7 @@ import java.util.Set;
 public class RemoteControllerItem extends FrequencyCardItem implements CoordLink {
 
     public RemoteControllerItem() {
-        super(ModItems.itemProperties());
+        super(ModItems.itemProperties().stacksTo(1));
     }
 
     @Override

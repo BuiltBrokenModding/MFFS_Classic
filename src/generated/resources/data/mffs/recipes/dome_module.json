@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "F": {
+      "item": "mffs:focus_matrix"
+    }
+  },
+  "pattern": [
+    "F",
+    " ",
+    "F"
+  ],
+  "result": {
+    "item": "mffs:dome_module"
+  }
+}

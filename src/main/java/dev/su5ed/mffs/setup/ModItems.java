@@ -46,8 +46,8 @@ public final class ModItems {
     public static final RegistryObject<ModuleItem> GLOW_MODULE = module("glow_module", ModModules.GLOW);
     public static final RegistryObject<ModuleItem> SILENCE_MODULE = module("silence_module", ModModules.SILENCE, singleStack(), ModuleItem::withDescription);
     public static final RegistryObject<ModuleItem> SHOCK_MODULE = module("shock_module", ModModules.SHOCK);
-    public static final RegistryObject<ModuleItem> SPONGE_MODULE = module("sponge_module", ModModules.SPONGE);
-    public static final RegistryObject<ModuleItem> FUSION_MODULE = module("fusion_module", ModModules.FUSION);
+    public static final RegistryObject<ModuleItem> SPONGE_MODULE = module("sponge_module", ModModules.SPONGE, singleStack());
+    public static final RegistryObject<ModuleItem> FUSION_MODULE = module("fusion_module", ModModules.FUSION, singleStack());
     public static final RegistryObject<ModuleItem> DOME_MODULE = module("dome_module", ModModules.DOME);
     public static final RegistryObject<ModuleItem> COLLECTION_MODULE = module("collection_module", ModModules.COLLECTION, singleStack());
     public static final RegistryObject<ModuleItem> STABILIZATION_MODULE = module("stabilization_module", ModModules.STABILIZAZION, singleStack(), ModuleItem::withDescription);

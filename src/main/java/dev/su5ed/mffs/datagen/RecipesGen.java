@@ -7,6 +7,7 @@ import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.Tags;
@@ -56,5 +57,221 @@ public class RecipesGen extends RecipeProvider {
             .pattern("RSR")
             .unlockedBy("has_steel_ingot", has(ModTags.INGOTS_STEEL))
             .save(finishedRecipeConsumer, location("focus_matrix"));
+
+        ShapedRecipeBuilder.shaped(ModItems.COERCION_DERIVER_ITEM.get())
+            .define('S', ModTags.INGOTS_STEEL)
+            .define('F', ModItems.FOCUS_MATRIX.get())
+            .define('B', ModItems.BATTERY.get())
+            .pattern("S S")
+            .pattern("SFS")
+            .pattern("SBS")
+            .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
+            .save(finishedRecipeConsumer, location("coercion_deriver"));
+
+        ShapedRecipeBuilder.shaped(ModItems.FORTRON_CAPACITOR_ITEM.get())
+            .define('S', ModTags.INGOTS_STEEL)
+            .define('F', ModItems.FOCUS_MATRIX.get())
+            .define('B', ModItems.BATTERY.get())
+            .pattern("SFS")
+            .pattern("FBF")
+            .pattern("SFS")
+            .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
+            .save(finishedRecipeConsumer, location("fortron_capacitor"));
+
+        ShapedRecipeBuilder.shaped(ModItems.PROJECTOR_ITEM.get())
+            .define('S', ModTags.INGOTS_STEEL)
+            .define('F', ModItems.FOCUS_MATRIX.get())
+            .define('B', ModItems.BATTERY.get())
+            .define('D', Tags.Items.GEMS_DIAMOND)
+            .pattern(" D ")
+            .pattern("FFF")
+            .pattern("SBS")
+            .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
+            .save(finishedRecipeConsumer, location("projector"));
+
+        ShapedRecipeBuilder.shaped(ModItems.REMOTE_CONTROLLER_ITEM.get())
+            .define('S', ModTags.INGOTS_STEEL)
+            .define('B', ModItems.BATTERY.get())
+            .define('R', Tags.Items.DUSTS_REDSTONE)
+            .pattern(" R ")
+            .pattern("SBS")
+            .pattern("SBS")
+            .unlockedBy("has_battery", has(ModItems.BATTERY.get()))
+            .save(finishedRecipeConsumer, location("remote_controller"));
+
+        ShapedRecipeBuilder.shaped(ModItems.CUBE_MODE.get())
+            .define('F', ModItems.FOCUS_MATRIX.get())
+            .pattern("FFF")
+            .pattern("FFF")
+            .pattern("FFF")
+            .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
+            .save(finishedRecipeConsumer, location("cube_mode"));
+
+        ShapedRecipeBuilder.shaped(ModItems.SPHERE_MODE.get())
+            .define('F', ModItems.FOCUS_MATRIX.get())
+            .pattern(" F ")
+            .pattern("FFF")
+            .pattern(" F ")
+            .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
+            .save(finishedRecipeConsumer, location("sphere_mode"));
+
+        ShapedRecipeBuilder.shaped(ModItems.TUBE_MODE.get())
+            .define('F', ModItems.FOCUS_MATRIX.get())
+            .pattern("FFF")
+            .pattern("   ")
+            .pattern("FFF")
+            .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
+            .save(finishedRecipeConsumer, location("tube_mode"));
+
+        ShapedRecipeBuilder.shaped(ModItems.PYRAMID_MODE.get())
+            .define('F', ModItems.FOCUS_MATRIX.get())
+            .pattern("F  ")
+            .pattern("FF ")
+            .pattern("FFF")
+            .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
+            .save(finishedRecipeConsumer, location("pyramid_mode"));
+
+        ShapedRecipeBuilder.shaped(ModItems.CYLINDER_MODE.get())
+            .define('S', ModItems.SPHERE_MODE.get())
+            .pattern("S")
+            .pattern("S")
+            .pattern("S")
+            .unlockedBy("has_sphere_mode", has(ModItems.SPHERE_MODE.get()))
+            .save(finishedRecipeConsumer, location("cylinder_mode"));
+
+        ShapedRecipeBuilder.shaped(ModItems.SCALE_MODULE.get(), 2)
+            .define('F', ModItems.FOCUS_MATRIX.get())
+            .pattern("F F")
+            .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
+            .save(finishedRecipeConsumer, location("scale_module"));
+
+        ShapedRecipeBuilder.shaped(ModItems.TRANSLATION_MODULE.get(), 2)
+            .define('F', ModItems.FOCUS_MATRIX.get())
+            .define('S', ModItems.SCALE_MODULE.get())
+            .pattern("FSF")
+            .unlockedBy("has_scale_module", has(ModItems.SCALE_MODULE.get()))
+            .save(finishedRecipeConsumer, location("translation_module"));
+
+        ShapedRecipeBuilder.shaped(ModItems.ROTATION_MODULE.get(), 4)
+            .define('F', ModItems.FOCUS_MATRIX.get())
+            .pattern("F  ")
+            .pattern(" F ")
+            .pattern("  F")
+            .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
+            .save(finishedRecipeConsumer, location("rotation_module"));
+
+        ShapedRecipeBuilder.shaped(ModItems.SPEED_MODULE.get(), 2)
+            .define('F', ModItems.FOCUS_MATRIX.get())
+            .define('R', Tags.Items.DUSTS_REDSTONE)
+            .pattern("FFF")
+            .pattern("RRR")
+            .pattern("FFF")
+            .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
+            .save(finishedRecipeConsumer, location("speed_module"));
+
+        ShapedRecipeBuilder.shaped(ModItems.CAPACITY_MODULE.get(), 2)
+            .define('F', ModItems.FOCUS_MATRIX.get())
+            .define('B', ModItems.BATTERY.get())
+            .pattern("FBF")
+            .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
+            .save(finishedRecipeConsumer, location("capacity_module"));
+
+        ShapedRecipeBuilder.shaped(ModItems.SHOCK_MODULE.get())
+            .define('F', ModItems.FOCUS_MATRIX.get())
+            .define('D', Items.DIAMOND)
+            .pattern("FDF")
+            .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
+            .save(finishedRecipeConsumer, location("shock_module"));
+
+        ShapedRecipeBuilder.shaped(ModItems.FUSION_MODULE.get())
+            .define('F', ModItems.FOCUS_MATRIX.get())
+            .define('S', ModItems.SHOCK_MODULE.get())
+            .pattern("FSF")
+            .unlockedBy("has_shock_module", has(ModItems.SHOCK_MODULE.get()))
+            .save(finishedRecipeConsumer, location("fusion_module"));
+
+        ShapedRecipeBuilder.shaped(ModItems.DOME_MODULE.get())
+            .define('F', ModItems.FOCUS_MATRIX.get())
+            .pattern("F")
+            .pattern(" ")
+            .pattern("F")
+            .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
+            .save(finishedRecipeConsumer, location("dome_module"));
+
+        ShapedRecipeBuilder.shaped(ModItems.CAMOUFLAGE_MODULE.get())
+            .define('F', ModItems.FOCUS_MATRIX.get())
+            .define('W', ItemTags.WOOL)
+            .pattern("WFW")
+            .pattern("FWF")
+            .pattern("WFW")
+            .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
+            .save(finishedRecipeConsumer, location("camouflage_module"));
+
+        ShapedRecipeBuilder.shaped(ModItems.DISINTEGRATION_MODULE.get())
+            .define('F', ModItems.FOCUS_MATRIX.get())
+            .define('B', ModItems.BATTERY.get())
+            .define('P', Items.DIAMOND_PICKAXE)
+            .pattern(" P ")
+            .pattern("FBF")
+            .pattern(" P ")
+            .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
+            .save(finishedRecipeConsumer, location("disintegration_module"));
+
+        ShapedRecipeBuilder.shaped(ModItems.GLOW_MODULE.get(), 4)
+            .define('F', ModItems.FOCUS_MATRIX.get())
+            .define('G', Items.GLOWSTONE)
+            .pattern("GGG")
+            .pattern("GFG")
+            .pattern("GGG")
+            .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
+            .save(finishedRecipeConsumer, location("glow_module"));
+
+        ShapedRecipeBuilder.shaped(ModItems.SPONGE_MODULE.get(), 4)
+            .define('F', ModItems.FOCUS_MATRIX.get())
+            .define('S', Items.SPONGE)
+            .pattern("SSS")
+            .pattern("SFS")
+            .pattern("SSS")
+            .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
+            .save(finishedRecipeConsumer, location("sponge_module"));
+
+        ShapedRecipeBuilder.shaped(ModItems.STABILIZATION_MODULE.get())
+            .define('F', ModItems.FOCUS_MATRIX.get())
+            .define('D', Tags.Items.GEMS_DIAMOND)
+            .define('P', Items.DIAMOND_PICKAXE)
+            .define('S', Items.DIAMOND_SHOVEL)
+            .define('A', Items.DIAMOND_AXE)
+            .pattern("FDF")
+            .pattern("PSA")
+            .pattern("FDF")
+            .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
+            .save(finishedRecipeConsumer, location("stabilization_module"));
+
+        ShapedRecipeBuilder.shaped(ModItems.COLLECTION_MODULE.get())
+            .define('F', ModItems.FOCUS_MATRIX.get())
+            .define('H', Items.HOPPER)
+            .pattern("F F")
+            .pattern(" H ")
+            .pattern("F F")
+            .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
+            .save(finishedRecipeConsumer, location("collection_module"));
+
+//        ShapedRecipeBuilder.shaped(ModItems.INVERT_MODULE.get())
+//            .define('F', ModItems.FOCUS_MATRIX.get())
+//            .define('L', Items.LAPIS_BLOCK)
+//            .pattern("L")
+//            .pattern("F")
+//            .pattern("L")
+//            .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
+//            .save(finishedRecipeConsumer, location("invert_module"));
+
+        ShapedRecipeBuilder.shaped(ModItems.SILENCE_MODULE.get())
+            .define('F', ModItems.FOCUS_MATRIX.get())
+            .define('N', Items.NOTE_BLOCK)
+            .pattern(" N ")
+            .pattern("NFN")
+            .pattern(" N ")
+            .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
+            .save(finishedRecipeConsumer, location("silence_module"));
     }
 }

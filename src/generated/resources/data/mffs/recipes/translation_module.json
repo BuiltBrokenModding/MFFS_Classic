@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "F": {
+      "item": "mffs:focus_matrix"
+    },
+    "S": {
+      "item": "mffs:scale_module"
+    }
+  },
+  "pattern": [
+    "FSF"
+  ],
+  "result": {
+    "count": 2,
+    "item": "mffs:translation_module"
+  }
+}
