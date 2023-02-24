@@ -24,6 +24,7 @@ public final class ModModules {
     public static final DomeModule DOME = new DomeModule();
     public static final ModuleBase COLLECTION = new ModuleBase(15.0F);
     public static final StabilizationModule STABILIZAZION = new StabilizationModule();
+    public static final ModuleBase INVERTER = new ModuleBase(15.0F);
 
     private ModModules() {}
 }

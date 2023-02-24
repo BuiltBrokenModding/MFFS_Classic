@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "F": {
+      "item": "mffs:focus_matrix"
+    },
+    "L": {
+      "tag": "forge:storage_blocks/lapis"
+    }
+  },
+  "pattern": [
+    "L",
+    "F",
+    "L"
+  ],
+  "result": {
+    "item": "mffs:inverter_module"
+  }
+}

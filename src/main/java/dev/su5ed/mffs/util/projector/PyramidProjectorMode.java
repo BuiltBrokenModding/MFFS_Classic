@@ -4,7 +4,6 @@ import dev.su5ed.mffs.api.Projector;
 import dev.su5ed.mffs.api.module.ProjectorMode;
 import dev.su5ed.mffs.util.ModUtil;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Vec3i;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 
@@ -57,8 +56,8 @@ public final class PyramidProjectorMode implements ProjectorMode {
     }
 
     @Override
-    public Set<BlockPos> getInteriorPoints(Projector projector) {
-        Set<BlockPos> fieldBlocks = new HashSet<>();
+    public Set<Vec3> getInteriorPoints(Projector projector) {
+        Set<Vec3> fieldBlocks = new HashSet<>();
 
         BlockPos posScale = projector.getPositiveScale();
         BlockPos negScale = projector.getNegativeScale();
@@ -67,14 +66,14 @@ public final class PyramidProjectorMode implements ProjectorMode {
         int xStretch = posScale.getX() + negScale.getX();
         int yStretch = posScale.getY() + negScale.getY();
         int zStretch = posScale.getZ() + negScale.getZ();
-        BlockPos translation = new BlockPos(0, -0.4, 0);
+        Vec3 translation = new Vec3(0, -0.4, 0);
 
         for (float x = -xStretch; x <= xStretch; x++) {
             for (float z = -zStretch; z <= zStretch; z++) {
                 for (float y = 0; y <= yStretch; y++) {
-                    BlockPos position = new BlockPos(x, y, z).offset(translation);
+                    Vec3 position = new Vec3(x, y, z).add(translation);
 
-                    if (isInField(projector, position.offset(projectorPos))) {
+                    if (isInField(projector, position.add(projectorPos.getX(), projectorPos.getY(), projectorPos.getZ()))) {
                         fieldBlocks.add(position);
                     }
                 }
@@ -85,7 +84,7 @@ public final class PyramidProjectorMode implements ProjectorMode {
     }
 
     @Override
-    public boolean isInField(Projector projector, BlockPos position) {
+    public boolean isInField(Projector projector, Vec3 position) {
         BlockPos posScale = projector.getPositiveScale();
         BlockPos negScale = projector.getNegativeScale();
 
@@ -97,23 +96,18 @@ public final class PyramidProjectorMode implements ProjectorMode {
             .offset(projector.getTranslation())
             .offset(0, -negScale.getY(), 0);
 
-        BlockPos relativePosition = position.subtract(projectorPos);
-        BlockPos relativeRotated = ModUtil.rotateByAngle(relativePosition, -projector.getRotationYaw(), -projector.getRotationPitch(), 0);
+        Vec3 relativePosition = position.subtract(projectorPos.getX(), projectorPos.getY(), projectorPos.getZ());
+        Vec3 relativeRotated = ModUtil.rotateByAngleExact(relativePosition, -projector.getRotationYaw(), -projector.getRotationPitch(), 0);
 
-        BlockPos min = negScale.multiply(-1);
+        Vec3 min = Vec3.atLowerCornerOf(negScale.multiply(-1));
 
-        if (isIn(min, posScale, relativeRotated) && relativeRotated.getY() > 0) {
-            if (1 - Math.abs(relativeRotated.getX()) / xStretch - Math.abs(relativeRotated.getZ()) / zStretch > relativeRotated.getY() / yStretch) {
-                return true;
-            }
-        }
-
-        return false;
+        return isIn(min, Vec3.atLowerCornerOf(posScale), relativeRotated) && relativeRotated.y() > 0
+            && 1 - Math.abs(relativeRotated.x()) / xStretch - Math.abs(relativeRotated.z()) / zStretch > relativeRotated.y() / yStretch;
     }
 
-    private static boolean isIn(Vec3i min, Vec3i max, Vec3i vec) {
-        return vec.getX() > min.getX() && vec.getX() < max.getX()
-            && vec.getY() > min.getY() && vec.getY() < max.getY()
-            && vec.getZ() > min.getZ() && vec.getZ() < max.getZ();
+    private static boolean isIn(Vec3 min, Vec3 max, Vec3 vec) {
+        return vec.x() > min.x() && vec.x() < max.x()
+            && vec.y() > min.y() && vec.y() < max.y()
+            && vec.z() > min.z() && vec.z() < max.z();
     }
 }

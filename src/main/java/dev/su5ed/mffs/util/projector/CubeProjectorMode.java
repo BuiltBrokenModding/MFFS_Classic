@@ -22,7 +22,7 @@ public class CubeProjectorMode implements ProjectorMode {
             for (float z = -negScale.getZ(); z <= posScale.getZ(); z += 0.5f) {
                 for (float y = -negScale.getY(); y <= posScale.getY(); y += 0.5f) {
                     if (y == -negScale.getY() || y == posScale.getY() || x == -negScale.getX() || x == posScale.getX() || z == -negScale.getZ() || z == posScale.getZ()) {
-                        fieldBlocks.add(new Vec3(Math.round(x), Math.round(y), Math.round(z)));
+                        fieldBlocks.add(new Vec3(x, y, z));
                     }
                 }
             }
@@ -31,14 +31,14 @@ public class CubeProjectorMode implements ProjectorMode {
     }
 
     @Override
-    public Set<BlockPos> getInteriorPoints(Projector projector) {
-        Set<BlockPos> fieldBlocks = new HashSet<>();
+    public Set<Vec3> getInteriorPoints(Projector projector) {
+        Set<Vec3> fieldBlocks = new HashSet<>();
         Vec3i posScale = projector.getPositiveScale();
         Vec3i negScale = projector.getNegativeScale();
         for (int x = -negScale.getX(); x <= posScale.getX(); x++) {
             for (int z = -negScale.getZ(); z <= posScale.getZ(); z++) {
                 for (int y = -negScale.getY(); y <= posScale.getY(); y++) {
-                    fieldBlocks.add(new BlockPos(x, y, z));
+                    fieldBlocks.add(new Vec3(x, y, z));
                 }
             }
         }
@@ -46,11 +46,11 @@ public class CubeProjectorMode implements ProjectorMode {
     }
 
     @Override
-    public boolean isInField(Projector projector, BlockPos position) {
+    public boolean isInField(Projector projector, Vec3 position) {
         BlockPos projectorPos = ((BlockEntity) projector).getBlockPos().offset(projector.getTranslation());
-        BlockPos relativePosition = position.subtract(projectorPos);
-        BlockPos rotated = ModUtil.rotateByAngle(relativePosition, -projector.getRotationYaw(), -projector.getRotationPitch(), -projector.getRotationRoll());
+        Vec3 relativePosition = position.subtract(projectorPos.getX(), projectorPos.getY(), projectorPos.getZ());
+        Vec3 rotated = ModUtil.rotateByAngleExact(relativePosition, -projector.getRotationYaw(), -projector.getRotationPitch(), -projector.getRotationRoll());
         AABB region = new AABB(projector.getNegativeScale().multiply(-1).offset(1, 1, 1), projector.getPositiveScale());
-        return region.contains(rotated.getX(), rotated.getY(), rotated.getZ());
+        return region.contains(rotated.x(), rotated.y(), rotated.z());
     }
 }

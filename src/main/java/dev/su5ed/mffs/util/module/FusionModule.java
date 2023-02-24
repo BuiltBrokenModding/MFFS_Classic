@@ -7,6 +7,7 @@ import dev.su5ed.mffs.setup.ModCapabilities;
 import dev.su5ed.mffs.util.FrequencyGrid;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.Set;
 
@@ -28,7 +29,7 @@ public class FusionModule extends ModuleBase {
                 .filter(compareProjector ->  compareProjector != projector
                     && ((BlockEntity) compareProjector).getLevel() == ((BlockEntity) projector).getLevel()
                     && compareProjector.isActive() && compareProjector.getMode().isPresent())
-                .ifPresent(compareProjector -> field.removeIf(pos -> compareProjector.getMode().orElseThrow().isInField(compareProjector, pos)));
+                .ifPresent(compareProjector -> field.removeIf(pos -> compareProjector.getMode().orElseThrow().isInField(compareProjector, Vec3.atLowerCornerOf(pos))));
         }
         return super.beforeProject(projector, field);
     }

@@ -18,12 +18,12 @@ public class CustomProjectorMode implements ProjectorMode {
     }
 
     @Override
-    public Set<BlockPos> getInteriorPoints(Projector projector) {
+    public Set<Vec3> getInteriorPoints(Projector projector) {
         throw new NotImplementedException();
     }
 
     @Override
-    public boolean isInField(Projector projector, BlockPos position) {
+    public boolean isInField(Projector projector, Vec3 position) {
         throw new NotImplementedException();
     }
 

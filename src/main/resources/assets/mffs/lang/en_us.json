@@ -48,6 +48,8 @@
   "item.mffs.collection_module.description": "Collects dropped blocks from the disintegration module.",
   "item.mffs.stabilization_module": "Stabilization Module",
   "item.mffs.stabilization_module.description": "Stabilizes the projected force field and crystallizes the field into solid blocks. Place a chest next the projector with blocks to stablize the field.",
+  "item.mffs.inverter_module": "Inverter Module",
+  "item.mffs.inverter_module.description": "Inverts the field to use negative space instead of the positive space.",
   
   "item.mffs.focus_matrix": "Focus Matrix",
   "item.mffs.battery": "Battery",

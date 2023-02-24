@@ -256,14 +256,14 @@ public class RecipesGen extends RecipeProvider {
             .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
             .save(finishedRecipeConsumer, location("collection_module"));
 
-//        ShapedRecipeBuilder.shaped(ModItems.INVERT_MODULE.get())
-//            .define('F', ModItems.FOCUS_MATRIX.get())
-//            .define('L', Items.LAPIS_BLOCK)
-//            .pattern("L")
-//            .pattern("F")
-//            .pattern("L")
-//            .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
-//            .save(finishedRecipeConsumer, location("invert_module"));
+        ShapedRecipeBuilder.shaped(ModItems.INVERTER_MODULE.get())
+            .define('F', ModItems.FOCUS_MATRIX.get())
+            .define('L', Tags.Items.STORAGE_BLOCKS_LAPIS)
+            .pattern("L")
+            .pattern("F")
+            .pattern("L")
+            .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
+            .save(finishedRecipeConsumer, location("inverter_module"));
 
         ShapedRecipeBuilder.shaped(ModItems.SILENCE_MODULE.get())
             .define('F', ModItems.FOCUS_MATRIX.get())

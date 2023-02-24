@@ -1,4 +1,4 @@
-// 1.19.2	2023-02-05T14:34:47.6755514	Recipes
+// 1.19.2	2023-02-24T20:05:17.2504987	Recipes
 db632e53c2dab7cde4ef224fdc20b8503601bbb7 data/mffs/advancements/recipes/mffs/battery.json
 6a8849371ccb30e853c1e7d73f519e6a0d5304c8 data/mffs/advancements/recipes/mffs/camouflage_module.json
 f48fdcb2e3de2df51b523874b9f2ce00f341ad6e data/mffs/advancements/recipes/mffs/capacity_module.json
@@ -12,6 +12,7 @@ bccc206462d19f760c129423e72de66a42cb61ab data/mffs/advancements/recipes/mffs/foc
 072b7a5ead4610ed3641efe3af95c29293c43c38 data/mffs/advancements/recipes/mffs/fortron_capacitor.json
 3fa14db74ed61dbcfb787d9d91c492513cbd27cd data/mffs/advancements/recipes/mffs/fusion_module.json
 69ad3118040639ddb6a5a0bd21ded92d7f045f7a data/mffs/advancements/recipes/mffs/glow_module.json
+40069b46969659ef5025e6c4a7a94ca79de2d8fc data/mffs/advancements/recipes/mffs/inverter_module.json
 874cbecdfa78b5964b125ca5688eefe979181169 data/mffs/advancements/recipes/mffs/projector.json
 1592aea8f986f9ff575cacb60354735764ca5511 data/mffs/advancements/recipes/mffs/pyramid_mode.json
 8cd41cd34636d4a199dddd5f868672b196e687c5 data/mffs/advancements/recipes/mffs/remote_controller.json
@@ -40,6 +41,7 @@ f02104eb03ced2860f7a8bb13a6bfb2c15072682 data/mffs/recipes/disintegration_module
 9b9ce9057ddca060e57348d4ee2ecdb1b16ebda1 data/mffs/recipes/fortron_capacitor.json
 67ee975993719c9aed1af3bd93d5a62413f6db7b data/mffs/recipes/fusion_module.json
 66dae54f70ec97fd07dc7e458e1e211df35e90f4 data/mffs/recipes/glow_module.json
+a638dfa6a0267ca0011ae0b5ac32249b13d2b592 data/mffs/recipes/inverter_module.json
 273980b71cd2ef6a9b7596e2d09cd1152f528e05 data/mffs/recipes/projector.json
 3e816ecf34d7be5e4c3b5026a335e0bb49b7a88f data/mffs/recipes/pyramid_mode.json
 d2ae483405008747d83189553b3d5642bcfe7732 data/mffs/recipes/remote_controller.json

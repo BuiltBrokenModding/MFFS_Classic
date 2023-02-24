@@ -51,6 +51,7 @@ public final class ModItems {
     public static final RegistryObject<ModuleItem> DOME_MODULE = module("dome_module", ModModules.DOME);
     public static final RegistryObject<ModuleItem> COLLECTION_MODULE = module("collection_module", ModModules.COLLECTION, singleStack());
     public static final RegistryObject<ModuleItem> STABILIZATION_MODULE = module("stabilization_module", ModModules.STABILIZAZION, singleStack(), ModuleItem::withDescription);
+    public static final RegistryObject<ModuleItem> INVERTER_MODULE = module("inverter_module", ModModules.INVERTER, singleStack(), ModuleItem::withDescription);
 
     public static final RegistryObject<ProjectorModeItem> CUBE_MODE = projectorMode("cube_mode", ModProjectorModes.CUBE);
     public static final RegistryObject<ProjectorModeItem> SPHERE_MODE = projectorMode("sphere_mode", ModProjectorModes.SPHERE);

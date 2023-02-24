@@ -35,6 +35,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import one.util.streamex.IntStreamEx;
@@ -328,14 +329,14 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
     @Override
     public Set<BlockPos> getInteriorPoints() {
         return cached(INTERIOR_POINTS_CACHE_KEY, () -> {
-            Set<BlockPos> interiorPoints = getMode().orElseThrow().getInteriorPoints(this);
-            BlockPos translation = getTranslation();
+            Set<Vec3> interiorPoints = getMode().orElseThrow().getInteriorPoints(this);
+            BlockPos translation = this.worldPosition.offset(getTranslation());
             int rotationYaw = getRotationYaw();
             int rotationPitch = getRotationPitch();
             int rotationRoll = getRotationRoll();
             return StreamEx.of(interiorPoints)
-                .map(pos -> rotationYaw != 0 || rotationPitch != 0 || rotationRoll != 0 ? ModUtil.rotateByAngle(pos, rotationYaw, rotationPitch, rotationRoll) : pos)
-                .map(pos -> pos.offset(this.worldPosition).offset(translation))
+                .map(pos -> rotationYaw != 0 || rotationPitch != 0 || rotationRoll != 0 ? ModUtil.rotateByAngleExact(pos, rotationYaw, rotationPitch, rotationRoll) : pos)
+                .map(pos -> new BlockPos(pos).offset(translation))
                 .toSet();
         });
     }
@@ -374,7 +375,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
                         }
 
                         BlockState state = ModBlocks.FORCE_FIELD.get().defaultBlockState();
-                        this.level.setBlock(pos, state, Block.UPDATE_ALL);
+                        this.level.setBlock(pos, state, Block.UPDATE_NONE);
                         // Set the controlling projector of the force field block to this one
                         this.level.getBlockEntity(pos, ModObjects.FORCE_FIELD_BLOCK_ENTITY.get())
                             .ifPresent(be -> {
@@ -384,6 +385,8 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
                                     be.setCamouflage(camouflage);
                                 }
                             });
+                        // Only update after the projector has been set to avoid recursive remove block call from ForceFieldBlockEntity#getProjector
+                        this.level.sendBlockUpdated(pos, state, state, Block.UPDATE_ALL);
 
                         this.fortronStorage.extractFortron(1, false);
                         this.forceFields.add(pos);

@@ -1,4 +1,4 @@
-// 1.19.2	2023-02-05T11:57:19.9458413	Item Models: mffs
+// 1.19.2	2023-02-24T20:05:17.2535197	Item Models: mffs
 7b5542d94eb7fe16932bb5b1a2e60f38d669a767 assets/mffs/models/item/battery.json
 eb9cdb4e2d3ca6a3a69366e0eae54972889518b4 assets/mffs/models/item/camouflage_module.json
 7c5fcaaad7f10eff8edf71b60c3f9d8a935b4a93 assets/mffs/models/item/capacity_module.json
@@ -10,6 +10,7 @@ efc59c37f67e6ef8f6e36dcd7e91b339e41e35fc assets/mffs/models/item/dome_module.jso
 12a191f3a6e43233f4cdf13e45a12e80ff3c4ac4 assets/mffs/models/item/focus_matrix.json
 4805d2ba97a72693cd975e4e29e7f1d85ae5e29b assets/mffs/models/item/fusion_module.json
 1c4dbec086433dabd209e32ee939ccf37ac2ca64 assets/mffs/models/item/glow_module.json
+5c70dc48db12cf25e768760ff845fc07eae035a1 assets/mffs/models/item/inverter_module.json
 eb434173b8d01b0e5d0aad177ef81d6676183133 assets/mffs/models/item/pyramid_mode.json
 76baad335c648f858089b517cbd37f5b7f0cd99f assets/mffs/models/item/remote_controller.json
 b7788010994d94eec524c736ab935692bd9cb483 assets/mffs/models/item/rotation_module.json
