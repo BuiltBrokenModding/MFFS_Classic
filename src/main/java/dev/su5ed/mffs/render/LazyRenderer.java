@@ -9,5 +9,5 @@ public interface LazyRenderer {
     void render(PoseStack poseStack, VertexConsumer buffer, int ticks, float partialTick);
 
     @Nullable
-    Vec3 getCenterPos(float partialTick);
+    Vec3 centerPos();
 }

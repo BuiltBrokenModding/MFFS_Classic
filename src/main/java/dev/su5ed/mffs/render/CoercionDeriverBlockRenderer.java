@@ -37,6 +37,5 @@ public class CoercionDeriverBlockRenderer implements BlockEntityRenderer<Fortron
         this.top.render(poseStack, buffer, packedLight, packedOverlay);
 
         poseStack.popPose();
-
     }
 }

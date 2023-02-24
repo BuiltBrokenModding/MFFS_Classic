@@ -18,7 +18,6 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
@@ -105,7 +104,7 @@ public class ProjectorBlockRenderer implements BlockEntityRenderer<ProjectorBloc
 
         @Nullable
         @Override
-        public Vec3 getCenterPos(float partialTick) {
+        public Vec3 centerPos() {
             return this.centerPos;
         }
     }

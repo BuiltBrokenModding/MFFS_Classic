@@ -91,7 +91,7 @@ public final class RenderTickHandler {
                 EntryStream.of(transparentRenderers)
                     .mapKeyValue((renderType, renderers) -> {
                         double closest = StreamEx.of(renderers)
-                            .mapPartial(renderer -> Optional.ofNullable(renderer.getCenterPos(partialTicks)))
+                            .mapPartial(renderer -> Optional.ofNullable(renderer.centerPos()))
                             .mapToDouble(camPos::distanceToSqr)
                             .min()
                             .orElse(Double.MAX_VALUE);

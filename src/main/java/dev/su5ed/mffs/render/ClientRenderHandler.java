@@ -13,27 +13,21 @@ import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.Nullable;
 
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public final class ClientRenderHandler {
     public static void renderCubeMode(BlockEntity be, Function<ModelLayerLocation, ModelPart> modelFactory) {
-        Vec3 centerPos = Vec3.atCenterOf(be.getBlockPos());
-        ModelPart cubeModel = modelFactory.apply(ForceCubeModel.LAYER_LOCATION);
-        RenderTickHandler.addTransparentRenderer(ForceCubeModel.RENDER_TYPE, new CubeModeRenderer(centerPos, cubeModel));
+        addRenderer(be, modelFactory, ForceCubeModel.LAYER_LOCATION, CubeModeRenderer::new);
     }
 
     public static void renderSphereMode(BlockEntity be, Function<ModelLayerLocation, ModelPart> modelFactory) {
-        Vec3 centerPos = Vec3.atCenterOf(be.getBlockPos());
-        ModelPart cubeModel = modelFactory.apply(ForceCubeModel.LAYER_LOCATION);
-        RenderTickHandler.addTransparentRenderer(ForceCubeModel.RENDER_TYPE, new SphereModeRenderer(centerPos, cubeModel));
+        addRenderer(be, modelFactory, ForceCubeModel.LAYER_LOCATION, SphereModeRenderer::new);
     }
 
     public static void renderTubeMode(BlockEntity be, Function<ModelLayerLocation, ModelPart> modelFactory) {
-        Vec3 centerPos = Vec3.atCenterOf(be.getBlockPos());
-        ModelPart tubeModel = modelFactory.apply(ForceTubeModel.LAYER_LOCATION);
-        RenderTickHandler.addTransparentRenderer(ForceTubeModel.RENDER_TYPE, new CubeModeRenderer(centerPos, tubeModel));
+        addRenderer(be, modelFactory, ForceTubeModel.LAYER_LOCATION, CubeModeRenderer::new);
     }
 
     public static void renderPyramidMode(BlockEntity be, Function<ModelLayerLocation, ModelPart> modelFactory) {
@@ -47,32 +41,33 @@ public final class ClientRenderHandler {
         RenderTickHandler.addTransparentRenderer(ForceCubeModel.RENDER_TYPE, new CylinderModeRenderer(centerPos, tubeModel));
     }
 
+    private static void addRenderer(BlockEntity be, Function<ModelLayerLocation, ModelPart> modelFactory, ModelLayerLocation modelLocation, BiFunction<Vec3, ModelPart, LazyRenderer> rendererFactory) {
+        Vec3 centerPos = Vec3.atCenterOf(be.getBlockPos());
+        ModelPart modelPart = modelFactory.apply(modelLocation);
+        RenderTickHandler.addTransparentRenderer(ForceCubeModel.RENDER_TYPE, rendererFactory.apply(centerPos, modelPart));
+    }
+
+    private static void hoverObject(PoseStack poseStack, float ticks, float scale, Vec3 centerPos) {
+        poseStack.translate(centerPos.x, centerPos.y, centerPos.z);
+        poseStack.translate(0, 1 + Math.sin(Math.toRadians(ticks * 3L)) / 7.0, 0);
+
+        poseStack.scale(scale, scale, scale);
+
+        poseStack.mulPose(Vector3f.YP.rotationDegrees(ticks * 4L));
+        poseStack.mulPose(Vector3f.ZP.rotationDegrees(36 + ticks * 4L));
+    }
+
     private record CubeModeRenderer(Vec3 centerPos, ModelPart model) implements LazyRenderer {
         @Override
         public void render(PoseStack poseStack, VertexConsumer buffer, int renderTick, float partialTick) {
             float ticks = renderTick + partialTick;
-
             float alpha = (float) (Math.sin(ticks / 10.0) / 2.0 + 1.0);
             float scale = 0.55f;
 
             poseStack.pushPose();
-            poseStack.translate(this.centerPos.x, this.centerPos.y, this.centerPos.z);
-            poseStack.translate(0, 1 + Math.sin(Math.toRadians(ticks * 3L)) / 7.0, 0);
-
-            poseStack.scale(scale, scale, scale);
-
-            poseStack.mulPose(Vector3f.YP.rotationDegrees(ticks * 4L));
-            poseStack.mulPose(Vector3f.ZP.rotationDegrees(36 + ticks * 4L));
-
+            hoverObject(poseStack, ticks, scale, this.centerPos);
             this.model.render(poseStack, buffer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 1, 1, 1, Math.min(alpha, 1));
-
             poseStack.popPose();
-        }
-
-        @Nullable
-        @Override
-        public Vec3 getCenterPos(float partialTick) {
-            return this.centerPos;
         }
     }
 
@@ -86,14 +81,7 @@ public final class ClientRenderHandler {
             int steps = (int) Math.ceil(Math.PI / Math.atan(1.0D / radius / 2));
 
             poseStack.pushPose();
-            poseStack.translate(this.centerPos.x, this.centerPos.y, this.centerPos.z);
-            poseStack.translate(0, 1 + Math.sin(Math.toRadians(ticks * 3L)) / 7.0, 0);
-
-            poseStack.scale(scale, scale, scale);
-
-            poseStack.mulPose(Vector3f.YP.rotationDegrees(ticks * 4L));
-            poseStack.mulPose(Vector3f.ZP.rotationDegrees(36 + ticks * 4L));
-
+            hoverObject(poseStack, ticks, scale, this.centerPos);
             for (int phi_n = 0; phi_n < 2 * steps; phi_n++) {
                 for (int theta_n = 1; theta_n < steps; theta_n++) {
                     double phi = Math.PI * 2 / steps * phi_n;
@@ -105,14 +93,7 @@ public final class ClientRenderHandler {
                     poseStack.translate(-vec.x, -vec.y, -vec.z);
                 }
             }
-
             poseStack.popPose();
-        }
-
-        @Nullable
-        @Override
-        public Vec3 getCenterPos(float partialTick) {
-            return this.centerPos;
         }
     }
 
@@ -126,12 +107,7 @@ public final class ClientRenderHandler {
             int uvMaxY = 2;
 
             poseStack.pushPose();
-            poseStack.translate(this.centerPos.x, this.centerPos.y, this.centerPos.z);
-            poseStack.translate(0, 1 + Math.sin(Math.toRadians(ticks * 3L)) / 7.0, 0);
-
-            poseStack.mulPose(Vector3f.YP.rotationDegrees(ticks * 4L));
-            poseStack.mulPose(Vector3f.ZP.rotationDegrees(36 + ticks * 4L));
-
+            hoverObject(poseStack, ticks, 1, this.centerPos);
             poseStack.mulPose(Vector3f.ZP.rotationDegrees(180));
 
             Vector3f translation = new Vector3f(0, -0.4F, 0);
@@ -163,12 +139,6 @@ public final class ClientRenderHandler {
 
             poseStack.popPose();
         }
-
-        @Nullable
-        @Override
-        public Vec3 getCenterPos(float partialTick) {
-            return this.centerPos;
-        }
     }
 
     private record CylinderModeRenderer(Vec3 centerPos, ModelPart model) implements LazyRenderer {
@@ -181,16 +151,8 @@ public final class ClientRenderHandler {
             float alpha = (float) (Math.sin(ticks / 10.0) / 2.0 + 1.0);
 
             poseStack.pushPose();
-            poseStack.translate(this.centerPos.x, this.centerPos.y, this.centerPos.z);
-            poseStack.translate(0, 1 + Math.sin(Math.toRadians(ticks * 3L)) / 7.0, 0);
-
-            poseStack.scale(scale, scale, scale);
-
-            poseStack.mulPose(Vector3f.YP.rotationDegrees(ticks * 4L));
-            poseStack.mulPose(Vector3f.ZP.rotationDegrees(36 + ticks * 4L));
-
+            hoverObject(poseStack, ticks, scale, this.centerPos);
             int i = 0;
-
             for (float renderX = -radius; renderX <= radius; renderX += detail) {
                 for (float renderZ = -radius; renderZ <= radius; renderZ += detail) {
                     for (float renderY = -radius; renderY <= radius; renderY += detail) {
@@ -207,14 +169,7 @@ public final class ClientRenderHandler {
                     }
                 }
             }
-
             poseStack.popPose();
-        }
-
-        @Nullable
-        @Override
-        public Vec3 getCenterPos(float partialTick) {
-            return this.centerPos;
         }
     }
 
