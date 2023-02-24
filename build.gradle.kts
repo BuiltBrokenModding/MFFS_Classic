@@ -7,10 +7,15 @@ plugins {
     id("net.minecraftforge.gradle") version "5.1.+"
     id("org.parchmentmc.librarian.forgegradle") version "1.+"
     id("me.qoomon.git-versioning") version "6.3.+"
+    id("io.github.CDAGaming.cursegradle") version "1.6.+"
 }
 
 version = "0.0.0-SNAPSHOT"
 group = "dev.su5ed.mffs"
+
+val versionMc: String by project
+val curseForgeId: String by project
+val publishReleaseType = System.getenv("PUBLISH_RELEASE_TYPE") ?: "beta"
 
 java.toolchain.languageVersion.set(JavaLanguageVersion.of(17))
 
@@ -24,56 +29,19 @@ minecraft {
     mappings("parchment", "2022.10.16-1.19.2")
 
     runs {
-        create("client") {
-            workingDirectory(project.file("run"))
-            property("forge.logging.markers", "REGISTRIES")
-            property("forge.logging.console.level", "debug")
-            property("forge.enabledGameTestNamespaces", "mffs")
-            forceExit = false
-
-            mods {
-                create("mffs") {
-                    source(sourceSets.main.get())
-                }
-            }
-        }
-
-        create("server") {
-            workingDirectory(project.file("run"))
-            property("forge.logging.markers", "REGISTRIES")
-            property("forge.logging.console.level", "debug")
-            property("forge.enabledGameTestNamespaces", "mffs")
-            forceExit = false
-
-            mods {
-                create("mffs") {
-                    source(sourceSets.main.get())
-                }
-            }
-        }
-
-
-        create("gameTestServer") {
-            workingDirectory(project.file("run"))
-            property("forge.logging.markers", "REGISTRIES")
-            property("forge.logging.console.level", "debug")
-            property("forge.enabledGameTestNamespaces", "mffs")
-            forceExit = false
-
-            mods {
-                create("mffs") {
-                    source(sourceSets.main.get())
-                }
-            }
-        }
+        create("client")
+        create("server")
+        create("gameTestServer")
 
         create("data") {
+            args("--mod", "mffs", "--all", "--output", file("src/generated/resources/"), "--existing", file("src/main/resources/"))
+        }
+
+        all {
             workingDirectory(project.file("run"))
             property("forge.logging.markers", "REGISTRIES")
             property("forge.logging.console.level", "debug")
             forceExit = false
-
-            args("--mod", "mffs", "--all", "--output", file("src/generated/resources/"), "--existing", file("src/main/resources/"))
 
             mods {
                 create("mffs") {
@@ -117,17 +85,17 @@ tasks {
     jar {
         finalizedBy("reobfJar")
     }
-    
+
     named<JarJar>("jarJar") {
         finalizedBy("reobfJarJar")
     }
-    
+
     withType<Jar> {
         manifest {
             attributes(
                 "Specification-Title" to project.name,
                 "Specification-Vendor" to "Built Broken Modding",
-                "Specification-Version" to "1",
+                "Specification-Version" to project.version,
                 "Implementation-Title" to project.name,
                 "Implementation-Version" to project.version,
                 "Implementation-Vendor" to "Su5eD",
@@ -138,6 +106,19 @@ tasks {
 
     withType<JavaCompile> {
         options.encoding = "UTF-8"
+    }
+}
+
+curseforge {
+    apiKey = System.getenv("CURSEFORGE_TOKEN") ?: "UNKNOWN"
+    project {
+        id = curseForgeId
+        releaseType = publishReleaseType
+        mainArtifact(tasks.jar.get()) {
+            displayName = "MFFS ${project.version}"
+        }
+        addGameVersion("Forge")
+        addGameVersion(versionMc)
     }
 }
 
