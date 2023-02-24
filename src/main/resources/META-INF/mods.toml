@@ -1,18 +1,19 @@
 modLoader="javafml"
 loaderVersion="[43,)"
 license="Code: MIT, Assets: All Rights Reserved"
-#issueTrackerURL="https://change.me.to.your.issue.tracker.example.invalid/"
+issueTrackerURL="https://github.com/BuiltBrokenModding/MFFS_Classic/issues"
 
 [[mods]]
 modId="mffs"
 version="${file.jarVersion}"
 displayName="Modular Force Field System"
-#displayURL="https://change.me.to.your.mods.homepage.example.invalid/"
+displayURL="https://github.com/BuiltBrokenModding/MFFS_Classic"
 logoFile="logo.png"
-credits="Thunderdark for the original MFFS mod. Calclavia for his edition of MFFS."
-authors="Su5eD, Calclavia, contributors"
+authors="Su5eD, Built Broken Modding"
+credits="Thunderdark for the original MFFS mod. Calclavia for his edition of MFFS. Art by Comply_cat_Ed, Sweet Walrus, mousecop and mr_hazard"
 description='''
 Modular Force Field System is a mod that adds force fields, high tech machinery and defensive measures to Minecraft.
+Ever tired of nuclear explosions blowing up your house or want to keep people out of your secret bases? May the force (fields) be with you!
 '''
 [[dependencies.mffs]]
     modId="forge"

@@ -126,11 +126,11 @@ tasks {
         manifest {
             attributes(
                 "Specification-Title" to project.name,
-                "Specification-Vendor" to "su5ed",
+                "Specification-Vendor" to "Built Broken Modding",
                 "Specification-Version" to "1",
                 "Implementation-Title" to project.name,
                 "Implementation-Version" to project.version,
-                "Implementation-Vendor" to "su5ed",
+                "Implementation-Vendor" to "Su5eD",
                 "Implementation-Timestamp" to LocalDateTime.now()
             )
         }
