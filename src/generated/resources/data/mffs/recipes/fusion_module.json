@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "F": {
+      "item": "mffs:focus_matrix"
+    },
+    "S": {
+      "item": "mffs:shock_module"
+    }
+  },
+  "pattern": [
+    "FSF"
+  ],
+  "result": {
+    "item": "mffs:fusion_module"
+  }
+}

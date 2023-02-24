@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "F": {
+      "item": "mffs:focus_matrix"
+    },
+    "N": {
+      "item": "minecraft:note_block"
+    }
+  },
+  "pattern": [
+    " N ",
+    "NFN",
+    " N "
+  ],
+  "result": {
+    "item": "mffs:silence_module"
+  }
+}

@@ -1,0 +1,7 @@
+{
+    "parent": "mffs:block/coercion_deriver",
+    "textures": {
+        "particle": "mffs:block/machine_block",
+        "0": "mffs:model/coercion_deriver_on"
+    }
+}

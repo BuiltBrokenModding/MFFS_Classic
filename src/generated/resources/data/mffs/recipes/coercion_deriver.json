@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "item": "mffs:battery"
+    },
+    "F": {
+      "item": "mffs:focus_matrix"
+    },
+    "S": {
+      "tag": "forge:ingots/steel"
+    }
+  },
+  "pattern": [
+    "S S",
+    "SFS",
+    "SBS"
+  ],
+  "result": {
+    "item": "mffs:coercion_deriver"
+  }
+}

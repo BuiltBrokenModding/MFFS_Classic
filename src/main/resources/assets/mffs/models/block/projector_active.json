@@ -1,0 +1,7 @@
+{
+    "parent": "mffs:block/projector",
+    "textures": {
+        "particle": "mffs:block/machine_block",
+        "0": "mffs:model/projector_on"
+    }
+}

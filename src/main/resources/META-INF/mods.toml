@@ -1,0 +1,28 @@
+modLoader="javafml"
+loaderVersion="[43,)"
+license="Code: MIT, Assets: All Rights Reserved"
+#issueTrackerURL="https://change.me.to.your.issue.tracker.example.invalid/"
+
+[[mods]]
+modId="mffs"
+version="${file.jarVersion}"
+displayName="Modular Force Field System"
+#displayURL="https://change.me.to.your.mods.homepage.example.invalid/"
+logoFile="logo.png"
+credits="Thunderdark for the original MFFS mod. Calclavia for his edition of MFFS."
+authors="Su5eD, Calclavia, contributors"
+description='''
+Modular Force Field System is a mod that adds force fields, high tech machinery and defensive measures to Minecraft.
+'''
+[[dependencies.mffs]]
+    modId="forge"
+    mandatory=true
+    versionRange="[43,)"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.mffs]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.19.2, 1.20)"
+    ordering="NONE"
+    side="BOTH"

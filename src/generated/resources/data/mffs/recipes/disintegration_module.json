@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "item": "mffs:battery"
+    },
+    "F": {
+      "item": "mffs:focus_matrix"
+    },
+    "P": {
+      "item": "minecraft:diamond_pickaxe"
+    }
+  },
+  "pattern": [
+    " P ",
+    "FBF",
+    " P "
+  ],
+  "result": {
+    "item": "mffs:disintegration_module"
+  }
+}
