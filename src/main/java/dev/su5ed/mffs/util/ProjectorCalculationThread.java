@@ -6,7 +6,6 @@ import dev.su5ed.mffs.blockentity.ProjectorBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.Vec3;
 import one.util.streamex.StreamEx;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
 
@@ -35,7 +34,7 @@ public class ProjectorCalculationThread extends Thread {
             int rotationRoll = this.projector.getRotationRoll();
 
             StreamEx.of(exteriorPoints)
-                .map(pos -> rotationYaw != 0 || rotationPitch != 0 || rotationRoll != 0 ? ModUtil.rotateByAngleVec(pos, rotationYaw, rotationPitch, rotationRoll) : pos)
+                .map(pos -> rotationYaw != 0 || rotationPitch != 0 || rotationRoll != 0 ? ModUtil.rotateByAngleExact(pos, rotationYaw, rotationPitch, rotationRoll) : pos)
                 .map(pos -> {
                     BlockPos projPos = this.projector.getBlockPos();
                     return pos.add(projPos.getX(), projPos.getY(), projPos.getZ()).add(translation.getX(), translation.getY(), translation.getZ());

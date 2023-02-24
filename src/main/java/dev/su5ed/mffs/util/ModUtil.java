@@ -20,12 +20,12 @@ import java.util.List;
 
 public final class ModUtil {
 
-    public static BlockPos rotateByAngle(BlockPos pos, double yaw, double pitch, double roll) { // TODO replace with vec variant
-        Vec3 vec = rotateByAngleVec(Vec3.atLowerCornerOf(pos), yaw, pitch, roll);
+    public static BlockPos rotateByAngle(BlockPos pos, double yaw, double pitch, double roll) {
+        Vec3 vec = rotateByAngleExact(Vec3.atLowerCornerOf(pos), yaw, pitch, roll);
         return new BlockPos(Math.round(vec.x()), Math.round(vec.y()), Math.round(vec.z()));
     }
 
-    public static Vec3 rotateByAngleVec(Vec3 pos, double yaw, double pitch, double roll) {
+    public static Vec3 rotateByAngleExact(Vec3 pos, double yaw, double pitch, double roll) {
         double yawRadians = Math.toRadians(yaw);
         double pitchRadians = Math.toRadians(pitch);
         double rollRadians = Math.toRadians(roll);

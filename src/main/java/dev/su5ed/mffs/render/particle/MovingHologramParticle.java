@@ -75,7 +75,7 @@ public class MovingHologramParticle extends Particle {
         ModelBlockRenderer modelRenderer = blockRenderer.getModelRenderer();
         BlockState state = ModBlocks.FORCE_FIELD.get().defaultBlockState();
         BakedModel model = blockRenderer.getBlockModel(state);
-        modelRenderer.renderModel(pose.last(), new TranslucentVertexConsumer(buffer, alpha), state, model, this.rCol, this.gCol, this.bCol, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, ModelData.EMPTY, RenderType.translucent());
+        modelRenderer.renderModel(pose.last(), new TranslucentVertexConsumer(buffer, alpha), state, model, this.rCol, this.gCol, this.bCol, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, ModelData.EMPTY, RenderType.solid());
 
         pose.popPose();
     }
@@ -90,14 +90,13 @@ public class MovingHologramParticle extends Particle {
 
         @Override
         public void begin(BufferBuilder builder, TextureManager textureManager) {
+            RenderSystem.enableDepthTest();
+            RenderSystem.depthMask(true);
             Minecraft.getInstance().gameRenderer.lightTexture().turnOnLightLayer();
-
             RenderSystem.setShader(GameRenderer::getRendertypeTranslucentShader);
-
             RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
-
             RenderSystem.enableBlend();
-            RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+            RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 
             builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.BLOCK);
         }
@@ -105,7 +104,6 @@ public class MovingHologramParticle extends Particle {
         @Override
         public void end(Tesselator tesselator) {
             tesselator.end();
-
             Minecraft.getInstance().gameRenderer.lightTexture().turnOffLightLayer();
         }
     }

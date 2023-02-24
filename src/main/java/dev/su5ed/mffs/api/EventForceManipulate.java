@@ -30,8 +30,7 @@ public abstract class EventForceManipulate extends LevelEvent {
      * Called right before the TileEntity is moved. After this function is called, the force
      * manipulator will write all TileEntity data into NBT and remove the TileEntity block. A new
      * TileEntity class will be instantiated after words in the new position. This can be canceled
-     * and the
-     * block will then not move at all.
+     * and the block will then not move at all.
      */
     @Cancelable
     public static class EventPreForceManipulate extends EventForceManipulate {

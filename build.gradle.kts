@@ -6,24 +6,17 @@ plugins {
     `maven-publish`
     id("net.minecraftforge.gradle") version "5.1.+"
     id("org.parchmentmc.librarian.forgegradle") version "1.+"
-    id("me.qoomon.git-versioning") version "6.3.+"
     id("io.github.CDAGaming.cursegradle") version "1.6.+"
 }
 
-version = "0.0.0-SNAPSHOT"
 group = "dev.su5ed.mffs"
+version = "5.0.0-alpha"
 
 val versionMc: String by project
 val curseForgeId: String by project
 val publishReleaseType = System.getenv("PUBLISH_RELEASE_TYPE") ?: "beta"
 
 java.toolchain.languageVersion.set(JavaLanguageVersion.of(17))
-
-gitVersioning.apply {
-    rev {
-        version = "\${describe.tag.version.major}.\${describe.tag.version.minor}.\${describe.tag.version.patch.plus.describe.distance}"
-    }
-}
 
 minecraft {
     mappings("parchment", "2022.10.16-1.19.2")
@@ -115,7 +108,7 @@ curseforge {
         id = curseForgeId
         releaseType = publishReleaseType
         mainArtifact(tasks.jar.get()) {
-            displayName = "MFFS ${project.version}"
+            displayName = "MFFS $versionMc-${project.version}"
         }
         addGameVersion("Forge")
         addGameVersion(versionMc)
