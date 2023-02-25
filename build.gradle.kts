@@ -7,16 +7,20 @@ plugins {
     id("net.minecraftforge.gradle") version "5.1.+"
     id("org.parchmentmc.librarian.forgegradle") version "1.+"
     id("io.github.CDAGaming.cursegradle") version "1.6.+"
+    id("wtf.gofancy.git-changelog") version "1.1.+"
 }
 
 group = "dev.su5ed.mffs"
-version = "5.0.0-alpha.2"
+version = changelog.getVersionFromTag()
 
 val versionMc: String by project
 val curseForgeId: String by project
 val publishReleaseType = System.getenv("PUBLISH_RELEASE_TYPE") ?: "beta"
+val changelogText = changelog.generateChangelog(1, true)
 
 java.toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+
+logger.lifecycle("\nConfigured version: $version")
 
 minecraft {
     mappings("parchment", "2022.10.16-1.19.2")
@@ -107,6 +111,8 @@ curseforge {
     project {
         id = curseForgeId
         releaseType = publishReleaseType
+        changelogType = "markdown"
+        changelog = changelogText
         mainArtifact(tasks.jar.get()) {
             displayName = "MFFS $versionMc-${project.version}"
         }
