@@ -21,7 +21,7 @@ public interface Module {
      * @param field     the projected field blocks
      * @return whether projection should be interrupted
      */
-    boolean beforeProject(Projector projector, Collection<BlockPos> field);
+    boolean beforeProject(Projector projector, Collection<? extends BlockPos> field);
 
     /**
      * Called right after the projector creates a force field block.

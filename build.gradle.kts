@@ -10,7 +10,7 @@ plugins {
 }
 
 group = "dev.su5ed.mffs"
-version = "5.0.0-alpha"
+version = "5.0.0-alpha.2"
 
 val versionMc: String by project
 val curseForgeId: String by project

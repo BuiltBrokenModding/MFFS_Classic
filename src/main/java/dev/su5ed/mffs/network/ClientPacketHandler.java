@@ -24,7 +24,7 @@ public final class ClientPacketHandler {
 
     public static void handleUpdateAnimationSpeedPacket(UpdateAnimationSpeed packet) {
         Network.findBlockEntity(ProjectorBlockEntity.class, Minecraft.getInstance().level, packet.pos())
-            .ifPresent(be -> be.clientAnimationSpeed = packet.animationSpeed());
+            .ifPresent(be -> be.setClientAnimationSpeed(packet.animationSpeed()));
     }
 
     public static void handleDrawHologramPacket(DrawHologramPacket packet) {

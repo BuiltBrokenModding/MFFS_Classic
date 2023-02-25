@@ -27,7 +27,7 @@ public class DisintegrationModule extends ModuleBase {
     }
 
     @Override
-    public boolean beforeProject(Projector projector, Collection<BlockPos> fields) {
+    public boolean beforeProject(Projector projector, Collection<? extends BlockPos> fields) {
         this.blockCount = 0;
         return false;
     }
@@ -35,8 +35,7 @@ public class DisintegrationModule extends ModuleBase {
     @Override
     public ProjectAction onProject(Projector projector, BlockPos position) {
         if (projector.getTicks() % 40 == 0) {
-            BlockEntity be = (BlockEntity) projector;
-            Level level = be.getLevel();
+            Level level = projector.be().getLevel();
             BlockState state = level.getBlockState(position);
 
             if (!state.isAir()) {
@@ -44,15 +43,13 @@ public class DisintegrationModule extends ModuleBase {
 
                 if (projector.hasModule(ModModules.CAMOUFLAGE)) {
                     Item blockItem = block.asItem();
-                    boolean contains = projector.getAllModuleItemsStream()
-                        .anyMatch(stack -> ProjectorBlockEntity.getFilterBlock(stack).isPresent() && stack.is(blockItem));
-                    if (!contains) {
+                    if (projector.getAllModuleItemsStream().noneMatch(stack -> ProjectorBlockEntity.getFilterBlock(stack).isPresent() && stack.is(blockItem))) {
                         return ProjectAction.SKIP;
                     }
                 }
 
                 if (!state.is(ModTags.DISINTEGRATION_BLACKLIST) && !ModUtil.isLiquidBlock(block)) {
-                    Vec3 pos = Vec3.atLowerCornerOf(be.getBlockPos());
+                    Vec3 pos = Vec3.atLowerCornerOf(projector.be().getBlockPos());
                     Vec3 target = Vec3.atLowerCornerOf(position);
                     Network.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(position)), new DrawHologramPacket(pos, target, DrawHologramPacket.Type.DESTROY));
 

@@ -3,7 +3,7 @@ package dev.su5ed.mffs.blockentity;
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ListMultimap;
 import dev.su5ed.mffs.MFFSConfig;
-import dev.su5ed.mffs.api.ForceFieldBlock;
+import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.api.ObjectCache;
 import dev.su5ed.mffs.api.Projector;
 import dev.su5ed.mffs.api.module.Module;
@@ -18,7 +18,6 @@ import dev.su5ed.mffs.setup.ModObjects;
 import dev.su5ed.mffs.setup.ModSounds;
 import dev.su5ed.mffs.setup.ModTags;
 import dev.su5ed.mffs.util.ModUtil;
-import dev.su5ed.mffs.util.ProjectorCalculationThread;
 import dev.su5ed.mffs.util.inventory.InventorySlot;
 import dev.su5ed.mffs.util.projector.CustomProjectorMode;
 import net.minecraft.core.BlockPos;
@@ -51,6 +50,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
 public class ProjectorBlockEntity extends ModularBlockEntity implements Projector {
     private static final String TRANSLATION_CACHE_KEY = "getTranslation";
@@ -62,35 +62,26 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
     private static final String INTERIOR_POINTS_CACHE_KEY = "getInteriorPoints";
 
     private final LazyOptional<Projector> projectorOptional = LazyOptional.of(() -> this);
-
     private final List<ScheduledEvent> scheduledEvents = new ArrayList<>();
     public final InventorySlot secondaryCard;
     public final InventorySlot projectorModeSlot;
     public final ListMultimap<Direction, InventorySlot> fieldModuleSlots;
     public final List<InventorySlot> upgradeSlots;
 
-    /**
-     * A set containing all positions of all force field blocks.
-     */
-    protected final Set<BlockPos> forceFields = new HashSet<>();
-
-    protected final List<BlockPos> calculatedField = Collections.synchronizedList(new ArrayList<>());
-
-    public boolean isCalculating = false;
-    public boolean isCalculated = false;
-    public int clientAnimationSpeed;
+    private final Set<BlockPos> forceFields = new HashSet<>();
+    private List<BlockPos> calculatedField = List.of();
+    private ProjectionStage stage = ProjectionStage.OFF;
+    private int clientAnimationSpeed;
 
     public ProjectorBlockEntity(BlockPos pos, BlockState state) {
         super(ModObjects.PROJECTOR_BLOCK_ENTITY.get(), pos, state, 50);
 
         this.secondaryCard = addSlot("secondaryCard", InventorySlot.Mode.BOTH, ModUtil::isCard);
         this.projectorModeSlot = addSlot("projectorMode", InventorySlot.Mode.BOTH, ModUtil::isProjectorMode);
-        ImmutableListMultimap.Builder<Direction, InventorySlot> builder = new ImmutableListMultimap.Builder<>();
-        StreamEx.of(Direction.values())
-            .forEach(side -> IntStreamEx.range(2)
-                .mapToObj(i -> addSlot("field_module_" + side.getName() + "_" + i, InventorySlot.Mode.BOTH, ModUtil::isModule))
-                .forEach(slot -> builder.put(side, slot)));
-        this.fieldModuleSlots = builder.build();
+        this.fieldModuleSlots = StreamEx.of(Direction.values())
+            .flatMap(side -> IntStreamEx.range(2)
+                .mapToEntry(i -> side, i -> addSlot("field_module_" + side.getName() + "_" + i, InventorySlot.Mode.BOTH, ModUtil::isModule)))
+            .toListAndThen(ImmutableListMultimap::copyOf);
         this.upgradeSlots = createUpgradeSlots(6, true);
     }
 
@@ -107,6 +98,13 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
         return this.clientAnimationSpeed;
     }
 
+    public void setClientAnimationSpeed(int clientAnimationSpeed) {
+        if (!this.level.isClientSide) {
+            throw new IllegalStateException("Must only be called on the client");
+        }
+        this.clientAnimationSpeed = clientAnimationSpeed;
+    }
+
     @Override
     public BlockEntity be() {
         return this;
@@ -115,7 +113,6 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
     @Override
     public void onLoad() {
         super.onLoad();
-
         reCalculateForceField();
     }
 
@@ -150,7 +147,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
             consumeCost();
 
             if (getTicks() % 10 == 0) {
-                if (!this.isCalculated) {
+                if (this.stage != ProjectionStage.PROJECTING) {
                     reCalculateForceField();
                 } else {
                     projectField();
@@ -343,63 +340,46 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
 
     @Override
     public void projectField() {
-        if (!this.level.isClientSide && this.isCalculated && !this.isCalculating) {
+        if (!this.level.isClientSide && this.stage == ProjectionStage.PROJECTING) {
             if (this.forceFields.isEmpty() && getModeStack().getItem() instanceof ObjectCache cache) {
                 cache.clearCache();
             }
-
-            int constructionCount = 0;
-            int constructionSpeed = Math.min(getProjectionSpeed(), MFFSConfig.COMMON.maxFFGenPerTick.get());
-
-            Collections.shuffle(this.calculatedField);
             List<BlockPos> fieldToBeProjected = new ArrayList<>(this.calculatedField);
             if (getModules().stream().anyMatch(m -> m.beforeProject(this, fieldToBeProjected))) {
                 return;
             }
-
+            int constructionSpeed = Math.min(getProjectionSpeed(), MFFSConfig.COMMON.maxFFGenPerTick.get());
             fieldLoop:
-            for (BlockPos pos : this.calculatedField) {
-                if (fieldToBeProjected.contains(pos)) {
-                    if (constructionCount > constructionSpeed) {
-                        break;
-                    }
+            for (int i = 0, constructionCount = 0; i < fieldToBeProjected.size() && constructionCount <= constructionSpeed; i++) {
+                BlockPos pos = fieldToBeProjected.get(i);
+                if (canProjectPos(pos)) {
+                    for (Module module : getModules()) {
+                        ProjectAction action = module.onProject(this, pos);
 
-                    if (canProjectPos(pos)) {
-                        for (Module module : getModules()) {
-                            ProjectAction action = module.onProject(this, pos);
-
-                            if (action == ProjectAction.SKIP) {
-                                continue fieldLoop;
-                            } else if (action == ProjectAction.INTERRUPT) {
-                                break fieldLoop;
-                            }
+                        if (action == ProjectAction.SKIP) {
+                            continue fieldLoop;
+                        } else if (action == ProjectAction.INTERRUPT) {
+                            break fieldLoop;
                         }
-
-                        BlockState state = ModBlocks.FORCE_FIELD.get().defaultBlockState();
-                        this.level.setBlock(pos, state, Block.UPDATE_NONE);
-                        // Set the controlling projector of the force field block to this one
-                        this.level.getBlockEntity(pos, ModObjects.FORCE_FIELD_BLOCK_ENTITY.get())
-                            .ifPresent(be -> {
-                                be.setProjector(this.worldPosition);
-                                Block camouflage = getCamoBlock(pos);
-                                if (camouflage != null) {
-                                    be.setCamouflage(camouflage);
-                                }
-                            });
-                        // Only update after the projector has been set to avoid recursive remove block call from ForceFieldBlockEntity#getProjector
-                        this.level.sendBlockUpdated(pos, state, state, Block.UPDATE_ALL);
-
-                        this.fortronStorage.extractFortron(1, false);
-                        this.forceFields.add(pos);
-                        constructionCount++;
                     }
-                } else {
-                    BlockState state = this.level.getBlockState(pos);
 
+                    BlockState state = ModBlocks.FORCE_FIELD.get().defaultBlockState();
+                    this.level.setBlock(pos, state, Block.UPDATE_NONE);
+                    // Set the controlling projector of the force field block to this one
+                    this.level.getBlockEntity(pos, ModObjects.FORCE_FIELD_BLOCK_ENTITY.get())
+                        .ifPresent(be -> {
+                            be.setProjector(this.worldPosition);
+                            Block camouflage = getCamoBlock(pos);
+                            if (camouflage != null) {
+                                be.setCamouflage(camouflage);
+                            }
+                        });
+                    // Only update after the projector has been set to avoid recursive remove block call from ForceFieldBlockEntity#getProjector
+                    this.level.sendBlockUpdated(pos, state, state, Block.UPDATE_ALL);
 
-                    if (state.getBlock() instanceof ForceFieldBlock forceFieldBlock && forceFieldBlock.getProjector(this.level, pos).orElse(null) == this) {
-                        this.level.removeBlock(pos, false);
-                    }
+                    this.fortronStorage.extractFortron(1, false);
+                    this.forceFields.add(pos);
+                    constructionCount++;
                 }
             }
         }
@@ -419,15 +399,15 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
 
     @Override
     public void destroyField() {
-        if (!this.level.isClientSide && this.isCalculated && !this.isCalculating) {
+        if (!this.level.isClientSide && this.stage == ProjectionStage.PROJECTING) {
             StreamEx.of(this.calculatedField)
                 .filter(pos -> this.level.getBlockState(pos).is(ModBlocks.FORCE_FIELD.get()))
                 .forEach(pos -> this.level.removeBlock(pos, false));
         }
 
         this.forceFields.clear();
-        this.calculatedField.clear();
-        this.isCalculated = false;
+        this.calculatedField = List.of();
+        this.stage = ProjectionStage.OFF;
     }
 
     @Override
@@ -436,16 +416,18 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
     }
 
     private void reCalculateForceField() {
-        if (!this.level.isClientSide && !this.isCalculating && getMode().isPresent()) {
+        if (!this.level.isClientSide && this.stage != ProjectionStage.CALCULATING && getMode().isPresent()) {
             if (getModeStack().getItem() instanceof ObjectCache cache) {
                 cache.clearCache();
             }
 
             this.forceFields.clear();
-            this.calculatedField.clear();
-
-            // Start multi-threading calculation
-            new ProjectorCalculationThread(this).start();
+            this.calculatedField = List.of();
+            this.stage = ProjectionStage.CALCULATING;
+            calculateField(this).thenAccept(list -> {
+                this.stage = ProjectionStage.PROJECTING;
+                this.calculatedField = list;
+            });
         }
     }
 
@@ -471,6 +453,36 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
         return null;
     }
 
+    private CompletableFuture<List<BlockPos>> calculateField(Projector projector) {
+        return CompletableFuture.supplyAsync(this::calculateFieldPositions)
+            .whenComplete((list, ex) -> {
+                for (Module module : projector.getModules()) {
+                    module.onCalculate(projector, projector.getCalculatedField());
+                }
+                Collections.shuffle(list);
+            })
+            .exceptionally(throwable -> {
+                MFFSMod.LOGGER.error("Error calculating force field", throwable);
+                return List.of();
+            });
+    }
+
+    private List<BlockPos> calculateFieldPositions() {
+        ProjectorMode mode = getMode().orElseThrow();
+        Set<Vec3> fieldPoints = hasModule(ModModules.INVERTER) ? mode.getInteriorPoints(this) : mode.getExteriorPoints(this);
+        BlockPos translation = getTranslation();
+        int rotationYaw = getRotationYaw();
+        int rotationPitch = getRotationPitch();
+        int rotationRoll = getRotationRoll();
+
+        return StreamEx.of(fieldPoints)
+            .map(pos -> rotationYaw != 0 || rotationPitch != 0 || rotationRoll != 0 ? ModUtil.rotateByAngleExact(pos, rotationYaw, rotationPitch, rotationRoll) : pos)
+            .map(pos -> pos.add(this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ()).add(translation.getX(), translation.getY(), translation.getZ()))
+            .filter(pos -> pos.y() <= this.level.getHeight())
+            .map(pos -> new BlockPos(Math.round(pos.x), Math.round(pos.y), Math.round(pos.z)))
+            .toList();
+    }
+
     public static Optional<Block> getFilterBlock(ItemStack stack) {
         if (stack.getItem() instanceof BlockItem blockItem) {
             Block block = blockItem.getBlock();
@@ -493,5 +505,11 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
         public boolean countDown() {
             return --this.ticks <= 0;
         }
+    }
+    
+    private enum ProjectionStage {
+        OFF,
+        CALCULATING,
+        PROJECTING
     }
 }

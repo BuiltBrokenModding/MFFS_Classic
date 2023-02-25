@@ -4,7 +4,6 @@ import dev.su5ed.mffs.api.Projector;
 import dev.su5ed.mffs.api.module.ProjectorMode;
 import dev.su5ed.mffs.util.ModUtil;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.HashSet;
@@ -67,7 +66,7 @@ public class CylinderProjectorMode implements ProjectorMode {
         BlockPos posScale = projector.getPositiveScale();
         BlockPos negScale = projector.getNegativeScale();
         int radius = (posScale.getX() + negScale.getX() + posScale.getZ() + negScale.getZ()) / 2;
-        BlockPos projectorPos = ((BlockEntity) projector).getBlockPos().offset(projector.getTranslation());
+        BlockPos projectorPos = projector.be().getBlockPos().offset(projector.getTranslation());
 
         Vec3 relativePosition = position.subtract(projectorPos.getX(), projectorPos.getY(), projectorPos.getZ());
         Vec3 relativeRotated = ModUtil.rotateByAngleExact(relativePosition, -projector.getRotationYaw(), -projector.getRotationPitch(), 0);

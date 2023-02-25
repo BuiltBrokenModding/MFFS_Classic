@@ -12,7 +12,6 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -30,7 +29,7 @@ public class StabilizationModule extends ModuleBase {
     }
 
     @Override
-    public boolean beforeProject(Projector projector, Collection<BlockPos> fields) {
+    public boolean beforeProject(Projector projector, Collection<? extends BlockPos> fields) {
         this.blockCount = 0;
         return false;
     }
@@ -38,9 +37,8 @@ public class StabilizationModule extends ModuleBase {
     @Override
     public ProjectAction onProject(Projector projector, BlockPos position) {
         if (projector.getTicks() % 40 == 0) {
-            BlockEntity be = (BlockEntity) projector;
-            Level level = be.getLevel();
-            BlockPos pos = be.getBlockPos();
+            Level level = projector.be().getLevel();
+            BlockPos pos = projector.be().getBlockPos();
 
             for (Direction side : Direction.values()) {
                 IItemHandler handler = Optional.ofNullable(level.getBlockEntity(pos.relative(side)))

@@ -26,7 +26,7 @@ public class ModuleBase implements Module {
     }
 
     @Override
-    public boolean beforeProject(Projector projector, Collection<BlockPos> field) {
+    public boolean beforeProject(Projector projector, Collection<? extends BlockPos> field) {
         return false;
     }
 

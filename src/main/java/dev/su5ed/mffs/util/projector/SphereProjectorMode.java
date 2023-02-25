@@ -4,7 +4,6 @@ import dev.su5ed.mffs.api.Projector;
 import dev.su5ed.mffs.api.module.ProjectorMode;
 import dev.su5ed.mffs.setup.ModModules;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.HashSet;
@@ -50,7 +49,7 @@ public class SphereProjectorMode implements ProjectorMode {
 
     @Override
     public boolean isInField(Projector projector, Vec3 position) {
-        BlockPos projectorPos = ((BlockEntity) projector).getBlockPos();
+        BlockPos projectorPos = projector.be().getBlockPos();
         int radius = projector.getModuleCount(ModModules.SCALE);
         return projectorPos.offset(projector.getTranslation()).closerThan(new BlockPos(position), radius);
     }

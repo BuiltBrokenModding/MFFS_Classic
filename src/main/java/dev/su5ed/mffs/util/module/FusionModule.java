@@ -6,7 +6,6 @@ import dev.su5ed.mffs.api.fortron.FortronStorage;
 import dev.su5ed.mffs.setup.ModCapabilities;
 import dev.su5ed.mffs.util.FrequencyGrid;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.Collection;
@@ -19,8 +18,8 @@ public class FusionModule extends ModuleBase {
     }
 
     @Override
-    public boolean beforeProject(Projector projector, Collection<BlockPos> field) {
-        int frequency = ((BlockEntity) projector).getCapability(ModCapabilities.FORTRON)
+    public boolean beforeProject(Projector projector, Collection<? extends BlockPos> field) {
+        int frequency = projector.be().getCapability(ModCapabilities.FORTRON)
             .map(FrequencyBlock::getFrequency)
             .orElseThrow();
         Set<FortronStorage> machines = FrequencyGrid.instance().get(frequency);
@@ -28,7 +27,7 @@ public class FusionModule extends ModuleBase {
         for (FortronStorage storage : machines) {
             storage.getOwner().getCapability(ModCapabilities.PROJECTOR)
                 .filter(compareProjector ->  compareProjector != projector
-                    && ((BlockEntity) compareProjector).getLevel() == ((BlockEntity) projector).getLevel()
+                    && compareProjector.be().getLevel() == projector.be().getLevel()
                     && compareProjector.isActive() && compareProjector.getMode().isPresent())
                 .ifPresent(compareProjector -> field.removeIf(pos -> compareProjector.getMode().orElseThrow().isInField(compareProjector, Vec3.atLowerCornerOf(pos))));
         }

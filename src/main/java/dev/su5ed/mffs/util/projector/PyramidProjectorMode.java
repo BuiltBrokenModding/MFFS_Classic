@@ -4,7 +4,6 @@ import dev.su5ed.mffs.api.Projector;
 import dev.su5ed.mffs.api.module.ProjectorMode;
 import dev.su5ed.mffs.util.ModUtil;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.HashSet;
@@ -92,7 +91,7 @@ public final class PyramidProjectorMode implements ProjectorMode {
         int yStretch = posScale.getY() + negScale.getY();
         int zStretch = posScale.getZ() + negScale.getZ();
 
-        BlockPos projectorPos = ((BlockEntity) projector).getBlockPos()
+        BlockPos projectorPos = projector.be().getBlockPos()
             .offset(projector.getTranslation())
             .offset(0, -negScale.getY(), 0);
 

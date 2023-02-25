@@ -5,7 +5,6 @@ import dev.su5ed.mffs.api.module.ProjectorMode;
 import dev.su5ed.mffs.util.ModUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -47,7 +46,7 @@ public class CubeProjectorMode implements ProjectorMode {
 
     @Override
     public boolean isInField(Projector projector, Vec3 position) {
-        BlockPos projectorPos = ((BlockEntity) projector).getBlockPos().offset(projector.getTranslation());
+        BlockPos projectorPos = projector.be().getBlockPos().offset(projector.getTranslation());
         Vec3 relativePosition = position.subtract(projectorPos.getX(), projectorPos.getY(), projectorPos.getZ());
         Vec3 rotated = ModUtil.rotateByAngleExact(relativePosition, -projector.getRotationYaw(), -projector.getRotationPitch(), -projector.getRotationRoll());
         AABB region = new AABB(projector.getNegativeScale().multiply(-1).offset(1, 1, 1), projector.getPositiveScale());
