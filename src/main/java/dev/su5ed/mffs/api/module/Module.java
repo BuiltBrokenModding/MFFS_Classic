@@ -6,7 +6,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
-import java.util.Set;
+import java.util.Collection;
 
 public interface Module {
     /**
@@ -21,7 +21,7 @@ public interface Module {
      * @param field     the projected field blocks
      * @return whether projection should be interrupted
      */
-    boolean beforeProject(Projector projector, Set<BlockPos> field);
+    boolean beforeProject(Projector projector, Collection<BlockPos> field);
 
     /**
      * Called right after the projector creates a force field block.
@@ -49,7 +49,7 @@ public interface Module {
      * @param projector       the projector
      * @param fieldDefinition the field block positions
      */
-    void onCalculate(Projector projector, Set<BlockPos> fieldDefinition);
+    void onCalculate(Projector projector, Collection<BlockPos> fieldDefinition);
 
     enum ProjectAction {
         /**

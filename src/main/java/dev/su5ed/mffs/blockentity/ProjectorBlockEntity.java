@@ -74,7 +74,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
      */
     protected final Set<BlockPos> forceFields = new HashSet<>();
 
-    protected final Set<BlockPos> calculatedField = Collections.synchronizedSet(new HashSet<>());
+    protected final List<BlockPos> calculatedField = Collections.synchronizedList(new ArrayList<>());
 
     public boolean isCalculating = false;
     public boolean isCalculated = false;
@@ -322,7 +322,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
     }
 
     @Override
-    public Set<BlockPos> getCalculatedField() {
+    public Collection<BlockPos> getCalculatedField() {
         return this.calculatedField;
     }
 
@@ -351,7 +351,8 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
             int constructionCount = 0;
             int constructionSpeed = Math.min(getProjectionSpeed(), MFFSConfig.COMMON.maxFFGenPerTick.get());
 
-            Set<BlockPos> fieldToBeProjected = new HashSet<>(this.calculatedField);
+            Collections.shuffle(this.calculatedField);
+            List<BlockPos> fieldToBeProjected = new ArrayList<>(this.calculatedField);
             if (getModules().stream().anyMatch(m -> m.beforeProject(this, fieldToBeProjected))) {
                 return;
             }

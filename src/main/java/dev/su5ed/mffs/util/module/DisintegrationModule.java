@@ -17,7 +17,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.PacketDistributor;
 
-import java.util.Set;
+import java.util.Collection;
 
 public class DisintegrationModule extends ModuleBase {
     private int blockCount = 0;
@@ -27,7 +27,7 @@ public class DisintegrationModule extends ModuleBase {
     }
 
     @Override
-    public boolean beforeProject(Projector projector, Set<BlockPos> fields) {
+    public boolean beforeProject(Projector projector, Collection<BlockPos> fields) {
         this.blockCount = 0;
         return false;
     }

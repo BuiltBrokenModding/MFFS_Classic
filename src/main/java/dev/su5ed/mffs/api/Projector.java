@@ -78,7 +78,7 @@ public interface Projector extends ModuleAcceptor, BiometricIdentifierLink {
     /**
      * * @return Gets all the blocks that are occupying the force field.
      */
-    Set<BlockPos> getCalculatedField();
+    Collection<BlockPos> getCalculatedField();
 
     /**
      * @return The speed in which a force field is constructed.

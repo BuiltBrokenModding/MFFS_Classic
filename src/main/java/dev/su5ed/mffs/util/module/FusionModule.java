@@ -9,6 +9,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.Collection;
 import java.util.Set;
 
 public class FusionModule extends ModuleBase {
@@ -18,7 +19,7 @@ public class FusionModule extends ModuleBase {
     }
 
     @Override
-    public boolean beforeProject(Projector projector, Set<BlockPos> field) {
+    public boolean beforeProject(Projector projector, Collection<BlockPos> field) {
         int frequency = ((BlockEntity) projector).getCapability(ModCapabilities.FORTRON)
             .map(FrequencyBlock::getFrequency)
             .orElseThrow();

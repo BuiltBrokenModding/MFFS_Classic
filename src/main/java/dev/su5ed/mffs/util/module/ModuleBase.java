@@ -7,7 +7,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
-import java.util.Set;
+import java.util.Collection;
 
 public class ModuleBase implements Module {
     private final float fortronCost;
@@ -26,7 +26,7 @@ public class ModuleBase implements Module {
     }
 
     @Override
-    public boolean beforeProject(Projector projector, Set<BlockPos> field) {
+    public boolean beforeProject(Projector projector, Collection<BlockPos> field) {
         return false;
     }
 
@@ -41,5 +41,5 @@ public class ModuleBase implements Module {
     }
 
     @Override
-    public void onCalculate(Projector projector, Set<BlockPos> fieldDefinition) {}
+    public void onCalculate(Projector projector, Collection<BlockPos> fieldDefinition) {}
 }

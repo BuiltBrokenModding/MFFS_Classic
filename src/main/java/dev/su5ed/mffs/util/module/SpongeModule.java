@@ -9,7 +9,7 @@ import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.fluids.IFluidBlock;
 
-import java.util.Set;
+import java.util.Collection;
 
 public class SpongeModule extends ModuleBase {
 
@@ -18,7 +18,7 @@ public class SpongeModule extends ModuleBase {
     }
 
     @Override
-    public boolean beforeProject(Projector projector, Set<BlockPos> field) {
+    public boolean beforeProject(Projector projector, Collection<BlockPos> field) {
         if (projector.getTicks() % 60 == 0) {
             Level level = ((BlockEntity) projector).getLevel();
 
