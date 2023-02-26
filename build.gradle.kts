@@ -113,7 +113,7 @@ curseforge {
         releaseType = publishReleaseType
         changelogType = "markdown"
         changelog = changelogText
-        mainArtifact(tasks.jar.get()) {
+        mainArtifact(tasks.jarJar.get()) {
             displayName = "MFFS $versionMc-${project.version}"
         }
         addGameVersion("Forge")
