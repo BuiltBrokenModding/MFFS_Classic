@@ -27,6 +27,7 @@ public class MFFSConfig {
         public final ForgeConfigSpec.DoubleValue fortronProductionMultiplier;
         public final ForgeConfigSpec.BooleanValue useCache;
         public final ForgeConfigSpec.IntValue maxFFGenPerTick;
+        public final ForgeConfigSpec.BooleanValue allowOpBiometryOverride;
 
         private Common(ForgeConfigSpec.Builder builder) {
             builder.push("General config");
@@ -42,6 +43,9 @@ public class MFFSConfig {
             this.maxFFGenPerTick = builder
                 .comment("How many force field blocks can be generated per tick? Less reduces lag.")
                 .defineInRange("maxFFGenPerTick", 1000000, 0, Integer.MAX_VALUE);
+            this.allowOpBiometryOverride = builder
+                .comment("Allow server operators to bypass Force Field biometry")
+                .define("allowOpBiometryOverride", true);
             builder.pop();
         }
     }

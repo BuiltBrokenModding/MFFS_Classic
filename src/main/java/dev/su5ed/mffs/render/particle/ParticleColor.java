@@ -1,7 +1,7 @@
 package dev.su5ed.mffs.render.particle;
 
 public enum ParticleColor {
-    BLUE_BEAM(0.6F, 0.6F, 1),
+    BLUE_BEAM(153 / 255.0F, 153 / 255.0F, 1),
     BLUE_FIELD(52 / 255.0F, 254 / 255.0F, 1),
     RED(1, 0, 0),
     WHITE(1, 1, 1);

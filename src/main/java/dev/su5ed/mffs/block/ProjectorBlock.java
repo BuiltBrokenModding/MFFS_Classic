@@ -21,7 +21,7 @@ public class ProjectorBlock extends BaseEntityBlock {
     );
 
     public ProjectorBlock(Properties properties) {
-        super(properties, ModObjects.PROJECTOR_BLOCK_ENTITY::get);
+        super(properties, ModObjects.PROJECTOR_BLOCK_ENTITY);
     }
 
     @Override

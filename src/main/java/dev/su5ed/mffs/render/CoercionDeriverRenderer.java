@@ -13,13 +13,13 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 
-public class CoercionDeriverBlockRenderer implements BlockEntityRenderer<FortronBlockEntity> {
+public class CoercionDeriverRenderer implements BlockEntityRenderer<FortronBlockEntity> {
     public static final ResourceLocation COERCION_DERIVER_OFF_TEXTURE = new ResourceLocation(MFFSMod.MODID, "textures/model/coercion_deriver_off.png");
     public static final ResourceLocation COERCION_DERIVER_ON_TEXTURE = new ResourceLocation(MFFSMod.MODID, "textures/model/coercion_deriver_on.png");
 
     private final ModelPart top;
 
-    public CoercionDeriverBlockRenderer(BlockEntityRendererProvider.Context context) {
+    public CoercionDeriverRenderer(BlockEntityRendererProvider.Context context) {
         this.top = context.bakeLayer(CoercionDeriverTopModel.LAYER_LOCATION);
     }
 

@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "mffs:block/biometric_identifier"
+    }
+  }
+}

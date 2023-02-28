@@ -88,6 +88,8 @@ public class RecipesGen extends RecipeProvider {
             .pattern("SBS")
             .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
             .save(finishedRecipeConsumer, location("projector"));
+        
+        // TODO BIOMETRIC IDENTIFIER
 
         ShapedRecipeBuilder.shaped(ModItems.REMOTE_CONTROLLER_ITEM.get())
             .define('S', ModTags.INGOTS_STEEL)

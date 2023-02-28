@@ -3,7 +3,7 @@ package dev.su5ed.mffs.block;
 import dev.su5ed.mffs.api.ForceFieldBlock;
 import dev.su5ed.mffs.api.Projector;
 import dev.su5ed.mffs.api.security.BiometricIdentifier;
-import dev.su5ed.mffs.api.security.Permission;
+import dev.su5ed.mffs.api.security.FieldPermission;
 import dev.su5ed.mffs.blockentity.ForceFieldBlockEntity;
 import dev.su5ed.mffs.setup.ModCapabilities;
 import dev.su5ed.mffs.setup.ModObjects;
@@ -66,6 +66,7 @@ public class ForceFieldBlockImpl extends AbstractGlassBlock implements ForceFiel
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        // TODO Use EntityCollisionContext
         return getProjector(level, pos)
             .map(projector -> {
                 int x = pos.getX();
@@ -76,7 +77,7 @@ public class ForceFieldBlockImpl extends AbstractGlassBlock implements ForceFiel
                     List<Player> entities = entityGetter.getEntitiesOfClass(Player.class, Shapes.box(x, y, z, x + 1, y + 0.9, z + 1).bounds());
 
                     for (Player player : entities) {
-                        if (player.isShiftKeyDown() && (player.isCreative() || bioIndentified != null && bioIndentified.isAccessGranted(player.getGameProfile().getName(), Permission.FORCE_FIELD_WARP))) {
+                        if (player.isShiftKeyDown() && (player.isCreative() || bioIndentified != null && bioIndentified.isAccessGranted(player, FieldPermission.WARP))) {
                             return Shapes.empty();
                         }
                     }

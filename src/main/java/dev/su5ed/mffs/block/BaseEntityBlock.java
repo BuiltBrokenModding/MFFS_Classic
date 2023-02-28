@@ -27,9 +27,9 @@ import java.util.function.Supplier;
 public class BaseEntityBlock extends Block implements EntityBlock {
     public static final Property<Boolean> ACTIVE = BooleanProperty.create("active");
 
-    private final Supplier<BlockEntityType<? extends BaseBlockEntity>> provider;
+    private final Supplier<? extends BlockEntityType<? extends BaseBlockEntity>> provider;
 
-    public BaseEntityBlock(Properties properties, Supplier<BlockEntityType<? extends BaseBlockEntity>> provider) {
+    public BaseEntityBlock(Properties properties, Supplier<? extends BlockEntityType<? extends BaseBlockEntity>> provider) {
         super(properties);
 
         this.provider = provider;

@@ -116,6 +116,7 @@ public abstract class FortronBlockEntity extends InventoryBlockEntity implements
         super.tickServer();
 
         BlockState state = getBlockState();
+        // TODO Store active state in blockstate only
         boolean active = isActive();
         if (state.getValue(BaseEntityBlock.ACTIVE) != active) {
             this.level.setBlock(this.worldPosition, state.setValue(BaseEntityBlock.ACTIVE, active), Block.UPDATE_ALL);

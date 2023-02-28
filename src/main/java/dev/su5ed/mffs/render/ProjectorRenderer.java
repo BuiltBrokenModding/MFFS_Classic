@@ -24,7 +24,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Function;
 
-public class ProjectorBlockRenderer implements BlockEntityRenderer<ProjectorBlockEntity> {
+public class ProjectorRenderer implements BlockEntityRenderer<ProjectorBlockEntity> {
     public static final ResourceLocation PROJECTOR_OFF_TEXTURE = new ResourceLocation(MFFSMod.MODID, "textures/model/projector_off.png");
     public static final ResourceLocation PROJECTOR_ON_TEXTURE = new ResourceLocation(MFFSMod.MODID, "textures/model/projector_on.png");
 
@@ -32,7 +32,7 @@ public class ProjectorBlockRenderer implements BlockEntityRenderer<ProjectorBloc
     private final Function<ModelLayerLocation, ModelPart> modelPartCache;
     private final Function<BlockEntity, HoloRenderer> holoRenderer;
 
-    public ProjectorBlockRenderer(BlockEntityRendererProvider.Context context) {
+    public ProjectorRenderer(BlockEntityRendererProvider.Context context) {
         this.rotor = context.bakeLayer(ProjectorRotorModel.LAYER_LOCATION);
 
         this.modelPartCache = Util.memoize(context::bakeLayer);

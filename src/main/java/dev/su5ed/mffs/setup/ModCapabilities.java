@@ -1,6 +1,7 @@
 package dev.su5ed.mffs.setup;
 
 import dev.su5ed.mffs.api.Projector;
+import dev.su5ed.mffs.api.card.IdentificationCard;
 import dev.su5ed.mffs.api.fortron.FortronStorage;
 import dev.su5ed.mffs.api.module.Module;
 import dev.su5ed.mffs.api.module.ProjectorMode;
@@ -18,10 +19,12 @@ public final class ModCapabilities {
     // Item caps
     public static final Capability<Module> MODULE = get(new CapabilityToken<>() {});
     public static final Capability<ProjectorMode> PROJECTOR_MODE = get(new CapabilityToken<>() {});
+    public static final Capability<IdentificationCard> IDENTIFICATION_CARD = get(new CapabilityToken<>() {});
 
     public static void registerCaps(RegisterCapabilitiesEvent event) {
         event.register(FortronStorage.class);
         event.register(Projector.class);
+        event.register(IdentificationCard.class);
 
         event.register(Module.class);
         event.register(ProjectorMode.class);

@@ -1,10 +1,12 @@
 package dev.su5ed.mffs.setup;
 
 import dev.su5ed.mffs.api.module.ProjectorMode;
+import dev.su5ed.mffs.render.BiometricIdentifierRenderer;
 import dev.su5ed.mffs.render.ClientRenderHandler;
-import dev.su5ed.mffs.render.CoercionDeriverBlockRenderer;
+import dev.su5ed.mffs.render.CoercionDeriverRenderer;
 import dev.su5ed.mffs.render.LazyRendererFactory;
-import dev.su5ed.mffs.render.ProjectorBlockRenderer;
+import dev.su5ed.mffs.render.ProjectorRenderer;
+import dev.su5ed.mffs.render.model.BiometricIdentifierModel;
 import dev.su5ed.mffs.render.model.CoercionDeriverTopModel;
 import dev.su5ed.mffs.render.model.ForceCubeModel;
 import dev.su5ed.mffs.render.model.ForceFieldBlockModelLoader;
@@ -19,12 +21,14 @@ import dev.su5ed.mffs.util.projector.ModProjectorModes;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
+import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
@@ -66,8 +70,9 @@ public final class ModClientSetup {
 
     @SubscribeEvent
     public static void registerBlockEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
-        event.registerBlockEntityRenderer(ModObjects.PROJECTOR_BLOCK_ENTITY.get(), ProjectorBlockRenderer::new);
-        event.registerBlockEntityRenderer(ModObjects.COERCION_DERIVER_BLOCK_ENTITY.get(), CoercionDeriverBlockRenderer::new);
+        event.registerBlockEntityRenderer(ModObjects.PROJECTOR_BLOCK_ENTITY.get(), ProjectorRenderer::new);
+        event.registerBlockEntityRenderer(ModObjects.COERCION_DERIVER_BLOCK_ENTITY.get(), CoercionDeriverRenderer::new);
+        event.registerBlockEntityRenderer(ModObjects.BIOMETRIC_IDENTIFIER_BLOCK_ENTITY.get(), BiometricIdentifierRenderer::new);
     }
 
     @SubscribeEvent
@@ -82,6 +87,14 @@ public final class ModClientSetup {
         event.registerLayerDefinition(CoercionDeriverTopModel.LAYER_LOCATION, CoercionDeriverTopModel::createBodyLayer);
         event.registerLayerDefinition(ForceCubeModel.LAYER_LOCATION, ForceCubeModel::createBodyLayer);
         event.registerLayerDefinition(ForceTubeModel.LAYER_LOCATION, ForceTubeModel::createBodyLayer);
+        event.registerLayerDefinition(BiometricIdentifierModel.LAYER_LOCATION, BiometricIdentifierModel::createBodyLayer);
+    }
+    
+    @SubscribeEvent
+    public static void onTextureStitch(TextureStitchEvent.Pre event) {
+        if (event.getAtlas().location().equals(InventoryMenu.BLOCK_ATLAS)) {
+            event.addSprite(BiometricIdentifierRenderer.HOLO_SCREEN_TEXTURE);
+        }
     }
 
     @SubscribeEvent

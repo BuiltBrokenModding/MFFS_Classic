@@ -17,6 +17,7 @@
   "block.mffs.projector": "Force Field Projector",
   "block.mffs.coercion_deriver": "Coercion Deriver",
   "block.mffs.fortron_capacitor": "Fortron Capacitor",
+  "block.mffs.biometric_identifier": "Biometric Identifier",
   
   "item.mffs.remote_controller": "Remote Controller",
   "item.mffs.cube_mode": "Cube Mode",

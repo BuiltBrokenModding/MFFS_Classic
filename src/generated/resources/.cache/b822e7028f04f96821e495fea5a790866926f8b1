@@ -1,4 +1,5 @@
-// 1.19.2	2022-12-06T21:10:40.1602683	Block States: mffs
+// 1.19.2	2023-02-27T21:49:22.7601419	Block States: mffs
+847ff748e14a1e0a7b04913861f87c625767eba4 assets/mffs/blockstates/biometric_identifier.json
 39664fd5f9627fd244d7d75466ce80dad7264edd assets/mffs/blockstates/coercion_deriver.json
 8c60301609e0e49d0670bdd656f5d1d8cc2e64e9 assets/mffs/blockstates/force_field.json
 f590c768e69991c7a7dd0505e9176a4a9ad6a022 assets/mffs/blockstates/fortron_capacitor.json

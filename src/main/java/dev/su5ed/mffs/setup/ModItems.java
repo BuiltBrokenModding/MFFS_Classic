@@ -34,6 +34,7 @@ public final class ModItems {
     public static final RegistryObject<Item> PROJECTOR_ITEM = fromBlock(ModBlocks.PROJECTOR);
     public static final RegistryObject<Item> COERCION_DERIVER_ITEM = fromBlock(ModBlocks.COERCION_DERIVER);
     public static final RegistryObject<Item> FORTRON_CAPACITOR_ITEM = fromBlock(ModBlocks.FORTRON_CAPACITOR);
+    public static final RegistryObject<Item> BIOMETRIC_IDENTIFIER_ITEM = fromBlock(ModBlocks.BIOMETRIC_IDENTIFIER);
     public static final RegistryObject<Item> REMOTE_CONTROLLER_ITEM = ITEMS.register("remote_controller", RemoteControllerItem::new);
 
     public static final RegistryObject<ModuleItem> SPEED_MODULE = module("speed_module", ModModules.SPEED, ModuleItem::withDescription);

@@ -13,6 +13,8 @@ import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import static dev.su5ed.mffs.MFFSMod.location;
+
 final class BlockStateGen extends BlockStateProvider {
 
     public BlockStateGen(DataGenerator gen, ExistingFileHelper helper) {
@@ -24,6 +26,7 @@ final class BlockStateGen extends BlockStateProvider {
         machineBlock(ModBlocks.PROJECTOR.get());
         machineBlock(ModBlocks.COERCION_DERIVER.get());
         machineBlock(ModBlocks.FORTRON_CAPACITOR.get());
+        simpleBlock(ModBlocks.BIOMETRIC_IDENTIFIER.get(), models().getExistingFile(location("biometric_identifier")));
 
         simpleBlock(ModBlocks.FORCE_FIELD.get(), models().getBuilder("force_field")
             .customLoader(ForceFieldBlockModelBuilder::new)

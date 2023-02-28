@@ -51,6 +51,19 @@ public class ModRenderType extends RenderType {
             .createCompositeState(true)
     ));
 
+    public static final Function<ResourceLocation, RenderType> POS_COL_TEX_TRANSLUCENT_UNCULLED_QUAD = Util.memoize(location -> create(
+        "mffs:standard_translucent_quad",
+        DefaultVertexFormat.POSITION_COLOR_TEX, VertexFormat.Mode.QUADS,
+        256, true, true,
+        RenderType.CompositeState.builder()
+            .setShaderState(POSITION_COLOR_TEX_SHADER)
+            .setTextureState(new RenderStateShard.TextureStateShard(location, false, false))
+            .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+            .setOutputState(TRANSLUCENT_TARGET)
+            .setCullState(NO_CULL)
+            .createCompositeState(true)
+    ));
+
     private ModRenderType(String name, VertexFormat format, VertexFormat.Mode mode, int bufferSize, boolean affectsCrumbling, boolean sortOnUpload, Runnable setupState, Runnable clearState) {
         super(name, format, mode, bufferSize, affectsCrumbling, sortOnUpload, setupState, clearState);
     }
