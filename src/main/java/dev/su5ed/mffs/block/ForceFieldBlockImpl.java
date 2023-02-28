@@ -12,7 +12,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.EntityGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.AbstractGlassBlock;
 import net.minecraft.world.level.block.EntityBlock;
@@ -20,11 +19,11 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
 import java.util.Optional;
 
 public class ForceFieldBlockImpl extends AbstractGlassBlock implements ForceFieldBlock, EntityBlock {
@@ -66,20 +65,12 @@ public class ForceFieldBlockImpl extends AbstractGlassBlock implements ForceFiel
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        // TODO Use EntityCollisionContext
         return getProjector(level, pos)
             .map(projector -> {
-                int x = pos.getX();
-                int y = pos.getY();
-                int z = pos.getZ();
-                if (level instanceof EntityGetter entityGetter) {
+                if (context instanceof EntityCollisionContext entityContext && entityContext.getEntity() instanceof Player player) {
                     BiometricIdentifier bioIndentified = projector.getBiometricIdentifier();
-                    List<Player> entities = entityGetter.getEntitiesOfClass(Player.class, Shapes.box(x, y, z, x + 1, y + 0.9, z + 1).bounds());
-
-                    for (Player player : entities) {
-                        if (player.isShiftKeyDown() && (player.isCreative() || bioIndentified != null && bioIndentified.isAccessGranted(player, FieldPermission.WARP))) {
-                            return Shapes.empty();
-                        }
+                    if (player.isShiftKeyDown() && !context.isAbove(COLLIDABLE_BLOCK, pos, true) && (player.isCreative() || bioIndentified != null && bioIndentified.isAccessGranted(player, FieldPermission.WARP))) {
+                        return Shapes.empty();
                     }
                 }
                 return null;

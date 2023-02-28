@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -39,6 +40,10 @@ public final class ClientRenderHandler {
         Vec3 centerPos = Vec3.atCenterOf(be.getBlockPos());
         ModelPart tubeModel = modelFactory.apply(ForceCubeModel.LAYER_LOCATION);
         RenderTickHandler.addTransparentRenderer(ForceCubeModel.RENDER_TYPE, new CylinderModeRenderer(centerPos, tubeModel));
+    }
+    
+    public static IClientItemExtensions biometricIdentifierItemRenderer() {
+        return new RendererItemExtension(() -> BiometricIdentifierRenderer.ItemRenderer.INSTANCE);
     }
 
     private static void addRenderer(BlockEntity be, Function<ModelLayerLocation, ModelPart> modelFactory, ModelLayerLocation modelLocation, BiFunction<Vec3, ModelPart, LazyRenderer> rendererFactory) {
