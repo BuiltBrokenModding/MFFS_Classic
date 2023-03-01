@@ -1,7 +1,7 @@
 package dev.su5ed.mffs.menu;
 
 import dev.su5ed.mffs.api.Activatable;
-import dev.su5ed.mffs.blockentity.ModularBlockEntity;
+import dev.su5ed.mffs.blockentity.FortronBlockEntity;
 import dev.su5ed.mffs.setup.ModItems;
 import dev.su5ed.mffs.util.DataSlotWrapper;
 import dev.su5ed.mffs.util.ModUtil;
@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
 
-public abstract class FortronMenu<T extends ModularBlockEntity & Activatable> extends AbstractContainerMenu {
+public abstract class FortronMenu<T extends FortronBlockEntity & Activatable> extends AbstractContainerMenu {
     public final T blockEntity;
     protected final Player player;
     protected final IItemHandler playerInventory;
@@ -59,7 +59,7 @@ public abstract class FortronMenu<T extends ModularBlockEntity & Activatable> ex
     @Override
     public boolean stillValid(Player player) {
         return ContainerLevelAccess.create(this.blockEntity.getLevel(), this.blockEntity.getBlockPos())
-            .evaluate((level, pos) -> (!isRemoteAccess || player.getItemInHand(InteractionHand.MAIN_HAND).is(ModItems.REMOTE_CONTROLLER_ITEM.get()))
+            .evaluate((level, pos) -> (!this.isRemoteAccess || player.getItemInHand(InteractionHand.MAIN_HAND).is(ModItems.REMOTE_CONTROLLER_ITEM.get()))
                 && level.getBlockState(pos).is(this.blockEntity.getBlockState().getBlock()), true);
     }
 

@@ -70,17 +70,17 @@ public abstract class BaseScreen<T extends AbstractContainerMenu> extends Abstra
 
     public void renderFg(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {}
 
-    protected void drawWithTooltip(PoseStack poseStack, int x, int y, int color, String name, Object... args) {
+    protected void drawWithTooltip(PoseStack poseStack, float x, float y, int color, String name, Object... args) {
         drawWithTooltip(poseStack, x, y, color, ModUtil.translate("screen", name, args), ModUtil.translate("screen", name + ".tooltip"));
     }
 
-    protected void drawWithTooltip(PoseStack poseStack, int x, int y, int color, Component message, Component tooltip) {
+    protected void drawWithTooltip(PoseStack poseStack, float x, float y, int color, Component message, Component tooltip) {
         String text = message.getString();
         int width = this.font.width(text);
         int height = this.font.lineHeight;
 
         this.font.draw(poseStack, text, x, y, color);
-        this.tooltips.add(new TooltipCoordinate(x, y, width, height, tooltip));
+        this.tooltips.add(new TooltipCoordinate((int) x, (int) y, width, height, tooltip));
     }
 
     public record TooltipCoordinate(int x, int y, int width, int height, Component tooltip) {}

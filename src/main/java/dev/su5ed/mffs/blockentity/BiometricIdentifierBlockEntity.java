@@ -3,6 +3,7 @@ package dev.su5ed.mffs.blockentity;
 import dev.su5ed.mffs.MFFSConfig;
 import dev.su5ed.mffs.api.security.BiometricIdentifier;
 import dev.su5ed.mffs.api.security.FieldPermission;
+import dev.su5ed.mffs.menu.BiometricIdentifierMenu;
 import dev.su5ed.mffs.setup.ModCapabilities;
 import dev.su5ed.mffs.setup.ModObjects;
 import dev.su5ed.mffs.setup.ModPermissions;
@@ -22,13 +23,18 @@ import one.util.streamex.StreamEx;
 import java.util.List;
 
 public class BiometricIdentifierBlockEntity extends FortronBlockEntity implements BiometricIdentifier {
-    private final InventorySlot masterSlot;
-    private final List<InventorySlot> identitySlots;
+    public final InventorySlot masterSlot;
+    public final InventorySlot rightsSlot;
+    public final InventorySlot copySlot;
+    public final List<InventorySlot> identitySlots;
 
     public BiometricIdentifierBlockEntity(BlockPos pos, BlockState state) {
         super(ModObjects.BIOMETRIC_IDENTIFIER_BLOCK_ENTITY.get(), pos, state);
 
-        this.masterSlot = addSlot("master", InventorySlot.Mode.NONE, ModUtil::isIdentificationCard);
+        // TODO: Restrict slot access to GUI
+        this.masterSlot = addSlot("master", InventorySlot.Mode.BOTH, ModUtil::isIdentificationCard);
+        this.rightsSlot = addSlot("rights", InventorySlot.Mode.BOTH, ModUtil::isIdentificationCard);
+        this.copySlot = addSlot("copy", InventorySlot.Mode.BOTH, ModUtil::isIdentificationCard);
         this.identitySlots = IntStreamEx.range(9)
             .mapToObj(i -> addSlot("identity_" + i, InventorySlot.Mode.BOTH, ModUtil::isIdentificationCard))
             .toList();
@@ -39,6 +45,11 @@ public class BiometricIdentifierBlockEntity extends FortronBlockEntity implement
         if (!this.masterSlot.isEmpty() || !active) {
             super.setActive(active);
         }
+    }
+
+    @Override
+    public boolean isActive() {
+        return !this.masterSlot.isEmpty() && super.isActive();
     }
 
     @Override
@@ -66,7 +77,7 @@ public class BiometricIdentifierBlockEntity extends FortronBlockEntity implement
 
     @Override
     public AbstractContainerMenu createMenu(int containerId, Inventory playerInventory, Player player) {
-        return null;
+        return new BiometricIdentifierMenu(containerId, this.worldPosition, player, playerInventory);
     }
 
     public static boolean canOpBypass(Player player) {

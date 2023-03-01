@@ -14,6 +14,7 @@ import dev.su5ed.mffs.render.model.ForceTubeModel;
 import dev.su5ed.mffs.render.model.ProjectorRotorModel;
 import dev.su5ed.mffs.render.particle.BeamParticleProvider;
 import dev.su5ed.mffs.render.particle.MovingHologramParticleProvider;
+import dev.su5ed.mffs.screen.BiometricIdentifierScreen;
 import dev.su5ed.mffs.screen.CoercionDeriverScreen;
 import dev.su5ed.mffs.screen.FortronCapacitorScreen;
 import dev.su5ed.mffs.screen.ProjectorScreen;
@@ -63,6 +64,7 @@ public final class ModClientSetup {
             MenuScreens.register(ModMenus.COERCION_DERIVER_MENU.get(), CoercionDeriverScreen::new);
             MenuScreens.register(ModMenus.FORTRON_CAPACITOR_MENU.get(), FortronCapacitorScreen::new);
             MenuScreens.register(ModMenus.PROJECTOR_MENU.get(), ProjectorScreen::new);
+            MenuScreens.register(ModMenus.BIOMETRIC_IDENTIFIER_MENU.get(), BiometricIdentifierScreen::new);
 
             registerLazyRenderers();
         });

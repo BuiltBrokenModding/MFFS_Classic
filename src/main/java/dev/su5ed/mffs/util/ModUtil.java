@@ -3,6 +3,7 @@ package dev.su5ed.mffs.util;
 import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.api.card.FrequencyCard;
 import dev.su5ed.mffs.api.module.Module;
+import dev.su5ed.mffs.api.security.FieldPermission;
 import dev.su5ed.mffs.item.InfiniteCardItem;
 import dev.su5ed.mffs.setup.ModCapabilities;
 import net.minecraft.core.BlockPos;
@@ -16,7 +17,9 @@ import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.fluids.IFluidBlock;
 
+import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Locale;
 
 public final class ModUtil {
 
@@ -90,6 +93,14 @@ public final class ModUtil {
         return success;
     }
 
+    public static MutableComponent translate(FieldPermission permission) {
+        return translate("info", "field_permission." + permission.name().toLowerCase(Locale.ROOT));
+    }
+
+    public static MutableComponent translateTooltip(FieldPermission permission) {
+        return translate("info", "field_permission." + permission.name().toLowerCase(Locale.ROOT) + ".tooltip");
+    }
+
     public static MutableComponent translate(String prefix, String key, Object... args) {
         return Component.translatable(translationKey(prefix, key), args);
     }
@@ -113,7 +124,7 @@ public final class ModUtil {
         Item item = stack.getItem();
         return item instanceof FrequencyCard || item instanceof InfiniteCardItem;
     }
-    
+
     public static boolean isIdentificationCard(ItemStack stack) {
         return stack.getCapability(ModCapabilities.IDENTIFICATION_CARD).isPresent();
     }
@@ -130,6 +141,15 @@ public final class ModUtil {
 
     public static boolean isProjectorMode(ItemStack stack) {
         return stack.getCapability(ModCapabilities.PROJECTOR_MODE).isPresent();
+    }
+
+    @Nullable
+    public static <T extends Enum<T>> T getEnumConstantSafely(Class<T> clazz, String name) {
+        try {
+            return Enum.valueOf(clazz, name);
+        } catch (IllegalArgumentException ignored) {
+            return null;
+        }
     }
 
     private ModUtil() {}

@@ -53,6 +53,12 @@ public class BaseEntityBlock extends Block implements EntityBlock {
     }
 
     @Override
+    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
+        super.neighborChanged(state, level, pos, block, fromPos, isMoving);
+        getBlockEntity(level, pos).ifPresent(be -> be.neighborChanged(state, fromPos, isMoving));
+    }
+
+    @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
         builder.add(ACTIVE);

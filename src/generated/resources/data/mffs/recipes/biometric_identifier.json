@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "item": "mffs:blank_card"
+    },
+    "F": {
+      "item": "mffs:focus_matrix"
+    },
+    "S": {
+      "tag": "forge:ingots/steel"
+    }
+  },
+  "pattern": [
+    "FSF",
+    "SCS",
+    "FSF"
+  ],
+  "result": {
+    "item": "mffs:biometric_identifier"
+  }
+}

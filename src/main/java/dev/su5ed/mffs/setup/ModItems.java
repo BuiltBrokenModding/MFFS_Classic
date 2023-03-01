@@ -5,6 +5,7 @@ import dev.su5ed.mffs.api.module.Module;
 import dev.su5ed.mffs.api.module.ProjectorMode;
 import dev.su5ed.mffs.item.BatteryItem;
 import dev.su5ed.mffs.item.BiometricIdentifierItem;
+import dev.su5ed.mffs.item.IdentificationCardItem;
 import dev.su5ed.mffs.item.ModuleItem;
 import dev.su5ed.mffs.item.ProjectorModeItem;
 import dev.su5ed.mffs.item.RemoteControllerItem;
@@ -65,6 +66,8 @@ public final class ModItems {
     public static final RegistryObject<BatteryItem> BATTERY = ITEMS.register("battery", BatteryItem::new);
     public static final RegistryObject<Item> STEEL_COMPOUND = ITEMS.register("steel_compound", ModItems::simpleItem);
     public static final RegistryObject<Item> STEEL_INGOT = ITEMS.register("steel_ingot", ModItems::simpleItem);
+    public static final RegistryObject<Item> BLANK_CARD = ITEMS.register("blank_card", ModItems::simpleItem);
+    public static final RegistryObject<Item> ID_CARD = ITEMS.register("id_card", IdentificationCardItem::new);
 
     public static final RegistryObject<Item> REDSTONE_TORCH_OFF = ITEMS.register("redstone_torch_off", () -> new Item(new Item.Properties()));
 

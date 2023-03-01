@@ -51,12 +51,12 @@ public final class Network {
             .decoder(InitialDataRequestPacket::decode)
             .consumerMainThread(InitialDataRequestPacket::processPacket)
             .add();
-
-        INSTANCE.messageBuilder(ToggleModePacketClient.class, id++, NetworkDirection.PLAY_TO_CLIENT)
-            .encoder(ToggleModePacketClient::encode)
-            .decoder(ToggleModePacketClient::decode)
-            .consumerMainThread(ToggleModePacketClient::processClientPacket)
+        INSTANCE.messageBuilder(ToggleFieldPermissionPacket.class, id++, NetworkDirection.PLAY_TO_SERVER)
+            .encoder(ToggleFieldPermissionPacket::encode)
+            .decoder(ToggleFieldPermissionPacket::decode)
+            .consumerMainThread(ToggleFieldPermissionPacket::processServerPacket)
             .add();
+
         INSTANCE.messageBuilder(DrawBeamPacket.class, id++, NetworkDirection.PLAY_TO_CLIENT)
             .encoder(DrawBeamPacket::encode)
             .decoder(DrawBeamPacket::decode)

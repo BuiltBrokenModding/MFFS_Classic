@@ -48,6 +48,8 @@ final class ItemModelGen extends ItemModelProvider {
         simpleItem(ModItems.BATTERY);
         simpleItem(ModItems.STEEL_COMPOUND);
         simpleItem(ModItems.STEEL_INGOT);
+        simpleItem(ModItems.BLANK_CARD);
+        simpleItem(ModItems.ID_CARD);
     }
 
     private void simpleItem(RegistryObject<? extends Item> item) {

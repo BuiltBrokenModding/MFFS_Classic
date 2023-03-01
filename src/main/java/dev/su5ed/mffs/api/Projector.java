@@ -22,7 +22,7 @@ public interface Projector extends ModuleAcceptor, BiometricIdentifierLink {
     BlockEntity be();
 
     /**
-     * @return Is the projector active?
+     * @return Is the projector value?
      */
     boolean isActive();
 

@@ -7,7 +7,6 @@ import dev.su5ed.mffs.api.fortron.FortronStorage;
 import dev.su5ed.mffs.api.security.BiometricIdentifier;
 import dev.su5ed.mffs.api.security.BiometricIdentifierLink;
 import dev.su5ed.mffs.block.BaseEntityBlock;
-import dev.su5ed.mffs.network.ToggleModePacketClient;
 import dev.su5ed.mffs.setup.ModCapabilities;
 import dev.su5ed.mffs.util.Fortron;
 import dev.su5ed.mffs.util.FortronStorageImpl;
@@ -90,7 +89,7 @@ public abstract class FortronBlockEntity extends InventoryBlockEntity implements
 
     @Override
     public boolean isActive() {
-        return this.active || this.level.hasNeighborSignal(this.worldPosition);
+        return this.level.isClientSide ? getBlockState().getValue(BaseEntityBlock.ACTIVE) : this.active || this.level.hasNeighborSignal(this.worldPosition);
     }
 
     @Override
@@ -116,14 +115,9 @@ public abstract class FortronBlockEntity extends InventoryBlockEntity implements
         super.tickServer();
 
         BlockState state = getBlockState();
-        // TODO Store active state in blockstate only
         boolean active = isActive();
         if (state.getValue(BaseEntityBlock.ACTIVE) != active) {
             this.level.setBlock(this.worldPosition, state.setValue(BaseEntityBlock.ACTIVE, active), Block.UPDATE_ALL);
-
-            if (!this.level.isClientSide) {
-                sendToChunk(new ToggleModePacketClient(this.worldPosition, active));
-            }
         }
     }
 

@@ -3,14 +3,20 @@ package dev.su5ed.mffs.api.card;
 import com.mojang.authlib.GameProfile;
 import dev.su5ed.mffs.api.security.FieldPermission;
 import net.minecraft.world.entity.player.Player;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Collection;
 
 public interface IdentificationCard {
     boolean hasPermission(FieldPermission permission);
+    
+    Collection<FieldPermission> getPermissions();
 
-    boolean addPermission(FieldPermission permission);
+    void addPermission(FieldPermission permission);
 
-    boolean removePermission(FieldPermission permission);
+    void removePermission(FieldPermission permission);
 
+    @Nullable
     GameProfile getIdentity();
 
     void setIdentity(GameProfile profile);

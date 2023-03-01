@@ -58,6 +58,22 @@ public class RecipesGen extends RecipeProvider {
             .unlockedBy("has_steel_ingot", has(ModTags.INGOTS_STEEL))
             .save(finishedRecipeConsumer, location("focus_matrix"));
 
+        ShapedRecipeBuilder.shaped(ModItems.BLANK_CARD.get())
+            .define('P', Items.PAPER)
+            .define('S', ModTags.INGOTS_STEEL)
+            .pattern("PPP")
+            .pattern("PSP")
+            .pattern("PPP")
+            .unlockedBy("has_steel_ingot", has(ModTags.INGOTS_STEEL))
+            .save(finishedRecipeConsumer, location("blank_card"));
+
+        ShapedRecipeBuilder.shaped(ModItems.ID_CARD.get())
+            .define('R', Tags.Items.DUSTS_REDSTONE)
+            .define('C', ModItems.BLANK_CARD.get())
+            .pattern("RCR")
+            .unlockedBy("has_blank_card", has(ModItems.BLANK_CARD.get()))
+            .save(finishedRecipeConsumer, location("id_card"));
+
         ShapedRecipeBuilder.shaped(ModItems.COERCION_DERIVER_ITEM.get())
             .define('S', ModTags.INGOTS_STEEL)
             .define('F', ModItems.FOCUS_MATRIX.get())
@@ -88,8 +104,16 @@ public class RecipesGen extends RecipeProvider {
             .pattern("SBS")
             .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
             .save(finishedRecipeConsumer, location("projector"));
-        
-        // TODO BIOMETRIC IDENTIFIER
+
+        ShapedRecipeBuilder.shaped(ModItems.BIOMETRIC_IDENTIFIER_ITEM.get())
+            .define('F', ModItems.FOCUS_MATRIX.get())
+            .define('S', ModTags.INGOTS_STEEL)
+            .define('C', ModItems.BLANK_CARD.get())
+            .pattern("FSF")
+            .pattern("SCS")
+            .pattern("FSF")
+            .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
+            .save(finishedRecipeConsumer, location("biometric_identifier"));
 
         ShapedRecipeBuilder.shaped(ModItems.REMOTE_CONTROLLER_ITEM.get())
             .define('S', ModTags.INGOTS_STEEL)

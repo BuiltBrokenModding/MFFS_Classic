@@ -1,6 +1,5 @@
 package dev.su5ed.mffs.network;
 
-import dev.su5ed.mffs.api.Activatable;
 import dev.su5ed.mffs.blockentity.ProjectorBlockEntity;
 import dev.su5ed.mffs.render.particle.BeamParticleOptions;
 import dev.su5ed.mffs.render.particle.MovingHologramParticleOptions;
@@ -10,11 +9,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 
 public final class ClientPacketHandler {
-
-    public static void handleToggleActivationPacket(ToggleModePacketClient packet) {
-        Network.findBlockEntity(Activatable.class, Minecraft.getInstance().level, packet.pos())
-            .ifPresent(be -> be.setActive(packet.active()));
-    }
 
     public static void handleDrawBeamPacket(DrawBeamPacket packet) {
         Minecraft minecraft = Minecraft.getInstance();

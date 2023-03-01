@@ -36,6 +36,8 @@ public abstract class BaseBlockEntity extends BlockEntity implements MenuProvide
     }
 
     public void blockRemoved() {}
+    
+    public void neighborChanged(BlockState state, BlockPos formPos, boolean isMoving) {}
 
     public InteractionResult use(Player player, InteractionHand hand, BlockHitResult hit) {
         if (!this.level.isClientSide) {

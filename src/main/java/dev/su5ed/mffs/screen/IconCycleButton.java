@@ -43,7 +43,12 @@ public class IconCycleButton<T extends Enum<T>> extends AbstractButton {
         Minecraft minecraft = Minecraft.getInstance();
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, this.image);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
+        if (this.isHovered) {
+            RenderSystem.setShaderColor(0.85F, 0.85F, 0.85F, this.alpha);
+        }
+        else {
+            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
+        }
 
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();

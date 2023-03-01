@@ -10,6 +10,24 @@
   "info.mffs.cannot_harness": "Cannot harness %s FE from the Fortron field.",
   "info.mffs.frequency.generated": "Generated random frequency: %s",
   "info.mffs.stored_energy": "Stored Energy: %s / %s FE",
+  "info.mffs.unidentified": "[Right-click while sneaking to set identity]",
+  "info.mffs.identity_set": "Identity set to: ",
+  "info.mffs.identity_cleared": "Identity cleared",
+  "info.mffs.identity": "Identity: ",
+  "info.mffs.field_permission.warp": "Warp",
+  "info.mffs.field_permission.warp.tooltip": "Allows the player to walk through and bypass force fields.",
+  "info.mffs.field_permission.use_blocks": "Use Blocks",
+  "info.mffs.field_permission.use_blocks.tooltip": "Allows the player to interact and open GUIs in blocks.",
+  "info.mffs.field_permission.place_blocks": "Place Blocks",
+  "info.mffs.field_permission.place_blocks.tooltip": "Allows the player to place and break blocks.",
+  "info.mffs.field_permission.configure_security_center": "Configure Security",
+  "info.mffs.field_permission.configure_security_center.tooltip": "Allows the player to configure the Biometric Identifier.",
+  "info.mffs.field_permission.bypass_defense": "Bypass Defense",
+  "info.mffs.field_permission.bypass_defense.tooltip": "Allows the player to bypass Interdiction Matrix restrictions.",
+  "info.mffs.field_permission.bypass_confiscation": "Bypass Confiscation",
+  "info.mffs.field_permission.bypass_confiscation.tooltip": "Allows the player to bypass the Interdiction Matrix confiscation.",
+  "info.mffs.field_permission.remote_control": "Remote Control",
+  "info.mffs.field_permission.remote_control.tooltip": "Allows the player to use the remote control within defensive region.",
   
   "death.attack.mffs.field_shock": "%1$s was disintegrated by a force field.",
   
@@ -56,6 +74,8 @@
   "item.mffs.battery": "Battery",
   "item.mffs.steel_compound": "Steel Compound",
   "item.mffs.steel_ingot": "Steel Ingot",
+  "item.mffs.blank_card": "Blank Card",
+  "item.mffs.id_card": "Identification Card",
   
   "sounds.mffs.field": "Field Sound",
   
@@ -85,5 +105,9 @@
   "screen.mffs.range": "Range: %s ",
   "screen.mffs.progress": "Progress: ",
   "screen.mffs.progress.running": "Running",
-  "screen.mffs.progress.idle": "Idle"
+  "screen.mffs.progress.idle": "Idle",
+  "screen.mffs.rights": "Rights",
+  "screen.mffs.rights.tooltip": "Assign rights to the card to your left here.",
+  "screen.mffs.master": "Master",
+  "screen.mffs.master.tooltip": "The Master Card will denote the player in the card owner of the Biometric Identifier."
 }

@@ -17,7 +17,7 @@ public class ProjectorScreen extends FortronScreen<ProjectorMenu> {
         super(menu, playerInventory, title, BACKGROUND);
 
         this.frequencyBoxPos = IntIntPair.of(48, 91);
-        this.frequencyLabelPos = IntIntPair.of(8, 76);
+        this.frequencyLabelPos = IntIntPair.of(9, 78);
         this.fortronEnergyBarPos = IntIntPair.of(8, 120);
         this.fortronEnergyBarWidth = 107;
     }
