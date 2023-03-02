@@ -77,8 +77,12 @@ public abstract class BaseScreen<T extends AbstractContainerMenu> extends Abstra
         super.renderSlot(poseStack, slot);
         if (slot instanceof SlotActive slotActive && slotActive.isDisabled()) {
             RenderSystem.disableDepthTest();
-            fill(poseStack, slot.x - 1, slot.y - 1, slot.x + 17, slot.y + 17, 0xA0212121);
+            fill(poseStack, slot.x - 1, slot.y - 1, slot.x + 17, slot.y + 17, getDisabledSlotColor());
         }
+    }
+
+    public int getDisabledSlotColor() {
+        return GuiColors.DISABLED_SLOT_OVERLAY;
     }
 
     @Override

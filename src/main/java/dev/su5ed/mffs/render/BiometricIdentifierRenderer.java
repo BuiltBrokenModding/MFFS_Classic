@@ -49,13 +49,16 @@ public class BiometricIdentifierRenderer implements BlockEntityRenderer<Biometri
             if (levelState.getBlock() instanceof BiometricIdentifierBlock) {
                 state = levelState;
             }
+            else {
+                return;
+            }
         }
         ResourceLocation texture = state == null || state.getValue(BaseEntityBlock.ACTIVE) ? BIOMETRIC_IDENTIFIER_ON_TEXTURE : BIOMETRIC_IDENTIFIER_OFF_TEXTURE;
 
         poseStack.pushPose();
         poseStack.translate(0.5D, 0.5D, 0.5D);
         if (state != null) {
-            Direction facing = state.getValue(BlockStateProperties.FACING);
+            Direction facing = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
             poseStack.mulPose(Vector3f.YN.rotationDegrees(facing.toYRot()));
         }
 

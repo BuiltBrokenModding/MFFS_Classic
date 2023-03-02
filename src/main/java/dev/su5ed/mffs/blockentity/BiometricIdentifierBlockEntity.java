@@ -7,7 +7,6 @@ import dev.su5ed.mffs.api.security.FieldPermission;
 import dev.su5ed.mffs.menu.BiometricIdentifierMenu;
 import dev.su5ed.mffs.setup.ModCapabilities;
 import dev.su5ed.mffs.setup.ModObjects;
-import dev.su5ed.mffs.setup.ModPermissions;
 import dev.su5ed.mffs.util.ModUtil;
 import dev.su5ed.mffs.util.inventory.CopyingIdentificationCard;
 import dev.su5ed.mffs.util.inventory.InventorySlot;
@@ -21,7 +20,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.server.permission.PermissionAPI;
 import one.util.streamex.IntStreamEx;
 import one.util.streamex.StreamEx;
 import org.jetbrains.annotations.Nullable;
@@ -106,6 +104,6 @@ public class BiometricIdentifierBlockEntity extends FortronBlockEntity implement
     }
 
     public static boolean canOpBypass(Player player) {
-        return player instanceof ServerPlayer serverPlayer && MFFSConfig.COMMON.allowOpBiometryOverride.get() && PermissionAPI.getPermission(serverPlayer, ModPermissions.OVERRIDE_BIOMETRY);
+        return player instanceof ServerPlayer serverPlayer && MFFSConfig.COMMON.allowOpBiometryOverride.get() && serverPlayer.server.getPlayerList().isOp(player.getGameProfile());
     }
 }

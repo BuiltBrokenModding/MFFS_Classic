@@ -8,7 +8,6 @@ import dev.su5ed.mffs.setup.ModFluids;
 import dev.su5ed.mffs.setup.ModItems;
 import dev.su5ed.mffs.setup.ModMenus;
 import dev.su5ed.mffs.setup.ModObjects;
-import dev.su5ed.mffs.setup.ModPermissions;
 import dev.su5ed.mffs.setup.ModSounds;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
@@ -45,7 +44,6 @@ public final class MFFSMod {
         ctx.registerConfig(ModConfig.Type.COMMON, MFFSConfig.COMMON_SPEC);
 
         MinecraftForge.EVENT_BUS.register(ForgeEventHandler.class);
-        MinecraftForge.EVENT_BUS.addListener(ModPermissions::gatherPermissionNodes);
     }
 
     private void setup(final FMLCommonSetupEvent event) {

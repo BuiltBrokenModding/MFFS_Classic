@@ -2,7 +2,6 @@ package dev.su5ed.mffs.blockentity;
 
 import dev.su5ed.mffs.api.Activatable;
 import dev.su5ed.mffs.api.card.CoordLink;
-import dev.su5ed.mffs.api.card.FrequencyCard;
 import dev.su5ed.mffs.api.fortron.FortronStorage;
 import dev.su5ed.mffs.api.security.BiometricIdentifier;
 import dev.su5ed.mffs.api.security.BiometricIdentifierLink;
@@ -81,9 +80,7 @@ public abstract class FortronBlockEntity extends InventoryBlockEntity implements
     }
 
     protected void onFrequencySlotChanged(ItemStack stack) {
-        if (stack.getItem() instanceof FrequencyCard frequencyCard) {
-            frequencyCard.setFrequency(stack, this.fortronStorage.getFrequency());
-        }
+        stack.getCapability(ModCapabilities.FREQUENCY_CARD).ifPresent(card -> card.setFrequency(this.fortronStorage.getFrequency()));
     }
 
     @Override

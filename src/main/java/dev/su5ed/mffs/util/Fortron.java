@@ -2,20 +2,26 @@ package dev.su5ed.mffs.util;
 
 import dev.su5ed.mffs.api.fortron.FortronStorage;
 import dev.su5ed.mffs.api.module.ModuleAcceptor;
+import dev.su5ed.mffs.api.security.FieldPermission;
+import dev.su5ed.mffs.api.security.InterdictionMatrix;
 import dev.su5ed.mffs.network.DrawBeamPacket;
 import dev.su5ed.mffs.network.Network;
 import dev.su5ed.mffs.render.particle.BeamParticleOptions;
 import dev.su5ed.mffs.render.particle.ParticleColor;
+import dev.su5ed.mffs.setup.ModCapabilities;
 import dev.su5ed.mffs.setup.ModFluids;
 import dev.su5ed.mffs.setup.ModModules;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.network.PacketDistributor;
+import one.util.streamex.StreamEx;
 
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -111,6 +117,34 @@ public final class Fortron {
     public static void renderClientBeam(Level level, Vec3 target, Vec3 position, BlockPos chunkPos, ParticleColor color, int lifetime) {
         DrawBeamPacket packet = new DrawBeamPacket(target, position, color, lifetime);
         Network.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(chunkPos)), packet);
+    }
+
+    public static boolean hasPermission(Level level, BlockPos pos, FieldPermission permission, Player player) {
+        InterdictionMatrix interdictionMatrix = getNearestInterdictionMatrix(level, pos);
+        return interdictionMatrix == null || isPermittedByInterdictionMatrix(interdictionMatrix, player, permission);
+    }
+
+    public static InterdictionMatrix getNearestInterdictionMatrix(Level level, BlockPos pos) {
+        return StreamEx.of(FrequencyGrid.instance().get())
+            .mapPartial(storage -> {
+                BlockEntity be = storage.getOwner();
+                return be.getLevel() == level ? be.getCapability(ModCapabilities.INTERDICTION_MATRIX)
+                    .filter(interdictionMatrix -> interdictionMatrix.isActive() && pos.closerThan(be.getBlockPos(), interdictionMatrix.getActionRange()))
+                    : Optional.empty();
+            })
+            .findFirst()
+            .orElse(null);
+    }
+
+    public static boolean isPermittedByInterdictionMatrix(InterdictionMatrix interdictionMatrix, Player player, FieldPermission... permissions) {
+        if (interdictionMatrix != null && interdictionMatrix.isActive() && interdictionMatrix.getBiometricIdentifier() != null) {
+            for (FieldPermission permission : permissions) {
+                if (!interdictionMatrix.getBiometricIdentifier().isAccessGranted(player, permission)) {
+                    return interdictionMatrix.getModuleCount(ModModules.INVERTER) > 0;
+                }
+            }
+        }
+        return interdictionMatrix.getModuleCount(ModModules.INVERTER) <= 0;
     }
 
     private static void doTransferFortron(FortronStorage source, FortronStorage destination, int joules, int limit, boolean isCamo) {
