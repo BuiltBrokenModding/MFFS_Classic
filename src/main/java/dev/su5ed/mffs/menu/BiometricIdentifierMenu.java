@@ -2,7 +2,6 @@ package dev.su5ed.mffs.menu;
 
 import dev.su5ed.mffs.api.security.FieldPermission;
 import dev.su5ed.mffs.blockentity.BiometricIdentifierBlockEntity;
-import dev.su5ed.mffs.setup.ModCapabilities;
 import dev.su5ed.mffs.setup.ModMenus;
 import dev.su5ed.mffs.setup.ModObjects;
 import dev.su5ed.mffs.util.inventory.SlotActive;
@@ -28,10 +27,10 @@ public class BiometricIdentifierMenu extends FortronMenu<BiometricIdentifierBloc
         addInventorySlot(new SlotInventory(this.blockEntity.copySlot, 8, 66));
         addInventorySlot(new SlotActive(this.blockEntity.masterSlot, 8, 91, this.blockEntity));
         EntryStream.of(this.blockEntity.identitySlots)
-            .forKeyValue((i, slot) -> addSlot(new SlotInventory(slot, 8 + i * 18, 111)));
+            .forKeyValue((i, slot) -> addSlot(new SlotActive(slot, 8 + i * 18, 111, this.blockEntity)));
 
         addDataSlot(
-            () -> this.blockEntity.rightsSlot.getItem().getCapability(ModCapabilities.IDENTIFICATION_CARD)
+            () -> this.blockEntity.getManipulatingCard()
                 .map(card -> {
                     int perms = 0;
                     for (int i = 0; i < FieldPermission.values().length; i++) {

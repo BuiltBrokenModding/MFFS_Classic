@@ -5,6 +5,7 @@ import dev.su5ed.mffs.api.card.IdentificationCard;
 import dev.su5ed.mffs.api.fortron.FortronStorage;
 import dev.su5ed.mffs.api.module.Module;
 import dev.su5ed.mffs.api.module.ProjectorMode;
+import dev.su5ed.mffs.api.security.BiometricIdentifier;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityToken;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
@@ -15,6 +16,7 @@ public final class ModCapabilities {
     // BlockEntity caps
     public static final Capability<FortronStorage> FORTRON = get(new CapabilityToken<>() {});
     public static final Capability<Projector> PROJECTOR = get(new CapabilityToken<>() {});
+    public static final Capability<BiometricIdentifier> BIOMETRIC_IDENTIFIER = get(new CapabilityToken<>() {});
 
     // Item caps
     public static final Capability<Module> MODULE = get(new CapabilityToken<>() {});
@@ -24,10 +26,11 @@ public final class ModCapabilities {
     public static void registerCaps(RegisterCapabilitiesEvent event) {
         event.register(FortronStorage.class);
         event.register(Projector.class);
-        event.register(IdentificationCard.class);
+        event.register(BiometricIdentifier.class);
 
         event.register(Module.class);
         event.register(ProjectorMode.class);
+        event.register(IdentificationCard.class);
     }
 
     private ModCapabilities() {}

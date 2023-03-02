@@ -25,6 +25,8 @@ logger.lifecycle("\nConfigured version: $version")
 minecraft {
     mappings("parchment", "2022.10.16-1.19.2")
 
+    accessTransformer(file("src/main/resources/META-INF/accesstransformer.cfg"))
+
     runs {
         create("client")
         create("server")

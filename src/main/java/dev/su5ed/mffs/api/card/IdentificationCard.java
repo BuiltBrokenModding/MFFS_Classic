@@ -11,6 +11,8 @@ public interface IdentificationCard {
     boolean hasPermission(FieldPermission permission);
     
     Collection<FieldPermission> getPermissions();
+    
+    void setPermissions(Collection<FieldPermission> permissions);
 
     void addPermission(FieldPermission permission);
 
@@ -22,4 +24,6 @@ public interface IdentificationCard {
     void setIdentity(GameProfile profile);
     
     boolean checkIdentity(Player player);
+    
+    void copyTo(IdentificationCard other);
 }

@@ -109,5 +109,7 @@
   "screen.mffs.rights": "Rights",
   "screen.mffs.rights.tooltip": "Assign rights to the card to your left here.",
   "screen.mffs.master": "Master",
-  "screen.mffs.master.tooltip": "The Master Card will denote the player in the card owner of the Biometric Identifier."
+  "screen.mffs.master.tooltip": "The Master Card will denote the player in the card owner of the Biometric Identifier.",
+  "screen.mffs.copy": "Copy",
+  "screen.mffs.copy.tooltip": "Copy all data from the Rights slot to this card"
 }

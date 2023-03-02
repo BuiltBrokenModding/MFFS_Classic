@@ -14,6 +14,10 @@ public class SlotActive extends SlotInventory {
         this.activatable = activatable;
     }
 
+    public boolean isDisabled() {
+        return this.activatable.isActive();
+    }
+
     @Override
     public boolean mayPlace(@NotNull ItemStack stack) {
         return !this.activatable.isActive() && super.mayPlace(stack);

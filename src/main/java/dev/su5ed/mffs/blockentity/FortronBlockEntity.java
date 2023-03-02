@@ -31,7 +31,6 @@ import one.util.streamex.StreamEx;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -154,7 +153,7 @@ public abstract class FortronBlockEntity extends InventoryBlockEntity implements
         tag.putBoolean("active", this.active);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
         if (cap == ModCapabilities.FORTRON) {

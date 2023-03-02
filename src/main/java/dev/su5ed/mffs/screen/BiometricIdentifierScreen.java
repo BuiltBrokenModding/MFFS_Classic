@@ -37,7 +37,7 @@ public class BiometricIdentifierScreen extends FortronScreen<BiometricIdentifier
         for (int i = 0, x = 0, y = 0; i < FieldPermission.values().length; i++) {
             x++;
             FieldPermission permission = FieldPermission.values()[i];
-            Widget widget = addWidget(new IconToggleButton(this, this.width / 2 - 54 + 20 * x, this.height / 2 - 87 + 20 * y, 18, 18, ModUtil.translateTooltip(permission), 18, 18 * i,
+            Widget widget = addWidget(new IconToggleButton(this, this.width / 2 - 21 + 20 * x, this.height / 2 - 87 + 20 * y, 18, 18, ModUtil.translateTooltip(permission), 18, 18 * i,
                 () -> this.menu.hasPermission(permission), value -> togglePermission(permission, !value)));
             this.permissionButtons.add(widget);
             if (i % 3 == 0 && i != 0) {
@@ -60,8 +60,9 @@ public class BiometricIdentifierScreen extends FortronScreen<BiometricIdentifier
     protected void renderLabels(PoseStack poseStack, int mouseX, int mouseY) {
         super.renderLabels(poseStack, mouseX, mouseY);
 
-        drawWithTooltip(poseStack, 8, 32, GuiColors.DARK_GREY, "rights");
-        drawWithTooltip(poseStack, 28, 90 + this.font.lineHeight / 2.0F, GuiColors.DARK_GREY, "master");
+        drawWithTooltip(poseStack, 28, 50, GuiColors.DARK_GREY, "rights");
+        drawWithTooltip(poseStack, 28, 70, GuiColors.DARK_GREY, "copy");
+        drawWithTooltip(poseStack, 28, 95, GuiColors.DARK_GREY, "master");
     }
 
     public void togglePermission(FieldPermission permission, boolean value) {

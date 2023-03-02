@@ -4,11 +4,13 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.su5ed.mffs.util.ModUtil;
 import dev.su5ed.mffs.util.TooltipSlot;
+import dev.su5ed.mffs.util.inventory.SlotActive;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.Slot;
 import one.util.streamex.StreamEx;
 
 import java.util.ArrayList;
@@ -69,6 +71,20 @@ public abstract class BaseScreen<T extends AbstractContainerMenu> extends Abstra
     }
 
     public void renderFg(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {}
+
+    @Override
+    protected void renderSlot(PoseStack poseStack, Slot slot) {
+        super.renderSlot(poseStack, slot);
+        if (slot instanceof SlotActive slotActive && slotActive.isDisabled()) {
+            RenderSystem.disableDepthTest();
+            fill(poseStack, slot.x - 1, slot.y - 1, slot.x + 17, slot.y + 17, 0xA0212121);
+        }
+    }
+
+    @Override
+    protected boolean isHovering(Slot slot, double mouseX, double mouseY) {
+        return (!(slot instanceof SlotActive slotActive) || !slotActive.isDisabled()) && super.isHovering(slot, mouseX, mouseY);
+    }
 
     protected void drawWithTooltip(PoseStack poseStack, float x, float y, int color, String name, Object... args) {
         drawWithTooltip(poseStack, x, y, color, ModUtil.translate("screen", name, args), ModUtil.translate("screen", name + ".tooltip"));

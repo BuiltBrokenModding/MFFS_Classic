@@ -114,6 +114,12 @@ public class IdentificationCardItem extends Item {
             return this.permissions;
         }
 
+        @Override
+        public void setPermissions(Collection<FieldPermission> permissions) {
+            this.permissions.clear();
+            this.permissions.addAll(permissions);
+        }
+
         @Nullable
         @Override
         public GameProfile getIdentity() {
@@ -128,6 +134,12 @@ public class IdentificationCardItem extends Item {
         @Override
         public boolean checkIdentity(Player player) {
             return this.profile == null || player.getGameProfile().equals(this.profile);
+        }
+
+        @Override
+        public void copyTo(IdentificationCard other) {
+            other.setIdentity(getIdentity());
+            other.setPermissions(getPermissions());
         }
 
         @Override

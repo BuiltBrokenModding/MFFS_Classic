@@ -2,7 +2,6 @@ package dev.su5ed.mffs.network;
 
 import dev.su5ed.mffs.api.security.FieldPermission;
 import dev.su5ed.mffs.blockentity.BiometricIdentifierBlockEntity;
-import dev.su5ed.mffs.setup.ModCapabilities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.Level;
@@ -27,7 +26,7 @@ public record ToggleFieldPermissionPacket(BlockPos pos, FieldPermission permissi
     public void processServerPacket(Supplier<NetworkEvent.Context> ctx) {
         Level level = ctx.get().getSender().getLevel();
         Network.findBlockEntity(BiometricIdentifierBlockEntity.class, level, this.pos)
-            .flatMap(be -> be.rightsSlot.getItem().getCapability(ModCapabilities.IDENTIFICATION_CARD).resolve())
+            .flatMap(be -> be.getManipulatingCard().resolve())
             .ifPresent(card -> {
                 if (this.value) {
                     card.addPermission(this.permission);
