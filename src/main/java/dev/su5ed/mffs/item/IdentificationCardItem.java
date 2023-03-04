@@ -16,7 +16,9 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -52,18 +54,39 @@ public class IdentificationCardItem extends Item {
             ItemStack stack = player.getItemInHand(usedHand);
             return stack.getCapability(ModCapabilities.IDENTIFICATION_CARD)
                 .map(card -> {
-                    if (card.getIdentity() == null) {
-                        card.setIdentity(player.getGameProfile());
-                        player.displayClientMessage(ModUtil.translate("info", "identity_set").append(Component.literal(player.getGameProfile().getName()).withStyle(ChatFormatting.GREEN)), true);
-                    } else {
-                        card.setIdentity(null);
-                        player.displayClientMessage(ModUtil.translate("info", "identity_cleared"), true);
+                    if (!level.isClientSide) {
+                        if (card.getIdentity() != null) {
+                            card.setIdentity(null);
+                            player.displayClientMessage(ModUtil.translate("info", "identity_cleared"), true);
+                        } else {
+                            setCardIdentity(card, player, player.getGameProfile());
+                        }
                     }
                     return InteractionResultHolder.consume(player.getItemInHand(usedHand));
                 })
                 .orElseGet(() -> InteractionResultHolder.pass(stack));
         }
         return super.use(level, player, usedHand);
+    }
+
+    @Override
+    public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity interactionTarget, InteractionHand usedHand) {
+        if (player.isShiftKeyDown() && interactionTarget instanceof Player targetPlayer) {
+            return stack.getCapability(ModCapabilities.IDENTIFICATION_CARD)
+                .map(card -> {
+                    if (!player.level.isClientSide) {
+                        setCardIdentity(card, player, targetPlayer.getGameProfile());
+                    }
+                    return InteractionResult.SUCCESS;
+                })
+                .orElse(InteractionResult.PASS);
+        }
+        return super.interactLivingEntity(stack, player, interactionTarget, usedHand);
+    }
+
+    private void setCardIdentity(IdentificationCard card, Player user, GameProfile profile) {
+        card.setIdentity(profile);
+        user.displayClientMessage(ModUtil.translate("info", "identity_set").append(Component.literal(profile.getName()).withStyle(ChatFormatting.GREEN)), true);
     }
 
     @Override

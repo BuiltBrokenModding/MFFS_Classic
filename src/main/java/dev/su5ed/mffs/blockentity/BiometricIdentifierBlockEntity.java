@@ -87,7 +87,7 @@ public class BiometricIdentifierBlockEntity extends FortronBlockEntity implement
             .append(this.identitySlots)
             .anyMatch(slot -> slot.getItem().getCapability(ModCapabilities.IDENTIFICATION_CARD)
                 .map(card -> card.checkIdentity(player))
-                .orElseThrow(() -> new IllegalStateException("Missing IdentificationCard capability")));
+                .orElse(false));
     }
 
     @Override

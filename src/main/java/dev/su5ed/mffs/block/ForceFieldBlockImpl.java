@@ -8,7 +8,11 @@ import dev.su5ed.mffs.blockentity.ForceFieldBlockEntity;
 import dev.su5ed.mffs.setup.ModCapabilities;
 import dev.su5ed.mffs.setup.ModObjects;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -18,6 +22,7 @@ import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -59,11 +64,6 @@ public class ForceFieldBlockImpl extends AbstractGlassBlock implements ForceFiel
     }
 
     @Override
-    public VoxelShape getVisualShape(BlockState state, BlockGetter reader, BlockPos pos, CollisionContext context) {
-        return getShape(state, reader, pos, context);
-    }
-
-    @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         return getProjector(level, pos)
             .map(projector -> {
@@ -85,11 +85,18 @@ public class ForceFieldBlockImpl extends AbstractGlassBlock implements ForceFiel
         getProjector(level, pos)
             .ifPresent(projector -> {
                 for (ItemStack stack : projector.getModuleStacks()) {
-                    boolean collided = stack.getCapability(ModCapabilities.MODULE)
-                        .map(module -> module.onCollideWithForceField(level, pos, entity, stack))
-                        .orElse(false);
-                    if (collided) {
+                    if (stack.getCapability(ModCapabilities.MODULE).map(module -> module.onCollideWithForceField(level, pos, entity, stack)).orElse(false)) {
                         return;
+                    }
+                }
+                if (!entity.level.isClientSide && entity.distanceToSqr(Vec3.atCenterOf(pos)) < Mth.square(0.7)) {
+                    if (entity instanceof LivingEntity living && (!(entity instanceof Player player) || !player.isCreative())) {
+                        living.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 4 * 20, 3));
+                        living.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 20, 1));
+                    }
+                    BiometricIdentifier identifier = projector.getBiometricIdentifier();
+                    if (!(entity instanceof Player player) || !entity.isShiftKeyDown() || !player.isCreative() && (identifier == null || !identifier.isAccessGranted(player, FieldPermission.WARP))) {
+                        entity.hurt(ModObjects.FIELD_SHOCK, Integer.MAX_VALUE);
                     }
                 }
             });
