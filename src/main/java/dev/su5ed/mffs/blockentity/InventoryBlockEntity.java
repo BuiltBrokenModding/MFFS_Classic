@@ -17,6 +17,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -45,6 +46,13 @@ public abstract class InventoryBlockEntity extends BaseBlockEntity {
     }
 
     protected void onInventoryChanged() {}
+
+    @Override
+    public void provideAdditionalDrops(List<? super ItemStack> drops) {
+        super.provideAdditionalDrops(drops);
+
+        drops.addAll(this.items.getAllItems());
+    }
 
     public boolean mergeIntoInventory(ItemStack stack) {
         if (!this.level.isClientSide) {

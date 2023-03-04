@@ -9,12 +9,15 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PacketDistributor;
+
+import java.util.List;
 
 public abstract class BaseBlockEntity extends BlockEntity implements MenuProvider {
     private long tickCounter;
@@ -36,8 +39,8 @@ public abstract class BaseBlockEntity extends BlockEntity implements MenuProvide
     }
 
     public void blockRemoved() {}
-    
-    public void neighborChanged(BlockState state, BlockPos formPos, boolean isMoving) {}
+
+    public void provideAdditionalDrops(List<? super ItemStack> drops) {}
 
     public InteractionResult use(Player player, InteractionHand hand, BlockHitResult hit) {
         if (!this.level.isClientSide) {

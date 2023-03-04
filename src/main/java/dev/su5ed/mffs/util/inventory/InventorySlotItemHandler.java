@@ -5,9 +5,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
+import one.util.streamex.StreamEx;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -32,6 +34,13 @@ public class InventorySlotItemHandler implements IItemHandler, IItemHandlerModif
 
     public void onChanged() {
         this.onChanged.run();
+    }
+
+    public Collection<ItemStack> getAllItems() {
+        return StreamEx.of(this.slots)
+            .map(InventorySlot::getItem)
+            .remove(ItemStack::isEmpty)
+            .toList();
     }
 
     @Override

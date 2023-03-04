@@ -1,11 +1,15 @@
 package dev.su5ed.mffs.datagen;
 
 import dev.su5ed.mffs.MFFSMod;
+import dev.su5ed.mffs.setup.ModBlocks;
 import dev.su5ed.mffs.setup.ModTags;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.BlockTagsProvider;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.registries.RegistryObject;
+import one.util.streamex.StreamEx;
 import org.jetbrains.annotations.Nullable;
 
 public class BlockTagsGen extends BlockTagsProvider {
@@ -18,6 +22,12 @@ public class BlockTagsGen extends BlockTagsProvider {
     protected void addTags() {
         tag(ModTags.FORCEFIELD_REPLACEABLE)
             .add(Blocks.SNOW, Blocks.VINE, Blocks.TALL_GRASS, Blocks.DEAD_BUSH, Blocks.GLOW_LICHEN, Blocks.SEAGRASS, Blocks.TALL_GRASS);
+        StreamEx.of(ModBlocks.COERCION_DERIVER, ModBlocks.FORTRON_CAPACITOR, ModBlocks.PROJECTOR, ModBlocks.BIOMETRIC_IDENTIFIER)
+            .map(RegistryObject::get)
+            .forEach(block -> {
+                tag(BlockTags.MINEABLE_WITH_PICKAXE).add(block);
+                tag(BlockTags.NEEDS_IRON_TOOL).add(block);
+            });
     }
 
     @Override
