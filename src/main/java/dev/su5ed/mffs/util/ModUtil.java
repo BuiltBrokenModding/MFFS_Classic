@@ -133,6 +133,12 @@ public final class ModUtil {
         return stack.getCapability(ModCapabilities.MODULE).isPresent();
     }
 
+    public static boolean isModule(ItemStack stack, Module.Category category) {
+        return stack.getCapability(ModCapabilities.MODULE)
+            .map(module -> module.getCategory() == category)
+            .orElse(false);
+    }
+
     public static boolean isModule(ItemStack stack, Module module) {
         return stack.getCapability(ModCapabilities.MODULE)
             .filter(mod -> mod == module)

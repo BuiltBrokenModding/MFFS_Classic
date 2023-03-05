@@ -20,7 +20,7 @@ public class FortronCapacitorMenu extends FortronMenu<FortronCapacitorBlockEntit
         addDataSlot(new DataSlotWrapper(() -> this.blockEntity.getTransferMode().ordinal(), i -> this.blockEntity.setTransferMode(TransferMode.values()[i])));
 
         EntryStream.of(this.blockEntity.upgradeSlots)
-            .forKeyValue((i, slot) -> addSlot(new SlotInventory(slot, 154, 47 + i * 20)));
+            .forKeyValue((i, slot) -> addInventorySlot(new SlotInventory(slot, 154, 47 + i * 20)));
         addInventorySlot(new SlotInventory(this.blockEntity.frequencySlot, 9, 74));
         addInventorySlot(new SlotInventory(this.blockEntity.secondaryCard, 27, 74));
     }

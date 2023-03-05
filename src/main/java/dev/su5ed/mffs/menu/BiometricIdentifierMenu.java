@@ -27,7 +27,7 @@ public class BiometricIdentifierMenu extends FortronMenu<BiometricIdentifierBloc
         addInventorySlot(new SlotInventory(this.blockEntity.copySlot, 8, 66));
         addInventorySlot(new SlotActive(this.blockEntity.masterSlot, 8, 91, this.blockEntity));
         EntryStream.of(this.blockEntity.identitySlots)
-            .forKeyValue((i, slot) -> addSlot(new SlotActive(slot, 8 + i * 18, 111, this.blockEntity)));
+            .forKeyValue((i, slot) -> addInventorySlot(new SlotActive(slot, 8 + i * 18, 111, this.blockEntity)));
 
         addDataSlot(
             () -> this.blockEntity.getManipulatingCard()

@@ -11,13 +11,19 @@ import java.util.Collection;
 
 public class ModuleBase implements Module {
     private final float fortronCost;
+    private final Category category;
 
-    public ModuleBase() {
-        this(0.5F);
+    public ModuleBase(Category category) {
+        this(0.5F, category);
     }
 
     public ModuleBase(float fortronCost) {
+        this(fortronCost, Category.MATRIX);
+    }
+
+    public ModuleBase(float fortronCost, Category category) {
         this.fortronCost = fortronCost;
+        this.category = category;
     }
 
     @Override
@@ -42,4 +48,9 @@ public class ModuleBase implements Module {
 
     @Override
     public void onCalculate(Projector projector, Collection<BlockPos> fieldDefinition) {}
+
+    @Override
+    public Category getCategory() {
+        return this.category;
+    }
 }

@@ -50,6 +50,13 @@ public interface Module {
      * @param fieldDefinition the field block positions
      */
     void onCalculate(Projector projector, Collection<BlockPos> fieldDefinition);
+    
+    Category getCategory();
+    
+    enum Category {
+        MATRIX,
+        FIELD
+    }
 
     enum ProjectAction {
         /**

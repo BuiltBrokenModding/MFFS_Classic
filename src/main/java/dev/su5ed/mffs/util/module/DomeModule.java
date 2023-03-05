@@ -6,6 +6,11 @@ import net.minecraft.core.BlockPos;
 import java.util.Collection;
 
 public class DomeModule extends ModuleBase {
+
+    public DomeModule() {
+        super(Category.MATRIX);
+    }
+
     @Override
     public void onCalculate(Projector projector, Collection<BlockPos> fieldDefinition) {
         super.onCalculate(projector, fieldDefinition);

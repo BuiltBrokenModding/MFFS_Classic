@@ -20,7 +20,7 @@ public class CoercionDeriverMenu extends FortronMenu<CoercionDeriverBlockEntity>
         addDataSlot(() -> this.blockEntity.getEnergyMode().ordinal(), i -> this.blockEntity.setEnergyMode(EnergyMode.values()[i]));
 
         EntryStream.of(this.blockEntity.upgradeSlots)
-            .forKeyValue((i, slot) -> addSlot(new SlotInventory(slot, 154, 47 + i * 20)));
+            .forKeyValue((i, slot) -> addInventorySlot(new SlotInventory(slot, 154, 47 + i * 20)));
         addInventorySlot(new SlotInventory(this.blockEntity.frequencySlot, 9, 41));
         addInventorySlot(new SlotInventory(this.blockEntity.batterySlot, 9, 83));
         addInventorySlot(new SlotInventory(this.blockEntity.fuelSlot, 29, 83));
