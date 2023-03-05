@@ -24,10 +24,6 @@ import java.util.Locale;
 import java.util.Set;
 
 public class CoercionDeriverBlockEntity extends ElectricTileEntity {
-    public static final int FUEL_PROCESS_TIME = 10 * 20;
-    public static final int PRODUCTION_MULTIPLIER = 4;
-    public static final float FE_FORTRON_RATIO = 0.0025F;
-    public static final int ENERGY_LOSS = 1;
     private static final int DEFAULT_FE_CAPACITY = 1500000;
 
     public final InventorySlot batterySlot;
@@ -71,6 +67,10 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity {
         this.processTime = processTime;
     }
 
+    private double getEnergyConversionRatio() {
+        return MFFSConfig.COMMON.energyConversionRatio.get();
+    }
+
     @Override
     public int getBaseFortronTankCapacity() {
         return 30;
@@ -96,9 +96,9 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity {
         if (isActive()) {
             if (isInversed() && MFFSConfig.COMMON.enableElectricity.get()) {
                 if (this.energy.getEnergyStored() < this.energy.getMaxEnergyStored()) {
-                    int withdrawnElectricity = (int) (this.fortronStorage.extractFortron(getProductionRate() / 20, false) / FE_FORTRON_RATIO);
+                    int withdrawnElectricity = (int) (this.fortronStorage.extractFortron(getProductionRate() / 20, false) / getEnergyConversionRatio());
                     // Inject electricity from Fortron.
-                    this.energy.receiveEnergy(withdrawnElectricity * ENERGY_LOSS, true);
+                    this.energy.receiveEnergy((int) (withdrawnElectricity * MFFSConfig.COMMON.backConversionEnergyLoss.get()), true);
                 }
 
                 charge(this.batterySlot.getItem());
@@ -117,7 +117,7 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity {
                     // TODO Fuel display
                     if (this.processTime == 0 && hasFuel()) {
                         this.fuelSlot.getItem().shrink(1);
-                        this.processTime = FUEL_PROCESS_TIME * Math.max(getModuleCount(ModModules.SCALE) / 20, 1);
+                        this.processTime = MFFSConfig.COMMON.catalystBurnTime.get() * Math.max(getModuleCount(ModModules.SCALE) / 20, 1);
                     }
                     this.processTime = Math.max(--this.processTime, 0);
                 }
@@ -130,8 +130,8 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity {
      */
     public int getProductionRate() {
         if (isActive()) {
-            int production = (int) (getMaxTransferRate() / 20F * FE_FORTRON_RATIO * MFFSConfig.COMMON.fortronProductionMultiplier.get());
-            return this.processTime > 0 ? production * PRODUCTION_MULTIPLIER : production;
+            int production = (int) (getMaxTransferRate() / 20F * getEnergyConversionRatio() * MFFSConfig.COMMON.fortronProductionMultiplier.get());
+            return this.processTime > 0 ? (int) (production * MFFSConfig.COMMON.catalystMultiplier.get()) : production;
         }
         return 0;
     }

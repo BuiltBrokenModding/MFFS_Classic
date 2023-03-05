@@ -29,8 +29,13 @@ public class MFFSConfig {
         public final ForgeConfigSpec.IntValue maxFFGenPerTick;
         public final ForgeConfigSpec.BooleanValue allowOpBiometryOverride;
 
+        public final ForgeConfigSpec.DoubleValue energyConversionRatio;
+        public final ForgeConfigSpec.DoubleValue catalystMultiplier;
+        public final ForgeConfigSpec.IntValue catalystBurnTime;
+        public final ForgeConfigSpec.DoubleValue backConversionEnergyLoss;
+
         private Common(ForgeConfigSpec.Builder builder) {
-            builder.push("General config");
+            builder.push("general");
             this.enableElectricity = builder
                 .comment("Turning this to false will make MFFS run without electricity or energy systems required. Great for vanilla!")
                 .define("enableElectricity", true);
@@ -46,6 +51,21 @@ public class MFFSConfig {
             this.allowOpBiometryOverride = builder
                 .comment("Allow server operators to bypass Force Field biometry")
                 .define("allowOpBiometryOverride", true);
+            builder.pop();
+
+            builder.push("balance");
+            this.energyConversionRatio = builder
+                .comment("The amount of generated Fortron per 1 FE")
+                .defineInRange("energyConversionRatio", 0.0025, 0.00001, 10000);
+            this.catalystMultiplier = builder
+                .comment("Fortron catalyst production multiplier")
+                .defineInRange("catalystMultiplier", 4.0, 0.0, 10000.0);
+            this.catalystBurnTime = builder
+                .comment("The amount of ticks a single catalyst item lasts for")
+                .defineInRange("catalystBurnTime", 10 * 20, 1, 10000);
+            this.backConversionEnergyLoss = builder
+                .comment("Energy loss per tick when converting Fortron back to FE")
+                .defineInRange("backConversionEnergyLoss", 1.0, 0.0, 10000.0);
             builder.pop();
         }
     }
