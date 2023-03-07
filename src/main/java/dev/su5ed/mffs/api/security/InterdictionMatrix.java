@@ -1,10 +1,15 @@
 package dev.su5ed.mffs.api.security;
 
+import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.api.Activatable;
 import dev.su5ed.mffs.api.module.ModuleAcceptor;
+import dev.su5ed.mffs.blockentity.InterdictionMatrixBlockEntity;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.Collection;
+import java.util.Locale;
 
 public interface InterdictionMatrix extends Activatable, BiometricIdentifierLink, ModuleAcceptor {
 
@@ -31,5 +36,22 @@ public interface InterdictionMatrix extends Activatable, BiometricIdentifierLink
     /**
      * @return True if the filtering is on ban mode. False if it is on allow-only mode.
      */
-    boolean getFilterMode();
+    ConfiscationMode getConfiscationMode();
+
+    enum ConfiscationMode {
+        BLACKLIST(0x308F0000),
+        WHITELIST(0x30008F00);
+
+        public final int slotTintColor;
+        public final MutableComponent translation;
+
+        ConfiscationMode(int slotTintColor) {
+            this.slotTintColor = slotTintColor;
+            this.translation = Component.translatable(MFFSMod.MODID + ".confiscation_mode." + name().toLowerCase(Locale.ROOT));
+        }
+
+        public ConfiscationMode next() {
+            return values()[(ordinal() + 1) % values().length];
+        }
+    }
 }

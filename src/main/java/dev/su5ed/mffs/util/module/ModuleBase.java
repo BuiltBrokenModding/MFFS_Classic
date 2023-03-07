@@ -8,22 +8,23 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 import java.util.Collection;
+import java.util.Set;
 
 public class ModuleBase implements Module {
     private final float fortronCost;
-    private final Category category;
+    private final Set<Category> categories;
 
-    public ModuleBase(Category category) {
-        this(0.5F, category);
+    public ModuleBase(Category... categories) {
+        this(0.5F, categories);
     }
 
     public ModuleBase(float fortronCost) {
         this(fortronCost, Category.MATRIX);
     }
 
-    public ModuleBase(float fortronCost, Category category) {
+    public ModuleBase(float fortronCost, Category... categories) {
         this.fortronCost = fortronCost;
-        this.category = category;
+        this.categories = Set.of(categories);
     }
 
     @Override
@@ -50,7 +51,7 @@ public class ModuleBase implements Module {
     public void onCalculate(Projector projector, Collection<BlockPos> fieldDefinition) {}
 
     @Override
-    public Category getCategory() {
-        return this.category;
+    public Set<Category> getCategories() {
+        return this.categories;
     }
 }

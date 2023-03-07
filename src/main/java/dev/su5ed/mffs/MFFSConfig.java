@@ -28,6 +28,7 @@ public class MFFSConfig {
         public final ForgeConfigSpec.BooleanValue useCache;
         public final ForgeConfigSpec.IntValue maxFFGenPerTick;
         public final ForgeConfigSpec.BooleanValue allowOpBiometryOverride;
+        public final ForgeConfigSpec.BooleanValue interactCreative;
 
         public final ForgeConfigSpec.DoubleValue energyConversionRatio;
         public final ForgeConfigSpec.DoubleValue catalystMultiplier;
@@ -51,6 +52,9 @@ public class MFFSConfig {
             this.allowOpBiometryOverride = builder
                 .comment("Allow server operators to bypass Force Field biometry")
                 .define("allowOpBiometryOverride", true);
+            this.interactCreative = builder
+                .comment("Should the interdiction matrix interact with creative players?")
+                .define("interactCreative", true);
             builder.pop();
 
             builder.push("balance");

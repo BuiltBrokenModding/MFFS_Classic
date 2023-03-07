@@ -135,7 +135,7 @@ public final class ModUtil {
 
     public static boolean isModule(ItemStack stack, Module.Category category) {
         return stack.getCapability(ModCapabilities.MODULE)
-            .map(module -> module.getCategory() == category)
+            .map(module -> module.getCategories().contains(category))
             .orElse(false);
     }
 

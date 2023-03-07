@@ -27,6 +27,7 @@ final class BlockStateGen extends BlockStateProvider {
         machineBlock(ModBlocks.COERCION_DERIVER.get());
         machineBlock(ModBlocks.FORTRON_CAPACITOR.get());
         simpleBlock(ModBlocks.BIOMETRIC_IDENTIFIER.get(), models().getExistingFile(location("biometric_identifier")));
+        machineBlock(ModBlocks.INTERDICTION_MATRIX.get());
 
         simpleBlock(ModBlocks.FORCE_FIELD.get(), models().getBuilder("force_field")
             .customLoader(ForceFieldBlockModelBuilder::new)

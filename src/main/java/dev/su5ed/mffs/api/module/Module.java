@@ -7,6 +7,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 import java.util.Collection;
+import java.util.Set;
 
 public interface Module {
     /**
@@ -51,11 +52,12 @@ public interface Module {
      */
     void onCalculate(Projector projector, Collection<BlockPos> fieldDefinition);
     
-    Category getCategory();
+    Set<Category> getCategories();
     
     enum Category {
         MATRIX,
-        FIELD
+        FIELD,
+        INTERDICTION
     }
 
     enum ProjectAction {

@@ -5,6 +5,8 @@ import dev.su5ed.mffs.blockentity.FortronBlockEntity;
 import dev.su5ed.mffs.setup.ModItems;
 import dev.su5ed.mffs.util.DataSlotWrapper;
 import dev.su5ed.mffs.util.ModUtil;
+import dev.su5ed.mffs.util.inventory.InventorySlot;
+import dev.su5ed.mffs.util.inventory.SlotInventory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
@@ -18,6 +20,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
+import org.apache.commons.lang3.function.TriFunction;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -92,28 +95,34 @@ public abstract class FortronMenu<T extends FortronBlockEntity & Activatable> ex
     }
 
     protected void layoutPlayerInventorySlots(int x, int y) {
+        TriFunction<Integer, Integer, Integer, Slot> factory = (index, slotX, slotY) -> new SlotItemHandler(this.playerInventory, index, slotX, slotY);
+
         // Player inventory
-        this.playerInventorySlots.addAll(addSlotBox(this.playerInventory, 9, x, y, 9, 18, 3, 18));
+        this.playerInventorySlots.addAll(addSlotBox(9, x, y, 9, 18, 3, 18, factory));
 
         // Hotbar
         y += 58;
-        this.hotBarSlots.addAll(addSlotRange(this.playerInventory, 0, x, y, 9, 18));
+        this.hotBarSlots.addAll(addSlotRange(0, x, y, 9, 18, factory));
+    }
+    
+    protected List<Slot> addSlotBox(int x, int y, int horAmount, int verAmount, List<InventorySlot> slots) {
+        return addSlotBox(0, x, y, horAmount, 18, verAmount, 18, (idx, slotX, slotY) -> new SlotInventory(slots.get(idx), slotX, slotY));
     }
 
-    private List<Slot> addSlotBox(IItemHandler handler, int index, int x, int y, int horAmount, int dx, int verAmount, int dy) {
+    protected List<Slot> addSlotBox(int index, int x, int y, int horAmount, int dx, int verAmount, int dy, TriFunction<Integer, Integer, Integer, Slot> factory) {
         List<Slot> slots = new ArrayList<>();
         for (int j = 0; j < verAmount; j++) {
-            slots.addAll(addSlotRange(handler, index, x, y, horAmount, dx));
+            slots.addAll(addSlotRange(index, x, y, horAmount, dx, factory));
             index += horAmount;
             y += dy;
         }
         return slots;
     }
 
-    private List<Slot> addSlotRange(IItemHandler handler, int index, int x, int y, int amount, int dx) {
+    protected List<Slot> addSlotRange(int index, int x, int y, int amount, int dx, TriFunction<Integer, Integer, Integer, Slot> factory) {
         List<Slot> slots = new ArrayList<>();
         for (int i = 0; i < amount; i++, x += dx, index++) {
-            slots.add(addSlot(new SlotItemHandler(handler, index, x, y)));
+            slots.add(addSlot(factory.apply(index, x, y)));
         }
         return slots;
     }

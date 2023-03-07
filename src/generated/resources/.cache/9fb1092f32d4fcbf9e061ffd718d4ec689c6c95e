@@ -1,4 +1,4 @@
-// 1.19.2	2023-03-01T17:13:56.2052448	Recipes
+// 1.19.2	2023-03-07T15:35:00.9938102	Recipes
 db632e53c2dab7cde4ef224fdc20b8503601bbb7 data/mffs/advancements/recipes/mffs/battery.json
 67fb8848a5a4216a1edea274b7b4e336ed989fa6 data/mffs/advancements/recipes/mffs/biometric_identifier.json
 fc35c01de17ae96aaa00ed840c3d4ff4d2c55615 data/mffs/advancements/recipes/mffs/blank_card.json
@@ -15,6 +15,7 @@ bccc206462d19f760c129423e72de66a42cb61ab data/mffs/advancements/recipes/mffs/foc
 3fa14db74ed61dbcfb787d9d91c492513cbd27cd data/mffs/advancements/recipes/mffs/fusion_module.json
 69ad3118040639ddb6a5a0bd21ded92d7f045f7a data/mffs/advancements/recipes/mffs/glow_module.json
 d174e5227e130d7b044b80ea5b064df533ea5738 data/mffs/advancements/recipes/mffs/id_card.json
+a8c4aee3e70702abe9d10f8548dfa1527d1bacb0 data/mffs/advancements/recipes/mffs/interdiction_matrix.json
 40069b46969659ef5025e6c4a7a94ca79de2d8fc data/mffs/advancements/recipes/mffs/inverter_module.json
 874cbecdfa78b5964b125ca5688eefe979181169 data/mffs/advancements/recipes/mffs/projector.json
 1592aea8f986f9ff575cacb60354735764ca5511 data/mffs/advancements/recipes/mffs/pyramid_mode.json
@@ -47,6 +48,7 @@ f02104eb03ced2860f7a8bb13a6bfb2c15072682 data/mffs/recipes/disintegration_module
 67ee975993719c9aed1af3bd93d5a62413f6db7b data/mffs/recipes/fusion_module.json
 66dae54f70ec97fd07dc7e458e1e211df35e90f4 data/mffs/recipes/glow_module.json
 5ceac0c4b7f049759f3c44cf334a058967699aac data/mffs/recipes/id_card.json
+3ca45da27201db4df0fbaaaed17d2be5863254e5 data/mffs/recipes/interdiction_matrix.json
 a638dfa6a0267ca0011ae0b5ac32249b13d2b592 data/mffs/recipes/inverter_module.json
 273980b71cd2ef6a9b7596e2d09cd1152f528e05 data/mffs/recipes/projector.json
 3e816ecf34d7be5e4c3b5026a335e0bb49b7a88f data/mffs/recipes/pyramid_mode.json

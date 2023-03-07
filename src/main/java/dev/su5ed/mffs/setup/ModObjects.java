@@ -5,6 +5,7 @@ import dev.su5ed.mffs.blockentity.BiometricIdentifierBlockEntity;
 import dev.su5ed.mffs.blockentity.CoercionDeriverBlockEntity;
 import dev.su5ed.mffs.blockentity.ForceFieldBlockEntity;
 import dev.su5ed.mffs.blockentity.FortronCapacitorBlockEntity;
+import dev.su5ed.mffs.blockentity.InterdictionMatrixBlockEntity;
 import dev.su5ed.mffs.blockentity.ProjectorBlockEntity;
 import dev.su5ed.mffs.render.ModParticleType;
 import dev.su5ed.mffs.render.particle.BeamParticleOptions;
@@ -30,6 +31,7 @@ public final class ModObjects {
     public static final RegistryObject<BlockEntityType<FortronCapacitorBlockEntity>> FORTRON_CAPACITOR_BLOCK_ENTITY = blockEntity("fortron_capacitor", FortronCapacitorBlockEntity::new, ModBlocks.FORTRON_CAPACITOR::get);
     public static final RegistryObject<BlockEntityType<ForceFieldBlockEntity>> FORCE_FIELD_BLOCK_ENTITY = blockEntity("force_field", ForceFieldBlockEntity::new, ModBlocks.FORCE_FIELD::get);
     public static final RegistryObject<BlockEntityType<BiometricIdentifierBlockEntity>> BIOMETRIC_IDENTIFIER_BLOCK_ENTITY = blockEntity("biometric_identifier", BiometricIdentifierBlockEntity::new, ModBlocks.BIOMETRIC_IDENTIFIER::get);
+    public static final RegistryObject<BlockEntityType<InterdictionMatrixBlockEntity>> INTERDICTION_MATRIX_BLOCK_ENTITY = blockEntity("interdiction_matrix", InterdictionMatrixBlockEntity::new, ModBlocks.INTERDICTION_MATRIX::get);
 
     public static final RegistryObject<ModParticleType<BeamParticleOptions>> BEAM_PARTICLE = PARTICLES.register("beam", () -> new ModParticleType<>(true, BeamParticleOptions.DESERIALIZER, BeamParticleOptions.CODEC));
     public static final RegistryObject<ModParticleType<MovingHologramParticleOptions>> MOVING_HOLOGRAM_PARTICLE = PARTICLES.register("moving_hologram", () -> new ModParticleType<>(true, MovingHologramParticleOptions.DESERIALIZER, MovingHologramParticleOptions.CODEC));

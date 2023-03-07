@@ -20,6 +20,8 @@ final class ItemModelGen extends ItemModelProvider {
 
     @Override
     protected void registerModels() {
+        withExistingParent("interdiction_matrix", location("block/interdiction_matrix"));
+
         simpleItem(ModItems.CAMOUFLAGE_MODULE);
         simpleItem(ModItems.CAPACITY_MODULE);
         simpleItem(ModItems.SCALE_MODULE);
@@ -50,6 +52,7 @@ final class ItemModelGen extends ItemModelProvider {
         simpleItem(ModItems.STEEL_INGOT);
         simpleItem(ModItems.BLANK_CARD);
         simpleItem(ModItems.ID_CARD);
+        simpleItem(ModItems.INFINITE_POWER_CARD);
     }
 
     private void simpleItem(RegistryObject<? extends Item> item) {

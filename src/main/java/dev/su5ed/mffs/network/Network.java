@@ -36,10 +36,10 @@ public final class Network {
             .decoder(UpdateFrequencyPacket::decode)
             .consumerMainThread(UpdateFrequencyPacket::processServerPacket)
             .add();
-        INSTANCE.messageBuilder(ToggleEnergyModePacket.class, id++, NetworkDirection.PLAY_TO_SERVER)
-            .encoder(ToggleEnergyModePacket::encode)
-            .decoder(ToggleEnergyModePacket::decode)
-            .consumerMainThread(ToggleEnergyModePacket::processServerPacket)
+        INSTANCE.messageBuilder(SwitchEnergyModePacket.class, id++, NetworkDirection.PLAY_TO_SERVER)
+            .encoder(SwitchEnergyModePacket::encode)
+            .decoder(SwitchEnergyModePacket::decode)
+            .consumerMainThread(SwitchEnergyModePacket::processServerPacket)
             .add();
         INSTANCE.messageBuilder(SwitchTransferModePacket.class, id++, NetworkDirection.PLAY_TO_SERVER)
             .encoder(SwitchTransferModePacket::encode)
@@ -55,6 +55,11 @@ public final class Network {
             .encoder(ToggleFieldPermissionPacket::encode)
             .decoder(ToggleFieldPermissionPacket::decode)
             .consumerMainThread(ToggleFieldPermissionPacket::processServerPacket)
+            .add();
+        INSTANCE.messageBuilder(SwitchConfiscationModePacket.class, id++, NetworkDirection.PLAY_TO_SERVER)
+            .encoder(SwitchConfiscationModePacket::encode)
+            .decoder(SwitchConfiscationModePacket::decode)
+            .consumerMainThread(SwitchConfiscationModePacket::processServerPacket)
             .add();
 
         INSTANCE.messageBuilder(DrawBeamPacket.class, id++, NetworkDirection.PLAY_TO_CLIENT)

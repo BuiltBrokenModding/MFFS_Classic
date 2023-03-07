@@ -9,25 +9,21 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public record ToggleEnergyModePacket(BlockPos pos, CoercionDeriverBlockEntity.EnergyMode mode) {
+public record SwitchEnergyModePacket(BlockPos pos, CoercionDeriverBlockEntity.EnergyMode mode) {
     public void encode(FriendlyByteBuf buf) {
         buf.writeBlockPos(this.pos);
         buf.writeEnum(this.mode);
     }
 
-    public static ToggleEnergyModePacket decode(FriendlyByteBuf buf) {
+    public static SwitchEnergyModePacket decode(FriendlyByteBuf buf) {
         BlockPos pos = buf.readBlockPos();
         CoercionDeriverBlockEntity.EnergyMode mode = buf.readEnum(CoercionDeriverBlockEntity.EnergyMode.class);
-        return new ToggleEnergyModePacket(pos, mode);
+        return new SwitchEnergyModePacket(pos, mode);
     }
 
     public void processServerPacket(Supplier<NetworkEvent.Context> ctx) {
         Level level = ctx.get().getSender().getLevel();
         Network.findBlockEntity(ModObjects.COERCION_DERIVER_BLOCK_ENTITY.get(), level, this.pos)
-            .ifPresent(this::process);
-    }
-
-    public void process(CoercionDeriverBlockEntity be) {
-        be.setEnergyMode(this.mode);
+            .ifPresent(be -> be.setEnergyMode(this.mode));
     }
 }

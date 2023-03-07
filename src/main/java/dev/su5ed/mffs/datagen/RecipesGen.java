@@ -10,6 +10,7 @@ import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.Tags;
 
 import java.util.function.Consumer;
@@ -114,6 +115,16 @@ public class RecipesGen extends RecipeProvider {
             .pattern("FSF")
             .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
             .save(finishedRecipeConsumer, location("biometric_identifier"));
+
+        ShapedRecipeBuilder.shaped(ModItems.INTERDICTION_MATRIX_ITEM.get())
+            .define('S', ModItems.SHOCK_MODULE.get())
+            .define('F', ModItems.FOCUS_MATRIX.get())
+            .define('E', Blocks.ENDER_CHEST)
+            .pattern("SSS")
+            .pattern("FFF")
+            .pattern("FEF")
+            .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
+            .save(finishedRecipeConsumer, location("interdiction_matrix"));
 
         ShapedRecipeBuilder.shaped(ModItems.REMOTE_CONTROLLER_ITEM.get())
             .define('S', ModTags.INGOTS_STEEL)

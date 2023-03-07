@@ -82,7 +82,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
             .flatMap(side -> IntStreamEx.range(2)
                 .mapToEntry(i -> side, i -> addSlot("field_module_" + side.getName() + "_" + i, InventorySlot.Mode.BOTH, stack -> ModUtil.isModule(stack, Module.Category.FIELD))))
             .toListAndThen(ImmutableListMultimap::copyOf);
-        this.upgradeSlots = createUpgradeSlots(6, true);
+        this.upgradeSlots = createUpgradeSlots(6);
     }
 
     public int computeAnimationSpeed() {

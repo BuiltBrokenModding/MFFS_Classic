@@ -6,7 +6,7 @@ import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.blockentity.CoercionDeriverBlockEntity.EnergyMode;
 import dev.su5ed.mffs.menu.CoercionDeriverMenu;
 import dev.su5ed.mffs.network.Network;
-import dev.su5ed.mffs.network.ToggleEnergyModePacket;
+import dev.su5ed.mffs.network.SwitchEnergyModePacket;
 import dev.su5ed.mffs.util.ModUtil;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import net.minecraft.ChatFormatting;
@@ -35,7 +35,7 @@ public class CoercionDeriverScreen extends FortronScreen<CoercionDeriverMenu> {
             button -> {
                 EnergyMode mode = this.menu.blockEntity.getEnergyMode().next();
                 this.menu.blockEntity.setEnergyMode(mode);
-                Network.INSTANCE.sendToServer(new ToggleEnergyModePacket(this.menu.blockEntity.getBlockPos(), mode));
+                Network.INSTANCE.sendToServer(new SwitchEnergyModePacket(this.menu.blockEntity.getBlockPos(), mode));
             })
         );
     }

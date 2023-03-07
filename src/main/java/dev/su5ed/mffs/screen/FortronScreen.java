@@ -61,12 +61,6 @@ public abstract class FortronScreen<T extends FortronMenu<?>> extends BaseScreen
         drawWithTooltip(poseStack, this.frequencyLabelPos.leftInt(), this.frequencyLabelPos.rightInt(), GuiColors.DARK_GREY, this.frequency.getMessage(), ModUtil.translate("screen", "frequency.tooltip"));
     }
 
-    @Override
-    public int getDisabledSlotColor() {
-        int alpha = Math.min((int) (255 * this.menu.blockEntity.getAnimation() / 4F), 0x90);
-        return GuiColors.DISABLED_SLOT_OVERLAY_RGB | alpha << 24;
-    }
-
     private void onFrequencyChanged(String str) {
         int frequency = str.isEmpty() ? 0 : Integer.parseInt(str);
         Network.INSTANCE.sendToServer(new UpdateFrequencyPacket(this.menu.blockEntity.getBlockPos(), frequency));

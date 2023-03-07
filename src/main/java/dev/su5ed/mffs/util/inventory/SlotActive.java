@@ -1,17 +1,30 @@
 package dev.su5ed.mffs.util.inventory;
 
 import dev.su5ed.mffs.api.Activatable;
+import dev.su5ed.mffs.blockentity.FortronBlockEntity;
+import dev.su5ed.mffs.screen.GuiColors;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public class SlotActive extends SlotInventory {
-    private final Activatable activatable;
+import java.util.function.IntSupplier;
 
-    public SlotActive(InventorySlot inventorySlot, int x, int y, Activatable activatable) {
+public class SlotActive extends SlotInventory implements ColoredSlot {
+    private final Activatable activatable;
+    private final IntSupplier disabledColorSupplier;
+    
+    public SlotActive(InventorySlot inventorySlot, int x, int y, FortronBlockEntity be) {
+        this(inventorySlot, x, y, be, () -> {
+            int alpha = Math.min((int) (255 * be.getAnimation() / 4F), 0x90);
+            return GuiColors.DISABLED_SLOT_OVERLAY_RGB | alpha << 24;
+        });
+    }
+
+    public SlotActive(InventorySlot inventorySlot, int x, int y, Activatable activatable, IntSupplier disabledColorSupplier) {
         super(inventorySlot, x, y);
 
         this.activatable = activatable;
+        this.disabledColorSupplier = disabledColorSupplier;
     }
 
     public boolean isDisabled() {
@@ -19,12 +32,27 @@ public class SlotActive extends SlotInventory {
     }
 
     @Override
+    public boolean shouldTint() {
+        return isDisabled();
+    }
+
+    @Override
+    public int getTintColor() {
+        return this.disabledColorSupplier.getAsInt();
+    }
+
+    @Override
+    public boolean tintItems() {
+        return true;
+    }
+
+    @Override
     public boolean mayPlace(@NotNull ItemStack stack) {
-        return !this.activatable.isActive() && super.mayPlace(stack);
+        return !isDisabled() && super.mayPlace(stack);
     }
 
     @Override
     public boolean mayPickup(Player player) {
-        return !this.activatable.isActive() && super.mayPickup(player);
+        return !isDisabled() && super.mayPickup(player);
     }
 }

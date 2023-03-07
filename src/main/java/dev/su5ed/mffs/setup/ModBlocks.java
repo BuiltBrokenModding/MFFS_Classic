@@ -28,6 +28,7 @@ public final class ModBlocks {
     public static final RegistryObject<BaseEntityBlock> FORTRON_CAPACITOR = baseEntityBlock("fortron_capacitor", () -> ModObjects.FORTRON_CAPACITOR_BLOCK_ENTITY);
     public static final RegistryObject<ForceFieldBlockImpl> FORCE_FIELD = BLOCKS.register("force_field", ForceFieldBlockImpl::new);
     public static final RegistryObject<BiometricIdentifierBlock> BIOMETRIC_IDENTIFIER = block("biometric_identifier", BiometricIdentifierBlock::new);
+    public static final RegistryObject<BaseEntityBlock> INTERDICTION_MATRIX = baseEntityBlock("interdiction_matrix", () -> ModObjects.INTERDICTION_MATRIX_BLOCK_ENTITY);
 
     public static void init(final IEventBus bus) {
         BLOCKS.register(bus);

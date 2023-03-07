@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "mffs:block/interdiction_matrix_vertical_active", 
+    "side": "mffs:block/interdiction_matrix_side_active"
+  }
+}

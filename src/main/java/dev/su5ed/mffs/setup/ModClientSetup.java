@@ -17,6 +17,7 @@ import dev.su5ed.mffs.render.particle.MovingHologramParticleProvider;
 import dev.su5ed.mffs.screen.BiometricIdentifierScreen;
 import dev.su5ed.mffs.screen.CoercionDeriverScreen;
 import dev.su5ed.mffs.screen.FortronCapacitorScreen;
+import dev.su5ed.mffs.screen.InterdictionMatrixScreen;
 import dev.su5ed.mffs.screen.ProjectorScreen;
 import dev.su5ed.mffs.util.projector.ModProjectorModes;
 import net.minecraft.client.gui.screens.MenuScreens;
@@ -65,6 +66,7 @@ public final class ModClientSetup {
             MenuScreens.register(ModMenus.FORTRON_CAPACITOR_MENU.get(), FortronCapacitorScreen::new);
             MenuScreens.register(ModMenus.PROJECTOR_MENU.get(), ProjectorScreen::new);
             MenuScreens.register(ModMenus.BIOMETRIC_IDENTIFIER_MENU.get(), BiometricIdentifierScreen::new);
+            MenuScreens.register(ModMenus.INTERDICTION_MATRIX_MENU.get(), InterdictionMatrixScreen::new);
 
             registerLazyRenderers();
         });

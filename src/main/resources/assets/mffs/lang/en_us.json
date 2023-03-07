@@ -28,6 +28,7 @@
   "info.mffs.field_permission.bypass_confiscation.tooltip": "Allows the player to bypass the Interdiction Matrix confiscation.",
   "info.mffs.field_permission.remote_control": "Remote Control",
   "info.mffs.field_permission.remote_control.tooltip": "Allows the player to use the remote control within defensive region.",
+  "info.mffs.interdiction_matrix.warning": "[%s] Warning! You are near the scanning range!",
   
   "death.attack.mffs.field_shock": "%1$s was disintegrated by a force field.",
   
@@ -36,6 +37,7 @@
   "block.mffs.coercion_deriver": "Coercion Deriver",
   "block.mffs.fortron_capacitor": "Fortron Capacitor",
   "block.mffs.biometric_identifier": "Biometric Identifier",
+  "block.mffs.interdiction_matrix": "Interdiction Matrix",
   
   "item.mffs.remote_controller": "Remote Controller",
   "item.mffs.cube_mode": "Cube Mode",
@@ -76,6 +78,8 @@
   "item.mffs.steel_ingot": "Steel Ingot",
   "item.mffs.blank_card": "Blank Card",
   "item.mffs.id_card": "Identification Card",
+  "item.mffs.infinite_power_card": "Infinite Power Card",
+  "item.mffs.infinite_power_card.description": "A creative-only item that can be placed inside a capacitor for infinite energy.",
   
   "sounds.mffs.field": "Field Sound",
   
@@ -88,6 +92,8 @@
   "mffs.projector_menu.south": "South",
   "mffs.projector_menu.west": "West",
   "mffs.projector_menu.east": "East",
+  "mffs.confiscation_mode.blacklist": "Banned",
+  "mffs.confiscation_mode.whitelist": "Allowed",
   
   "screen.mffs.frequency": "Frequency:",
   "screen.mffs.frequency.tooltip": "Machines with the same frequency will share Fortron energy.",
@@ -111,5 +117,8 @@
   "screen.mffs.master": "Master",
   "screen.mffs.master.tooltip": "The Master Card will denote the player in the card owner of the Biometric Identifier.",
   "screen.mffs.copy": "Copy",
-  "screen.mffs.copy.tooltip": "Copy all data from the Rights slot to this card"
+  "screen.mffs.copy.tooltip": "Copy all data from the Rights slot to this card",
+  "screen.mffs.warn_range": "Warning: %s",
+  "screen.mffs.action_range": "Action: %s",
+  "screen.mffs.filter_mode": "Filter Mode:"
 }

@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.su5ed.mffs.util.ModUtil;
 import dev.su5ed.mffs.util.TooltipSlot;
+import dev.su5ed.mffs.util.inventory.ColoredSlot;
 import dev.su5ed.mffs.util.inventory.SlotActive;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
@@ -75,14 +76,12 @@ public abstract class BaseScreen<T extends AbstractContainerMenu> extends Abstra
     @Override
     protected void renderSlot(PoseStack poseStack, Slot slot) {
         super.renderSlot(poseStack, slot);
-        if (slot instanceof SlotActive slotActive && slotActive.isDisabled()) {
-            RenderSystem.disableDepthTest();
-            fill(poseStack, slot.x - 1, slot.y - 1, slot.x + 17, slot.y + 17, getDisabledSlotColor());
+        if (slot instanceof ColoredSlot colored && colored.shouldTint()) {
+            if (colored.tintItems()) {
+                RenderSystem.disableDepthTest();
+            }
+            fill(poseStack, slot.x - 1, slot.y - 1, slot.x + 17, slot.y + 17, colored.getTintColor());
         }
-    }
-
-    public int getDisabledSlotColor() {
-        return GuiColors.DISABLED_SLOT_OVERLAY;
     }
 
     @Override

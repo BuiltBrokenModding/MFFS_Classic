@@ -15,6 +15,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidType;
 import one.util.streamex.IntStreamEx;
 import one.util.streamex.StreamEx;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -148,14 +149,14 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
     }
 
     protected void addModuleSlots(List<? super InventorySlot> list) {}
-
+    
     protected List<InventorySlot> createUpgradeSlots(int count) {
-        return createUpgradeSlots(count, false);
+        return createUpgradeSlots(count, null);
     }
 
-    protected List<InventorySlot> createUpgradeSlots(int count, boolean allowAny) {
+    protected List<InventorySlot> createUpgradeSlots(int count, @Nullable Module.Category category) {
         return IntStreamEx.range(count)
-            .mapToObj(i -> addSlot("upgrade_" + i, InventorySlot.Mode.BOTH, stack -> allowAny || ModUtil.isModule(stack, Module.Category.MATRIX)))
+            .mapToObj(i -> addSlot("upgrade_" + i, InventorySlot.Mode.BOTH, stack -> category == null || ModUtil.isModule(stack, category)))
             .toList();
     }
 
