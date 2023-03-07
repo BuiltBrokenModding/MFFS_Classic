@@ -37,6 +37,8 @@ public interface InterdictionMatrix extends Activatable, BiometricIdentifierLink
      * @return True if the filtering is on ban mode. False if it is on allow-only mode.
      */
     ConfiscationMode getConfiscationMode();
+    
+    Component getDisplayName();
 
     enum ConfiscationMode {
         BLACKLIST(0x308F0000),

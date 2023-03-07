@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "G": {
+      "tag": "forge:storage_blocks/gold"
+    },
+    "M": {
+      "item": "mffs:block_access_module"
+    }
+  },
+  "pattern": [
+    " G ",
+    "GMG",
+    " G "
+  ],
+  "result": {
+    "item": "mffs:block_alter_module"
+  }
+}

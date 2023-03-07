@@ -3,7 +3,6 @@ package dev.su5ed.mffs.screen;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.api.security.InterdictionMatrix;
-import dev.su5ed.mffs.blockentity.InterdictionMatrixBlockEntity;
 import dev.su5ed.mffs.menu.InterdictionMatrixMenu;
 import dev.su5ed.mffs.network.Network;
 import dev.su5ed.mffs.network.SwitchConfiscationModePacket;
@@ -49,6 +48,6 @@ public class InterdictionMatrixScreen extends FortronScreen<InterdictionMatrixMe
         this.font.draw(poseStack, ModUtil.translate("screen", "filter_mode"), 9, 32, GuiColors.DARK_GREY);
 
         drawWithTooltip(poseStack, 8, 110, GuiColors.DARK_GREY, "fortron", this.menu.blockEntity.fortronStorage.getStoredFortron(), this.menu.blockEntity.fortronStorage.getFortronCapacity());
-        this.font.draw(poseStack, ModUtil.translate("screen", "fortron_cost", "-", this.menu.blockEntity.getFortronCost() * 20), 120, 121, ChatFormatting.DARK_RED.getColor());
+        this.font.draw(poseStack, ModUtil.translate("screen", "fortron_cost", "-", this.menu.getClientFortronCost() * 20), 120, 121, ChatFormatting.DARK_RED.getColor());
     }
 }

@@ -13,6 +13,7 @@ import dev.su5ed.mffs.setup.ModFluids;
 import dev.su5ed.mffs.setup.ModModules;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -124,6 +125,17 @@ public final class Fortron {
         return interdictionMatrix == null || isPermittedByInterdictionMatrix(interdictionMatrix, player, permission);
     }
 
+    public static boolean hasPermission(Level level, BlockPos pos, InterdictionMatrix interdictionMatrix, Action action, Player player) {
+        boolean hasPermission = true;
+        if (action == Action.RIGHT_CLICK_BLOCK && level.getBlockEntity(pos) != null && interdictionMatrix.hasModule(ModModules.BLOCK_ACCESS)) {
+            hasPermission = isPermittedByInterdictionMatrix(interdictionMatrix, player, FieldPermission.USE_BLOCKS);
+        }
+        if (hasPermission && interdictionMatrix.hasModule(ModModules.BLOCK_ALTER) && (player.getItemInHand(InteractionHand.MAIN_HAND) != null || action == Action.LEFT_CLICK_BLOCK)) {
+            hasPermission = isPermittedByInterdictionMatrix(interdictionMatrix, player, FieldPermission.PLACE_BLOCKS);
+        }
+        return hasPermission;
+    }
+
     public static InterdictionMatrix getNearestInterdictionMatrix(Level level, BlockPos pos) {
         return StreamEx.of(FrequencyGrid.instance().get())
             .mapPartial(storage -> {
@@ -171,4 +183,9 @@ public final class Fortron {
     }
 
     private Fortron() {}
+
+    public enum Action {
+        RIGHT_CLICK_BLOCK,
+        LEFT_CLICK_BLOCK
+    }
 }

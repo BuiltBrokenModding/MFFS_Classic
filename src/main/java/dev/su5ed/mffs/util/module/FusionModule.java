@@ -11,7 +11,7 @@ import net.minecraft.world.phys.Vec3;
 import java.util.Collection;
 import java.util.Set;
 
-public class FusionModule extends ModuleBase {
+public class FusionModule extends BaseModule {
 
     public FusionModule() {
         super(1);

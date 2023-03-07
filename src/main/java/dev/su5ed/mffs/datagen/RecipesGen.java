@@ -310,5 +310,43 @@ public class RecipesGen extends RecipeProvider {
             .pattern(" N ")
             .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
             .save(finishedRecipeConsumer, location("silence_module"));
+
+        ShapedRecipeBuilder.shaped(ModItems.WARN_MODULE.get())
+            .define('F', ModItems.FOCUS_MATRIX.get())
+            .define('N', Items.NOTE_BLOCK)
+            .pattern("NFN")
+            .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
+            .save(finishedRecipeConsumer, location("warn_module"));
+
+        ShapedRecipeBuilder.shaped(ModItems.BLOCK_ACCESS_MODULE.get())
+            .define('F', ModItems.FOCUS_MATRIX.get())
+            .define('C', Tags.Items.CHESTS_WOODEN)
+            .define('I', Tags.Items.STORAGE_BLOCKS_IRON)
+            .pattern(" C ")
+            .pattern("IFI")
+            .pattern(" C ")
+            .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
+            .save(finishedRecipeConsumer, location("block_access_module"));
+
+        ShapedRecipeBuilder.shaped(ModItems.BLOCK_ALTER_MODULE.get())
+            .define('M', ModItems.BLOCK_ACCESS_MODULE.get())
+            .define('G', Tags.Items.STORAGE_BLOCKS_GOLD)
+            .pattern(" G ")
+            .pattern("GMG")
+            .pattern(" G ")
+            .unlockedBy("has_block_access_module", has(ModItems.BLOCK_ACCESS_MODULE.get()))
+            .save(finishedRecipeConsumer, location("block_alter_module"));
+
+        ShapedRecipeBuilder.shaped(ModItems.ANTI_FRIENDLY_MODULE.get())
+            .define('F', ModItems.FOCUS_MATRIX.get())
+            .define('W', ItemTags.WOOL)
+            .define('P', Items.COOKED_PORKCHOP)
+            .define('L', Tags.Items.LEATHER)
+            .define('S', Tags.Items.SLIMEBALLS)
+            .pattern(" W ")
+            .pattern("PFL")
+            .pattern(" S ")
+            .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
+            .save(finishedRecipeConsumer, location("anti_friendly_module"));
     }
 }

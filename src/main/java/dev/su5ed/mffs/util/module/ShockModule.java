@@ -7,7 +7,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
-public class ShockModule extends ModuleBase {
+public class ShockModule extends BaseModule {
 
     public ShockModule() {
         super(1.0F);

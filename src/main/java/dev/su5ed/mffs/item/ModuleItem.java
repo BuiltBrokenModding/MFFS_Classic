@@ -17,12 +17,12 @@ import org.jetbrains.annotations.Nullable;
 import java.text.DecimalFormat;
 import java.util.List;
 
-public class ModuleItem extends BaseItem {
+public class ModuleItem<T extends Module> extends BaseItem {
     private static final DecimalFormat FORTRON_COST_FORMAT = new DecimalFormat("#.##");
 
-    private final Module module;
+    protected final T module;
 
-    public ModuleItem(ExtendedItemProperties properties, Module module) {
+    public ModuleItem(ExtendedItemProperties properties, T module) {
         super(properties);
 
         this.module = module;
@@ -45,7 +45,7 @@ public class ModuleItem extends BaseItem {
         private final LazyOptional<Module> optional = LazyOptional.of(() -> ModuleItem.this.module);
 
         @Override
-        public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
+        public <U> LazyOptional<U> getCapability(Capability<U> cap, @Nullable Direction side) {
             return ModCapabilities.MODULE.orEmpty(cap, this.optional);
         }
     }

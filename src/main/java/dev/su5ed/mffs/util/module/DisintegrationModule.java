@@ -12,14 +12,13 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.PacketDistributor;
 
 import java.util.Collection;
 
-public class DisintegrationModule extends ModuleBase {
+public class DisintegrationModule extends BaseModule {
     private int blockCount = 0;
 
     public DisintegrationModule() {

@@ -21,7 +21,7 @@ import net.minecraftforge.network.PacketDistributor;
 import java.util.Collection;
 import java.util.Optional;
 
-public class StabilizationModule extends ModuleBase {
+public class StabilizationModule extends BaseModule {
     private int blockCount = 0;
 
     public StabilizationModule() {

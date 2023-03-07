@@ -1,6 +1,7 @@
 package dev.su5ed.mffs.setup;
 
 import dev.su5ed.mffs.MFFSMod;
+import dev.su5ed.mffs.api.module.InterdictionMatrixModule;
 import dev.su5ed.mffs.api.module.Module;
 import dev.su5ed.mffs.api.module.ProjectorMode;
 import dev.su5ed.mffs.item.BaseItem;
@@ -8,9 +9,13 @@ import dev.su5ed.mffs.item.BaseItem.ExtendedItemProperties;
 import dev.su5ed.mffs.item.BatteryItem;
 import dev.su5ed.mffs.item.BiometricIdentifierItem;
 import dev.su5ed.mffs.item.IdentificationCardItem;
+import dev.su5ed.mffs.item.InterdictionMatrixModuleItem;
 import dev.su5ed.mffs.item.ModuleItem;
 import dev.su5ed.mffs.item.ProjectorModeItem;
 import dev.su5ed.mffs.item.RemoteControllerItem;
+import dev.su5ed.mffs.util.module.AntiFriendlyModule;
+import dev.su5ed.mffs.util.module.BaseInterdictionModule;
+import dev.su5ed.mffs.util.module.WarnModule;
 import dev.su5ed.mffs.util.projector.ModProjectorModes;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
@@ -48,22 +53,26 @@ public final class ModItems {
     public static final RegistryObject<ProjectorModeItem> TUBE_MODE = projectorMode("tube_mode", ModProjectorModes.TUBE);
     public static final RegistryObject<ProjectorModeItem> PYRAMID_MODE = projectorMode("pyramid_mode", ModProjectorModes.PYRAMID);
     public static final RegistryObject<ProjectorModeItem> CYLINDER_MODE = projectorMode("cylinder_mode", ModProjectorModes.CYLINDER);
-    public static final RegistryObject<ModuleItem> TRANSLATION_MODULE = module("translation_module", ModModules.TRANSLATION, ExtendedItemProperties::description);
-    public static final RegistryObject<ModuleItem> SCALE_MODULE = module("scale_module", ModModules.SCALE, ExtendedItemProperties::description);
-    public static final RegistryObject<ModuleItem> ROTATION_MODULE = module("rotation_module", ModModules.ROTATION, ExtendedItemProperties::description);
-    public static final RegistryObject<ModuleItem> SPEED_MODULE = module("speed_module", ModModules.SPEED, ExtendedItemProperties::description);
-    public static final RegistryObject<ModuleItem> CAPACITY_MODULE = module("capacity_module", ModModules.CAPACITY);
-    public static final RegistryObject<ModuleItem> FUSION_MODULE = module("fusion_module", ModModules.FUSION, singleStack());
-    public static final RegistryObject<ModuleItem> DOME_MODULE = module("dome_module", ModModules.DOME);
-    public static final RegistryObject<ModuleItem> CAMOUFLAGE_MODULE = module("camouflage_module", ModModules.CAMOUFLAGE, singleStack());
-    public static final RegistryObject<ModuleItem> DISINTEGRATION_MODULE = module("disintegration_module", ModModules.DISINTEGRATION, singleStack());
-    public static final RegistryObject<ModuleItem> SHOCK_MODULE = module("shock_module", ModModules.SHOCK);
-    public static final RegistryObject<ModuleItem> GLOW_MODULE = module("glow_module", ModModules.GLOW);
-    public static final RegistryObject<ModuleItem> SPONGE_MODULE = module("sponge_module", ModModules.SPONGE, singleStack());
-    public static final RegistryObject<ModuleItem> STABILIZATION_MODULE = module("stabilization_module", ModModules.STABILIZAZION, singleStack(), ExtendedItemProperties::description);
-    public static final RegistryObject<ModuleItem> COLLECTION_MODULE = module("collection_module", ModModules.COLLECTION, singleStack());
-    public static final RegistryObject<ModuleItem> INVERTER_MODULE = module("inverter_module", ModModules.INVERTER, singleStack(), ExtendedItemProperties::description);
-    public static final RegistryObject<ModuleItem> SILENCE_MODULE = module("silence_module", ModModules.SILENCE, singleStack(), ExtendedItemProperties::description);
+    public static final RegistryObject<ModuleItem<Module>> TRANSLATION_MODULE = module("translation_module", ModModules.TRANSLATION, ExtendedItemProperties::description);
+    public static final RegistryObject<ModuleItem<Module>> SCALE_MODULE = module("scale_module", ModModules.SCALE, ExtendedItemProperties::description);
+    public static final RegistryObject<ModuleItem<Module>> ROTATION_MODULE = module("rotation_module", ModModules.ROTATION, ExtendedItemProperties::description);
+    public static final RegistryObject<ModuleItem<Module>> SPEED_MODULE = module("speed_module", ModModules.SPEED, ExtendedItemProperties::description);
+    public static final RegistryObject<ModuleItem<Module>> CAPACITY_MODULE = module("capacity_module", ModModules.CAPACITY);
+    public static final RegistryObject<ModuleItem<Module>> FUSION_MODULE = module("fusion_module", ModModules.FUSION, singleStack());
+    public static final RegistryObject<ModuleItem<Module>> DOME_MODULE = module("dome_module", ModModules.DOME);
+    public static final RegistryObject<ModuleItem<Module>> CAMOUFLAGE_MODULE = module("camouflage_module", ModModules.CAMOUFLAGE, singleStack());
+    public static final RegistryObject<ModuleItem<Module>> DISINTEGRATION_MODULE = module("disintegration_module", ModModules.DISINTEGRATION, singleStack());
+    public static final RegistryObject<ModuleItem<Module>> SHOCK_MODULE = module("shock_module", ModModules.SHOCK);
+    public static final RegistryObject<ModuleItem<Module>> GLOW_MODULE = module("glow_module", ModModules.GLOW);
+    public static final RegistryObject<ModuleItem<Module>> SPONGE_MODULE = module("sponge_module", ModModules.SPONGE, singleStack());
+    public static final RegistryObject<ModuleItem<Module>> STABILIZATION_MODULE = module("stabilization_module", ModModules.STABILIZAZION, singleStack(), ExtendedItemProperties::description);
+    public static final RegistryObject<ModuleItem<Module>> COLLECTION_MODULE = module("collection_module", ModModules.COLLECTION, singleStack());
+    public static final RegistryObject<ModuleItem<Module>> INVERTER_MODULE = module("inverter_module", ModModules.INVERTER, singleStack(), ExtendedItemProperties::description);
+    public static final RegistryObject<ModuleItem<Module>> SILENCE_MODULE = module("silence_module", ModModules.SILENCE, singleStack(), ExtendedItemProperties::description);
+    public static final RegistryObject<InterdictionMatrixModuleItem<WarnModule>> WARN_MODULE = interdictionMatrixModule("warn_module", ModModules.WARN);
+    public static final RegistryObject<InterdictionMatrixModuleItem<BaseInterdictionModule>> BLOCK_ACCESS_MODULE = interdictionMatrixModule("block_access_module", ModModules.BLOCK_ACCESS);
+    public static final RegistryObject<InterdictionMatrixModuleItem<BaseInterdictionModule>> BLOCK_ALTER_MODULE = interdictionMatrixModule("block_alter_module", ModModules.BLOCK_ALTER);
+    public static final RegistryObject<InterdictionMatrixModuleItem<AntiFriendlyModule>> ANTI_FRIENDLY_MODULE = interdictionMatrixModule("anti_friendly_module", ModModules.ANTI_FRIENDLY);
     public static final RegistryObject<Item> BLANK_CARD = ITEMS.register("blank_card", ModItems::simpleItem);
     public static final RegistryObject<Item> ID_CARD = ITEMS.register("id_card", IdentificationCardItem::new);
     public static final RegistryObject<Item> INFINITE_POWER_CARD = ITEMS.register("infinite_power_card", () -> new BaseItem(new ExtendedItemProperties(itemProperties().stacksTo(1)).description()));
@@ -81,22 +90,26 @@ public final class ModItems {
         return ITEMS.register(block.getId().getPath(), () -> new BlockItem(block.get(), ITEM_PROPERTIES));
     }
 
-    private static RegistryObject<ModuleItem> module(String name, Module module) {
+    private static RegistryObject<ModuleItem<Module>> module(String name, Module module) {
         return module(name, module, new ExtendedItemProperties(itemProperties()));
     }
 
-    private static RegistryObject<ModuleItem> module(String name, Module module, ExtendedItemProperties properties) {
+    private static RegistryObject<ModuleItem<Module>> module(String name, Module module, ExtendedItemProperties properties) {
         return module(name, module, properties, item -> {});
     }
 
-    private static RegistryObject<ModuleItem> module(String name, Module module, Consumer<BaseItem.ExtendedItemProperties> consumer) {
+    private static RegistryObject<ModuleItem<Module>> module(String name, Module module, Consumer<BaseItem.ExtendedItemProperties> consumer) {
         return module(name, module, new ExtendedItemProperties(itemProperties()), consumer);
     }
 
-    private static RegistryObject<ModuleItem> module(String name, Module module, ExtendedItemProperties properties, Consumer<BaseItem.ExtendedItemProperties> consumer) {
+    private static <T extends Module & InterdictionMatrixModule> RegistryObject<InterdictionMatrixModuleItem<T>> interdictionMatrixModule(String name, T module) {
+        return ITEMS.register(name, () -> new InterdictionMatrixModuleItem<>(new ExtendedItemProperties(itemProperties()).description(), module));
+    }
+
+    private static RegistryObject<ModuleItem<Module>> module(String name, Module module, ExtendedItemProperties properties, Consumer<BaseItem.ExtendedItemProperties> consumer) {
         return ITEMS.register(name, () -> {
             consumer.accept(properties);
-            return new ModuleItem(properties, module);
+            return new ModuleItem<>(properties, module);
         });
     }
 

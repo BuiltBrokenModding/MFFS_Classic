@@ -47,8 +47,7 @@ public class InterdictionMatrixBlockEntity extends ModularBlockEntity implements
     }
 
     public int getWarningRange() {
-//        return getModuleCount(WARN) + getActionRange() + 3;
-        return 0; // TODO
+        return getModuleCount(ModModules.WARN) + getActionRange() + 3;
     }
 
     public int getActionRange() {
@@ -73,10 +72,16 @@ public class InterdictionMatrixBlockEntity extends ModularBlockEntity implements
     }
 
     @Override
+    protected void addModuleSlots(List<? super InventorySlot> list) {
+        super.addModuleSlots(list);
+        list.addAll(this.upgradeSlots);
+    }
+
+    @Override
     public void tickServer() {
         super.tickServer();
 
-        if (getTicks() % 10 == 0 && (this.isActive() || this.frequencySlot.getItem().is(ModItems.INFINITE_POWER_CARD.get()))) {
+        if (getTicks() % 10 == 0 && (isActive() || this.frequencySlot.getItem().is(ModItems.INFINITE_POWER_CARD.get()))) {
             if (this.fortronStorage.extractFortron(getFortronCost() * 10, true) > 0) {
                 this.fortronStorage.extractFortron(getFortronCost() * 10, false);
                 scan();
@@ -93,12 +98,12 @@ public class InterdictionMatrixBlockEntity extends ModularBlockEntity implements
         BiometricIdentifier identifier = getBiometricIdentifier();
         AABB emptyBounds = new AABB(this.worldPosition, this.worldPosition.offset(1, 1, 1));
 
-        List<LivingEntity> warningList = this.level.getEntitiesOfClass(LivingEntity.class, emptyBounds.expandTowards(getWarningRange(), getWarningRange(), getWarningRange()));
-        List<LivingEntity> actionList = this.level.getEntitiesOfClass(LivingEntity.class, emptyBounds.expandTowards(getActionRange(), getActionRange(), getActionRange()));
+        List<LivingEntity> warningList = this.level.getEntitiesOfClass(LivingEntity.class, emptyBounds.inflate(getWarningRange(), getWarningRange(), getWarningRange()));
+        List<LivingEntity> actionList = this.level.getEntitiesOfClass(LivingEntity.class, emptyBounds.inflate(getActionRange(), getActionRange(), getActionRange()));
 
         for (LivingEntity entity : warningList) {
             if (entity instanceof Player player && !actionList.contains(entity) && !canPlayerBypass(identifier, player) && this.level.random.nextInt(3) == 0) {
-                player.displayClientMessage(ModUtil.translate("info", "interdiction_matrix.warning", getDisplayName()).withStyle(ChatFormatting.RED), true);
+                player.displayClientMessage(ModUtil.translate("info", "interdiction_matrix.warning", getDisplayName()).withStyle(ChatFormatting.RED), false);
             }
         }
 
@@ -124,7 +129,7 @@ public class InterdictionMatrixBlockEntity extends ModularBlockEntity implements
             }
         }
     }
-    
+
     public boolean canPlayerBypass(BiometricIdentifier identifier, Player player) {
         return identifier != null && identifier.isAccessGranted(player, FieldPermission.BYPASS_CONFISCATION);
     }

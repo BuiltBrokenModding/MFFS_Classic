@@ -5,7 +5,7 @@ import net.minecraft.core.BlockPos;
 
 import java.util.Collection;
 
-public class DomeModule extends ModuleBase {
+public class DomeModule extends BaseModule {
 
     public DomeModule() {
         super(Category.MATRIX);

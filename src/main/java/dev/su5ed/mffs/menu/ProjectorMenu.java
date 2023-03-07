@@ -12,7 +12,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 
 public class ProjectorMenu extends FortronMenu<ProjectorBlockEntity> {
-
     private int clientFortronCost;
 
     public ProjectorMenu(int containerId, BlockPos pos, Player player, Inventory playerInventory) {

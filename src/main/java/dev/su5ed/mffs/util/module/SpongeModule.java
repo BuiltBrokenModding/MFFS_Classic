@@ -10,7 +10,7 @@ import net.minecraftforge.fluids.IFluidBlock;
 
 import java.util.Collection;
 
-public class SpongeModule extends ModuleBase {
+public class SpongeModule extends BaseModule {
 
     public SpongeModule() {
         super(1);

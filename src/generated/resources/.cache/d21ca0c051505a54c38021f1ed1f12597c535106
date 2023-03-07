@@ -1,6 +1,9 @@
-// 1.19.2	2023-03-07T17:16:00.9568965	Item Models: mffs
+// 1.19.2	2023-03-07T19:32:52.9333364	Item Models: mffs
+738399a9cbec94661d428fe121b8c3f9c7987840 assets/mffs/models/item/anti_friendly_module.json
 7b5542d94eb7fe16932bb5b1a2e60f38d669a767 assets/mffs/models/item/battery.json
 f59b254f3ed96e90cfb37c8f12cdea64eec54e79 assets/mffs/models/item/blank_card.json
+a85b6bd6f4c259320a728e549a0d6a7815c18a9a assets/mffs/models/item/block_access_module.json
+f9179356707a245686b60095c5e7cbd88f15f404 assets/mffs/models/item/block_alter_module.json
 eb9cdb4e2d3ca6a3a69366e0eae54972889518b4 assets/mffs/models/item/camouflage_module.json
 7c5fcaaad7f10eff8edf71b60c3f9d8a935b4a93 assets/mffs/models/item/capacity_module.json
 d259ce7c00fc6997fba31dcb470db6c8099919ba assets/mffs/models/item/collection_module.json
@@ -29,3 +32,4 @@ e810a46f0a13351516fd9438884afead3951a6c7 assets/mffs/models/item/steel_compound.
 2e2dbe09fb4e5b6d99ba82e9760b51b0e3460aeb assets/mffs/models/item/steel_ingot.json
 f6f5aa3901030ee11713f7bbb30e7dc7318be37e assets/mffs/models/item/translation_module.json
 35360a03c56b480531920755f4da57ecfe772348 assets/mffs/models/item/tube_mode.json
+b1543a07a508849924aac2967affceeec52b70fb assets/mffs/models/item/warn_module.json

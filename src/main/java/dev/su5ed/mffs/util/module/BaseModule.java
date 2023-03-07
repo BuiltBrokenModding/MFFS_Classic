@@ -10,19 +10,19 @@ import net.minecraft.world.level.Level;
 import java.util.Collection;
 import java.util.Set;
 
-public class ModuleBase implements Module {
+public class BaseModule implements Module {
     private final float fortronCost;
     private final Set<Category> categories;
 
-    public ModuleBase(Category... categories) {
+    public BaseModule(Category... categories) {
         this(0.5F, categories);
     }
 
-    public ModuleBase(float fortronCost) {
+    public BaseModule(float fortronCost) {
         this(fortronCost, Category.MATRIX);
     }
 
-    public ModuleBase(float fortronCost, Category... categories) {
+    public BaseModule(float fortronCost, Category... categories) {
         this.fortronCost = fortronCost;
         this.categories = Set.of(categories);
     }

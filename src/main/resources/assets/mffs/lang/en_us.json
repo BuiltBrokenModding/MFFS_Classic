@@ -29,6 +29,8 @@
   "info.mffs.field_permission.remote_control": "Remote Control",
   "info.mffs.field_permission.remote_control.tooltip": "Allows the player to use the remote control within defensive region.",
   "info.mffs.interdiction_matrix.warning": "[%s] Warning! You are near the scanning range!",
+  "info.mffs.interdiction_matrix.no_entry": "[%s] Leave this zone immediately. You have no right to enter.",
+  "info.mffs.interdiction_matrix.no_permission": "[%s] You have no permission to do that!",
   
   "death.attack.mffs.field_shock": "%1$s was disintegrated by a force field.",
   
@@ -71,6 +73,14 @@
   "item.mffs.stabilization_module.description": "Stabilizes the projected force field and crystallizes the field into solid blocks. Place a chest next the projector with blocks to stablize the field.",
   "item.mffs.inverter_module": "Inverter Module",
   "item.mffs.inverter_module.description": "Inverts the field to use negative space instead of the positive space.",
+  "item.mffs.warn_module": "Warn Module",
+  "item.mffs.warn_module.description": "Sends a warning to intruders.",
+  "item.mffs.block_alter_module": "Block Alter Module",
+  "item.mffs.block_alter_module.description": "Prevents intruders from placing or breaking blocks.",
+  "item.mffs.block_access_module": "Block Access Module",
+  "item.mffs.block_access_module.description": "Prevents intruders from right clicking on blocks.",
+  "item.mffs.anti_friendly_module": "Anti-Friendly Module",
+  "item.mffs.anti_friendly_module.description": "Will cause Interdiction Matrix to kill all friendly mobs.",
   
   "item.mffs.focus_matrix": "Focus Matrix",
   "item.mffs.battery": "Battery",
