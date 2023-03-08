@@ -89,7 +89,7 @@ public class ForceFieldBlockImpl extends AbstractGlassBlock implements ForceFiel
                         return;
                     }
                 }
-                if (!entity.level.isClientSide && entity.distanceToSqr(Vec3.atCenterOf(pos)) < Mth.square(0.7)) {
+                if (!entity.level.isClientSide && entity.distanceToSqr(new Vec3(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5)) < Mth.square(0.7)) {
                     if (entity instanceof LivingEntity living && (!(entity instanceof Player player) || !player.isCreative())) {
                         living.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 4 * 20, 3));
                         living.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 20, 1));
