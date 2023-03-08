@@ -1,7 +1,8 @@
-// 1.19.2	2023-03-07T22:00:21.0406328	Item Models: mffs
+// 1.19.2	2023-03-08T16:26:55.5121756	Item Models: mffs
 738399a9cbec94661d428fe121b8c3f9c7987840 assets/mffs/models/item/anti_friendly_module.json
 d85ae5c751e0c2f74f1819dc288f236acf0763cf assets/mffs/models/item/anti_hostile_module.json
 504e843a3119fad08160293b77336babf6fa2265 assets/mffs/models/item/anti_personnel_module.json
+439e0224b1afdabfd091c3d09b0e358881723e93 assets/mffs/models/item/anti_spawn_module.json
 7b5542d94eb7fe16932bb5b1a2e60f38d669a767 assets/mffs/models/item/battery.json
 f59b254f3ed96e90cfb37c8f12cdea64eec54e79 assets/mffs/models/item/blank_card.json
 a85b6bd6f4c259320a728e549a0d6a7815c18a9a assets/mffs/models/item/block_access_module.json
@@ -9,6 +10,7 @@ f9179356707a245686b60095c5e7cbd88f15f404 assets/mffs/models/item/block_alter_mod
 eb9cdb4e2d3ca6a3a69366e0eae54972889518b4 assets/mffs/models/item/camouflage_module.json
 7c5fcaaad7f10eff8edf71b60c3f9d8a935b4a93 assets/mffs/models/item/capacity_module.json
 d259ce7c00fc6997fba31dcb470db6c8099919ba assets/mffs/models/item/collection_module.json
+1512b2c2a47a0e3e8ee08ea3aba073988ba18601 assets/mffs/models/item/confiscation_module.json
 692c042cdd518f4a680d3119aba838e28d1c72e1 assets/mffs/models/item/cube_mode.json
 9a7136846802b2b6932f30dad3217e6ff6bba9b5 assets/mffs/models/item/cylinder_mode.json
 2a51806509fc4835d7a5508f3d9a12a4c5eabf85 assets/mffs/models/item/disintegration_module.json

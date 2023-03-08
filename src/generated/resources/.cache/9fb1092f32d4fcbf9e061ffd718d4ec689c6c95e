@@ -1,7 +1,8 @@
-// 1.19.2	2023-03-07T22:00:21.0431331	Recipes
+// 1.19.2	2023-03-08T16:26:55.5086749	Recipes
 ffc1b628eb205edfdd176b0951b6a5b8d1343783 data/mffs/advancements/recipes/mffs/anti_friendly_module.json
 6c4fd490a97f24422db6a627ed8ff70ede589a8a data/mffs/advancements/recipes/mffs/anti_hostile_module.json
 3f89037a6d2382591c92a1b3fea26cc4141e714c data/mffs/advancements/recipes/mffs/anti_personnel_module.json
+23c3da588c7fdc02f8be2109b175460a4397405e data/mffs/advancements/recipes/mffs/anti_spawn_module.json
 db632e53c2dab7cde4ef224fdc20b8503601bbb7 data/mffs/advancements/recipes/mffs/battery.json
 67fb8848a5a4216a1edea274b7b4e336ed989fa6 data/mffs/advancements/recipes/mffs/biometric_identifier.json
 fc35c01de17ae96aaa00ed840c3d4ff4d2c55615 data/mffs/advancements/recipes/mffs/blank_card.json
@@ -11,6 +12,7 @@ ab1249247122d8642282ab1e071155544b7767b5 data/mffs/advancements/recipes/mffs/blo
 f48fdcb2e3de2df51b523874b9f2ce00f341ad6e data/mffs/advancements/recipes/mffs/capacity_module.json
 1333577749d53b37fdc9e761478b11ee4894a8ee data/mffs/advancements/recipes/mffs/coercion_deriver.json
 1b619f303fba872154ed434e8467d32455f32235 data/mffs/advancements/recipes/mffs/collection_module.json
+c5a05855f20304de653eeec7c12da0981af61453 data/mffs/advancements/recipes/mffs/confiscation_module.json
 7c696c1862f437dea125c68358832875aadad892 data/mffs/advancements/recipes/mffs/cube_mode.json
 20491c3810f27a5dd82afe53013e72386b428e48 data/mffs/advancements/recipes/mffs/cylinder_mode.json
 1d821a074c4bef4d1a2a5be57caa73a8f2b32d20 data/mffs/advancements/recipes/mffs/disintegration_module.json
@@ -41,6 +43,7 @@ fec0d63851d08e9046698ed7b925ca669742c694 data/mffs/advancements/recipes/mffs/war
 253f20e0bb0696942ea9bf5d9a2a8c4174d89a7c data/mffs/recipes/anti_friendly_module.json
 333ac1a70896c678220dadbe4c269a1ef7d326de data/mffs/recipes/anti_hostile_module.json
 2b86f9fb1a52e2bd00f519ca879f3b1da60ddff1 data/mffs/recipes/anti_personnel_module.json
+0d065d930907a7733cfda9c197b1a8cf6f4c88ed data/mffs/recipes/anti_spawn_module.json
 3fb41d27a583108493d7afbdfe31e756d5ac5432 data/mffs/recipes/battery.json
 4080cf37562b2331e97e5f12f02969059496c16e data/mffs/recipes/biometric_identifier.json
 36aa576071ff3b706c9530c7120a2a784fe8f1b7 data/mffs/recipes/blank_card.json
@@ -50,6 +53,7 @@ a57dbe5eb4806e5d058cf61cb653233d3a68f162 data/mffs/recipes/camouflage_module.jso
 fe25b2837392738e06b2ceff40c21b27fb12b96c data/mffs/recipes/capacity_module.json
 0f74377a39968ecbb9fc74e60b70e586dee2b74b data/mffs/recipes/coercion_deriver.json
 b612849b2a6979e4a4b9e3985bfb9cde68a23a7d data/mffs/recipes/collection_module.json
+0a93ab70728f2672373fa062b3c0ea803d3a9da0 data/mffs/recipes/confiscation_module.json
 eedd42f7316a36cd376540a842ffa384f016e4cf data/mffs/recipes/cube_mode.json
 25859c7f5cdfb645a5e4fe08c0fda7944d7d29db data/mffs/recipes/cylinder_mode.json
 f02104eb03ced2860f7a8bb13a6bfb2c15072682 data/mffs/recipes/disintegration_module.json

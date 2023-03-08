@@ -55,26 +55,21 @@ public abstract class InventoryBlockEntity extends BaseBlockEntity {
     }
 
     public boolean mergeIntoInventory(ItemStack stack) {
-        if (!this.level.isClientSide) {
+        if (!this.level.isClientSide && !stack.isEmpty()) {
+            ItemStack remainder = stack;
             for (Direction side : Direction.values()) {
-                if (stack.isEmpty()) {
-                    break;
-                }
-
                 IItemHandler handler = Optional.ofNullable(this.level.getBlockEntity(this.worldPosition.relative(side)))
                     .flatMap(be -> be.getCapability(ForgeCapabilities.ITEM_HANDLER, side.getOpposite()).resolve())
                     .orElse(null);
                 if (handler != null) {
-                    stack = ItemHandlerHelper.insertItem(handler, stack, false);
+                    remainder = ItemHandlerHelper.insertItem(handler, stack, false);
                 }
             }
-
-            if (!stack.isEmpty()) {
-                ItemEntity item = new ItemEntity(this.level, this.worldPosition.getX() + 0.5, this.worldPosition.getY() + 1, this.worldPosition.getZ() + 0.5, stack);
+            if (!remainder.isEmpty()) {
+                ItemEntity item = new ItemEntity(this.level, this.worldPosition.getX() + 0.5, this.worldPosition.getY() + 1, this.worldPosition.getZ() + 0.5, remainder);
                 this.level.addFreshEntity(item);
             }
         }
-
         return false;
     }
 

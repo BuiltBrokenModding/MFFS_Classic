@@ -15,6 +15,7 @@ import dev.su5ed.mffs.item.ProjectorModeItem;
 import dev.su5ed.mffs.item.RemoteControllerItem;
 import dev.su5ed.mffs.util.module.AntiPersonnelModule;
 import dev.su5ed.mffs.util.module.BaseInterdictionModule;
+import dev.su5ed.mffs.util.module.ConfiscationModule;
 import dev.su5ed.mffs.util.module.ExterminatingModule;
 import dev.su5ed.mffs.util.module.WarnModule;
 import dev.su5ed.mffs.util.projector.ModProjectorModes;
@@ -76,6 +77,8 @@ public final class ModItems {
     public static final RegistryObject<InterdictionMatrixModuleItem<ExterminatingModule>> ANTI_FRIENDLY_MODULE = interdictionMatrixModule("anti_friendly_module", ModModules.ANTI_FRIENDLY);
     public static final RegistryObject<InterdictionMatrixModuleItem<ExterminatingModule>> ANTI_HOSTILE_MODULE = interdictionMatrixModule("anti_hostile_module", ModModules.ANTI_HOSTILE);
     public static final RegistryObject<InterdictionMatrixModuleItem<AntiPersonnelModule>> ANTI_PERSONNEL_MODULE = interdictionMatrixModule("anti_personnel_module", ModModules.ANTI_PERSONNEL);
+    public static final RegistryObject<InterdictionMatrixModuleItem<BaseInterdictionModule>> ANTI_SPAWN_MODULE = interdictionMatrixModule("anti_spawn_module", ModModules.ANTI_SPAWN);
+    public static final RegistryObject<InterdictionMatrixModuleItem<ConfiscationModule>> CONFISCATION_MODULE = interdictionMatrixModule("confiscation_module", ModModules.CONFISCATION);
     public static final RegistryObject<Item> BLANK_CARD = ITEMS.register("blank_card", ModItems::simpleItem);
     public static final RegistryObject<Item> ID_CARD = ITEMS.register("id_card", IdentificationCardItem::new);
     public static final RegistryObject<Item> INFINITE_POWER_CARD = ITEMS.register("infinite_power_card", () -> new BaseItem(new ExtendedItemProperties(itemProperties().stacksTo(1)).description()));

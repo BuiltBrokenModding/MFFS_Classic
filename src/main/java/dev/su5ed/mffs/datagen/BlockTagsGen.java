@@ -21,7 +21,7 @@ public class BlockTagsGen extends BlockTagsProvider {
     @Override
     protected void addTags() {
         tag(ModTags.FORCEFIELD_REPLACEABLE)
-            .add(Blocks.SNOW, Blocks.VINE, Blocks.TALL_GRASS, Blocks.DEAD_BUSH, Blocks.GLOW_LICHEN, Blocks.SEAGRASS, Blocks.TALL_GRASS);
+            .add(Blocks.SNOW, Blocks.VINE, Blocks.GRASS, Blocks.DEAD_BUSH, Blocks.GLOW_LICHEN, Blocks.SEAGRASS, Blocks.TALL_GRASS);
         StreamEx.of(ModBlocks.COERCION_DERIVER, ModBlocks.FORTRON_CAPACITOR, ModBlocks.PROJECTOR, ModBlocks.BIOMETRIC_IDENTIFIER)
             .map(RegistryObject::get)
             .forEach(block -> {

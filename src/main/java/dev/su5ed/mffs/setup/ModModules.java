@@ -4,6 +4,7 @@ import dev.su5ed.mffs.api.module.Module;
 import dev.su5ed.mffs.util.module.AntiPersonnelModule;
 import dev.su5ed.mffs.util.module.BaseInterdictionModule;
 import dev.su5ed.mffs.util.module.BaseModule;
+import dev.su5ed.mffs.util.module.ConfiscationModule;
 import dev.su5ed.mffs.util.module.DisintegrationModule;
 import dev.su5ed.mffs.util.module.DomeModule;
 import dev.su5ed.mffs.util.module.ExterminatingModule;
@@ -31,13 +32,15 @@ public final class ModModules {
     public static final BaseModule COLLECTION = new BaseModule(15.0F);
     public static final StabilizationModule STABILIZAZION = new StabilizationModule();
     public static final BaseModule INVERTER = new BaseModule(15.0F);
-    
+
     public static final WarnModule WARN = new WarnModule();
     public static final BaseInterdictionModule BLOCK_ACCESS = new BaseInterdictionModule(10.0F);
     public static final BaseInterdictionModule BLOCK_ALTER = new BaseInterdictionModule(15.0F);
     public static final ExterminatingModule ANTI_FRIENDLY = new ExterminatingModule(target -> target instanceof Mob && target.getType().getCategory().isFriendly());
     public static final ExterminatingModule ANTI_HOSTILE = new ExterminatingModule(target -> target instanceof Mob && !target.getType().getCategory().isFriendly());
     public static final AntiPersonnelModule ANTI_PERSONNEL = new AntiPersonnelModule();
+    public static final BaseInterdictionModule ANTI_SPAWN = new BaseInterdictionModule(10.0F);
+    public static final ConfiscationModule CONFISCATION = new ConfiscationModule();
 
     private ModModules() {}
 }

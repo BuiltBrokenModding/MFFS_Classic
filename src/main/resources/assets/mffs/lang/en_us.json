@@ -32,6 +32,8 @@
   "info.mffs.interdiction_matrix.no_entry": "[%s] Leave this zone immediately. You have no right to enter.",
   "info.mffs.interdiction_matrix.no_permission": "[%s] You have no permission to do that!",
   "info.mffs.interdiction_matrix.fairwell": "[%s] Fairwell.",
+  "info.mffs.interdiction_matrix.confiscation_singular": "[%s] %s of your items has been confiscated.",
+  "info.mffs.interdiction_matrix.confiscation_plural": "[%s] %s of your items have been confiscated.",
   
   "death.attack.mffs.field_shock": "%1$s was disintegrated by a force field.",
   
@@ -86,6 +88,10 @@
   "item.mffs.anti_hostile_module.description": "Will cause Interdiction Matrix to kill all hostile mobs.",
   "item.mffs.anti_personnel_module": "Anti-Personnel Module",
   "item.mffs.anti_personnel_module.description": "Will cause Interdiction Matrix to kill all players.",
+  "item.mffs.anti_spawn_module": "Anti-Spawn Module",
+  "item.mffs.anti_spawn_module.description": "Prevents entities from spawning in a specific region.",
+  "item.mffs.confiscation_module": "Confiscation Module",
+  "item.mffs.confiscation_module.description": "Confiscates intruders' items.",
   
   "item.mffs.focus_matrix": "Focus Matrix",
   "item.mffs.battery": "Battery",

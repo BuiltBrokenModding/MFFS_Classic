@@ -5,6 +5,7 @@ import dev.su5ed.mffs.api.security.FieldPermission;
 import dev.su5ed.mffs.api.security.InterdictionMatrix;
 import dev.su5ed.mffs.blockentity.FortronBlockEntity;
 import dev.su5ed.mffs.setup.ModBlocks;
+import dev.su5ed.mffs.setup.ModModules;
 import dev.su5ed.mffs.util.Fortron;
 import dev.su5ed.mffs.util.FrequencyGrid;
 import dev.su5ed.mffs.util.ModUtil;
@@ -13,8 +14,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class ForgeEventHandler {
@@ -42,9 +45,16 @@ public class ForgeEventHandler {
     public static void onPlayerLeftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
         if (event.getLevel().getBlockState(event.getPos()).is(ModBlocks.FORCE_FIELD.get())) {
             event.setCanceled(true);
-        }
-        else {
+        } else {
             onPlayerInteract(event, Fortron.Action.LEFT_CLICK_BLOCK);
+        }
+    }
+
+    @SubscribeEvent
+    public static void livingSpawnEvent(LivingSpawnEvent event) {
+        InterdictionMatrix interdictionMatrix = Fortron.getNearestInterdictionMatrix(event.getEntity().getLevel(), new BlockPos(event.getX(), event.getY(), event.getZ()));
+        if (interdictionMatrix != null && interdictionMatrix.hasModule(ModModules.ANTI_SPAWN)) {
+            event.setResult(Event.Result.DENY);
         }
     }
 
