@@ -43,6 +43,8 @@ final class ItemModelGen extends ItemModelProvider {
         simpleItem(ModItems.BLOCK_ACCESS_MODULE);
         simpleItem(ModItems.BLOCK_ALTER_MODULE);
         simpleItem(ModItems.ANTI_FRIENDLY_MODULE);
+        simpleItem(ModItems.ANTI_HOSTILE_MODULE);
+        simpleItem(ModItems.ANTI_PERSONNEL_MODULE);
 
         simpleItem(ModItems.CUBE_MODE);
         simpleItem(ModItems.SPHERE_MODE);

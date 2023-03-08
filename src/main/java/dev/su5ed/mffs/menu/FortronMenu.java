@@ -105,6 +105,10 @@ public abstract class FortronMenu<T extends FortronBlockEntity & Activatable> ex
         this.hotBarSlots.addAll(addSlotRange(0, x, y, 9, 18, factory));
     }
     
+    protected void addInventorySlotBox(int x, int y, int horAmount, int verAmount, List<InventorySlot> slots) {
+        this.blockEntitySlots.addAll(addSlotBox(x, y, horAmount, verAmount, slots));
+    }
+    
     protected List<Slot> addSlotBox(int x, int y, int horAmount, int verAmount, List<InventorySlot> slots) {
         return addSlotBox(0, x, y, horAmount, 18, verAmount, 18, (idx, slotX, slotY) -> new SlotInventory(slots.get(idx), slotX, slotY));
     }
@@ -117,6 +121,10 @@ public abstract class FortronMenu<T extends FortronBlockEntity & Activatable> ex
             y += dy;
         }
         return slots;
+    }
+
+    protected void addInventorySlotRange(int index, int x, int y, int amount, int dx, TriFunction<Integer, Integer, Integer, Slot> factory) {
+        this.blockEntitySlots.addAll(addSlotRange(index, x, y, amount, dx, factory));
     }
 
     protected List<Slot> addSlotRange(int index, int x, int y, int amount, int dx, TriFunction<Integer, Integer, Integer, Slot> factory) {

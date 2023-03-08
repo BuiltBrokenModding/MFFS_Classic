@@ -1,5 +1,7 @@
-// 1.19.2	2023-03-07T19:32:52.9333364	Item Models: mffs
+// 1.19.2	2023-03-07T22:00:21.0406328	Item Models: mffs
 738399a9cbec94661d428fe121b8c3f9c7987840 assets/mffs/models/item/anti_friendly_module.json
+d85ae5c751e0c2f74f1819dc288f236acf0763cf assets/mffs/models/item/anti_hostile_module.json
+504e843a3119fad08160293b77336babf6fa2265 assets/mffs/models/item/anti_personnel_module.json
 7b5542d94eb7fe16932bb5b1a2e60f38d669a767 assets/mffs/models/item/battery.json
 f59b254f3ed96e90cfb37c8f12cdea64eec54e79 assets/mffs/models/item/blank_card.json
 a85b6bd6f4c259320a728e549a0d6a7815c18a9a assets/mffs/models/item/block_access_module.json

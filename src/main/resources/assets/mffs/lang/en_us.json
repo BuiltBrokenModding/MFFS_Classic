@@ -31,6 +31,7 @@
   "info.mffs.interdiction_matrix.warning": "[%s] Warning! You are near the scanning range!",
   "info.mffs.interdiction_matrix.no_entry": "[%s] Leave this zone immediately. You have no right to enter.",
   "info.mffs.interdiction_matrix.no_permission": "[%s] You have no permission to do that!",
+  "info.mffs.interdiction_matrix.fairwell": "[%s] Fairwell.",
   
   "death.attack.mffs.field_shock": "%1$s was disintegrated by a force field.",
   
@@ -81,6 +82,10 @@
   "item.mffs.block_access_module.description": "Prevents intruders from right clicking on blocks.",
   "item.mffs.anti_friendly_module": "Anti-Friendly Module",
   "item.mffs.anti_friendly_module.description": "Will cause Interdiction Matrix to kill all friendly mobs.",
+  "item.mffs.anti_hostile_module": "Anti-Hostile Module",
+  "item.mffs.anti_hostile_module.description": "Will cause Interdiction Matrix to kill all hostile mobs.",
+  "item.mffs.anti_personnel_module": "Anti-Personnel Module",
+  "item.mffs.anti_personnel_module.description": "Will cause Interdiction Matrix to kill all players.",
   
   "item.mffs.focus_matrix": "Focus Matrix",
   "item.mffs.battery": "Battery",

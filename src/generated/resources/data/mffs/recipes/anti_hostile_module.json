@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "item": "minecraft:bone"
+    },
+    "F": {
+      "item": "mffs:focus_matrix"
+    },
+    "G": {
+      "item": "minecraft:ghast_tear"
+    },
+    "P": {
+      "item": "minecraft:gunpowder"
+    },
+    "R": {
+      "item": "minecraft:rotten_flesh"
+    }
+  },
+  "pattern": [
+    " R ",
+    "PFB",
+    " G "
+  ],
+  "result": {
+    "item": "mffs:anti_hostile_module"
+  }
+}

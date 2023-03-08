@@ -7,11 +7,13 @@ import dev.su5ed.mffs.blockentity.InterdictionMatrixBlockEntity;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.Collection;
 import java.util.Locale;
 
 public interface InterdictionMatrix extends Activatable, BiometricIdentifierLink, ModuleAcceptor {
+    BlockEntity be();
 
     /**
      * The range in which the Interdiction Matrix starts warning the player.

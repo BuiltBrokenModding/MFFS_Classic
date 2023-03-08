@@ -348,5 +348,25 @@ public class RecipesGen extends RecipeProvider {
             .pattern(" S ")
             .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
             .save(finishedRecipeConsumer, location("anti_friendly_module"));
+
+        ShapedRecipeBuilder.shaped(ModItems.ANTI_HOSTILE_MODULE.get())
+            .define('F', ModItems.FOCUS_MATRIX.get())
+            .define('R', Items.ROTTEN_FLESH)
+            .define('B', Items.BONE)
+            .define('G', Items.GHAST_TEAR)
+            .define('P', Items.GUNPOWDER)
+            .pattern(" R ")
+            .pattern("PFB")
+            .pattern(" G ")
+            .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
+            .save(finishedRecipeConsumer, location("anti_hostile_module"));
+
+        ShapedRecipeBuilder.shaped(ModItems.ANTI_PERSONNEL_MODULE.get())
+            .define('F', ModItems.FOCUS_MATRIX.get())
+            .define('R', ModItems.ANTI_FRIENDLY_MODULE.get())
+            .define('H', ModItems.ANTI_HOSTILE_MODULE.get())
+            .pattern("RFH")
+            .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
+            .save(finishedRecipeConsumer, location("anti_personnel_module"));
     }
 }

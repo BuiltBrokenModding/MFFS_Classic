@@ -20,6 +20,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import one.util.streamex.IntStreamEx;
@@ -52,6 +53,11 @@ public class InterdictionMatrixBlockEntity extends ModularBlockEntity implements
 
     public int getActionRange() {
         return getModuleCount(ModModules.SCALE);
+    }
+
+    @Override
+    public BlockEntity be() {
+        return this;
     }
 
     @Override
@@ -118,7 +124,7 @@ public class InterdictionMatrixBlockEntity extends ModularBlockEntity implements
         // Check for security permission to see if this player should be ignored.
         if (target instanceof Player player) {
             BiometricIdentifier identifier = getBiometricIdentifier();
-            if (canPlayerBypass(identifier, player) || MFFSConfig.COMMON.interactCreative.get() && !player.isCreative()) {
+            if (canPlayerBypass(identifier, player) || MFFSConfig.COMMON.interactCreative.get() && player.isCreative()) {
                 return;
             }
         }

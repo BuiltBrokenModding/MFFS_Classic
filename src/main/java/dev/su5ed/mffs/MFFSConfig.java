@@ -34,6 +34,7 @@ public class MFFSConfig {
         public final ForgeConfigSpec.DoubleValue catalystMultiplier;
         public final ForgeConfigSpec.IntValue catalystBurnTime;
         public final ForgeConfigSpec.DoubleValue backConversionEnergyLoss;
+        public final ForgeConfigSpec.IntValue interdictionMatrixKillEnergy;
 
         private Common(ForgeConfigSpec.Builder builder) {
             builder.push("general");
@@ -70,6 +71,9 @@ public class MFFSConfig {
             this.backConversionEnergyLoss = builder
                 .comment("Energy loss per tick when converting Fortron back to FE")
                 .defineInRange("backConversionEnergyLoss", 1.0, 0.0, 10000.0);
+            this.interdictionMatrixKillEnergy = builder
+                .comment("Energy to consume when the Interdiction Matrix kills a player")
+                .defineInRange("interdictionMatrixKillEnergy", 0, 0, Integer.MAX_VALUE);
             builder.pop();
         }
     }

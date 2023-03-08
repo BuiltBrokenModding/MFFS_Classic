@@ -18,7 +18,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
@@ -177,18 +176,14 @@ public abstract class FortronBlockEntity extends InventoryBlockEntity implements
         return StreamEx.of(getCards())
             .mapPartial(stack -> {
                 if (stack.getItem() instanceof CoordLink link) {
-                    BlockPos linkedPos = link.getLink(stack);
-                    if (linkedPos != null) {
-                        BlockEntity be = this.level.getBlockEntity(linkedPos);
-                        if (be instanceof BiometricIdentifier biometricIdentifier) {
-                            return Optional.of(biometricIdentifier);
-                        }
-                    }
+                    return Optional.ofNullable(link.getLink(stack))
+                        .map(this.level::getBlockEntity)
+                        .flatMap(be -> be.getCapability(ModCapabilities.BIOMETRIC_IDENTIFIER).resolve());
                 }
                 return Optional.empty();
             })
             .append(StreamEx.of(FrequencyGrid.instance().get(this.fortronStorage.getFrequency()))
-                .select(BiometricIdentifier.class))
+                .mapPartial(storage -> storage.getOwner().getCapability(ModCapabilities.BIOMETRIC_IDENTIFIER).resolve()))
             .toSet();
     }
 }

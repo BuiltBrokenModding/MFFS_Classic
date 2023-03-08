@@ -18,8 +18,8 @@ public class InterdictionMatrixMenu extends FortronMenu<InterdictionMatrixBlockE
         layoutPlayerInventorySlots(8, 135);
         addInventorySlot(new SlotInventory(this.blockEntity.frequencySlot, 87, 89));
         addInventorySlot(new SlotInventory(this.blockEntity.secondaryCard, 69, 89));
-        addSlotBox(99, 31, 4, 2, this.blockEntity.upgradeSlots);
-        addSlotRange(0, 9, 69, 9, 18, (idx, slotX, slotY) -> new SlotInventoryColored(this.blockEntity.bannedItemSlots.get(idx), slotX, slotY, () -> this.blockEntity.getConfiscationMode().slotTintColor));
+        addInventorySlotBox(99, 31, 4, 2, this.blockEntity.upgradeSlots);
+        addInventorySlotRange(0, 9, 69, 9, 18, (idx, slotX, slotY) -> new SlotInventoryColored(this.blockEntity.bannedItemSlots.get(idx), slotX, slotY, () -> this.blockEntity.getConfiscationMode().slotTintColor));
         addIntDataSlot(this.blockEntity::getFortronCost, i -> this.clientFortronCost = i);
     }
 

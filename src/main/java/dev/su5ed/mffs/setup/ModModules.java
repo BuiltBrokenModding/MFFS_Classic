@@ -1,16 +1,18 @@
 package dev.su5ed.mffs.setup;
 
 import dev.su5ed.mffs.api.module.Module;
-import dev.su5ed.mffs.util.module.AntiFriendlyModule;
+import dev.su5ed.mffs.util.module.AntiPersonnelModule;
 import dev.su5ed.mffs.util.module.BaseInterdictionModule;
 import dev.su5ed.mffs.util.module.BaseModule;
 import dev.su5ed.mffs.util.module.DisintegrationModule;
 import dev.su5ed.mffs.util.module.DomeModule;
+import dev.su5ed.mffs.util.module.ExterminatingModule;
 import dev.su5ed.mffs.util.module.FusionModule;
 import dev.su5ed.mffs.util.module.ShockModule;
 import dev.su5ed.mffs.util.module.SpongeModule;
 import dev.su5ed.mffs.util.module.StabilizationModule;
 import dev.su5ed.mffs.util.module.WarnModule;
+import net.minecraft.world.entity.Mob;
 
 public final class ModModules {
     public static final FusionModule FUSION = new FusionModule();
@@ -33,7 +35,9 @@ public final class ModModules {
     public static final WarnModule WARN = new WarnModule();
     public static final BaseInterdictionModule BLOCK_ACCESS = new BaseInterdictionModule(10.0F);
     public static final BaseInterdictionModule BLOCK_ALTER = new BaseInterdictionModule(15.0F);
-    public static final AntiFriendlyModule ANTI_FRIENDLY = new AntiFriendlyModule();
+    public static final ExterminatingModule ANTI_FRIENDLY = new ExterminatingModule(target -> target instanceof Mob && target.getType().getCategory().isFriendly());
+    public static final ExterminatingModule ANTI_HOSTILE = new ExterminatingModule(target -> target instanceof Mob && !target.getType().getCategory().isFriendly());
+    public static final AntiPersonnelModule ANTI_PERSONNEL = new AntiPersonnelModule();
 
     private ModModules() {}
 }
