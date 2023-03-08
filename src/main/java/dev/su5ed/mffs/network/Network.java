@@ -61,6 +61,11 @@ public final class Network {
             .decoder(SwitchConfiscationModePacket::decode)
             .consumerMainThread(SwitchConfiscationModePacket::processServerPacket)
             .add();
+        INSTANCE.messageBuilder(SetItemInSlotPacket.class, id++, NetworkDirection.PLAY_TO_SERVER)
+            .encoder(SetItemInSlotPacket::encode)
+            .decoder(SetItemInSlotPacket::decode)
+            .consumerMainThread(SetItemInSlotPacket::processServerPacket)
+            .add();
 
         INSTANCE.messageBuilder(DrawBeamPacket.class, id++, NetworkDirection.PLAY_TO_CLIENT)
             .encoder(DrawBeamPacket::encode)

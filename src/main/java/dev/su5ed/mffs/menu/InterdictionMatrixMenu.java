@@ -4,7 +4,7 @@ import dev.su5ed.mffs.blockentity.InterdictionMatrixBlockEntity;
 import dev.su5ed.mffs.setup.ModMenus;
 import dev.su5ed.mffs.setup.ModObjects;
 import dev.su5ed.mffs.util.inventory.SlotInventory;
-import dev.su5ed.mffs.util.inventory.SlotInventoryColored;
+import dev.su5ed.mffs.util.inventory.SlotInventoryInterdictionFilter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -19,7 +19,7 @@ public class InterdictionMatrixMenu extends FortronMenu<InterdictionMatrixBlockE
         addInventorySlot(new SlotInventory(this.blockEntity.frequencySlot, 87, 89));
         addInventorySlot(new SlotInventory(this.blockEntity.secondaryCard, 69, 89));
         addInventorySlotBox(99, 31, 4, 2, this.blockEntity.upgradeSlots);
-        addInventorySlotRange(0, 9, 69, 9, 18, (idx, slotX, slotY) -> new SlotInventoryColored(this.blockEntity.bannedItemSlots.get(idx), slotX, slotY, () -> this.blockEntity.getConfiscationMode().slotTintColor));
+        addInventorySlotRange(0, 9, 69, 9, 18, (idx, slotX, slotY) -> new SlotInventoryInterdictionFilter(this.blockEntity.bannedItemSlots.get(idx), slotX, slotY, () -> this.blockEntity.getConfiscationMode().slotTintColor));
         addIntDataSlot(this.blockEntity::getFortronCost, i -> this.clientFortronCost = i);
     }
 

@@ -7,17 +7,20 @@ import dev.su5ed.mffs.util.DataSlotWrapper;
 import dev.su5ed.mffs.util.ModUtil;
 import dev.su5ed.mffs.util.inventory.InventorySlot;
 import dev.su5ed.mffs.util.inventory.SlotInventory;
+import dev.su5ed.mffs.util.inventory.SlotInventoryFilter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 import org.apache.commons.lang3.function.TriFunction;
@@ -67,6 +70,23 @@ public abstract class FortronMenu<T extends FortronBlockEntity & Activatable> ex
     }
 
     @Override
+    public void clicked(int slotId, int button, ClickType clickType, Player player) {
+        if (slotId >= 0 && slotId < this.slots.size()) {
+            Slot slot = getSlot(slotId);
+            if (slot instanceof SlotInventoryFilter && clickType == ClickType.PICKUP) {
+                ItemStack stack = getCarried();
+                if (button == 0) {
+                    slot.set(ItemHandlerHelper.copyStackWithSize(stack, 1));
+                } else {
+                    slot.set(ItemStack.EMPTY);
+                }
+                return;
+            }
+        }
+        super.clicked(slotId, button, clickType, player);
+    }
+
+    @Override
     public ItemStack quickMoveStack(Player player, int index) {
         ItemStack stack = ItemStack.EMPTY;
         Slot slot = this.slots.get(index);
@@ -104,11 +124,11 @@ public abstract class FortronMenu<T extends FortronBlockEntity & Activatable> ex
         y += 58;
         this.hotBarSlots.addAll(addSlotRange(0, x, y, 9, 18, factory));
     }
-    
+
     protected void addInventorySlotBox(int x, int y, int horAmount, int verAmount, List<InventorySlot> slots) {
         this.blockEntitySlots.addAll(addSlotBox(x, y, horAmount, verAmount, slots));
     }
-    
+
     protected List<Slot> addSlotBox(int x, int y, int horAmount, int verAmount, List<InventorySlot> slots) {
         return addSlotBox(0, x, y, horAmount, 18, verAmount, 18, (idx, slotX, slotY) -> new SlotInventory(slots.get(idx), slotX, slotY));
     }
