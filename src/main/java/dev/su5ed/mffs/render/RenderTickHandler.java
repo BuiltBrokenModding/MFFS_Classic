@@ -32,6 +32,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -50,7 +51,7 @@ import java.util.function.Consumer;
 /**
  * Source: Mekanism <a href="https://github.com/mekanism/Mekanism/blob/6093851f05dfb5ff2da52ace87f06ea03a7571a4/src/main/java/mekanism/client/render/RenderTickHandler.java">RenderTickHandler</a>
  */
-@EventBusSubscriber(modid = MFFSMod.MODID)
+@EventBusSubscriber(modid = MFFSMod.MODID, value = Dist.CLIENT)
 public final class RenderTickHandler {
     private static final Map<RenderType, List<LazyRenderer>> transparentRenderers = new HashMap<>();
 
