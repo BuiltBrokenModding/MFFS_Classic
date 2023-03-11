@@ -84,6 +84,7 @@ public class FortronStorageImpl implements FortronStorage {
     @Override
     public void setFrequency(int frequency) {
         this.frequency = frequency;
+        this.owner.setChanged();
     }
 
     private class FortronFluidTank extends FluidTank {

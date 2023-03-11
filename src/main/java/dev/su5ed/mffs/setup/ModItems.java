@@ -8,6 +8,7 @@ import dev.su5ed.mffs.item.BaseItem;
 import dev.su5ed.mffs.item.BaseItem.ExtendedItemProperties;
 import dev.su5ed.mffs.item.BatteryItem;
 import dev.su5ed.mffs.item.BiometricIdentifierItem;
+import dev.su5ed.mffs.item.FrequencyCardItem;
 import dev.su5ed.mffs.item.IdentificationCardItem;
 import dev.su5ed.mffs.item.InterdictionMatrixModuleItem;
 import dev.su5ed.mffs.item.ModuleItem;
@@ -82,6 +83,7 @@ public final class ModItems {
     public static final RegistryObject<Item> BLANK_CARD = ITEMS.register("blank_card", ModItems::simpleItem);
     public static final RegistryObject<Item> ID_CARD = ITEMS.register("id_card", IdentificationCardItem::new);
     public static final RegistryObject<Item> INFINITE_POWER_CARD = ITEMS.register("infinite_power_card", () -> new BaseItem(new ExtendedItemProperties(itemProperties().stacksTo(1)).description()));
+    public static final RegistryObject<Item> FREQUENCY_CARD = ITEMS.register("frequency_card", FrequencyCardItem::new);
     public static final RegistryObject<Item> STEEL_COMPOUND = ITEMS.register("steel_compound", ModItems::simpleItem);
     public static final RegistryObject<Item> STEEL_INGOT = ITEMS.register("steel_ingot", ModItems::simpleItem);
     public static final RegistryObject<BatteryItem> BATTERY = ITEMS.register("battery", BatteryItem::new);

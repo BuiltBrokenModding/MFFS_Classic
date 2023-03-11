@@ -3,12 +3,13 @@
   
   "info.mffs.coercion_deriver.mode.integrate": "Integrate",
   "info.mffs.coercion_deriver.mode.derive": "Derive",
-  "info.mffs.frequency": "Frequency: %s",
+  "info.mffs.frequency": "Frequency: ",
   "info.mffs.link.none": "Not Linked",
   "info.mffs.link.name": "Linked with: %s",
   "info.mffs.link.create": "Linked to %s at %s",
   "info.mffs.cannot_harness": "Cannot harness %s FE from the Fortron field.",
-  "info.mffs.frequency.generated": "Generated random frequency: %s",
+  "info.mffs.frequency.generated": "Generated random frequency: ",
+  "info.mffs.frequency.set": "Frequency set to: ",
   "info.mffs.stored_energy": "Stored Energy: %s / %s FE",
   "info.mffs.unidentified": "[Right-click while sneaking to set identity]",
   "info.mffs.identity_set": "Identity set to: ",
@@ -101,6 +102,8 @@
   "item.mffs.id_card": "Identification Card",
   "item.mffs.infinite_power_card": "Infinite Power Card",
   "item.mffs.infinite_power_card.description": "A creative-only item that can be placed inside a capacitor for infinite energy.",
+  "item.mffs.frequency_card": "Frequency Card",
+  "item.mffs.frequency_card.description": "Used for ease of frequency transmission. Shift-right click to generate a random frequency.",
   
   "sounds.mffs.field": "Field Sound",
   

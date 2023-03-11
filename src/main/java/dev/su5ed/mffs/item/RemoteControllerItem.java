@@ -7,7 +7,6 @@ import dev.su5ed.mffs.api.security.FieldPermission;
 import dev.su5ed.mffs.menu.FortronMenu;
 import dev.su5ed.mffs.render.particle.ParticleColor;
 import dev.su5ed.mffs.setup.ModCapabilities;
-import dev.su5ed.mffs.setup.ModItems;
 import dev.su5ed.mffs.util.Fortron;
 import dev.su5ed.mffs.util.FrequencyGrid;
 import dev.su5ed.mffs.util.ModUtil;
@@ -39,10 +38,6 @@ import java.util.List;
 import java.util.Set;
 
 public class RemoteControllerItem extends FrequencyCardItem implements CoordLink {
-
-    public RemoteControllerItem() {
-        super(ModItems.itemProperties().stacksTo(1));
-    }
 
     @Override
     public InteractionResult useOn(UseOnContext context) {

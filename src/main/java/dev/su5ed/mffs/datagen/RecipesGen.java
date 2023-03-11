@@ -75,6 +75,13 @@ public class RecipesGen extends RecipeProvider {
             .unlockedBy("has_blank_card", has(ModItems.BLANK_CARD.get()))
             .save(finishedRecipeConsumer, location("id_card"));
 
+        ShapedRecipeBuilder.shaped(ModItems.FREQUENCY_CARD.get())
+            .define('G', Tags.Items.INGOTS_GOLD)
+            .define('C', ModItems.BLANK_CARD.get())
+            .pattern("GCG")
+            .unlockedBy("has_blank_card", has(ModItems.BLANK_CARD.get()))
+            .save(finishedRecipeConsumer, location("frequency_card"));
+
         ShapedRecipeBuilder.shaped(ModItems.COERCION_DERIVER_ITEM.get())
             .define('S', ModTags.INGOTS_STEEL)
             .define('F', ModItems.FOCUS_MATRIX.get())

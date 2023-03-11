@@ -40,6 +40,7 @@ public abstract class FortronMenu<T extends FortronBlockEntity & Activatable> ex
     private final List<Slot> playerInventorySlots = new ArrayList<>();
     private final List<Slot> blockEntitySlots = new ArrayList<>();
 
+    private Runnable frequencyChangeListener;
     private boolean isRemoteAccess;
 
     protected FortronMenu(@Nullable MenuType<?> type, BlockEntityType<T> blockEntityType, int containerId, BlockPos pos, Player player, Inventory playerInventory) {
@@ -60,6 +61,10 @@ public abstract class FortronMenu<T extends FortronBlockEntity & Activatable> ex
 
     public void setRemoteAccess(boolean remoteAccess) {
         this.isRemoteAccess = remoteAccess;
+    }
+
+    public void setFrequencyChangeListener(Runnable frequencyChangeListener) {
+        this.frequencyChangeListener = frequencyChangeListener;
     }
 
     @Override
@@ -157,7 +162,12 @@ public abstract class FortronMenu<T extends FortronBlockEntity & Activatable> ex
 
     private void trackPower() {
         addIntDataSlot(this.blockEntity.fortronStorage::getStoredFortron, this.blockEntity.fortronStorage::setStoredFortron);
-        addIntDataSlot(this.blockEntity.fortronStorage::getFrequency, this.blockEntity.fortronStorage::setFrequency);
+        addIntDataSlot(this.blockEntity.fortronStorage::getFrequency, frequency -> {
+            this.blockEntity.fortronStorage.setFrequency(frequency);
+            if (frequencyChangeListener != null) {
+                this.frequencyChangeListener.run();
+            }
+        });
     }
 
     /**

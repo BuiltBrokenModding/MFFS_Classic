@@ -1,4 +1,4 @@
-// 1.19.2	2023-03-08T16:26:55.5086749	Recipes
+// 1.19.2	2023-03-11T14:58:56.9279052	Recipes
 ffc1b628eb205edfdd176b0951b6a5b8d1343783 data/mffs/advancements/recipes/mffs/anti_friendly_module.json
 6c4fd490a97f24422db6a627ed8ff70ede589a8a data/mffs/advancements/recipes/mffs/anti_hostile_module.json
 3f89037a6d2382591c92a1b3fea26cc4141e714c data/mffs/advancements/recipes/mffs/anti_personnel_module.json
@@ -19,6 +19,7 @@ c5a05855f20304de653eeec7c12da0981af61453 data/mffs/advancements/recipes/mffs/con
 266279eece7b8322cc60e3822dbe71b6f6573531 data/mffs/advancements/recipes/mffs/dome_module.json
 bccc206462d19f760c129423e72de66a42cb61ab data/mffs/advancements/recipes/mffs/focus_matrix.json
 072b7a5ead4610ed3641efe3af95c29293c43c38 data/mffs/advancements/recipes/mffs/fortron_capacitor.json
+2c231d68bddaaf5b510b4aa71dfaa9b1a3fea429 data/mffs/advancements/recipes/mffs/frequency_card.json
 3fa14db74ed61dbcfb787d9d91c492513cbd27cd data/mffs/advancements/recipes/mffs/fusion_module.json
 69ad3118040639ddb6a5a0bd21ded92d7f045f7a data/mffs/advancements/recipes/mffs/glow_module.json
 d174e5227e130d7b044b80ea5b064df533ea5738 data/mffs/advancements/recipes/mffs/id_card.json
@@ -60,6 +61,7 @@ f02104eb03ced2860f7a8bb13a6bfb2c15072682 data/mffs/recipes/disintegration_module
 00e809179df44924c094233fbab0c13a47dc7087 data/mffs/recipes/dome_module.json
 16fd2cdb6dfaadaf2ee8e5743b0e02fde9668998 data/mffs/recipes/focus_matrix.json
 9b9ce9057ddca060e57348d4ee2ecdb1b16ebda1 data/mffs/recipes/fortron_capacitor.json
+4e8cd030ae289e2706473a282c9868c9824183db data/mffs/recipes/frequency_card.json
 67ee975993719c9aed1af3bd93d5a62413f6db7b data/mffs/recipes/fusion_module.json
 66dae54f70ec97fd07dc7e458e1e211df35e90f4 data/mffs/recipes/glow_module.json
 5ceac0c4b7f049759f3c44cf334a058967699aac data/mffs/recipes/id_card.json

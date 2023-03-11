@@ -118,7 +118,10 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
 
     @Override
     public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
-        return ModCapabilities.PROJECTOR.orEmpty(cap, this.projectorOptional);
+        if (cap == ModCapabilities.PROJECTOR) {
+            return this.projectorOptional.cast();
+        }
+        return super.getCapability(cap, side);
     }
 
     @Override

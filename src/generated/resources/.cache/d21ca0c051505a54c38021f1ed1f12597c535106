@@ -1,4 +1,4 @@
-// 1.19.2	2023-03-08T16:26:55.5121756	Item Models: mffs
+// 1.19.2	2023-03-11T14:58:56.9299038	Item Models: mffs
 738399a9cbec94661d428fe121b8c3f9c7987840 assets/mffs/models/item/anti_friendly_module.json
 d85ae5c751e0c2f74f1819dc288f236acf0763cf assets/mffs/models/item/anti_hostile_module.json
 504e843a3119fad08160293b77336babf6fa2265 assets/mffs/models/item/anti_personnel_module.json
@@ -16,6 +16,7 @@ d259ce7c00fc6997fba31dcb470db6c8099919ba assets/mffs/models/item/collection_modu
 2a51806509fc4835d7a5508f3d9a12a4c5eabf85 assets/mffs/models/item/disintegration_module.json
 efc59c37f67e6ef8f6e36dcd7e91b339e41e35fc assets/mffs/models/item/dome_module.json
 12a191f3a6e43233f4cdf13e45a12e80ff3c4ac4 assets/mffs/models/item/focus_matrix.json
+af0b41a653ecac8c77a52600f6df5c0f7610f999 assets/mffs/models/item/frequency_card.json
 4805d2ba97a72693cd975e4e29e7f1d85ae5e29b assets/mffs/models/item/fusion_module.json
 1c4dbec086433dabd209e32ee939ccf37ac2ca64 assets/mffs/models/item/glow_module.json
 817110e3bf78c2eecc0017939981c7bdb60d41ed assets/mffs/models/item/id_card.json

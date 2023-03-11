@@ -61,6 +61,7 @@ final class ItemModelGen extends ItemModelProvider {
         simpleItem(ModItems.BLANK_CARD);
         simpleItem(ModItems.ID_CARD);
         simpleItem(ModItems.INFINITE_POWER_CARD);
+        simpleItem(ModItems.FREQUENCY_CARD);
     }
 
     private void simpleItem(RegistryObject<? extends Item> item) {
