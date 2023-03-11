@@ -174,7 +174,8 @@ public final class Fortron {
             Vec3 position = Vec3.atCenterOf(sourcePos);
             ParticleColor color = ParticleColor.BLUE_BEAM;
             int lifetime = 20;
-            if (level instanceof ClientLevel clientLevel) {
+            if (level.isClientSide()) {
+                ClientLevel clientLevel = (ClientLevel) level;
                 renderBeam(clientLevel, target, position, color, lifetime);
             } else {
                 renderClientBeam(level, target, position, sourcePos, color, lifetime);
