@@ -3,9 +3,9 @@ package dev.su5ed.mffs.blockentity;
 import dev.su5ed.mffs.api.card.CoordLink;
 import dev.su5ed.mffs.api.fortron.FortronCapacitor;
 import dev.su5ed.mffs.api.fortron.FortronStorage;
-import dev.su5ed.mffs.item.InfiniteCardItem;
 import dev.su5ed.mffs.menu.FortronCapacitorMenu;
 import dev.su5ed.mffs.setup.ModCapabilities;
+import dev.su5ed.mffs.setup.ModItems;
 import dev.su5ed.mffs.setup.ModModules;
 import dev.su5ed.mffs.setup.ModObjects;
 import dev.su5ed.mffs.util.Fortron;
@@ -37,7 +37,7 @@ public class FortronCapacitorBlockEntity extends ModularBlockEntity implements F
     public FortronCapacitorBlockEntity(BlockPos pos, BlockState state) {
         super(ModObjects.FORTRON_CAPACITOR_BLOCK_ENTITY.get(), pos, state, 10);
 
-        this.secondaryCard = addSlot("secondaryCard", InventorySlot.Mode.BOTH, ModUtil::isCard, this::onFrequencySlotChanged);
+        this.secondaryCard = addSlot("secondaryCard", InventorySlot.Mode.BOTH, stack -> ModUtil.isCard(stack) || stack.is(ModItems.INFINITE_POWER_CARD.get()), this::onFrequencySlotChanged);
         this.upgradeSlots = createUpgradeSlots(3);
     }
 
@@ -77,9 +77,10 @@ public class FortronCapacitorBlockEntity extends ModularBlockEntity implements F
             Set<FortronStorage> machines = new HashSet<>();
 
             for (ItemStack stack : getCards()) {
-                if (stack.getItem() instanceof InfiniteCardItem) {
+                if (stack.is(ModItems.INFINITE_POWER_CARD.get())) {
                     this.fortronStorage.setStoredFortron(this.fortronStorage.getFortronCapacity());
-                } else if (stack.getItem() instanceof CoordLink coordLink) {
+                }
+                else if (stack.getItem() instanceof CoordLink coordLink) {
                     Optional.ofNullable(coordLink.getLink(stack))
                         .map(linkPosition -> this.level.getBlockEntity(linkPosition))
                         .flatMap(be -> getCapability(ModCapabilities.FORTRON).resolve())

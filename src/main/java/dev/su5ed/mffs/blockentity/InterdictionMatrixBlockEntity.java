@@ -40,7 +40,7 @@ public class InterdictionMatrixBlockEntity extends ModularBlockEntity implements
     public InterdictionMatrixBlockEntity(BlockPos pos, BlockState state) {
         super(ModObjects.INTERDICTION_MATRIX_BLOCK_ENTITY.get(), pos, state);
 
-        this.secondaryCard = addSlot("secondaryCard", InventorySlot.Mode.BOTH, ModUtil::isCard, this::onFrequencySlotChanged);
+        this.secondaryCard = addSlot("secondaryCard", InventorySlot.Mode.BOTH, stack -> ModUtil.isCard(stack) || stack.is(ModItems.INFINITE_POWER_CARD.get()), this::onFrequencySlotChanged);
         this.upgradeSlots = createUpgradeSlots(8, Module.Category.INTERDICTION);
         this.bannedItemSlots = IntStreamEx.range(9)
             .mapToObj(i -> addSlot("banned_item_" + i, InventorySlot.Mode.NONE))

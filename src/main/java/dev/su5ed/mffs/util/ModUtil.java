@@ -3,7 +3,6 @@ package dev.su5ed.mffs.util;
 import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.api.module.Module;
 import dev.su5ed.mffs.api.security.FieldPermission;
-import dev.su5ed.mffs.item.InfiniteCardItem;
 import dev.su5ed.mffs.setup.ModCapabilities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -122,7 +121,7 @@ public final class ModUtil {
     }
 
     public static boolean isCard(ItemStack stack) {
-        return stack.getCapability(ModCapabilities.FREQUENCY_CARD).isPresent() || stack.getItem() instanceof InfiniteCardItem;
+        return stack.getCapability(ModCapabilities.FREQUENCY_CARD).isPresent();
     }
 
     public static boolean isIdentificationCard(ItemStack stack) {
