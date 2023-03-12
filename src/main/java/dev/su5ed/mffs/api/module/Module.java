@@ -15,23 +15,25 @@ public interface Module {
      */
     float getFortronCost(float amplifier);
 
+    void beforeSelect(Projector projector, Collection<? extends BlockPos> field);
+
+    ProjectAction onSelect(Projector projector, BlockPos pos);
+
     /**
      * Called before the projector projects a field.
      *
      * @param projector the projector block entity
-     * @param field     the projected field blocks
-     * @return whether projection should be interrupted
      */
-    boolean beforeProject(Projector projector, Collection<? extends BlockPos> field);
+    void beforeProject(Projector projector);
 
     /**
      * Called right after the projector creates a force field block.
      *
      * @param projector the projector block entity
-     * @param position  the projected position
+     * @param pos       the projected position
      * @return the desired action
      */
-    ProjectAction onProject(Projector projector, BlockPos position);
+    ProjectAction onProject(Projector projector, BlockPos pos);
 
     /**
      * Called when an entity collides with a force field block.
@@ -51,9 +53,9 @@ public interface Module {
      * @param fieldDefinition the field block positions
      */
     void onCalculate(Projector projector, Collection<BlockPos> fieldDefinition);
-    
+
     Set<Category> getCategories();
-    
+
     enum Category {
         MATRIX,
         FIELD,

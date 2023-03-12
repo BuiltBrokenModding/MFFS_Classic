@@ -104,7 +104,6 @@ public class MovingHologramParticle extends Particle {
         @Override
         public void end(Tesselator tesselator) {
             tesselator.end();
-            Minecraft.getInstance().gameRenderer.lightTexture().turnOffLightLayer();
         }
     }
 }

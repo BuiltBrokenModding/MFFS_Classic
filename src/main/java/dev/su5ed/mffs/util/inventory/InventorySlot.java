@@ -62,8 +62,8 @@ public class InventorySlot implements INBTSerializable<CompoundTag> {
     protected void onChanged(boolean notify) {
         if (notify) {
             this.parent.onChanged();
+            this.onChanged.accept(getItem());
         }
-        this.onChanged.accept(getItem());
     }
 
     @Override

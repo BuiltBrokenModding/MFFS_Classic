@@ -40,10 +40,9 @@ import java.util.Set;
 public class RemoteControllerItem extends FrequencyCardItem implements CoordLink {
 
     @Override
-    public InteractionResult useOn(UseOnContext context) {
+    public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
         Level level = context.getLevel();
         Player player = context.getPlayer();
-        ItemStack stack = context.getItemInHand();
         if (!level.isClientSide && player.isShiftKeyDown()) {
             BlockPos pos = context.getClickedPos();
             setLink(stack, pos);

@@ -49,11 +49,6 @@ public interface Projector extends ModuleAcceptor, BiometricIdentifierLink {
     int getRotationRoll();
 
     /**
-     * Projects a force field.
-     */
-    void projectField();
-
-    /**
      * Destroys a force field.
      */
     void destroyField();
@@ -78,7 +73,7 @@ public interface Projector extends ModuleAcceptor, BiometricIdentifierLink {
     /**
      * * @return Gets all the blocks that are occupying the force field.
      */
-    Collection<BlockPos> getCalculatedField();
+    Collection<BlockPos> getCalculatedFieldPositions();
 
     /**
      * @return The speed in which a force field is constructed.

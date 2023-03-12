@@ -46,6 +46,7 @@
   "block.mffs.interdiction_matrix": "Interdiction Matrix",
   
   "item.mffs.remote_controller": "Remote Controller",
+  "item.mffs.remote_controller.description": "Provides remote access to machines",
   "item.mffs.cube_mode": "Cube Mode",
   "item.mffs.sphere_mode": "Sphere Mode",
   "item.mffs.tube_mode": "Tube Mode",

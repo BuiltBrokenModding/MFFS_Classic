@@ -18,7 +18,6 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.network.PacketDistributor;
 
-import java.util.Collection;
 import java.util.Optional;
 
 public class StabilizationModule extends BaseModule {
@@ -29,9 +28,8 @@ public class StabilizationModule extends BaseModule {
     }
 
     @Override
-    public boolean beforeProject(Projector projector, Collection<? extends BlockPos> fields) {
+    public void beforeProject(Projector projector) {
         this.blockCount = 0;
-        return false;
     }
 
     @Override

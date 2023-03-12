@@ -33,12 +33,18 @@ public class BaseModule implements Module {
     }
 
     @Override
-    public boolean beforeProject(Projector projector, Collection<? extends BlockPos> field) {
-        return false;
+    public void beforeSelect(Projector projector, Collection<? extends BlockPos> field) {}
+
+    @Override
+    public void beforeProject(Projector projector) {}
+
+    @Override
+    public ProjectAction onSelect(Projector projector, BlockPos pos) {
+        return ProjectAction.PROJECT;
     }
 
     @Override
-    public ProjectAction onProject(Projector projector, BlockPos position) {
+    public ProjectAction onProject(Projector projector, BlockPos pos) {
         return ProjectAction.PROJECT;
     }
 

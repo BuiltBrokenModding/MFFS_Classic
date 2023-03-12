@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public abstract class ModularBlockEntity extends FortronBlockEntity implements ModuleAcceptor, ObjectCache {
@@ -151,12 +152,16 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
     protected void addModuleSlots(List<? super InventorySlot> list) {}
     
     protected List<InventorySlot> createUpgradeSlots(int count) {
-        return createUpgradeSlots(count, null);
+        return createUpgradeSlots(count, null, stack -> {});
+    }
+    
+    protected List<InventorySlot> createUpgradeSlots(int count, @Nullable Module.Category category) {
+        return createUpgradeSlots(count, category, stack -> {});
     }
 
-    protected List<InventorySlot> createUpgradeSlots(int count, @Nullable Module.Category category) {
+    protected List<InventorySlot> createUpgradeSlots(int count, @Nullable Module.Category category, Consumer<ItemStack> onChanged) {
         return IntStreamEx.range(count)
-            .mapToObj(i -> addSlot("upgrade_" + i, InventorySlot.Mode.BOTH, stack -> category == null || ModUtil.isModule(stack, category)))
+            .mapToObj(i -> addSlot("upgrade_" + i, InventorySlot.Mode.BOTH, stack -> category == null || ModUtil.isModule(stack, category), onChanged))
             .toList();
     }
 

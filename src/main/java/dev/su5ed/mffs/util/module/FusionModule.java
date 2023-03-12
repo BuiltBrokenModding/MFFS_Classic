@@ -3,34 +3,58 @@ package dev.su5ed.mffs.util.module;
 import dev.su5ed.mffs.api.FrequencyBlock;
 import dev.su5ed.mffs.api.Projector;
 import dev.su5ed.mffs.api.fortron.FortronStorage;
+import dev.su5ed.mffs.setup.ModBlocks;
 import dev.su5ed.mffs.setup.ModCapabilities;
 import dev.su5ed.mffs.util.FrequencyGrid;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Set;
+import java.util.Iterator;
+import java.util.List;
 
 public class FusionModule extends BaseModule {
+    private final List<BlockPos> removingBlocks = new ArrayList<>();
 
     public FusionModule() {
         super(1);
     }
 
     @Override
-    public boolean beforeProject(Projector projector, Collection<? extends BlockPos> field) {
+    public void beforeSelect(Projector projector, Collection<? extends BlockPos> field) {
         int frequency = projector.be().getCapability(ModCapabilities.FORTRON)
             .map(FrequencyBlock::getFrequency)
             .orElseThrow();
-        Set<FortronStorage> machines = FrequencyGrid.instance().get(frequency);
-
-        for (FortronStorage storage : machines) {
+        for (FortronStorage storage : FrequencyGrid.instance().get(frequency)) {
             storage.getOwner().getCapability(ModCapabilities.PROJECTOR)
-                .filter(compareProjector ->  compareProjector != projector
+                .filter(compareProjector -> compareProjector != projector
                     && compareProjector.be().getLevel() == projector.be().getLevel()
                     && compareProjector.isActive() && compareProjector.getMode().isPresent())
-                .ifPresent(compareProjector -> field.removeIf(pos -> compareProjector.getMode().orElseThrow().isInField(compareProjector, Vec3.atLowerCornerOf(pos))));
+                .ifPresent(compareProjector -> {
+                    for (Iterator<? extends BlockPos> it = field.iterator(); it.hasNext(); ) {
+                        BlockPos pos = it.next();
+                        if (compareProjector.getMode().orElseThrow().isInField(compareProjector, Vec3.atLowerCornerOf(pos))) {
+                            this.removingBlocks.add(pos);
+                            it.remove();
+                        }
+                    }
+                });
         }
-        return super.beforeProject(projector, field);
+    }
+
+    @Override
+    public void beforeProject(Projector projector) {
+        // FIXME CME with multiple projectors in different stages
+        Level level = projector.be().getLevel();
+        for (BlockPos pos : this.removingBlocks) {
+            BlockState state = level.getBlockState(pos);
+            if (state.is(ModBlocks.FORCE_FIELD.get())) {
+                level.removeBlock(pos, false);
+            }
+        }
+        this.removingBlocks.clear();
     }
 }

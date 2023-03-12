@@ -16,26 +16,21 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.PacketDistributor;
 
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DisintegrationModule extends BaseModule {
-    private int blockCount = 0;
+    private final List<BlockPos> activeBlocks = new ArrayList<>();
 
     public DisintegrationModule() {
         super(20);
     }
 
     @Override
-    public boolean beforeProject(Projector projector, Collection<? extends BlockPos> fields) {
-        this.blockCount = 0;
-        return false;
-    }
-
-    @Override
-    public ProjectAction onProject(Projector projector, BlockPos position) {
-        if (projector.getTicks() % 40 == 0) {
+    public ProjectAction onSelect(Projector projector, BlockPos pos) {
+        if (!this.activeBlocks.contains(pos)) {
             Level level = projector.be().getLevel();
-            BlockState state = level.getBlockState(position);
+            BlockState state = level.getBlockState(pos);
 
             if (!state.isAir()) {
                 Block block = state.getBlock();
@@ -48,22 +43,33 @@ public class DisintegrationModule extends BaseModule {
                 }
 
                 if (!state.is(ModTags.DISINTEGRATION_BLACKLIST) && !ModUtil.isLiquidBlock(block)) {
-                    Vec3 pos = Vec3.atLowerCornerOf(projector.be().getBlockPos());
-                    Vec3 target = Vec3.atLowerCornerOf(position);
-                    Network.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(position)), new DrawHologramPacket(pos, target, DrawHologramPacket.Type.DESTROY));
-
-                    projector.schedule(39, () -> {
-                        if (projector.hasModule(ModModules.COLLECTION)) {
-                            collectBlock(projector, level, position, state.getBlock());
-                        } else {
-                            destroyBlock(level, position, state.getBlock());
-                        }
-                    });
-
-                    return this.blockCount++ >= projector.getModuleCount(ModModules.SPEED) / 3 ? ProjectAction.INTERRUPT : ProjectAction.SKIP;
+                    if (this.activeBlocks.size() - 1 >= projector.getModuleCount(ModModules.SPEED) / 3) {
+                        return ProjectAction.INTERRUPT;
+                    }
+                    this.activeBlocks.add(pos);
+                    return ProjectAction.PROJECT;
                 }
             }
         }
+        return ProjectAction.SKIP;
+    }
+
+    @Override
+    public ProjectAction onProject(Projector projector, BlockPos position) {
+        Level level = projector.be().getLevel();
+        BlockState state = level.getBlockState(position);
+        Vec3 pos = Vec3.atLowerCornerOf(projector.be().getBlockPos());
+        Vec3 target = Vec3.atLowerCornerOf(position);
+        Network.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(position)), new DrawHologramPacket(pos, target, DrawHologramPacket.Type.DESTROY));
+
+        projector.schedule(39, () -> {
+            if (projector.hasModule(ModModules.COLLECTION)) {
+                collectBlock(projector, level, position, state.getBlock());
+            } else {
+                destroyBlock(level, position, state.getBlock());
+            }
+            this.activeBlocks.remove(position);
+        });
 
         return ProjectAction.SKIP;
     }
