@@ -31,7 +31,8 @@ import java.util.function.Supplier;
 public abstract class ModularBlockEntity extends FortronBlockEntity implements ModuleAcceptor, ObjectCache {
     private static final String FOTRON_COST_CACHE_KEY = "getFortronCost";
     private static final String ALL_MODULES_CACHE_KEY = "getModules";
-    private static final String MODULE_COUNT_CACHE_KEY = "getModuleCount";
+    private static final String MODULE_CACHE_KEY = "getModule_";
+    private static final String MODULE_COUNT_CACHE_KEY = "getModuleCount_";
     private static final String MODULE_INSTANCE_CACHE_KEY = "getModuleInstances";
 
     private final int capacityBoost;
@@ -82,7 +83,8 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
 
     @Override
     public boolean hasModule(ModuleType<?> module) {
-        return getAllModuleItemsStream().anyMatch(stack -> ModUtil.isModule(stack, module));
+        return cached(MODULE_CACHE_KEY + module.hashCode(), () -> getAllModuleItemsStream()
+            .anyMatch(stack -> ModUtil.isModule(stack, module)));
     }
 
     @Override

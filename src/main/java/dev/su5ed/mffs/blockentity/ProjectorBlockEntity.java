@@ -1,5 +1,8 @@
 package dev.su5ed.mffs.blockentity;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ListMultimap;
 import dev.su5ed.mffs.MFFSConfig;
@@ -50,6 +53,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 public class ProjectorBlockEntity extends ModularBlockEntity implements Projector {
     private static final String TRANSLATION_CACHE_KEY = "getTranslation";
@@ -69,6 +73,14 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
 
     private final Semaphore semaphore = new Semaphore();
     private final Set<BlockPos> projectedBlocks = Collections.synchronizedSet(new HashSet<>());
+    private final LoadingCache<BlockPos, Boolean> projectionCache = CacheBuilder.newBuilder()
+        .expireAfterWrite(1, TimeUnit.MINUTES)
+        .build(new CacheLoader<>() {
+            @Override
+            public Boolean load(BlockPos key) {
+                return canProjectPos(key);
+            }
+        });
     private int clientAnimationSpeed;
 
     public ProjectorBlockEntity(BlockPos pos, BlockState state) {
@@ -366,6 +378,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
 
             this.fortronStorage.extractFortron(1, false);
             this.projectedBlocks.add(pos);
+            this.projectionCache.invalidate(pos);
         }
         task.complete(null);
         runSelectionTask();
@@ -378,9 +391,8 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
 
     private boolean canProjectPos(BlockPos pos) {
         BlockState state = this.level.getBlockState(pos);
-        return (state.isAir() || getModuleCount(ModModules.DISINTEGRATION) > 0 && state.getDestroySpeed(this.level, pos) != -1 || state.getMaterial().isLiquid() || state.is(ModTags.FORCEFIELD_REPLACEABLE))
-            && !state.is(ModBlocks.FORCE_FIELD.get()) && !pos.equals(this.worldPosition)
-            && this.level.isLoaded(pos);
+        return (state.isAir() || state.getMaterial().isLiquid() || state.is(ModTags.FORCEFIELD_REPLACEABLE) || hasModule(ModModules.DISINTEGRATION) && state.getDestroySpeed(this.level, pos) != -1)
+            && !state.is(ModBlocks.FORCE_FIELD.get()) && !pos.equals(this.worldPosition);
     }
 
     @Override
@@ -391,6 +403,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
                 .forEach(pos -> this.level.removeBlock(pos, false));
         }
         this.projectedBlocks.clear();
+        this.projectionCache.invalidateAll();
         this.semaphore.reset();
     }
 
@@ -481,7 +494,8 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
             cache.clearCache();
         }
         List<BlockPos> fieldToBeProjected = new ArrayList<>(getCalculatedFieldPositions());
-        for (Module module : getModuleInstances()) {
+        Set<Module> modules = getModuleInstances();
+        for (Module module : modules) {
             module.beforeSelect(this, fieldToBeProjected);
         }
         int constructionSpeed = Math.min(getProjectionSpeed(), MFFSConfig.COMMON.maxFFGenPerTick.get());
@@ -489,7 +503,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
         fieldLoop:
         for (int i = 0, constructionCount = 0; i < fieldToBeProjected.size() && constructionCount < constructionSpeed && !isRemoved() && this.semaphore.isInStage(ProjectionStage.SELECTING); i++) {
             BlockPos pos = fieldToBeProjected.get(i);
-            for (Module module : getModuleInstances()) {
+            for (Module module : modules) {
                 Module.ProjectAction action = module.onSelect(this, pos);
                 if (action == Module.ProjectAction.SKIP) {
                     continue fieldLoop;
@@ -497,7 +511,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
                     break fieldLoop;
                 }
             }
-            if (canProjectPos(pos)) {
+            if (this.projectionCache.getUnchecked(pos) && this.level.isLoaded(pos)) {
                 projectable.add(pos);
                 constructionCount++;
             }
@@ -559,7 +573,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
         public synchronized boolean isInStage(ProjectionStage stage) {
             return this.stage == stage;
         }
-        
+
         public synchronized boolean isReady() {
             return this.stage == ProjectionStage.STANDBY || isComplete(this.stage);
         }
