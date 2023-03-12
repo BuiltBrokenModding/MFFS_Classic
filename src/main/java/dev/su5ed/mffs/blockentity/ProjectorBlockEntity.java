@@ -460,7 +460,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
         return CompletableFuture.supplyAsync(this::calculateFieldPositions)
             .whenComplete((list, ex) -> {
                 for (Module module : projector.getModules()) {
-                    module.onCalculate(projector, projector.getCalculatedField());
+                    module.onCalculate(projector, list);
                 }
                 Collections.shuffle(list);
             })
@@ -483,7 +483,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
             .map(pos -> pos.add(this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ()).add(translation.getX(), translation.getY(), translation.getZ()))
             .filter(pos -> pos.y() <= this.level.getHeight())
             .map(pos -> new BlockPos(Math.round(pos.x), Math.round(pos.y), Math.round(pos.z)))
-            .toList();
+            .toMutableList();
     }
 
     public static Optional<Block> getFilterBlock(ItemStack stack) {
