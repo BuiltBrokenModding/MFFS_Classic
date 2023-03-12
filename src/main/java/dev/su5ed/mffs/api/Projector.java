@@ -59,13 +59,6 @@ public interface Projector extends ModuleAcceptor, BiometricIdentifierLink {
     Collection<InventorySlot> getUpgradeSlots();
 
     /**
-     * @param module - The module instance.
-     * @param sides  - The direction facing.
-     * @return Gets the amount of modules based on the side.
-     */
-    <T extends Item & Module> int getSidedModuleCount(T module, Direction... sides);
-
-    /**
      * Gets the slot IDs based on the direction given.
      */
     Collection<InventorySlot> getSlotsFromSide(Direction side);

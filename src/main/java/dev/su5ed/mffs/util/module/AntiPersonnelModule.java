@@ -1,6 +1,7 @@
 package dev.su5ed.mffs.util.module;
 
 import dev.su5ed.mffs.MFFSConfig;
+import dev.su5ed.mffs.api.module.ModuleType;
 import dev.su5ed.mffs.api.security.BiometricIdentifier;
 import dev.su5ed.mffs.api.security.FieldPermission;
 import dev.su5ed.mffs.api.security.InterdictionMatrix;
@@ -13,6 +14,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 public class AntiPersonnelModule extends BaseInterdictionModule {
+
+    public AntiPersonnelModule(ModuleType<?> type, ItemStack stack) {
+        super(type, stack);
+    }
 
     @Override
     public boolean onDefend(InterdictionMatrix interdictionMatrix, LivingEntity target) {

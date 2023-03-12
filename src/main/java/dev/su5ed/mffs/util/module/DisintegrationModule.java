@@ -1,6 +1,7 @@
 package dev.su5ed.mffs.util.module;
 
 import dev.su5ed.mffs.api.Projector;
+import dev.su5ed.mffs.api.module.ModuleType;
 import dev.su5ed.mffs.blockentity.ProjectorBlockEntity;
 import dev.su5ed.mffs.network.DrawHologramPacket;
 import dev.su5ed.mffs.network.Network;
@@ -10,6 +11,7 @@ import dev.su5ed.mffs.util.ModUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -22,8 +24,8 @@ import java.util.List;
 public class DisintegrationModule extends BaseModule {
     private final List<BlockPos> activeBlocks = new ArrayList<>();
 
-    public DisintegrationModule() {
-        super(20);
+    public DisintegrationModule(ModuleType<?> type, ItemStack stack) {
+        super(type, stack);
     }
 
     @Override

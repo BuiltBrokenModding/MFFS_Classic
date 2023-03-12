@@ -1,5 +1,6 @@
 package dev.su5ed.mffs.util.module;
 
+import dev.su5ed.mffs.api.module.ModuleType;
 import dev.su5ed.mffs.api.security.BiometricIdentifier;
 import dev.su5ed.mffs.api.security.FieldPermission;
 import dev.su5ed.mffs.api.security.InterdictionMatrix;
@@ -14,6 +15,10 @@ import one.util.streamex.StreamEx;
 import java.util.Collection;
 
 public class ConfiscationModule extends BaseInterdictionModule {
+
+    public ConfiscationModule(ModuleType<?> type, ItemStack stack) {
+        super(type, stack);
+    }
 
     @Override
     public boolean onDefend(InterdictionMatrix interdictionMatrix, LivingEntity target) {

@@ -3,6 +3,7 @@ package dev.su5ed.mffs.setup;
 import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.api.module.InterdictionMatrixModule;
 import dev.su5ed.mffs.api.module.Module;
+import dev.su5ed.mffs.api.module.ModuleType;
 import dev.su5ed.mffs.api.module.ProjectorMode;
 import dev.su5ed.mffs.item.BaseItem;
 import dev.su5ed.mffs.item.BaseItem.ExtendedItemProperties;
@@ -14,11 +15,6 @@ import dev.su5ed.mffs.item.InterdictionMatrixModuleItem;
 import dev.su5ed.mffs.item.ModuleItem;
 import dev.su5ed.mffs.item.ProjectorModeItem;
 import dev.su5ed.mffs.item.RemoteControllerItem;
-import dev.su5ed.mffs.util.module.AntiPersonnelModule;
-import dev.su5ed.mffs.util.module.BaseInterdictionModule;
-import dev.su5ed.mffs.util.module.ConfiscationModule;
-import dev.su5ed.mffs.util.module.ExterminatingModule;
-import dev.su5ed.mffs.util.module.WarnModule;
 import dev.su5ed.mffs.util.projector.ModProjectorModes;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
@@ -72,14 +68,14 @@ public final class ModItems {
     public static final RegistryObject<ModuleItem<Module>> COLLECTION_MODULE = module("collection_module", ModModules.COLLECTION, singleStack());
     public static final RegistryObject<ModuleItem<Module>> INVERTER_MODULE = module("inverter_module", ModModules.INVERTER, singleStack(), ExtendedItemProperties::description);
     public static final RegistryObject<ModuleItem<Module>> SILENCE_MODULE = module("silence_module", ModModules.SILENCE, singleStack(), ExtendedItemProperties::description);
-    public static final RegistryObject<InterdictionMatrixModuleItem<WarnModule>> WARN_MODULE = interdictionMatrixModule("warn_module", ModModules.WARN);
-    public static final RegistryObject<InterdictionMatrixModuleItem<BaseInterdictionModule>> BLOCK_ACCESS_MODULE = interdictionMatrixModule("block_access_module", ModModules.BLOCK_ACCESS);
-    public static final RegistryObject<InterdictionMatrixModuleItem<BaseInterdictionModule>> BLOCK_ALTER_MODULE = interdictionMatrixModule("block_alter_module", ModModules.BLOCK_ALTER);
-    public static final RegistryObject<InterdictionMatrixModuleItem<ExterminatingModule>> ANTI_FRIENDLY_MODULE = interdictionMatrixModule("anti_friendly_module", ModModules.ANTI_FRIENDLY);
-    public static final RegistryObject<InterdictionMatrixModuleItem<ExterminatingModule>> ANTI_HOSTILE_MODULE = interdictionMatrixModule("anti_hostile_module", ModModules.ANTI_HOSTILE);
-    public static final RegistryObject<InterdictionMatrixModuleItem<AntiPersonnelModule>> ANTI_PERSONNEL_MODULE = interdictionMatrixModule("anti_personnel_module", ModModules.ANTI_PERSONNEL);
-    public static final RegistryObject<InterdictionMatrixModuleItem<BaseInterdictionModule>> ANTI_SPAWN_MODULE = interdictionMatrixModule("anti_spawn_module", ModModules.ANTI_SPAWN);
-    public static final RegistryObject<InterdictionMatrixModuleItem<ConfiscationModule>> CONFISCATION_MODULE = interdictionMatrixModule("confiscation_module", ModModules.CONFISCATION);
+    public static final RegistryObject<ModuleItem<InterdictionMatrixModule>> WARN_MODULE = interdictionMatrixModule("warn_module", ModModules.WARN);
+    public static final RegistryObject<ModuleItem<InterdictionMatrixModule>> BLOCK_ACCESS_MODULE = interdictionMatrixModule("block_access_module", ModModules.BLOCK_ACCESS);
+    public static final RegistryObject<ModuleItem<InterdictionMatrixModule>> BLOCK_ALTER_MODULE = interdictionMatrixModule("block_alter_module", ModModules.BLOCK_ALTER);
+    public static final RegistryObject<ModuleItem<InterdictionMatrixModule>> ANTI_FRIENDLY_MODULE = interdictionMatrixModule("anti_friendly_module", ModModules.ANTI_FRIENDLY);
+    public static final RegistryObject<ModuleItem<InterdictionMatrixModule>> ANTI_HOSTILE_MODULE = interdictionMatrixModule("anti_hostile_module", ModModules.ANTI_HOSTILE);
+    public static final RegistryObject<ModuleItem<InterdictionMatrixModule>> ANTI_PERSONNEL_MODULE = interdictionMatrixModule("anti_personnel_module", ModModules.ANTI_PERSONNEL);
+    public static final RegistryObject<ModuleItem<InterdictionMatrixModule>> ANTI_SPAWN_MODULE = interdictionMatrixModule("anti_spawn_module", ModModules.ANTI_SPAWN);
+    public static final RegistryObject<ModuleItem<InterdictionMatrixModule>> CONFISCATION_MODULE = interdictionMatrixModule("confiscation_module", ModModules.CONFISCATION);
     public static final RegistryObject<Item> BLANK_CARD = ITEMS.register("blank_card", ModItems::simpleItem);
     public static final RegistryObject<Item> ID_CARD = ITEMS.register("id_card", IdentificationCardItem::new);
     public static final RegistryObject<Item> INFINITE_POWER_CARD = ITEMS.register("infinite_power_card", () -> new BaseItem(new ExtendedItemProperties(itemProperties().stacksTo(1)).description()));
@@ -98,23 +94,23 @@ public final class ModItems {
         return ITEMS.register(block.getId().getPath(), () -> new BlockItem(block.get(), ITEM_PROPERTIES));
     }
 
-    private static RegistryObject<ModuleItem<Module>> module(String name, Module module) {
+    private static RegistryObject<ModuleItem<Module>> module(String name, ModuleType<Module> module) {
         return module(name, module, new ExtendedItemProperties(itemProperties()));
     }
 
-    private static RegistryObject<ModuleItem<Module>> module(String name, Module module, ExtendedItemProperties properties) {
+    private static RegistryObject<ModuleItem<Module>> module(String name, ModuleType<Module> module, ExtendedItemProperties properties) {
         return module(name, module, properties, item -> {});
     }
 
-    private static RegistryObject<ModuleItem<Module>> module(String name, Module module, Consumer<BaseItem.ExtendedItemProperties> consumer) {
+    private static RegistryObject<ModuleItem<Module>> module(String name, ModuleType<Module> module, Consumer<BaseItem.ExtendedItemProperties> consumer) {
         return module(name, module, new ExtendedItemProperties(itemProperties()), consumer);
     }
 
-    private static <T extends Module & InterdictionMatrixModule> RegistryObject<InterdictionMatrixModuleItem<T>> interdictionMatrixModule(String name, T module) {
-        return ITEMS.register(name, () -> new InterdictionMatrixModuleItem<>(new ExtendedItemProperties(itemProperties()).description(), module));
+    private static RegistryObject<ModuleItem<InterdictionMatrixModule>> interdictionMatrixModule(String name, ModuleType<InterdictionMatrixModule> module) {
+        return ITEMS.register(name, () -> new InterdictionMatrixModuleItem(new ExtendedItemProperties(itemProperties()).description(), module));
     }
 
-    private static RegistryObject<ModuleItem<Module>> module(String name, Module module, ExtendedItemProperties properties, Consumer<BaseItem.ExtendedItemProperties> consumer) {
+    private static RegistryObject<ModuleItem<Module>> module(String name, ModuleType<Module> module, ExtendedItemProperties properties, Consumer<BaseItem.ExtendedItemProperties> consumer) {
         return ITEMS.register(name, () -> {
             consumer.accept(properties);
             return new ModuleItem<>(properties, module);

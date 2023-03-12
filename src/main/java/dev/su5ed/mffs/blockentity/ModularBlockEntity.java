@@ -4,6 +4,7 @@ import dev.su5ed.mffs.MFFSConfig;
 import dev.su5ed.mffs.api.ObjectCache;
 import dev.su5ed.mffs.api.module.Module;
 import dev.su5ed.mffs.api.module.ModuleAcceptor;
+import dev.su5ed.mffs.api.module.ModuleType;
 import dev.su5ed.mffs.setup.ModCapabilities;
 import dev.su5ed.mffs.setup.ModModules;
 import dev.su5ed.mffs.util.ModUtil;
@@ -30,7 +31,8 @@ import java.util.function.Supplier;
 public abstract class ModularBlockEntity extends FortronBlockEntity implements ModuleAcceptor, ObjectCache {
     private static final String FOTRON_COST_CACHE_KEY = "getFortronCost";
     private static final String ALL_MODULES_CACHE_KEY = "getModules";
-    private static final String MODULE_COUNT_CACHE_KEY = "getModuleCount_";
+    private static final String MODULE_COUNT_CACHE_KEY = "getModuleCount";
+    private static final String MODULE_INSTANCE_CACHE_KEY = "getModuleInstances";
 
     private final int capacityBoost;
     /**
@@ -79,12 +81,12 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
     }
 
     @Override
-    public boolean hasModule(Module module) {
+    public boolean hasModule(ModuleType<?> module) {
         return getAllModuleItemsStream().anyMatch(stack -> ModUtil.isModule(stack, module));
     }
 
     @Override
-    public int getModuleCount(Module module, Collection<InventorySlot> slots) {
+    public int getModuleCount(ModuleType<?> module, Collection<InventorySlot> slots) {
         String key = MODULE_COUNT_CACHE_KEY + module.hashCode() + "_" + slots.hashCode();
         return cached(key, () -> getModuleItemsStream(slots)
             .filter(stack -> ModUtil.isModule(stack, module))
@@ -100,9 +102,16 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
     }
 
     @Override
-    public Set<Module> getModules() {
+    public Set<ModuleType<?>> getModules() {
         return cached(ALL_MODULES_CACHE_KEY, () -> getModuleItemsStream(List.of())
-            .mapPartial(stack -> stack.getCapability(ModCapabilities.MODULE).resolve())
+            .mapPartial(stack -> stack.getCapability(ModCapabilities.MODULE_TYPE).resolve())
+            .toSet());
+    }
+
+    public Set<Module> getModuleInstances() {
+        return cached(MODULE_INSTANCE_CACHE_KEY, () -> getModuleItemsStream(List.of())
+            .<Module>mapPartial(stack -> stack.getCapability(ModCapabilities.MODULE_TYPE).resolve()
+                .map(moduleType -> moduleType.createModule(stack)))
             .toSet());
     }
 
@@ -142,7 +151,7 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
 
     protected int doGetFortronCost() {
         double cost = StreamEx.of(getModuleStacks())
-            .mapToDouble(stack -> stack.getCount() * stack.getCapability(ModCapabilities.MODULE)
+            .mapToDouble(stack -> stack.getCount() * stack.getCapability(ModCapabilities.MODULE_TYPE)
                 .map(module -> (double) module.getFortronCost(getAmplifier()))
                 .orElse(0.0))
             .sum();
@@ -150,11 +159,11 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
     }
 
     protected void addModuleSlots(List<? super InventorySlot> list) {}
-    
+
     protected List<InventorySlot> createUpgradeSlots(int count) {
         return createUpgradeSlots(count, null, stack -> {});
     }
-    
+
     protected List<InventorySlot> createUpgradeSlots(int count, @Nullable Module.Category category) {
         return createUpgradeSlots(count, category, stack -> {});
     }

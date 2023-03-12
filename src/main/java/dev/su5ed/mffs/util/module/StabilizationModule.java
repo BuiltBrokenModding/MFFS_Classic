@@ -1,6 +1,7 @@
 package dev.su5ed.mffs.util.module;
 
 import dev.su5ed.mffs.api.Projector;
+import dev.su5ed.mffs.api.module.ModuleType;
 import dev.su5ed.mffs.network.DrawHologramPacket;
 import dev.su5ed.mffs.network.Network;
 import dev.su5ed.mffs.setup.ModModules;
@@ -23,8 +24,8 @@ import java.util.Optional;
 public class StabilizationModule extends BaseModule {
     private int blockCount = 0;
 
-    public StabilizationModule() {
-        super(20);
+    public StabilizationModule(ModuleType<?> type, ItemStack stack) {
+        super(type, stack);
     }
 
     @Override

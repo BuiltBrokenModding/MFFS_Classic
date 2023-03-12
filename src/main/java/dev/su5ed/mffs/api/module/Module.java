@@ -7,13 +7,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 import java.util.Collection;
-import java.util.Set;
 
 public interface Module {
-    /**
-     * The amount of Fortron this module consumes per tick.
-     */
-    float getFortronCost(float amplifier);
+    ModuleType<?> getType();
 
     void beforeSelect(Projector projector, Collection<? extends BlockPos> field);
 
@@ -41,10 +37,9 @@ public interface Module {
      * @param level  the level being projected in
      * @param pos    the position being collided with
      * @param entity the entity colliding with the field
-     * @param stack  the module ItemStack
      * @return whether to stop the default process of entity collision
      */
-    boolean onCollideWithForceField(Level level, BlockPos pos, Entity entity, ItemStack stack);
+    boolean onCollideWithForceField(Level level, BlockPos pos, Entity entity);
 
     /**
      * Called in this module when it is being calculated by the projector.
@@ -53,8 +48,6 @@ public interface Module {
      * @param fieldDefinition the field block positions
      */
     void onCalculate(Projector projector, Collection<BlockPos> fieldDefinition);
-
-    Set<Category> getCategories();
 
     enum Category {
         MATRIX,

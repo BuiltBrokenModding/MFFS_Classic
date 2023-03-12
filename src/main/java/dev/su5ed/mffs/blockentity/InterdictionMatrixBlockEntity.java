@@ -1,12 +1,12 @@
 package dev.su5ed.mffs.blockentity;
 
 import dev.su5ed.mffs.MFFSConfig;
+import dev.su5ed.mffs.api.module.InterdictionMatrixModule;
 import dev.su5ed.mffs.api.module.Module;
 import dev.su5ed.mffs.api.security.BiometricIdentifier;
 import dev.su5ed.mffs.api.security.FieldPermission;
 import dev.su5ed.mffs.api.security.InterdictionMatrix;
 import dev.su5ed.mffs.menu.InterdictionMatrixMenu;
-import dev.su5ed.mffs.setup.ModCapabilities;
 import dev.su5ed.mffs.setup.ModItems;
 import dev.su5ed.mffs.setup.ModModules;
 import dev.su5ed.mffs.setup.ModObjects;
@@ -128,9 +128,8 @@ public class InterdictionMatrixBlockEntity extends ModularBlockEntity implements
                 return;
             }
         }
-
-        for (ItemStack stack : getModuleStacks()) {
-            if (stack.getCapability(ModCapabilities.INTERDICTION_MATRIX_MODULE).map(m -> m.onDefend(this, target) || target.isDeadOrDying()).orElse(false)) {
+        for (Module module : getModuleInstances()) {
+            if (module instanceof InterdictionMatrixModule interdictionModule && interdictionModule.onDefend(this, target) || target.isDeadOrDying()) {
                 break;
             }
         }

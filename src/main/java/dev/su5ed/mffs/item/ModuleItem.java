@@ -1,6 +1,7 @@
 package dev.su5ed.mffs.item;
 
 import dev.su5ed.mffs.api.module.Module;
+import dev.su5ed.mffs.api.module.ModuleType;
 import dev.su5ed.mffs.setup.ModCapabilities;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
@@ -20,11 +21,10 @@ import java.util.List;
 public class ModuleItem<T extends Module> extends BaseItem {
     private static final DecimalFormat FORTRON_COST_FORMAT = new DecimalFormat("#.##");
 
-    protected final T module;
+    protected final ModuleType<T> module;
 
-    public ModuleItem(ExtendedItemProperties properties, T module) {
+    public ModuleItem(ExtendedItemProperties properties, ModuleType<T> module) {
         super(properties);
-
         this.module = module;
     }
 
@@ -42,11 +42,11 @@ public class ModuleItem<T extends Module> extends BaseItem {
     }
 
     public class ModuleCapabilityProvider implements ICapabilityProvider {
-        private final LazyOptional<Module> optional = LazyOptional.of(() -> ModuleItem.this.module);
+        private final LazyOptional<ModuleType<?>> optional = LazyOptional.of(() -> ModuleItem.this.module);
 
         @Override
         public <U> LazyOptional<U> getCapability(Capability<U> cap, @Nullable Direction side) {
-            return ModCapabilities.MODULE.orEmpty(cap, this.optional);
+            return ModCapabilities.MODULE_TYPE.orEmpty(cap, this.optional);
         }
     }
 }

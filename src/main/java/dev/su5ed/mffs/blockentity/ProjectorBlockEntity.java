@@ -27,7 +27,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
@@ -237,13 +236,6 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
     }
 
     @Override
-    public <T extends Item & Module> int getSidedModuleCount(T module, Direction... sides) {
-        return StreamEx.of(sides.length == 0 ? Direction.values() : sides)
-            .mapToInt(side -> getModuleCount(module, getSlotsFromSide(side)))
-            .sum();
-    }
-
-    @Override
     public BlockPos getTranslation() {
         return cached(TRANSLATION_CACHE_KEY, () -> {
             int zTranslationNeg = getModuleCount(ModModules.TRANSLATION, getSlotsFromSide(Direction.NORTH));
@@ -342,14 +334,14 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
 
     public void projectField() {
         CompletableFuture<Void> task = this.semaphore.beginStage(ProjectionStage.PROJECTING);
-        for (Module module : getModules()) {
+        for (Module module : getModuleInstances()) {
             module.beforeProject(this);
         }
         BlockState state = ModBlocks.FORCE_FIELD.get().defaultBlockState();
         List<BlockPos> projectable = this.semaphore.getResult(ProjectionStage.SELECTING);
         fieldLoop:
         for (BlockPos pos : projectable) {
-            for (Module module : getModules()) {
+            for (Module module : getModuleInstances()) {
                 Module.ProjectAction action = module.onProject(this, pos);
 
                 if (action == Module.ProjectAction.SKIP) {
@@ -448,7 +440,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
         return this.semaphore.<List<BlockPos>>beginStage(ProjectionStage.CALCULATING)
             .completeAsync(this::calculateFieldPositions)
             .whenComplete((list, ex) -> {
-                for (Module module : getModules()) {
+                for (Module module : getModuleInstances()) {
                     module.onCalculate(this, list);
                 }
                 Collections.shuffle(list);
@@ -489,8 +481,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
             cache.clearCache();
         }
         List<BlockPos> fieldToBeProjected = new ArrayList<>(getCalculatedFieldPositions());
-        fieldToBeProjected.removeAll(this.projectedBlocks);
-        for (Module module : getModules()) {
+        for (Module module : getModuleInstances()) {
             module.beforeSelect(this, fieldToBeProjected);
         }
         int constructionSpeed = Math.min(getProjectionSpeed(), MFFSConfig.COMMON.maxFFGenPerTick.get());
@@ -498,7 +489,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
         fieldLoop:
         for (int i = 0, constructionCount = 0; i < fieldToBeProjected.size() && constructionCount < constructionSpeed && !isRemoved() && this.semaphore.isInStage(ProjectionStage.SELECTING); i++) {
             BlockPos pos = fieldToBeProjected.get(i);
-            for (Module module : getModules()) {
+            for (Module module : getModuleInstances()) {
                 Module.ProjectAction action = module.onSelect(this, pos);
                 if (action == Module.ProjectAction.SKIP) {
                     continue fieldLoop;

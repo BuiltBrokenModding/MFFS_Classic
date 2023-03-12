@@ -1,14 +1,16 @@
 package dev.su5ed.mffs.util.module;
 
 import dev.su5ed.mffs.api.Projector;
+import dev.su5ed.mffs.api.module.ModuleType;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.Collection;
 
 public class DomeModule extends BaseModule {
 
-    public DomeModule() {
-        super(Category.MATRIX);
+    public DomeModule(ModuleType<?> type, ItemStack stack) {
+        super(type, stack);
     }
 
     @Override

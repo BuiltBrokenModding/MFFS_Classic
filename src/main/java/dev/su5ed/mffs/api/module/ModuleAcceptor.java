@@ -9,17 +9,19 @@ import java.util.List;
 import java.util.Set;
 
 public interface ModuleAcceptor {
-    boolean hasModule(Module module);
+    boolean hasModule(ModuleType<?> module);
 
-    default int getModuleCount(Module module) {
+    default int getModuleCount(ModuleType<?> module) {
         return getModuleCount(module, List.of());
     }
 
-    int getModuleCount(Module module, Collection<InventorySlot> slots);
+    int getModuleCount(ModuleType<?> module, Collection<InventorySlot> slots);
 
     Set<ItemStack> getModuleStacks();
 
-    Set<Module> getModules();
+    Set<ModuleType<?>> getModules();
+    
+    Set<Module> getModuleInstances();
 
     StreamEx<ItemStack> getAllModuleItemsStream();
 

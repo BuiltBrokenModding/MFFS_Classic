@@ -2,6 +2,7 @@ package dev.su5ed.mffs.util;
 
 import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.api.module.Module;
+import dev.su5ed.mffs.api.module.ModuleType;
 import dev.su5ed.mffs.api.security.FieldPermission;
 import dev.su5ed.mffs.setup.ModCapabilities;
 import net.minecraft.core.BlockPos;
@@ -129,17 +130,17 @@ public final class ModUtil {
     }
 
     public static boolean isModule(ItemStack stack) {
-        return stack.getCapability(ModCapabilities.MODULE).isPresent();
+        return stack.getCapability(ModCapabilities.MODULE_TYPE).isPresent();
     }
 
     public static boolean isModule(ItemStack stack, Module.Category category) {
-        return stack.getCapability(ModCapabilities.MODULE)
+        return stack.getCapability(ModCapabilities.MODULE_TYPE)
             .map(module -> module.getCategories().contains(category))
             .orElse(false);
     }
 
-    public static boolean isModule(ItemStack stack, Module module) {
-        return stack.getCapability(ModCapabilities.MODULE)
+    public static boolean isModule(ItemStack stack, ModuleType<?> module) {
+        return stack.getCapability(ModCapabilities.MODULE_TYPE)
             .filter(mod -> mod == module)
             .isPresent();
     }

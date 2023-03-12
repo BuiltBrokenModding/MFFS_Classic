@@ -1,7 +1,9 @@
 package dev.su5ed.mffs.util.module;
 
 import dev.su5ed.mffs.api.Projector;
+import dev.su5ed.mffs.api.module.ModuleType;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -10,8 +12,8 @@ import net.minecraftforge.fluids.IFluidBlock;
 
 public class SpongeModule extends BaseModule {
 
-    public SpongeModule() {
-        super(1);
+    public SpongeModule(ModuleType<?> type, ItemStack stack) {
+        super(type, stack);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package dev.su5ed.mffs.util.module;
 
+import dev.su5ed.mffs.api.module.ModuleType;
 import dev.su5ed.mffs.setup.ModObjects;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
@@ -9,15 +10,15 @@ import net.minecraft.world.level.Level;
 
 public class ShockModule extends BaseModule {
 
-    public ShockModule() {
-        super(1.0F);
+    public ShockModule(ModuleType<?> type, ItemStack stack) {
+        super(type, stack);
     }
 
     @Override
-    public boolean onCollideWithForceField(Level level, BlockPos pos, Entity entity, ItemStack stack) {
+    public boolean onCollideWithForceField(Level level, BlockPos pos, Entity entity) {
         if (entity instanceof LivingEntity living) {
-            living.hurt(ModObjects.FIELD_SHOCK, stack.getCount());
+            living.hurt(ModObjects.FIELD_SHOCK, this.stack.getCount());
         }
-        return super.onCollideWithForceField(level, pos, entity, stack);
+        return super.onCollideWithForceField(level, pos, entity);
     }
 }
