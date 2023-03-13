@@ -24,7 +24,6 @@ public class MFFSConfig {
 
     public static final class Common {
         public final ForgeConfigSpec.BooleanValue enableElectricity;
-        public final ForgeConfigSpec.DoubleValue fortronProductionMultiplier;
         public final ForgeConfigSpec.BooleanValue useCache;
         public final ForgeConfigSpec.IntValue maxFFGenPerTick;
         public final ForgeConfigSpec.BooleanValue allowOpBiometryOverride;
@@ -41,9 +40,6 @@ public class MFFSConfig {
             this.enableElectricity = builder
                 .comment("Turning this to false will make MFFS run without electricity or energy systems required. Great for vanilla!")
                 .define("enableElectricity", true);
-            this.fortronProductionMultiplier = builder
-                .comment("Fortron Production Multiplier")
-                .defineInRange("fortronProductionMultiplier", 1.0, 0, 10);
             this.useCache = builder
                 .comment("Cache allows temporary data saving to decrease calculations required")
                 .define("useCache", true);
@@ -64,7 +60,7 @@ public class MFFSConfig {
                 .defineInRange("energyConversionRatio", 0.0025, 0.00001, 10000);
             this.catalystMultiplier = builder
                 .comment("Fortron catalyst production multiplier")
-                .defineInRange("catalystMultiplier", 4.0, 0.0, 10000.0);
+                .defineInRange("catalystMultiplier", 2.0, 0.0, 10000.0);
             this.catalystBurnTime = builder
                 .comment("The amount of ticks a single catalyst item lasts for")
                 .defineInRange("catalystBurnTime", 10 * 20, 1, 10000);

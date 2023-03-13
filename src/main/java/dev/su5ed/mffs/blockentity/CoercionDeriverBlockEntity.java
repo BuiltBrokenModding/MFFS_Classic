@@ -130,7 +130,7 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity {
      */
     public int getProductionRate() {
         if (isActive()) {
-            int production = (int) (getMaxTransferRate() / 20F * getEnergyConversionRatio() * MFFSConfig.COMMON.fortronProductionMultiplier.get());
+            int production = (int) (getMaxTransferRate() / 20F * getEnergyConversionRatio());
             return this.processTime > 0 ? (int) (production * MFFSConfig.COMMON.catalystMultiplier.get()) : production;
         }
         return 0;

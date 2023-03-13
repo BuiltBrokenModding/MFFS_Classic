@@ -1,6 +1,7 @@
 package dev.su5ed.mffs.setup;
 
 import dev.su5ed.mffs.api.module.ProjectorMode;
+import dev.su5ed.mffs.block.ForceFieldBlockImpl;
 import dev.su5ed.mffs.render.BiometricIdentifierRenderer;
 import dev.su5ed.mffs.render.ClientRenderHandler;
 import dev.su5ed.mffs.render.CoercionDeriverRenderer;
@@ -24,6 +25,7 @@ import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -93,7 +95,7 @@ public final class ModClientSetup {
         event.registerLayerDefinition(ForceTubeModel.LAYER_LOCATION, ForceTubeModel::createBodyLayer);
         event.registerLayerDefinition(BiometricIdentifierModel.LAYER_LOCATION, BiometricIdentifierModel::createBodyLayer);
     }
-    
+
     @SubscribeEvent
     public static void onTextureStitch(TextureStitchEvent.Pre event) {
         if (event.getAtlas().location().equals(InventoryMenu.BLOCK_ATLAS)) {
@@ -108,7 +110,16 @@ public final class ModClientSetup {
 
     @SubscribeEvent
     public static void registerBlockColor(RegisterColorHandlersEvent.Block event) {
-        event.register((state, level, pos, tintIndex) -> 3473151, ModBlocks.FORCE_FIELD.get());
+        event.register((state, level, pos, tintIndex) -> {
+            BlockEntity be = level.getBlockEntity(pos);
+            if (be != null) {
+                Block camo = be.getModelData().get(ForceFieldBlockImpl.CAMOUFLAGE_BLOCK);
+                if (camo != null) {
+                    return event.getBlockColors().getColor(camo.defaultBlockState(), level, pos, tintIndex);
+                }
+            }
+            return 3473151;
+        }, ModBlocks.FORCE_FIELD.get());
     }
 
     private ModClientSetup() {}

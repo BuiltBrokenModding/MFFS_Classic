@@ -1,5 +1,9 @@
 package dev.su5ed.mffs.render.model;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import com.mojang.datafixers.util.Pair;
 import dev.su5ed.mffs.api.ForceFieldBlock;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
@@ -22,6 +26,15 @@ import java.util.List;
 
 public class ForceFieldBlockModel implements IDynamicBakedModel {
     private final BakedModel defaultModel;
+    private final LoadingCache<Block, Pair<BakedModel, BlockState>> cache = CacheBuilder.newBuilder()
+        .build(new CacheLoader<>() {
+            @Override
+            public Pair<BakedModel, BlockState> load(Block block) {
+                BlockState camoState = block.defaultBlockState();
+                BakedModel model = Minecraft.getInstance().getBlockRenderer().getBlockModel(camoState);
+                return Pair.of(model, camoState);
+            }
+        });
 
     public ForceFieldBlockModel(BakedModel defaultModel) {
         this.defaultModel = defaultModel;
@@ -65,30 +78,22 @@ public class ForceFieldBlockModel implements IDynamicBakedModel {
 
     @Override
     public ChunkRenderTypeSet getRenderTypes(BlockState state, RandomSource rand, ModelData data) {
-        return getWrappedModel(data).getRenderTypes(state, rand, data);
+        Pair<BakedModel, BlockState> model = getCamouflageModel(state, data);
+        return model.getFirst().getRenderTypes(model.getSecond(), rand, data);
     }
 
     @NotNull
     @Override
     public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand, ModelData extraData, @Nullable RenderType renderType) {
         if (side != null) {
-            BakedModel model = getWrappedModel(extraData);
-            return model.getQuads(state, side, rand, extraData, renderType);
+            Pair<BakedModel, BlockState> model = getCamouflageModel(state, extraData);
+            return model.getFirst().getQuads(model.getSecond(), side, rand, extraData, renderType);
         }
         return List.of();
     }
 
-    private BakedModel getWrappedModel(ModelData data) {
-        BakedModel camouflage = getCamouflageModel(data);
-        return camouflage != null ? camouflage : this.defaultModel;
-    }
-
-    private BakedModel getCamouflageModel(ModelData data) {
-        Block camouflage = data.get(ForceFieldBlock.CAMOUFLAGE_BLOCK);
-        if (camouflage != null) {
-            BlockState camoState = camouflage.defaultBlockState();
-            return Minecraft.getInstance().getBlockRenderer().getBlockModel(camoState);
-        }
-        return null;
+    private Pair<BakedModel, BlockState> getCamouflageModel(BlockState state, ModelData data) {
+        Block block = data.get(ForceFieldBlock.CAMOUFLAGE_BLOCK);
+        return block != null ? this.cache.getUnchecked(block) : Pair.of(this.defaultModel, state);
     }
 }

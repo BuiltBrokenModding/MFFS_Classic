@@ -27,7 +27,11 @@ public class FrequencyGrid {
     }
 
     public static FrequencyGrid instance() {
-        return EffectiveSide.get().isServer() ? SERVER_INSTANCE : CLIENT_INSTANCE;
+        return instance(EffectiveSide.get().isClient());
+    }
+    
+    public static FrequencyGrid instance(boolean client) {
+        return client ? CLIENT_INSTANCE : SERVER_INSTANCE;
     }
 
     public void unregister(FortronStorage tileEntity) {

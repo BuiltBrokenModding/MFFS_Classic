@@ -137,7 +137,7 @@ public final class Fortron {
     }
 
     public static InterdictionMatrix getNearestInterdictionMatrix(Level level, BlockPos pos) {
-        return StreamEx.of(FrequencyGrid.instance().get())
+        return StreamEx.of(FrequencyGrid.instance(level.isClientSide).get())
             .mapPartial(storage -> {
                 BlockEntity be = storage.getOwner();
                 return be.getLevel() == level ? be.getCapability(ModCapabilities.INTERDICTION_MATRIX)

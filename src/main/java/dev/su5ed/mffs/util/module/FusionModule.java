@@ -30,10 +30,11 @@ public class FusionModule extends BaseModule {
         int frequency = projector.be().getCapability(ModCapabilities.FORTRON)
             .map(FrequencyBlock::getFrequency)
             .orElseThrow();
-        for (FortronStorage storage : FrequencyGrid.instance().get(frequency)) {
+        Level level = projector.be().getLevel();
+        for (FortronStorage storage : FrequencyGrid.instance(level.isClientSide).get(frequency)) {
             storage.getOwner().getCapability(ModCapabilities.PROJECTOR)
                 .filter(compareProjector -> compareProjector != projector
-                    && compareProjector.be().getLevel() == projector.be().getLevel()
+                    && compareProjector.be().getLevel() == level
                     && compareProjector.isActive() && compareProjector.getMode().isPresent())
                 .ifPresent(compareProjector -> {
                     for (Iterator<? extends BlockPos> it = field.iterator(); it.hasNext(); ) {
