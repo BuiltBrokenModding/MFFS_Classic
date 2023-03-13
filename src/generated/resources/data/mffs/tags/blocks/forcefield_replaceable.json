@@ -6,6 +6,8 @@
     "minecraft:dead_bush",
     "minecraft:glow_lichen",
     "minecraft:seagrass",
-    "minecraft:tall_grass"
+    "minecraft:tall_grass",
+    "minecraft:kelp",
+    "minecraft:kelp_plant"
   ]
 }

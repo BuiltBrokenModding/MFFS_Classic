@@ -1,7 +1,7 @@
 package dev.su5ed.mffs.blockentity;
 
 import dev.su5ed.mffs.MFFSConfig;
-import dev.su5ed.mffs.api.ObjectCache;
+import dev.su5ed.mffs.util.ObjectCache;
 import dev.su5ed.mffs.api.module.Module;
 import dev.su5ed.mffs.api.module.ModuleAcceptor;
 import dev.su5ed.mffs.api.module.ModuleType;

@@ -7,7 +7,7 @@ import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ListMultimap;
 import dev.su5ed.mffs.MFFSConfig;
 import dev.su5ed.mffs.MFFSMod;
-import dev.su5ed.mffs.api.ObjectCache;
+import dev.su5ed.mffs.util.ObjectCache;
 import dev.su5ed.mffs.api.Projector;
 import dev.su5ed.mffs.api.module.Module;
 import dev.su5ed.mffs.api.module.ProjectorMode;
@@ -36,8 +36,12 @@ import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.BlockSnapshot;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.event.level.BlockEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import one.util.streamex.IntStreamEx;
 import one.util.streamex.StreamEx;
 import org.jetbrains.annotations.Nullable;
@@ -95,6 +99,23 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
         this.upgradeSlots = createUpgradeSlots(6, null, stack -> destroyField());
     }
 
+    @SubscribeEvent
+    public void onBlockBreak(BlockEvent.BreakEvent event) {
+        this.projectionCache.invalidate(event.getPos());
+    }
+
+    @SubscribeEvent
+    public void onBlockPlace(BlockEvent.EntityPlaceEvent event) {
+        this.projectionCache.invalidate(event.getPos());
+    }
+
+    @SubscribeEvent
+    public void onBlockPlaceMulti(BlockEvent.EntityMultiPlaceEvent event) {
+        for (BlockSnapshot snapshot : event.getReplacedBlockSnapshots()) {
+            this.projectionCache.invalidate(snapshot.getPos());
+        }
+    }
+
     public int computeAnimationSpeed() {
         int speed = 4;
         int fortronCost = getFortronCost();
@@ -124,8 +145,17 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
     public void onLoad() {
         super.onLoad();
         if (!this.level.isClientSide) {
+            MinecraftForge.EVENT_BUS.register(this);
             reCalculateForceField();
         }
+    }
+
+    @Override
+    public void setRemoved() {
+        if (!this.level.isClientSide) {
+            MinecraftForge.EVENT_BUS.unregister(this);
+        }
+        super.setRemoved();
     }
 
     @Override
@@ -414,7 +444,6 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
 
     private void reCalculateForceField() {
         if (getMode().isPresent()) {
-            // TODO Capability
             if (getModeStack().getItem() instanceof ObjectCache cache) {
                 cache.clearCache();
             }
@@ -515,7 +544,8 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
                 projectable.add(pos);
                 constructionCount++;
             }
-        };
+        }
+        ;
         return projectable;
     }
 
