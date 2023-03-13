@@ -46,7 +46,12 @@ public class RemoteControllerItem extends FrequencyCardItem implements CoordLink
         if (!level.isClientSide && player.isShiftKeyDown()) {
             BlockPos pos = context.getClickedPos();
             setLink(stack, pos);
-
+            BlockEntity be = level.getBlockEntity(pos);
+            if (be != null) {
+                be.getCapability(ModCapabilities.FORTRON)
+                    .ifPresent(fortron -> stack.getCapability(ModCapabilities.FREQUENCY_CARD)
+                        .ifPresent(card -> card.setFrequency(fortron.getFrequency())));
+            }
             BlockState state = level.getBlockState(pos);
             player.displayClientMessage(ModUtil.translate("info", "link.create", state.getBlock().getName(), pos.toShortString()).withStyle(ChatFormatting.AQUA), true);
             return InteractionResult.SUCCESS;

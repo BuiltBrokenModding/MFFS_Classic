@@ -13,13 +13,16 @@ public class TubeProjectorMode extends CubeProjectorMode {
         Set<Vec3> fieldBlocks = new HashSet<>();
         BlockPos posScale = projector.getPositiveScale();
         BlockPos negScale = projector.getNegativeScale();
-        for (float x = -negScale.getX(); x <= posScale.getX(); x += 0.5f) {
-            for (float z = -negScale.getZ(); z <= posScale.getZ(); z += 0.5f) {
-                for (float y = -negScale.getY(); y <= posScale.getY(); y += 0.5f) {
-                    if (y == -negScale.getY() || y == posScale.getY() || x == -negScale.getX() || x == posScale.getX()) {
-                        fieldBlocks.add(new Vec3(x, y, z));
-                    }
-                }
+        for (int x = -negScale.getX(); x <= posScale.getX(); x++) {
+            for (int z = -negScale.getZ(); z <= posScale.getZ(); z++) {
+                fieldBlocks.add(new Vec3(x, posScale.getY(), z));
+                fieldBlocks.add(new Vec3(x, -negScale.getY(), z));
+            }
+        }
+        for (int z = -negScale.getZ(); z <= posScale.getZ(); z++) {
+            for (int y = -negScale.getY(); y <= posScale.getY(); y++) {
+                fieldBlocks.add(new Vec3(posScale.getX(), y, z));
+                fieldBlocks.add(new Vec3(-negScale.getX(), y, z));
             }
         }
         return fieldBlocks;
