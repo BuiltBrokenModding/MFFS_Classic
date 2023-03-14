@@ -23,6 +23,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -96,7 +97,7 @@ public class FortronCapacitorBlockEntity extends ModularBlockEntity implements F
     }
 
     @Override
-    public Set<FortronStorage> getDevicesByFrequency() {
+    public Collection<FortronStorage> getDevicesByFrequency() {
         return FrequencyGrid.instance().get(this.level, this.worldPosition, getTransmissionRange(), this.fortronStorage.getFrequency());
     }
 

@@ -457,7 +457,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
     }
 
     public Block getCamoBlock(BlockPos pos) {
-        if (!this.level.isClientSide && getModuleCount(ModModules.CAMOUFLAGE) > 0) {
+        if (!this.level.isClientSide && hasModule(ModModules.CAMOUFLAGE)) {
             if (getMode().orElse(null) instanceof CustomProjectorMode custom) {
                 Map<BlockPos, Block> map = custom.getFieldBlockMap(this, getModeStack());
                 if (map != null) {

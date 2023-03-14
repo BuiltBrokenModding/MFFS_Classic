@@ -22,6 +22,7 @@ import dev.su5ed.mffs.screen.InterdictionMatrixScreen;
 import dev.su5ed.mffs.screen.ProjectorScreen;
 import dev.su5ed.mffs.util.projector.ModProjectorModes;
 import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.world.inventory.InventoryMenu;
@@ -51,6 +52,10 @@ public final class ModClientSetup {
         if (factory != null) {
             factory.apply(be, modelFactory);
         }
+    }
+
+    public static boolean hasShiftDown() {
+        return Screen.hasShiftDown();
     }
 
     private static void registerLazyRenderers() {

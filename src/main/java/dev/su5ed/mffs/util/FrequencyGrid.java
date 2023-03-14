@@ -9,6 +9,7 @@ import net.minecraftforge.fml.util.thread.EffectiveSide;
 import one.util.streamex.StreamEx;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class FrequencyGrid {
@@ -49,26 +50,17 @@ public class FrequencyGrid {
             .toSet();
     }
 
-    public void cleanUp() {
-        this.frequencyGrid.removeIf(fortron -> fortron == null || fortron.getOwner().isRemoved());
-    }
-
-    public Set<FortronStorage> get(Level level, Vec3i position, int radius, int frequency) {
+    public List<FortronStorage> get(Level level, Vec3i position, int radius, int frequency) {
         return StreamEx.of(get(frequency))
             .filter(fortron -> {
                 BlockEntity owner = fortron.getOwner();
                 return owner.getLevel() == level && position.closerThan(owner.getBlockPos(), radius);
             })
-            .toSet();
+            .toList();
     }
 
-    public Set<? extends FortronStorage> getFortronBlocks(Level level, Vec3i position, int radius, int frequency) {
-        return StreamEx.of(get(frequency))
-            .filter(fortron -> {
-                BlockEntity owner = fortron.getOwner();
-                return owner.getLevel() == level && owner.getBlockPos().closerThan(position, radius);
-            })
-            .toSet();
+    public void cleanUp() {
+        this.frequencyGrid.removeIf(fortron -> fortron == null || fortron.getOwner().isRemoved());
     }
 
     /**

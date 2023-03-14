@@ -3,6 +3,7 @@ package dev.su5ed.mffs.item;
 import dev.su5ed.mffs.api.module.Module;
 import dev.su5ed.mffs.api.module.ModuleType;
 import dev.su5ed.mffs.setup.ModCapabilities;
+import dev.su5ed.mffs.util.ModUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -32,7 +33,8 @@ public class ModuleItem<T extends Module> extends BaseItem {
     protected void appendHoverTextPre(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
         super.appendHoverTextPre(stack, level, tooltipComponents, isAdvanced);
 
-        tooltipComponents.add(Component.literal("Fortron: " + FORTRON_COST_FORMAT.format(this.module.getFortronCost(1) * 20) + " L/s").withStyle(ChatFormatting.GRAY));
+        tooltipComponents.add(ModUtil.translate("info", "fortron_usage", Component.literal(FORTRON_COST_FORMAT.format(this.module.getFortronCost(1) * 20)).withStyle(ChatFormatting.GRAY))
+            .withStyle(ChatFormatting.DARK_GRAY));
     }
 
     @Nullable

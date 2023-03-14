@@ -23,16 +23,13 @@ import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Optional;
 
 public class FrequencyCardItem extends BaseItem {
     private static final int MAX_FREQUENCY = 999999;
 
     public FrequencyCardItem() {
-        this(new ExtendedItemProperties(ModItems.itemProperties().stacksTo(1)).description());
-    }
-
-    protected FrequencyCardItem(ExtendedItemProperties properties) {
-        super(properties);
+        super(new ExtendedItemProperties(ModItems.itemProperties().stacksTo(1)).description());
     }
 
     @Nullable
@@ -50,10 +47,10 @@ public class FrequencyCardItem extends BaseItem {
                     if (!level.isClientSide) {
                         int frequency = level.random.nextInt(MAX_FREQUENCY + 1);
                         card.setFrequency(frequency);
-                        player.displayClientMessage(ModUtil.translate("info", "frequency.generated")
-                            .append(Component.literal(String.valueOf(frequency)).withStyle(ChatFormatting.AQUA)), true);
+                        player.displayClientMessage(ModUtil.translate("info", "frequency.generated",
+                            Component.literal(String.valueOf(frequency)).withStyle(ChatFormatting.AQUA)), true);
                     }
-                    return InteractionResultHolder.sidedSuccess(stack, level.isClientSide);
+                    return InteractionResultHolder.consume(stack);
                 })
                 .orElseGet(() -> InteractionResultHolder.pass(stack));
         }
@@ -63,27 +60,27 @@ public class FrequencyCardItem extends BaseItem {
     @Override
     public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
         Level level = context.getLevel();
-        return stack.getCapability(ModCapabilities.FREQUENCY_CARD).resolve()
-            .flatMap(card -> level.getBlockEntity(context.getClickedPos()).getCapability(ModCapabilities.FORTRON)
-                .map(fortron -> {
-                    if (!level.isClientSide) {
-                        int frequency = card.getFrequency();
-                        fortron.setFrequency(frequency);
-                        context.getPlayer().displayClientMessage(ModUtil.translate("info", "frequency.set")
-                            .append(Component.literal(String.valueOf(frequency)).withStyle(ChatFormatting.GREEN)), true);
-                    }
-                    return InteractionResult.sidedSuccess(level.isClientSide);
-                }))
+        return Optional.ofNullable(level.getBlockEntity(context.getClickedPos()))
+            .flatMap(be -> be.getCapability(ModCapabilities.FORTRON).resolve())
+            .map(fortron -> {
+                if (!level.isClientSide) {
+                    int frequency = stack.getCapability(ModCapabilities.FREQUENCY_CARD).map(FrequencyCard::getFrequency).orElseThrow();
+                    fortron.setFrequency(frequency);
+                    context.getPlayer().displayClientMessage(ModUtil.translate("info", "frequency.set",
+                        Component.literal(String.valueOf(frequency)).withStyle(ChatFormatting.GREEN)), true);
+                }
+                return InteractionResult.sidedSuccess(level.isClientSide);
+            })
             .orElse(InteractionResult.PASS);
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
-        super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+    public void appendHoverTextPre(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+        super.appendHoverTextPre(stack, level, tooltipComponents, isAdvanced);
 
         stack.getCapability(ModCapabilities.FREQUENCY_CARD).map(FrequencyCard::getFrequency)
-            .ifPresent(frequency -> tooltipComponents.add(ModUtil.translate("info", "frequency").withStyle(ChatFormatting.GRAY)
-                .append(Component.literal(String.valueOf(frequency)).withStyle(ChatFormatting.GREEN))));
+            .ifPresent(frequency -> tooltipComponents.add(ModUtil.translate("info", "frequency",
+                Component.literal(String.valueOf(frequency)).withStyle(ChatFormatting.GREEN)).withStyle(ChatFormatting.DARK_GRAY)));
     }
 
     public static class FrequencyCardCapability implements ICapabilityProvider, FrequencyCard, INBTSerializable<CompoundTag> {

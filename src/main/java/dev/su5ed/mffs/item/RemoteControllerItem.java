@@ -1,12 +1,13 @@
 package dev.su5ed.mffs.item;
 
+import dev.su5ed.mffs.api.FrequencyBlock;
 import dev.su5ed.mffs.api.card.CoordLink;
-import dev.su5ed.mffs.api.card.FrequencyCard;
 import dev.su5ed.mffs.api.fortron.FortronStorage;
 import dev.su5ed.mffs.api.security.FieldPermission;
 import dev.su5ed.mffs.menu.FortronMenu;
 import dev.su5ed.mffs.render.particle.ParticleColor;
 import dev.su5ed.mffs.setup.ModCapabilities;
+import dev.su5ed.mffs.setup.ModItems;
 import dev.su5ed.mffs.util.Fortron;
 import dev.su5ed.mffs.util.FrequencyGrid;
 import dev.su5ed.mffs.util.ModUtil;
@@ -34,10 +35,15 @@ import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 
-public class RemoteControllerItem extends FrequencyCardItem implements CoordLink {
+public class RemoteControllerItem extends BaseItem implements CoordLink {
+
+    public RemoteControllerItem() {
+        super(new ExtendedItemProperties(ModItems.itemProperties().stacksTo(1)).description());
+    }
 
     @Override
     public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
@@ -45,16 +51,13 @@ public class RemoteControllerItem extends FrequencyCardItem implements CoordLink
         Player player = context.getPlayer();
         if (!level.isClientSide && player.isShiftKeyDown()) {
             BlockPos pos = context.getClickedPos();
-            setLink(stack, pos);
             BlockEntity be = level.getBlockEntity(pos);
-            if (be != null) {
-                be.getCapability(ModCapabilities.FORTRON)
-                    .ifPresent(fortron -> stack.getCapability(ModCapabilities.FREQUENCY_CARD)
-                        .ifPresent(card -> card.setFrequency(fortron.getFrequency())));
+            if (be != null && be.getCapability(ModCapabilities.FORTRON).isPresent()) {
+                setLink(stack, pos);
+                BlockState state = level.getBlockState(pos);
+                player.displayClientMessage(ModUtil.translate("info", "link", state.getBlock().getName(), pos.toShortString()).withStyle(ChatFormatting.AQUA), true);
+                return InteractionResult.SUCCESS;
             }
-            BlockState state = level.getBlockState(pos);
-            player.displayClientMessage(ModUtil.translate("info", "link.create", state.getBlock().getName(), pos.toShortString()).withStyle(ChatFormatting.AQUA), true);
-            return InteractionResult.SUCCESS;
         }
         return InteractionResult.PASS;
     }
@@ -70,24 +73,10 @@ public class RemoteControllerItem extends FrequencyCardItem implements CoordLink
 
                 if (be instanceof MenuProvider menuProvider && (Fortron.hasPermission(level, pos, FieldPermission.USE_BLOCKS, player) || Fortron.hasPermission(level, pos, FieldPermission.REMOTE_CONTROL, player))) {
                     double requiredEnergy = ModUtil.distance(player.blockPosition(), pos) * (FluidType.BUCKET_VOLUME / 100.0);
-                    int receivedEnergy = 0;
-
-                    int frequency = stack.getCapability(ModCapabilities.FREQUENCY_CARD).map(FrequencyCard::getFrequency).orElseThrow();
-                    Set<? extends FortronStorage> fortronTiles = FrequencyGrid.instance().getFortronBlocks(level, player.blockPosition(), 50, frequency);
-
-                    for (FortronStorage fortron : fortronTiles) {
-                        BlockPos fortronPos = fortron.getOwner().getBlockPos();
-                        int consumedEnergy = fortron.extractFortron((int) Math.ceil(requiredEnergy / fortronTiles.size()), false);
-
-                        if (consumedEnergy > 0) {
-                            Fortron.renderClientBeam(level, player.position().add(0, player.getEyeHeight() - 0.2, 0), Vec3.atCenterOf(fortronPos), fortronPos, ParticleColor.BLUE_BEAM, 20);
-                            receivedEnergy += consumedEnergy;
-                        }
-
-                        if (receivedEnergy >= requiredEnergy) {
-                            NetworkHooks.openScreen((ServerPlayer) player, new RemoteMenuProvider(menuProvider), pos);
-                            return InteractionResultHolder.success(stack);
-                        }
+                    int frequency = be.getCapability(ModCapabilities.FORTRON).map(FrequencyBlock::getFrequency).orElseThrow();
+                    if (drawEnergy(level, player.blockPosition(), player.position().add(0, player.getEyeHeight() - 0.2, 0), frequency, (int) requiredEnergy)) {
+                        NetworkHooks.openScreen((ServerPlayer) player, new RemoteMenuProvider(menuProvider), pos);
+                        return InteractionResultHolder.success(stack);
                     }
 
                     player.displayClientMessage(ModUtil.translate("info", "cannot_harness", Math.round(requiredEnergy)).withStyle(ChatFormatting.RED), true);
@@ -97,22 +86,48 @@ public class RemoteControllerItem extends FrequencyCardItem implements CoordLink
         return InteractionResultHolder.pass(stack);
     }
 
-    @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
-        super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
-
-        BlockPos pos = getLink(stack);
-        if (level != null && pos != null) {
-            BlockState state = level.getBlockState(pos);
-
-            if (!state.isAir()) {
-                tooltipComponents.add(ModUtil.translate("info", "link.name", state.getBlock().getName()).withStyle(ChatFormatting.GRAY));
-                tooltipComponents.add(Component.literal(pos.toShortString()).withStyle(ChatFormatting.GRAY));
-                return;
+    private boolean drawEnergy(Level level, BlockPos pos, Vec3 target, int frequency, int energy) {
+        List<FortronStorage> fortronTiles = FrequencyGrid.instance().get(level, pos, 50, frequency);
+        fortronTiles.sort(Comparator.comparingDouble(fortron -> fortron.getOwner().getBlockPos().distToCenterSqr(target)));
+        int total = 0;
+        List<FortronStorage> transmitters = new ArrayList<>();
+        // Find providers
+        for (FortronStorage fortron : fortronTiles) {
+            int required = energy - total;
+            int receivedEnergy = fortron.extractFortron(required, true);
+            if (receivedEnergy > 0) {
+                transmitters.add(fortron);
+            }
+            total += receivedEnergy;
+            if (total >= energy) {
+                break;
             }
         }
+        if (total >= energy) {
+            total = 0;
+            // Draw energy
+            for (FortronStorage fortron : transmitters) {
+                int required = energy - total;
+                total += fortron.extractFortron(required, false);
+                BlockPos fortronPos = fortron.getOwner().getBlockPos();
+                Fortron.renderClientBeam(level, target, Vec3.atCenterOf(fortronPos), fortronPos, ParticleColor.BLUE_BEAM, 20);
+            }
+            return true;
+        }
+        return false;
+    }
 
-        tooltipComponents.add(ModUtil.translate("info", "link.none").withStyle(ChatFormatting.GRAY));
+    @Override
+    public void appendHoverTextPre(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+        BlockPos pos = getLink(stack);
+        if (level != null && pos != null) {
+            BlockEntity be = level.getBlockEntity(pos);
+            if (be != null && be.getCapability(ModCapabilities.FORTRON).isPresent()) {
+                tooltipComponents.add(ModUtil.translate("info", "link",
+                    be.getBlockState().getBlock().getName().withStyle(ChatFormatting.GREEN),
+                    Component.literal(pos.toShortString()).withStyle(ChatFormatting.GRAY)).withStyle(ChatFormatting.DARK_GRAY));
+            }
+        }
     }
 
     @Nullable

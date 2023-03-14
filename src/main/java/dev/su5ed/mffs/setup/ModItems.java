@@ -26,8 +26,6 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
-import java.util.function.Consumer;
-
 public final class ModItems {
     private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MFFSMod.MODID);
 
@@ -52,22 +50,22 @@ public final class ModItems {
     public static final RegistryObject<ProjectorModeItem> TUBE_MODE = projectorMode("tube_mode", ModProjectorModes.TUBE);
     public static final RegistryObject<ProjectorModeItem> PYRAMID_MODE = projectorMode("pyramid_mode", ModProjectorModes.PYRAMID);
     public static final RegistryObject<ProjectorModeItem> CYLINDER_MODE = projectorMode("cylinder_mode", ModProjectorModes.CYLINDER);
-    public static final RegistryObject<ModuleItem<Module>> TRANSLATION_MODULE = module("translation_module", ModModules.TRANSLATION, ExtendedItemProperties::description);
-    public static final RegistryObject<ModuleItem<Module>> SCALE_MODULE = module("scale_module", ModModules.SCALE, ExtendedItemProperties::description);
-    public static final RegistryObject<ModuleItem<Module>> ROTATION_MODULE = module("rotation_module", ModModules.ROTATION, ExtendedItemProperties::description);
-    public static final RegistryObject<ModuleItem<Module>> SPEED_MODULE = module("speed_module", ModModules.SPEED, ExtendedItemProperties::description);
-    public static final RegistryObject<ModuleItem<Module>> CAPACITY_MODULE = module("capacity_module", ModModules.CAPACITY);
-    public static final RegistryObject<ModuleItem<Module>> FUSION_MODULE = module("fusion_module", ModModules.FUSION, singleStack());
-    public static final RegistryObject<ModuleItem<Module>> DOME_MODULE = module("dome_module", ModModules.DOME);
-    public static final RegistryObject<ModuleItem<Module>> CAMOUFLAGE_MODULE = module("camouflage_module", ModModules.CAMOUFLAGE, singleStack());
-    public static final RegistryObject<ModuleItem<Module>> DISINTEGRATION_MODULE = module("disintegration_module", ModModules.DISINTEGRATION, singleStack());
-    public static final RegistryObject<ModuleItem<Module>> SHOCK_MODULE = module("shock_module", ModModules.SHOCK);
-    public static final RegistryObject<ModuleItem<Module>> GLOW_MODULE = module("glow_module", ModModules.GLOW);
-    public static final RegistryObject<ModuleItem<Module>> SPONGE_MODULE = module("sponge_module", ModModules.SPONGE, singleStack());
-    public static final RegistryObject<ModuleItem<Module>> STABILIZATION_MODULE = module("stabilization_module", ModModules.STABILIZAZION, singleStack(), ExtendedItemProperties::description);
-    public static final RegistryObject<ModuleItem<Module>> COLLECTION_MODULE = module("collection_module", ModModules.COLLECTION, singleStack());
-    public static final RegistryObject<ModuleItem<Module>> INVERTER_MODULE = module("inverter_module", ModModules.INVERTER, singleStack(), ExtendedItemProperties::description);
-    public static final RegistryObject<ModuleItem<Module>> SILENCE_MODULE = module("silence_module", ModModules.SILENCE, singleStack(), ExtendedItemProperties::description);
+    public static final RegistryObject<ModuleItem<Module>> TRANSLATION_MODULE = module("translation_module", ModModules.TRANSLATION, withDescription());
+    public static final RegistryObject<ModuleItem<Module>> SCALE_MODULE = module("scale_module", ModModules.SCALE, withDescription());
+    public static final RegistryObject<ModuleItem<Module>> ROTATION_MODULE = module("rotation_module", ModModules.ROTATION, withDescription());
+    public static final RegistryObject<ModuleItem<Module>> SPEED_MODULE = module("speed_module", ModModules.SPEED, withDescription());
+    public static final RegistryObject<ModuleItem<Module>> CAPACITY_MODULE = module("capacity_module", ModModules.CAPACITY, withDescription());
+    public static final RegistryObject<ModuleItem<Module>> FUSION_MODULE = module("fusion_module", ModModules.FUSION, singleStack().description());
+    public static final RegistryObject<ModuleItem<Module>> DOME_MODULE = module("dome_module", ModModules.DOME, withDescription());
+    public static final RegistryObject<ModuleItem<Module>> CAMOUFLAGE_MODULE = module("camouflage_module", ModModules.CAMOUFLAGE, singleStack().description());
+    public static final RegistryObject<ModuleItem<Module>> DISINTEGRATION_MODULE = module("disintegration_module", ModModules.DISINTEGRATION, singleStack().description());
+    public static final RegistryObject<ModuleItem<Module>> SHOCK_MODULE = module("shock_module", ModModules.SHOCK, withDescription());
+    public static final RegistryObject<ModuleItem<Module>> GLOW_MODULE = module("glow_module", ModModules.GLOW, withDescription());
+    public static final RegistryObject<ModuleItem<Module>> SPONGE_MODULE = module("sponge_module", ModModules.SPONGE, singleStack().description());
+    public static final RegistryObject<ModuleItem<Module>> STABILIZATION_MODULE = module("stabilization_module", ModModules.STABILIZAZION, singleStack().description());
+    public static final RegistryObject<ModuleItem<Module>> COLLECTION_MODULE = module("collection_module", ModModules.COLLECTION, singleStack().description());
+    public static final RegistryObject<ModuleItem<Module>> INVERTER_MODULE = module("inverter_module", ModModules.INVERTER, singleStack().description());
+    public static final RegistryObject<ModuleItem<Module>> SILENCE_MODULE = module("silence_module", ModModules.SILENCE, singleStack().description());
     public static final RegistryObject<ModuleItem<InterdictionMatrixModule>> WARN_MODULE = interdictionMatrixModule("warn_module", ModModules.WARN);
     public static final RegistryObject<ModuleItem<InterdictionMatrixModule>> BLOCK_ACCESS_MODULE = interdictionMatrixModule("block_access_module", ModModules.BLOCK_ACCESS);
     public static final RegistryObject<ModuleItem<InterdictionMatrixModule>> BLOCK_ALTER_MODULE = interdictionMatrixModule("block_alter_module", ModModules.BLOCK_ALTER);
@@ -94,27 +92,12 @@ public final class ModItems {
         return ITEMS.register(block.getId().getPath(), () -> new BlockItem(block.get(), ITEM_PROPERTIES));
     }
 
-    private static RegistryObject<ModuleItem<Module>> module(String name, ModuleType<Module> module) {
-        return module(name, module, new ExtendedItemProperties(itemProperties()));
-    }
-
-    private static RegistryObject<ModuleItem<Module>> module(String name, ModuleType<Module> module, ExtendedItemProperties properties) {
-        return module(name, module, properties, item -> {});
-    }
-
-    private static RegistryObject<ModuleItem<Module>> module(String name, ModuleType<Module> module, Consumer<BaseItem.ExtendedItemProperties> consumer) {
-        return module(name, module, new ExtendedItemProperties(itemProperties()), consumer);
-    }
-
     private static RegistryObject<ModuleItem<InterdictionMatrixModule>> interdictionMatrixModule(String name, ModuleType<InterdictionMatrixModule> module) {
         return ITEMS.register(name, () -> new InterdictionMatrixModuleItem(new ExtendedItemProperties(itemProperties()).description(), module));
     }
 
-    private static RegistryObject<ModuleItem<Module>> module(String name, ModuleType<Module> module, ExtendedItemProperties properties, Consumer<BaseItem.ExtendedItemProperties> consumer) {
-        return ITEMS.register(name, () -> {
-            consumer.accept(properties);
-            return new ModuleItem<>(properties, module);
-        });
+    private static RegistryObject<ModuleItem<Module>> module(String name, ModuleType<Module> module, ExtendedItemProperties properties) {
+        return ITEMS.register(name, () -> new ModuleItem<>(properties, module));
     }
 
     private static RegistryObject<ProjectorModeItem> projectorMode(String name, ProjectorMode projectorMode) {
@@ -127,6 +110,10 @@ public final class ModItems {
 
     public static ExtendedItemProperties singleStack() {
         return new ExtendedItemProperties(itemProperties().stacksTo(1));
+    }
+    
+    public static ExtendedItemProperties withDescription() {
+        return new ExtendedItemProperties(itemProperties()).description();
     }
 
     public static Item.Properties itemProperties() {

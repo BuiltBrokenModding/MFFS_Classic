@@ -20,7 +20,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
@@ -36,10 +35,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class IdentificationCardItem extends Item {
+public class IdentificationCardItem extends BaseItem {
 
     public IdentificationCardItem() {
-        super(ModItems.itemProperties().stacksTo(1));
+        super(new ExtendedItemProperties(ModItems.itemProperties().stacksTo(1)).description());
     }
 
     @Nullable
@@ -86,19 +85,18 @@ public class IdentificationCardItem extends Item {
 
     private void setCardIdentity(IdentificationCard card, Player user, GameProfile profile) {
         card.setIdentity(profile);
-        user.displayClientMessage(ModUtil.translate("info", "identity_set").append(Component.literal(profile.getName()).withStyle(ChatFormatting.GREEN)), true);
+        user.displayClientMessage(ModUtil.translate("info", "identity_set", Component.literal(profile.getName()).withStyle(ChatFormatting.GREEN)), true);
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
-        super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+    protected void appendHoverTextPre(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+        super.appendHoverTextPre(stack, level, tooltipComponents, isAdvanced);
 
         stack.getCapability(ModCapabilities.IDENTIFICATION_CARD).ifPresent(card -> {
             GameProfile identity = card.getIdentity();
             if (identity != null) {
-                tooltipComponents.add(ModUtil.translate("info", "identity").withStyle(ChatFormatting.GRAY).append(Component.literal(identity.getName()).withStyle(ChatFormatting.GREEN)));
-            } else {
-                tooltipComponents.add(ModUtil.translate("info", "unidentified").withStyle(ChatFormatting.GRAY));
+                tooltipComponents.add(ModUtil.translate("info", "identity",
+                    Component.literal(identity.getName()).withStyle(ChatFormatting.GREEN)).withStyle(ChatFormatting.DARK_GRAY));
             }
             List<FieldPermission> perms = List.copyOf(card.getPermissions());
             if (!perms.isEmpty()) {

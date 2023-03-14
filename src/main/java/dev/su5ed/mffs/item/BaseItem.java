@@ -1,5 +1,6 @@
 package dev.su5ed.mffs.item;
 
+import dev.su5ed.mffs.setup.ModClientSetup;
 import dev.su5ed.mffs.util.ModUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -31,7 +32,13 @@ public class BaseItem extends Item {
 
         appendHoverTextPre(stack, level, tooltipComponents, isAdvanced);
         if (this.description != null) {
-            tooltipComponents.add(this.description.get());
+            if (ModClientSetup.hasShiftDown()) {
+                tooltipComponents.add(this.description.get());
+            }
+            else {
+                tooltipComponents.add(ModUtil.translate("info", "show_details", ModUtil.translate("info", "key.shift").withStyle(ChatFormatting.GRAY))
+                    .withStyle(ChatFormatting.DARK_GRAY));
+            }
         }
     }
 

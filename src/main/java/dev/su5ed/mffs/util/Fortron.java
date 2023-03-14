@@ -22,8 +22,8 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.network.PacketDistributor;
 import one.util.streamex.StreamEx;
 
+import java.util.Collection;
 import java.util.Optional;
-import java.util.Set;
 
 /**
  * A class with useful functions related to Fortron.
@@ -35,7 +35,7 @@ public final class Fortron {
         return new FluidStack(ModFluids.FORTRON_FLUID.get(), amount);
     }
 
-    public static void transferFortron(FortronStorage transmitter, Set<? extends FortronStorage> receivers, TransferMode transferMode, int limit) {
+    public static void transferFortron(FortronStorage transmitter, Collection<? extends FortronStorage> receivers, TransferMode transferMode, int limit) {
         if (transmitter != null && receivers.size() > 1) {
             // Check spread mode. Equal, Give All, Take All
             int totalFortron = 0;
@@ -103,7 +103,7 @@ public final class Fortron {
      * @param joules   : The amount of energy to be transfered.
      */
     public static void doTransferFortron(FortronStorage transmitter, FortronStorage receiver, int joules, int limit) {
-        boolean isCamo = transmitter instanceof ModuleAcceptor acceptor && acceptor.getModuleCount(ModModules.CAMOUFLAGE) > 0;
+        boolean isCamo = transmitter instanceof ModuleAcceptor acceptor && acceptor.hasModule(ModModules.CAMOUFLAGE);
         if (joules > 0) {
             doTransferFortron(transmitter, receiver, joules, limit, isCamo);
         } else {
@@ -152,11 +152,11 @@ public final class Fortron {
         if (interdictionMatrix != null && interdictionMatrix.isActive() && interdictionMatrix.getBiometricIdentifier() != null) {
             for (FieldPermission permission : permissions) {
                 if (!interdictionMatrix.getBiometricIdentifier().isAccessGranted(player, permission)) {
-                    return interdictionMatrix.getModuleCount(ModModules.INVERTER) > 0;
+                    return interdictionMatrix.hasModule(ModModules.INVERTER);
                 }
             }
         }
-        return interdictionMatrix.getModuleCount(ModModules.INVERTER) <= 0;
+        return !interdictionMatrix.hasModule(ModModules.INVERTER);
     }
 
     private static void doTransferFortron(FortronStorage source, FortronStorage destination, int joules, int limit, boolean isCamo) {

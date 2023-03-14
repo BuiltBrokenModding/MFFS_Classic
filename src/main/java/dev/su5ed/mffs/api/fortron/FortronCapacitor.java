@@ -1,6 +1,6 @@
 package dev.su5ed.mffs.api.fortron;
 
-import java.util.Set;
+import java.util.Collection;
 
 /**
  * Applied to the Fortron Capacitor TileEntity.
@@ -8,7 +8,7 @@ import java.util.Set;
  * @author Calclavia
  */
 public interface FortronCapacitor {
-    Set<FortronStorage> getDevicesByFrequency();
+    Collection<FortronStorage> getDevicesByFrequency();
 
     int getTransmissionRange();
 
