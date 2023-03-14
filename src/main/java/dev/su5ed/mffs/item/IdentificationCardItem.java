@@ -109,7 +109,28 @@ public class IdentificationCardItem extends BaseItem {
         });
     }
 
-    public static class IdentificationCardCapability implements ICapabilityProvider, IdentificationCard, INBTSerializable<CompoundTag> {
+    @Nullable
+    @Override
+    public CompoundTag getShareTag(ItemStack stack) {
+        CompoundTag tag = stack.getOrCreateTag();
+        INBTSerializable<CompoundTag> card = stack.getCapability(ModCapabilities.IDENTIFICATION_CARD).resolve().orElseThrow();
+        tag.put("card_capability", card.serializeNBT());
+        return tag;
+    }
+
+    @Override
+    public void readShareTag(ItemStack stack, @Nullable CompoundTag tag) {
+        super.readShareTag(stack, tag);
+        
+        if (tag != null) {
+            stack.getCapability(ModCapabilities.IDENTIFICATION_CARD).ifPresent(card -> {
+                CompoundTag cardTag = tag.getCompound("card_capability");
+                card.deserializeNBT(cardTag);
+            });
+        }
+    }
+
+    public static class IdentificationCardCapability implements ICapabilityProvider, IdentificationCard {
         private final LazyOptional<IdentificationCard> optional = LazyOptional.of(() -> this);
 
         private GameProfile profile;

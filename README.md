@@ -39,10 +39,7 @@ protect tiles.
 ### Status
 
 Porting to Minecraft 1.19.x is underway.
-
-- Force Fields and Modules work
-- Field Interdiction / Security is not yet implemented
-- Bugs
+- Expect Bugs
 
 If you run into an issue / bug, please use the Issue Tracker found in this repository.
 

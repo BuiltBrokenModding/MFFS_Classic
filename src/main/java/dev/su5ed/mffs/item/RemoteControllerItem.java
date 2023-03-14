@@ -86,6 +86,32 @@ public class RemoteControllerItem extends BaseItem implements CoordLink {
         return InteractionResultHolder.pass(stack);
     }
 
+    @Override
+    public void appendHoverTextPre(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+        BlockPos pos = getLink(stack);
+        if (level != null && pos != null) {
+            BlockEntity be = level.getBlockEntity(pos);
+            if (be != null && be.getCapability(ModCapabilities.FORTRON).isPresent()) {
+                tooltipComponents.add(ModUtil.translate("info", "link",
+                    be.getBlockState().getBlock().getName().withStyle(ChatFormatting.GREEN),
+                    Component.literal(pos.toShortString()).withStyle(ChatFormatting.GRAY)).withStyle(ChatFormatting.DARK_GRAY));
+            }
+        }
+    }
+
+    @Nullable
+    @Override
+    public BlockPos getLink(ItemStack stack) {
+        CompoundTag tag = stack.getOrCreateTag();
+        return NbtUtils.readBlockPos(tag.getCompound("link"));
+    }
+
+    @Override
+    public void setLink(ItemStack stack, BlockPos pos) {
+        CompoundTag tag = stack.getOrCreateTag();
+        tag.put("link", NbtUtils.writeBlockPos(pos));
+    }
+
     private boolean drawEnergy(Level level, BlockPos pos, Vec3 target, int frequency, int energy) {
         List<FortronStorage> fortronTiles = FrequencyGrid.instance().get(level, pos, 50, frequency);
         fortronTiles.sort(Comparator.comparingDouble(fortron -> fortron.getOwner().getBlockPos().distToCenterSqr(target)));
@@ -115,32 +141,6 @@ public class RemoteControllerItem extends BaseItem implements CoordLink {
             return true;
         }
         return false;
-    }
-
-    @Override
-    public void appendHoverTextPre(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
-        BlockPos pos = getLink(stack);
-        if (level != null && pos != null) {
-            BlockEntity be = level.getBlockEntity(pos);
-            if (be != null && be.getCapability(ModCapabilities.FORTRON).isPresent()) {
-                tooltipComponents.add(ModUtil.translate("info", "link",
-                    be.getBlockState().getBlock().getName().withStyle(ChatFormatting.GREEN),
-                    Component.literal(pos.toShortString()).withStyle(ChatFormatting.GRAY)).withStyle(ChatFormatting.DARK_GRAY));
-            }
-        }
-    }
-
-    @Nullable
-    @Override
-    public BlockPos getLink(ItemStack stack) {
-        CompoundTag tag = stack.getOrCreateTag();
-        return NbtUtils.readBlockPos(tag.getCompound("link"));
-    }
-
-    @Override
-    public void setLink(ItemStack stack, BlockPos pos) {
-        CompoundTag tag = stack.getOrCreateTag();
-        tag.put("link", NbtUtils.writeBlockPos(pos));
     }
 
     private record RemoteMenuProvider(MenuProvider wrapped) implements MenuProvider {
