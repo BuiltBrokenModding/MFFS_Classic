@@ -17,7 +17,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
@@ -112,7 +111,7 @@ public abstract class FortronBlockEntity extends InventoryBlockEntity implements
         BlockState state = getBlockState();
         boolean active = isActive();
         if (state.getValue(BaseEntityBlock.ACTIVE) != active) {
-            this.level.setBlock(this.worldPosition, state.setValue(BaseEntityBlock.ACTIVE, active), Block.UPDATE_ALL);
+            this.level.setBlockAndUpdate(this.worldPosition, state.setValue(BaseEntityBlock.ACTIVE, active));
         }
     }
 
@@ -124,13 +123,12 @@ public abstract class FortronBlockEntity extends InventoryBlockEntity implements
     }
 
     @Override
-    public void setRemoved() {
+    public void beforeBlockRemove() {
+        super.beforeBlockRemove();
         if (this.markSendFortron) {
             // Let remaining Fortron escape.
             Fortron.transferFortron(this.fortronStorage, FrequencyGrid.instance().get(this.level, this.worldPosition, 100, this.fortronStorage.getFrequency()), TransferMode.DRAIN, Integer.MAX_VALUE);
         }
-
-        super.setRemoved();
     }
 
     @Override

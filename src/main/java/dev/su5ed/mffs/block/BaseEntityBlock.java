@@ -64,7 +64,7 @@ public class BaseEntityBlock extends Block implements EntityBlock {
     public void onRemove(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState newState, boolean isMoving) {
         if (state.hasBlockEntity() && (!state.is(newState.getBlock()) || !newState.hasBlockEntity())) {
             getBlockEntity(level, pos)
-                .ifPresent(BaseBlockEntity::blockRemoved);
+                .ifPresent(BaseBlockEntity::beforeBlockRemove);
         }
         super.onRemove(state, level, pos, newState, isMoving);
     }

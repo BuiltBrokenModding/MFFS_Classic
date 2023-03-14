@@ -1,0 +1,3 @@
+{
+  "setBlockEventHook": "META-INF/asm/setBlockEventHook.js"
+}

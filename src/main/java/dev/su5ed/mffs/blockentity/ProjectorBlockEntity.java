@@ -7,7 +7,6 @@ import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ListMultimap;
 import dev.su5ed.mffs.MFFSConfig;
 import dev.su5ed.mffs.MFFSMod;
-import dev.su5ed.mffs.util.ObjectCache;
 import dev.su5ed.mffs.api.Projector;
 import dev.su5ed.mffs.api.module.Module;
 import dev.su5ed.mffs.api.module.ProjectorMode;
@@ -20,6 +19,8 @@ import dev.su5ed.mffs.setup.ModObjects;
 import dev.su5ed.mffs.setup.ModSounds;
 import dev.su5ed.mffs.setup.ModTags;
 import dev.su5ed.mffs.util.ModUtil;
+import dev.su5ed.mffs.util.ObjectCache;
+import dev.su5ed.mffs.util.SetBlockEvent;
 import dev.su5ed.mffs.util.inventory.InventorySlot;
 import dev.su5ed.mffs.util.projector.CustomProjectorMode;
 import net.minecraft.core.BlockPos;
@@ -38,9 +39,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.BlockSnapshot;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import one.util.streamex.IntStreamEx;
 import one.util.streamex.StreamEx;
@@ -100,19 +99,9 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
     }
 
     @SubscribeEvent
-    public void onBlockBreak(BlockEvent.BreakEvent event) {
-        this.projectionCache.invalidate(event.getPos());
-    }
-
-    @SubscribeEvent
-    public void onBlockPlace(BlockEvent.EntityPlaceEvent event) {
-        this.projectionCache.invalidate(event.getPos());
-    }
-
-    @SubscribeEvent
-    public void onBlockPlaceMulti(BlockEvent.EntityMultiPlaceEvent event) {
-        for (BlockSnapshot snapshot : event.getReplacedBlockSnapshots()) {
-            this.projectionCache.invalidate(snapshot.getPos());
+    public void onSetBlock(SetBlockEvent event) {
+        if (event.getLevel() == this.level && !this.semaphore.isInStage(ProjectionStage.STANDBY) && !event.getState().is(ModBlocks.FORCE_FIELD.get())) {
+            this.projectionCache.invalidate(event.getPos());
         }
     }
 
@@ -214,9 +203,9 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
     }
 
     @Override
-    public void blockRemoved() {
+    public void beforeBlockRemove() {
         destroyField();
-        super.blockRemoved();
+        super.beforeBlockRemove();
     }
 
     @Nullable
@@ -427,14 +416,15 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
 
     @Override
     public void destroyField() {
-        if (!this.level.isClientSide) {
-            StreamEx.of(getCalculatedFieldPositions())
-                .filter(pos -> this.level.getBlockState(pos).is(ModBlocks.FORCE_FIELD.get()))
-                .forEach(pos -> this.level.removeBlock(pos, false));
-        }
+        Collection<BlockPos> fieldPositions = getCalculatedFieldPositions();
         this.projectedBlocks.clear();
         this.projectionCache.invalidateAll();
         this.semaphore.reset();
+        if (!this.level.isClientSide) {
+            StreamEx.of(fieldPositions)
+                .filter(pos -> this.level.getBlockState(pos).is(ModBlocks.FORCE_FIELD.get()))
+                .forEach(pos -> this.level.removeBlock(pos, false));
+        }
     }
 
     @Override
@@ -545,7 +535,6 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
                 constructionCount++;
             }
         }
-        ;
         return projectable;
     }
 

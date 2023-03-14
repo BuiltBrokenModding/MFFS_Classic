@@ -25,7 +25,7 @@ public class SpongeModule extends BaseModule {
                 Block block = level.getBlockState(pos).getBlock();
 
                 if (block instanceof LiquidBlock || block instanceof IFluidBlock) {
-                    level.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+                    level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
                 }
             }
         }

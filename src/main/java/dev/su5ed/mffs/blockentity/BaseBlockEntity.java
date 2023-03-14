@@ -38,7 +38,7 @@ public abstract class BaseBlockEntity extends BlockEntity implements MenuProvide
         ++this.tickCounter;
     }
 
-    public void blockRemoved() {}
+    public void beforeBlockRemove() {}
 
     public void provideAdditionalDrops(List<? super ItemStack> drops) {}
 
