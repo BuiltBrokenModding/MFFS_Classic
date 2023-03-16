@@ -1,4 +1,4 @@
-// 1.19.2	2023-03-11T14:58:56.9299038	Item Models: mffs
+// 1.19.2	2023-03-15T15:40:10.6272945	Item Models: mffs
 738399a9cbec94661d428fe121b8c3f9c7987840 assets/mffs/models/item/anti_friendly_module.json
 d85ae5c751e0c2f74f1819dc288f236acf0763cf assets/mffs/models/item/anti_hostile_module.json
 504e843a3119fad08160293b77336babf6fa2265 assets/mffs/models/item/anti_personnel_module.json
@@ -12,6 +12,7 @@ eb9cdb4e2d3ca6a3a69366e0eae54972889518b4 assets/mffs/models/item/camouflage_modu
 d259ce7c00fc6997fba31dcb470db6c8099919ba assets/mffs/models/item/collection_module.json
 1512b2c2a47a0e3e8ee08ea3aba073988ba18601 assets/mffs/models/item/confiscation_module.json
 692c042cdd518f4a680d3119aba838e28d1c72e1 assets/mffs/models/item/cube_mode.json
+162510754f6d27ea76291fb2f8c43b8f6b1d9ef3 assets/mffs/models/item/custom_mode.json
 9a7136846802b2b6932f30dad3217e6ff6bba9b5 assets/mffs/models/item/cylinder_mode.json
 2a51806509fc4835d7a5508f3d9a12a4c5eabf85 assets/mffs/models/item/disintegration_module.json
 efc59c37f67e6ef8f6e36dcd7e91b339e41e35fc assets/mffs/models/item/dome_module.json

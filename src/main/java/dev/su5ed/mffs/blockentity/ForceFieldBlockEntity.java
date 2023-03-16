@@ -37,6 +37,10 @@ public class ForceFieldBlockEntity extends BlockEntity {
         setChanged();
     }
 
+    public Block getCamouflage() {
+        return this.camouflage;
+    }
+
     public void setCamouflage(Block camouflage) {
         this.camouflage = camouflage;
         setChanged();

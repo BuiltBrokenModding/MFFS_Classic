@@ -2,6 +2,7 @@ package dev.su5ed.mffs.util.module;
 
 import dev.su5ed.mffs.api.FrequencyBlock;
 import dev.su5ed.mffs.api.Projector;
+import dev.su5ed.mffs.api.TargetPosPair;
 import dev.su5ed.mffs.api.fortron.FortronStorage;
 import dev.su5ed.mffs.api.module.ModuleType;
 import dev.su5ed.mffs.setup.ModBlocks;
@@ -26,7 +27,7 @@ public class FusionModule extends BaseModule {
     }
 
     @Override
-    public void beforeSelect(Projector projector, Collection<? extends BlockPos> field) {
+    public void beforeSelect(Projector projector, Collection<? extends TargetPosPair> field) {
         int frequency = projector.be().getCapability(ModCapabilities.FORTRON)
             .map(FrequencyBlock::getFrequency)
             .orElseThrow();
@@ -37,8 +38,8 @@ public class FusionModule extends BaseModule {
                     && compareProjector.be().getLevel() == level
                     && compareProjector.isActive() && compareProjector.getMode().isPresent())
                 .ifPresent(compareProjector -> {
-                    for (Iterator<? extends BlockPos> it = field.iterator(); it.hasNext(); ) {
-                        BlockPos pos = it.next();
+                    for (Iterator<? extends TargetPosPair> it = field.iterator(); it.hasNext(); ) {
+                        BlockPos pos = it.next().pos();
                         if (compareProjector.getMode().orElseThrow().isInField(compareProjector, Vec3.atLowerCornerOf(pos))) {
                             this.removingBlocks.add(pos);
                             it.remove();

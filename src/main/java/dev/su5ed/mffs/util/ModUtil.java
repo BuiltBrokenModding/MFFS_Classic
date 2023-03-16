@@ -97,6 +97,19 @@ public final class ModUtil {
         return success;
     }
 
+    public static BlockPos normalize(BlockPos pos, BlockPos other) {
+        if (other.getX() <= pos.getX()) {
+            pos = pos.east();
+        }
+        if (other.getZ() <= pos.getZ()) {
+            pos = pos.south();
+        }
+        if (other.getY() <= pos.getY()) {
+            pos = pos.above();
+        }
+        return pos;
+    }
+
     public static MutableComponent translate(FieldPermission permission) {
         return translate("info", "field_permission." + permission.name().toLowerCase(Locale.ROOT));
     }

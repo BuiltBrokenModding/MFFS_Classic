@@ -1,4 +1,4 @@
-// 1.19.2	2023-03-11T14:58:56.9279052	Recipes
+// 1.19.2	2023-03-15T15:40:10.629319	Recipes
 ffc1b628eb205edfdd176b0951b6a5b8d1343783 data/mffs/advancements/recipes/mffs/anti_friendly_module.json
 6c4fd490a97f24422db6a627ed8ff70ede589a8a data/mffs/advancements/recipes/mffs/anti_hostile_module.json
 3f89037a6d2382591c92a1b3fea26cc4141e714c data/mffs/advancements/recipes/mffs/anti_personnel_module.json
@@ -14,6 +14,7 @@ f48fdcb2e3de2df51b523874b9f2ce00f341ad6e data/mffs/advancements/recipes/mffs/cap
 1b619f303fba872154ed434e8467d32455f32235 data/mffs/advancements/recipes/mffs/collection_module.json
 c5a05855f20304de653eeec7c12da0981af61453 data/mffs/advancements/recipes/mffs/confiscation_module.json
 7c696c1862f437dea125c68358832875aadad892 data/mffs/advancements/recipes/mffs/cube_mode.json
+36fbca3fe74c6f7c00ece820bb4853ad0dccfa15 data/mffs/advancements/recipes/mffs/custom_mode.json
 20491c3810f27a5dd82afe53013e72386b428e48 data/mffs/advancements/recipes/mffs/cylinder_mode.json
 1d821a074c4bef4d1a2a5be57caa73a8f2b32d20 data/mffs/advancements/recipes/mffs/disintegration_module.json
 266279eece7b8322cc60e3822dbe71b6f6573531 data/mffs/advancements/recipes/mffs/dome_module.json
@@ -56,6 +57,7 @@ fe25b2837392738e06b2ceff40c21b27fb12b96c data/mffs/recipes/capacity_module.json
 b612849b2a6979e4a4b9e3985bfb9cde68a23a7d data/mffs/recipes/collection_module.json
 0a93ab70728f2672373fa062b3c0ea803d3a9da0 data/mffs/recipes/confiscation_module.json
 eedd42f7316a36cd376540a842ffa384f016e4cf data/mffs/recipes/cube_mode.json
+f5600c697dca6d5413d3207c46f062ed10cc8029 data/mffs/recipes/custom_mode.json
 25859c7f5cdfb645a5e4fe08c0fda7944d7d29db data/mffs/recipes/cylinder_mode.json
 f02104eb03ced2860f7a8bb13a6bfb2c15072682 data/mffs/recipes/disintegration_module.json
 00e809179df44924c094233fbab0c13a47dc7087 data/mffs/recipes/dome_module.json

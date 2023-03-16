@@ -1,9 +1,9 @@
 package dev.su5ed.mffs.api.module;
 
 import dev.su5ed.mffs.api.Projector;
+import dev.su5ed.mffs.api.TargetPosPair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 import java.util.Collection;
@@ -11,7 +11,7 @@ import java.util.Collection;
 public interface Module {
     ModuleType<?> getType();
 
-    void beforeSelect(Projector projector, Collection<? extends BlockPos> field);
+    void beforeSelect(Projector projector, Collection<? extends TargetPosPair> field);
 
     ProjectAction onSelect(Projector projector, BlockPos pos);
 
@@ -47,7 +47,7 @@ public interface Module {
      * @param projector       the projector
      * @param fieldDefinition the field block positions
      */
-    void onCalculate(Projector projector, Collection<BlockPos> fieldDefinition);
+    void onCalculate(Projector projector, Collection<TargetPosPair> fieldDefinition);
 
     enum Category {
         MATRIX,

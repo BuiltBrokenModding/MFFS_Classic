@@ -28,6 +28,7 @@ public class MFFSConfig {
         public final ForgeConfigSpec.IntValue maxFFGenPerTick;
         public final ForgeConfigSpec.BooleanValue allowOpBiometryOverride;
         public final ForgeConfigSpec.BooleanValue interactCreative;
+        public final ForgeConfigSpec.IntValue maxCustomModeScale;
 
         public final ForgeConfigSpec.DoubleValue energyConversionRatio;
         public final ForgeConfigSpec.DoubleValue catalystMultiplier;
@@ -52,6 +53,9 @@ public class MFFSConfig {
             this.interactCreative = builder
                 .comment("Should the interdiction matrix interact with creative players?")
                 .define("interactCreative", true);
+            this.maxCustomModeScale = builder
+                .comment("Max custom mode field scale")
+                .defineInRange("maxCustomModeScale", 200, 0, Integer.MAX_VALUE);
             builder.pop();
 
             builder.push("balance");

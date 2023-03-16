@@ -13,6 +13,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.Tags;
 
+import java.util.HashMap;
 import java.util.function.Consumer;
 
 import static dev.su5ed.mffs.MFFSMod.location;
@@ -182,6 +183,18 @@ public class RecipesGen extends RecipeProvider {
             .pattern("S")
             .unlockedBy("has_sphere_mode", has(ModItems.SPHERE_MODE.get()))
             .save(finishedRecipeConsumer, location("cylinder_mode"));
+
+        ShapedRecipeBuilder.shaped(ModItems.CUSTOM_MODE.get())
+            .define('F', ModItems.FOCUS_MATRIX.get())
+            .define('C', ModItems.CUBE_MODE.get())
+            .define('P', ModItems.PYRAMID_MODE.get())
+            .define('S', ModItems.SPHERE_MODE.get())
+            .define('T', ModItems.TUBE_MODE.get())
+            .pattern(" C ")
+            .pattern("TFP")
+            .pattern(" S ")
+            .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
+            .save(finishedRecipeConsumer, location("custom_mode"));
 
         ShapedRecipeBuilder.shaped(ModItems.SCALE_MODULE.get(), 2)
             .define('F', ModItems.FOCUS_MATRIX.get())

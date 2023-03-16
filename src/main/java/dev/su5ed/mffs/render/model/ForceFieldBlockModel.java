@@ -85,11 +85,8 @@ public class ForceFieldBlockModel implements IDynamicBakedModel {
     @NotNull
     @Override
     public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand, ModelData extraData, @Nullable RenderType renderType) {
-        if (side != null) {
-            Pair<BakedModel, BlockState> model = getCamouflageModel(state, extraData);
-            return model.getFirst().getQuads(model.getSecond(), side, rand, extraData, renderType);
-        }
-        return List.of();
+        Pair<BakedModel, BlockState> model = getCamouflageModel(state, extraData);
+        return model.getFirst().getQuads(model.getSecond(), side, rand, extraData, renderType);
     }
 
     private Pair<BakedModel, BlockState> getCamouflageModel(BlockState state, ModelData data) {

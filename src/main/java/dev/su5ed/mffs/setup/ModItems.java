@@ -9,6 +9,7 @@ import dev.su5ed.mffs.item.BaseItem;
 import dev.su5ed.mffs.item.BaseItem.ExtendedItemProperties;
 import dev.su5ed.mffs.item.BatteryItem;
 import dev.su5ed.mffs.item.BiometricIdentifierItem;
+import dev.su5ed.mffs.item.CustomProjectorModeItem;
 import dev.su5ed.mffs.item.FrequencyCardItem;
 import dev.su5ed.mffs.item.IdentificationCardItem;
 import dev.su5ed.mffs.item.InterdictionMatrixModuleItem;
@@ -50,6 +51,7 @@ public final class ModItems {
     public static final RegistryObject<ProjectorModeItem> TUBE_MODE = projectorMode("tube_mode", ModProjectorModes.TUBE);
     public static final RegistryObject<ProjectorModeItem> PYRAMID_MODE = projectorMode("pyramid_mode", ModProjectorModes.PYRAMID);
     public static final RegistryObject<ProjectorModeItem> CYLINDER_MODE = projectorMode("cylinder_mode", ModProjectorModes.CYLINDER);
+    public static final RegistryObject<CustomProjectorModeItem> CUSTOM_MODE = ITEMS.register("custom_mode", CustomProjectorModeItem::new);
     public static final RegistryObject<ModuleItem<Module>> TRANSLATION_MODULE = module("translation_module", ModModules.TRANSLATION, withDescription());
     public static final RegistryObject<ModuleItem<Module>> SCALE_MODULE = module("scale_module", ModModules.SCALE, withDescription());
     public static final RegistryObject<ModuleItem<Module>> ROTATION_MODULE = module("rotation_module", ModModules.ROTATION, withDescription());

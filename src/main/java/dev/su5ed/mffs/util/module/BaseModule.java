@@ -1,6 +1,7 @@
 package dev.su5ed.mffs.util.module;
 
 import dev.su5ed.mffs.api.Projector;
+import dev.su5ed.mffs.api.TargetPosPair;
 import dev.su5ed.mffs.api.module.Module;
 import dev.su5ed.mffs.api.module.ModuleType;
 import net.minecraft.core.BlockPos;
@@ -25,7 +26,7 @@ public class BaseModule implements Module {
     }
 
     @Override
-    public void beforeSelect(Projector projector, Collection<? extends BlockPos> field) {}
+    public void beforeSelect(Projector projector, Collection<? extends TargetPosPair> field) {}
 
     @Override
     public void beforeProject(Projector projector) {}
@@ -46,5 +47,5 @@ public class BaseModule implements Module {
     }
 
     @Override
-    public void onCalculate(Projector projector, Collection<BlockPos> fieldDefinition) {}
+    public void onCalculate(Projector projector, Collection<TargetPosPair> fieldDefinition) {}
 }

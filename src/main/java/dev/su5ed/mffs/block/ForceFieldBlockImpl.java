@@ -8,6 +8,7 @@ import dev.su5ed.mffs.api.security.FieldPermission;
 import dev.su5ed.mffs.blockentity.ForceFieldBlockEntity;
 import dev.su5ed.mffs.setup.ModObjects;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -17,7 +18,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.AbstractGlassBlock;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -31,7 +32,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-public class ForceFieldBlockImpl extends AbstractGlassBlock implements ForceFieldBlock, EntityBlock {
+public class ForceFieldBlockImpl extends Block implements ForceFieldBlock, EntityBlock {
     private static final VoxelShape COLLIDABLE_BLOCK = Shapes.create(0.01, 0.01, 0.01, 0.99, 0.99, 0.99);
 
     public ForceFieldBlockImpl() {
@@ -46,9 +47,63 @@ public class ForceFieldBlockImpl extends AbstractGlassBlock implements ForceFiel
     }
 
     @Override
+    public boolean skipRendering(BlockState state, BlockState adjacentBlockState, Direction side) {
+        return false;
+    }
+
+    @Override
+    public boolean propagatesSkylightDown(BlockState state, BlockGetter level, BlockPos pos) {
+        return getCamouflageBlock(level, pos)
+            .map(block -> block.propagatesSkylightDown(level, pos))
+            .orElse(true);
+    }
+
+    @Override
+    public float getShadeBrightness(BlockState state, BlockGetter level, BlockPos pos) {
+        return getCamouflageBlock(level, pos)
+            .map(block -> block.getShadeBrightness(level, pos))
+            .orElse(1.0F);
+    }
+
+    @Override
+    public boolean hidesNeighborFace(BlockGetter level, BlockPos pos, BlockState state, BlockState neighborState, Direction side) {
+        return getCamouflageBlock(level, pos)
+            .flatMap(block -> getCamouflageBlock(level, pos.relative(side))
+                .map(neighbor -> block.skipRendering(neighbor, side)))
+            .orElseGet(() -> neighborState.is(this));
+    }
+
+    @Override
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        return getCamouflageBlock(level, pos)
+            .map(block -> block.getShape(level, pos))
+            .orElseGet(() -> super.getShape(state, level, pos, context));
+    }
+
+    @Override
+    public VoxelShape getVisualShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        return getCamouflageBlock(level, pos)
+            .map(block -> block.getVisualShape(level, pos, context))
+            .orElseGet(Shapes::empty);
+    }
+
+    @Override
+    public VoxelShape getOcclusionShape(BlockState state, BlockGetter level, BlockPos pos) {
+        return getCamouflageBlock(level, pos)
+            .map(block -> block.getOcclusionShape(level, pos))
+            .orElseGet(() -> super.getOcclusionShape(state, level, pos));
+    }
+
+    @Override
     public Optional<Projector> getProjector(BlockGetter level, BlockPos pos) {
         BlockEntity be = level.getBlockEntity(pos);
         return be instanceof ForceFieldBlockEntity forceField ? forceField.getProjector() : Optional.empty();
+    }
+
+    private Optional<BlockState> getCamouflageBlock(BlockGetter level, BlockPos pos) {
+        return Optional.ofNullable(level.getExistingBlockEntity(pos))
+            .map(be -> be instanceof ForceFieldBlockEntity forceField ? forceField.getCamouflage() : null)
+            .map(Block::defaultBlockState);
     }
 
     @Override

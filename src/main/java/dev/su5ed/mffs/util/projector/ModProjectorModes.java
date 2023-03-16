@@ -6,7 +6,6 @@ public final class ModProjectorModes {
     public static final TubeProjectorMode TUBE = new TubeProjectorMode();
     public static final PyramidProjectorMode PYRAMID = new PyramidProjectorMode();
     public static final CylinderProjectorMode CYLINDER = new CylinderProjectorMode();
-    public static final CustomProjectorMode CUSTOM = new CustomProjectorMode();
     
     private ModProjectorModes() {}
 }

@@ -66,6 +66,11 @@ public final class Network {
             .decoder(SetItemInSlotPacket::decode)
             .consumerMainThread(SetItemInSlotPacket::processServerPacket)
             .add();
+        INSTANCE.messageBuilder(StructureDataRequestPacket.class, id++, NetworkDirection.PLAY_TO_SERVER)
+            .encoder(StructureDataRequestPacket::encode)
+            .decoder(StructureDataRequestPacket::decode)
+            .consumerMainThread(StructureDataRequestPacket::processServerPacket)
+            .add();
 
         INSTANCE.messageBuilder(DrawBeamPacket.class, id++, NetworkDirection.PLAY_TO_CLIENT)
             .encoder(DrawBeamPacket::encode)
@@ -86,6 +91,11 @@ public final class Network {
             .encoder(UpdateBlockEntityPacket::encode)
             .decoder(UpdateBlockEntityPacket::decode)
             .consumerMainThread(UpdateBlockEntityPacket::processClientPacket)
+            .add();
+        INSTANCE.messageBuilder(SetStructureShapePacket.class, id++, NetworkDirection.PLAY_TO_CLIENT)
+            .encoder(SetStructureShapePacket::encode)
+            .decoder(SetStructureShapePacket::decode)
+            .consumerMainThread(SetStructureShapePacket::processClientPacket)
             .add();
     }
 

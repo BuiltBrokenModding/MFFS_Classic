@@ -8,8 +8,10 @@ import com.google.common.collect.ListMultimap;
 import dev.su5ed.mffs.MFFSConfig;
 import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.api.Projector;
+import dev.su5ed.mffs.api.TargetPosPair;
 import dev.su5ed.mffs.api.module.Module;
 import dev.su5ed.mffs.api.module.ProjectorMode;
+import dev.su5ed.mffs.item.CustomProjectorModeItem;
 import dev.su5ed.mffs.menu.ProjectorMenu;
 import dev.su5ed.mffs.network.UpdateAnimationSpeed;
 import dev.su5ed.mffs.setup.ModBlocks;
@@ -22,7 +24,6 @@ import dev.su5ed.mffs.util.ModUtil;
 import dev.su5ed.mffs.util.ObjectCache;
 import dev.su5ed.mffs.util.SetBlockEvent;
 import dev.su5ed.mffs.util.inventory.InventorySlot;
-import dev.su5ed.mffs.util.projector.CustomProjectorMode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -344,7 +345,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
     }
 
     @Override
-    public Collection<BlockPos> getCalculatedFieldPositions() {
+    public Collection<TargetPosPair> getCalculatedFieldPositions() {
         return this.semaphore.getOrDefault(ProjectionStage.CALCULATING, List.of());
     }
 
@@ -369,9 +370,10 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
             module.beforeProject(this);
         }
         BlockState state = ModBlocks.FORCE_FIELD.get().defaultBlockState();
-        List<BlockPos> projectable = this.semaphore.getResult(ProjectionStage.SELECTING);
+        List<TargetPosPair> projectable = this.semaphore.getResult(ProjectionStage.SELECTING);
         fieldLoop:
-        for (BlockPos pos : projectable) {
+        for (TargetPosPair pair : projectable) {
+            BlockPos pos = pair.pos();
             for (Module module : getModuleInstances()) {
                 Module.ProjectAction action = module.onProject(this, pos);
 
@@ -387,7 +389,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
             this.level.getBlockEntity(pos, ModObjects.FORCE_FIELD_BLOCK_ENTITY.get())
                 .ifPresent(be -> {
                     be.setProjector(this.worldPosition);
-                    Block camouflage = getCamoBlock(pos);
+                    Block camouflage = getCamoBlock(pair.original());
                     if (camouflage != null) {
                         be.setCamouflage(camouflage);
                     }
@@ -416,12 +418,13 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
 
     @Override
     public void destroyField() {
-        Collection<BlockPos> fieldPositions = getCalculatedFieldPositions();
+        Collection<TargetPosPair> fieldPositions = getCalculatedFieldPositions();
         this.projectedBlocks.clear();
         this.projectionCache.invalidateAll();
         this.semaphore.reset();
         if (!this.level.isClientSide) {
             StreamEx.of(fieldPositions)
+                .map(TargetPosPair::pos)
                 .filter(pos -> this.level.getBlockState(pos).is(ModBlocks.FORCE_FIELD.get()))
                 .forEach(pos -> this.level.removeBlock(pos, false));
         }
@@ -446,18 +449,13 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
         }
     }
 
-    public Block getCamoBlock(BlockPos pos) {
+    public Block getCamoBlock(Vec3 pos) {
         if (!this.level.isClientSide && hasModule(ModModules.CAMOUFLAGE)) {
-            if (getMode().orElse(null) instanceof CustomProjectorMode custom) {
-                Map<BlockPos, Block> map = custom.getFieldBlockMap(this, getModeStack());
-                if (map != null) {
-                    BlockPos fieldCenter = this.worldPosition.offset(getTranslation());
-                    BlockPos relativePosition = pos.subtract(fieldCenter);
-                    BlockPos rotated = ModUtil.rotateByAngle(relativePosition, -getRotationYaw(), -getRotationPitch(), -getRotationRoll());
-                    Block block = map.get(rotated);
-                    if (block != null) {
-                        return block;
-                    }
+            if (getModeStack().getItem() instanceof CustomProjectorModeItem custom) {
+                Map<Vec3, Block> map = custom.getFieldBlocks(this, getModeStack());
+                Block block = map.get(pos);
+                if (block != null) {
+                    return block;
                 }
             }
             return getAllModuleItemsStream()
@@ -469,7 +467,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
     }
 
     private CompletableFuture<?> runCalculationTask() {
-        return this.semaphore.<List<BlockPos>>beginStage(ProjectionStage.CALCULATING)
+        return this.semaphore.<List<TargetPosPair>>beginStage(ProjectionStage.CALCULATING)
             .completeAsync(this::calculateFieldPositions)
             .whenComplete((list, ex) -> {
                 for (Module module : getModuleInstances()) {
@@ -483,7 +481,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
             });
     }
 
-    private List<BlockPos> calculateFieldPositions() {
+    private List<TargetPosPair> calculateFieldPositions() {
         ProjectorMode mode = getMode().orElseThrow();
         Set<Vec3> fieldPoints = hasModule(ModModules.INVERTER) ? mode.getInteriorPoints(this) : mode.getExteriorPoints(this);
         BlockPos translation = getTranslation();
@@ -492,10 +490,10 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
         int rotationRoll = getRotationRoll();
 
         return StreamEx.of(fieldPoints)
-            .map(pos -> rotationYaw != 0 || rotationPitch != 0 || rotationRoll != 0 ? ModUtil.rotateByAngleExact(pos, rotationYaw, rotationPitch, rotationRoll) : pos)
-            .map(pos -> pos.add(this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ()).add(translation.getX(), translation.getY(), translation.getZ()))
-            .filter(pos -> pos.y() <= this.level.getHeight())
-            .map(pos -> new BlockPos(Math.round(pos.x), Math.round(pos.y), Math.round(pos.z)))
+            .mapToEntry(pos -> rotationYaw != 0 || rotationPitch != 0 || rotationRoll != 0 ? ModUtil.rotateByAngleExact(pos, rotationYaw, rotationPitch, rotationRoll) : pos)
+            .mapValues(pos -> pos.add(this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ()).add(translation.getX(), translation.getY(), translation.getZ()))
+            .filterValues(pos -> pos.y() <= this.level.getHeight())
+            .mapKeyValue((original, pos) -> new TargetPosPair(new BlockPos(Math.round(pos.x), Math.round(pos.y), Math.round(pos.z)), original))
             .toMutableList();
     }
 
@@ -508,20 +506,21 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
             });
     }
 
-    private List<BlockPos> selectProjectablePositions() {
+    private List<TargetPosPair> selectProjectablePositions() {
         if (this.projectedBlocks.isEmpty() && getModeStack().getItem() instanceof ObjectCache cache) {
             cache.clearCache();
         }
-        List<BlockPos> fieldToBeProjected = new ArrayList<>(getCalculatedFieldPositions());
+        List<TargetPosPair> fieldToBeProjected = new ArrayList<>(getCalculatedFieldPositions());
         Set<Module> modules = getModuleInstances();
         for (Module module : modules) {
             module.beforeSelect(this, fieldToBeProjected);
         }
         int constructionSpeed = Math.min(getProjectionSpeed(), MFFSConfig.COMMON.maxFFGenPerTick.get());
-        List<BlockPos> projectable = new ArrayList<>();
+        List<TargetPosPair> projectable = new ArrayList<>();
         fieldLoop:
         for (int i = 0, constructionCount = 0; i < fieldToBeProjected.size() && constructionCount < constructionSpeed && !isRemoved() && this.semaphore.isInStage(ProjectionStage.SELECTING); i++) {
-            BlockPos pos = fieldToBeProjected.get(i);
+            TargetPosPair pair = fieldToBeProjected.get(i);
+            BlockPos pos = pair.pos();
             for (Module module : modules) {
                 Module.ProjectAction action = module.onSelect(this, pos);
                 if (action == Module.ProjectAction.SKIP) {
@@ -531,7 +530,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
                 }
             }
             if (this.projectionCache.getUnchecked(pos) && this.level.isLoaded(pos)) {
-                projectable.add(pos);
+                projectable.add(pair);
                 constructionCount++;
             }
         }

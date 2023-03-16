@@ -1,13 +1,11 @@
 package dev.su5ed.mffs.api;
 
-import dev.su5ed.mffs.api.module.Module;
 import dev.su5ed.mffs.api.module.ModuleAcceptor;
 import dev.su5ed.mffs.api.module.ProjectorMode;
 import dev.su5ed.mffs.api.security.BiometricIdentifierLink;
 import dev.su5ed.mffs.util.inventory.InventorySlot;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
@@ -66,7 +64,7 @@ public interface Projector extends ModuleAcceptor, BiometricIdentifierLink {
     /**
      * * @return Gets all the blocks that are occupying the force field.
      */
-    Collection<BlockPos> getCalculatedFieldPositions();
+    Collection<TargetPosPair> getCalculatedFieldPositions();
 
     /**
      * @return The speed in which a force field is constructed.

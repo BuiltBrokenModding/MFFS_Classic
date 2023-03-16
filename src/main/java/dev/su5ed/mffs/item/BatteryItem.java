@@ -43,8 +43,10 @@ public class BatteryItem extends Item {
         super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
 
         stack.getCapability(ForgeCapabilities.ENERGY)
-            .ifPresent(energy -> tooltipComponents.add(ModUtil.translate("info", "stored_energy", energy.getEnergyStored(), energy.getMaxEnergyStored())
-                .withStyle(ChatFormatting.GRAY)));
+            .ifPresent(energy -> tooltipComponents.add(ModUtil.translate("info", "stored_energy",
+                    Component.literal(String.valueOf(energy.getEnergyStored())).withStyle(ChatFormatting.GRAY),
+                    Component.literal(String.valueOf(energy.getMaxEnergyStored())).withStyle(ChatFormatting.GRAY))
+                .withStyle(ChatFormatting.DARK_GRAY)));
     }
 
     @Nullable
@@ -54,8 +56,8 @@ public class BatteryItem extends Item {
     }
 
     @Override
-    public boolean isBarVisible(ItemStack pStack) {
-        return true;
+    public boolean isBarVisible(ItemStack stack) {
+        return getChargeLevel(stack) < 1;
     }
 
     @Override
