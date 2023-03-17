@@ -21,13 +21,13 @@ public record InitialDataRequestPacket(BlockPos pos) {
     }
 
     public void processPacket(Supplier<NetworkEvent.Context> ctx) {
-        ServerPlayer sender = ctx.get().getSender();
-
+        NetworkEvent.Context context = ctx.get();
+        ServerPlayer sender = context.getSender();
         if (sender.level.isLoaded(this.pos)) {
             BlockEntity be = sender.level.getBlockEntity(this.pos);
             CompoundTag data = be.getUpdateTag();
             UpdateBlockEntityPacket packet = new UpdateBlockEntityPacket(this.pos, data);
-            Network.INSTANCE.reply(packet, ctx.get());
+            Network.INSTANCE.reply(packet, context);
         }
     }
 }

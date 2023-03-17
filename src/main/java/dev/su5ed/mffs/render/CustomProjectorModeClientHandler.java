@@ -3,12 +3,15 @@ package dev.su5ed.mffs.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.item.CustomProjectorModeItem;
+import dev.su5ed.mffs.network.Network;
+import dev.su5ed.mffs.network.StructureDataRequestPacket;
 import dev.su5ed.mffs.setup.ModItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Mth;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
@@ -18,7 +21,6 @@ import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import one.util.streamex.StreamEx;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,23 +32,21 @@ public final class CustomProjectorModeClientHandler {
     private static final int PERIOD_TICKS = 30;
     private static final Map<ResourceKey<Level>, Map<String, VoxelShape>> STRUCTURE_SHAPES = new HashMap<>();
 
-    @Nullable
-    private static VoxelShape getShape(ResourceKey<Level> level, String id) {
-        Map<String, VoxelShape> map = STRUCTURE_SHAPES.get(level);
-        if (map != null) {
-            return map.get(id);
+    public static VoxelShape getOrRequestShape(ItemStack stack, Level level) {
+        String id = stack.getOrCreateTag().getString(CustomProjectorModeItem.TAG_PATTERN_ID);
+        ResourceKey<Level> key = level.dimension();
+        Map<String, VoxelShape> map = STRUCTURE_SHAPES.get(key);
+        if (map == null || !map.containsKey(id)) {
+            Network.INSTANCE.sendToServer(new StructureDataRequestPacket(id));
+            CustomProjectorModeClientHandler.setShape(key, id, null);
+            return null;
         }
-        return null;
+        return map.get(id);
     }
 
-    public static void setShape(ResourceKey<Level> level, String id, @Nullable VoxelShape shape) {
+    public static void setShape(ResourceKey<Level> level, String id, VoxelShape shape) {
         Map<String, VoxelShape> map = STRUCTURE_SHAPES.computeIfAbsent(level, l -> new HashMap<>());
         map.put(id, shape);
-    }
-
-    public static boolean hasShape(ResourceKey<Level> level, String id) {
-        Map<String, VoxelShape> map = STRUCTURE_SHAPES.get(level);
-        return map != null && map.containsKey(id);
     }
 
     @SubscribeEvent
@@ -76,8 +76,7 @@ public final class CustomProjectorModeClientHandler {
                         }
                     }
                     if (tag.contains(CustomProjectorModeItem.TAG_PATTERN_ID)) {
-                        String id = tag.getString(CustomProjectorModeItem.TAG_PATTERN_ID);
-                        VoxelShape shape = getShape(minecraft.level.dimension(), id);
+                        VoxelShape shape = getOrRequestShape(stack, minecraft.level);
                         if (shape != null) {
                             BlockHighlighter.highlightArea(pose, cameraPos, shape, null);
                         }

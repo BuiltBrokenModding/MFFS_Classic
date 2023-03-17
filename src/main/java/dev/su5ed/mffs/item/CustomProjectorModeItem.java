@@ -3,12 +3,8 @@ package dev.su5ed.mffs.item;
 import dev.su5ed.mffs.MFFSConfig;
 import dev.su5ed.mffs.api.Projector;
 import dev.su5ed.mffs.api.module.ProjectorMode;
-import dev.su5ed.mffs.network.Network;
-import dev.su5ed.mffs.network.StructureDataRequestPacket;
-import dev.su5ed.mffs.render.CustomProjectorModeClientHandler;
 import dev.su5ed.mffs.setup.ModCapabilities;
 import dev.su5ed.mffs.setup.ModItems;
-import dev.su5ed.mffs.setup.ModModules;
 import dev.su5ed.mffs.util.ModUtil;
 import dev.su5ed.mffs.util.projector.CustomStructureSavedData;
 import net.minecraft.ChatFormatting;
@@ -18,13 +14,11 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -34,11 +28,9 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
-import one.util.streamex.EntryStream;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.jetbrains.annotations.Nullable;
 
@@ -130,18 +122,6 @@ public class CustomProjectorModeItem extends BaseItem {
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
-        if (level.isClientSide && (isSelected || entity instanceof Player player && player.getOffhandItem() == stack)) {
-            String id = stack.getOrCreateTag().getString(TAG_PATTERN_ID);
-            ResourceKey<Level> key = level.dimension();
-            if (!CustomProjectorModeClientHandler.hasShape(key, id)) {
-                Network.INSTANCE.sendToServer(new StructureDataRequestPacket(id));
-                CustomProjectorModeClientHandler.setShape(key, id, null);
-            }
-        }
-    }
-
-    @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
         CompoundTag tag = stack.getOrCreateTag();
 
@@ -210,24 +190,13 @@ public class CustomProjectorModeItem extends BaseItem {
     }
 
     public Map<Vec3, Block> getFieldBlocks(Projector projector, ItemStack stack) {
-        // TODO Cache
         if (projector.be().getLevel() instanceof ServerLevel serverLevel) {
             CompoundTag tag = stack.getOrCreateTag();
-            double scale = Math.max(1.0, projector.getModuleCount(ModModules.SCALE) / 3.0);
             CustomStructureSavedData data = getOrCreateData(serverLevel);
             String id = tag.getString(TAG_PATTERN_ID);
             CustomStructureSavedData.Structure structure = data.get(id);
             if (structure != null) {
-                VoxelShape shape = structure.shape();
-                BlockPos median = new BlockPos(
-                    (shape.min(Direction.Axis.X) + shape.max(Direction.Axis.X)) / 2.0,
-                    (shape.min(Direction.Axis.Y) + shape.max(Direction.Axis.Y)) / 2.0,
-                    (shape.min(Direction.Axis.Z) + shape.max(Direction.Axis.Z)) / 2.0
-                );
-                return EntryStream.of(structure.blocks())
-                    .mapKeys(pos -> pos.subtract(median))
-                    .mapKeys(pos -> Vec3.atLowerCornerOf(pos).multiply(scale, scale, scale))
-                    .toMap();
+                return structure.getRealBlocks(projector);
             }
         }
         return Map.of();

@@ -1,6 +1,5 @@
 package dev.su5ed.mffs.setup;
 
-import dev.su5ed.mffs.api.module.ProjectorMode;
 import dev.su5ed.mffs.block.ForceFieldBlockImpl;
 import dev.su5ed.mffs.render.BiometricIdentifierRenderer;
 import dev.su5ed.mffs.render.ClientRenderHandler;
@@ -20,12 +19,12 @@ import dev.su5ed.mffs.screen.CoercionDeriverScreen;
 import dev.su5ed.mffs.screen.FortronCapacitorScreen;
 import dev.su5ed.mffs.screen.InterdictionMatrixScreen;
 import dev.su5ed.mffs.screen.ProjectorScreen;
-import dev.su5ed.mffs.util.projector.ModProjectorModes;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
@@ -45,10 +44,10 @@ import java.util.function.Function;
 
 @EventBusSubscriber(value = Dist.CLIENT, bus = Bus.MOD)
 public final class ModClientSetup {
-    private static final Map<ProjectorMode, LazyRendererFactory> LAZY_RENDERERS = new HashMap<>();
+    private static final Map<Item, LazyRendererFactory> LAZY_RENDERERS = new HashMap<>();
 
-    public static void renderLazy(ProjectorMode mode, BlockEntity be, Function<ModelLayerLocation, ModelPart> modelFactory) {
-        LazyRendererFactory factory = LAZY_RENDERERS.get(mode);
+    public static void renderLazy(Item item, BlockEntity be, Function<ModelLayerLocation, ModelPart> modelFactory) {
+        LazyRendererFactory factory = LAZY_RENDERERS.get(item);
         if (factory != null) {
             factory.apply(be, modelFactory);
         }
@@ -59,11 +58,12 @@ public final class ModClientSetup {
     }
 
     private static void registerLazyRenderers() {
-        LAZY_RENDERERS.put(ModProjectorModes.CUBE, ClientRenderHandler::renderCubeMode);
-        LAZY_RENDERERS.put(ModProjectorModes.SPHERE, ClientRenderHandler::renderSphereMode);
-        LAZY_RENDERERS.put(ModProjectorModes.TUBE, ClientRenderHandler::renderTubeMode);
-        LAZY_RENDERERS.put(ModProjectorModes.PYRAMID, ClientRenderHandler::renderPyramidMode);
-        LAZY_RENDERERS.put(ModProjectorModes.CYLINDER, ClientRenderHandler::renderCylinderMode);
+        LAZY_RENDERERS.put(ModItems.CUBE_MODE.get(), ClientRenderHandler::renderCubeMode);
+        LAZY_RENDERERS.put(ModItems.SPHERE_MODE.get(), ClientRenderHandler::renderSphereMode);
+        LAZY_RENDERERS.put(ModItems.TUBE_MODE.get(), ClientRenderHandler::renderTubeMode);
+        LAZY_RENDERERS.put(ModItems.PYRAMID_MODE.get(), ClientRenderHandler::renderPyramidMode);
+        LAZY_RENDERERS.put(ModItems.CYLINDER_MODE.get(), ClientRenderHandler::renderCylinderMode);
+        LAZY_RENDERERS.put(ModItems.CUSTOM_MODE.get(), ClientRenderHandler::renderCustomMode);
     }
 
     @SubscribeEvent

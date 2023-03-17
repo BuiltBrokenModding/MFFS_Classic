@@ -44,7 +44,7 @@ public class ProjectorRenderer implements BlockEntityRenderer<ProjectorBlockEnti
         renderRotor(blockEntity, partialTick, poseStack, bufferSource, packedLight, packedOverlay);
         blockEntity.getMode().ifPresent(mode -> {
             RenderTickHandler.addTransparentRenderer(ModRenderType.STANDARD_TRANSLUCENT_TRIANGLE, this.holoRenderer.apply(blockEntity));
-            ModClientSetup.renderLazy(mode, blockEntity, this.modelPartCache);
+            ModClientSetup.renderLazy(blockEntity.getModeStack().getItem(), blockEntity, this.modelPartCache);
         });
     }
 

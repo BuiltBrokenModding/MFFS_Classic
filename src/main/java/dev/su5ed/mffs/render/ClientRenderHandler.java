@@ -1,39 +1,63 @@
 package dev.su5ed.mffs.render;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
+import dev.su5ed.mffs.api.module.ProjectorMode;
 import dev.su5ed.mffs.render.model.ForceCubeModel;
 import dev.su5ed.mffs.render.model.ForceTubeModel;
+import dev.su5ed.mffs.util.TranslucentVertexConsumer;
 import dev.su5ed.mffs.util.projector.CylinderProjectorMode;
+import dev.su5ed.mffs.util.projector.ModProjectorModes;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 
+import java.util.List;
+import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public final class ClientRenderHandler {
+    public static final RenderType PYRAMID_RENDER_TYPE = ModRenderType.POS_TEX_TRANSLUCENT_UNCULLED_TRIANGLE.apply(ForceCubeModel.CORE_TEXTURE);
+    private static final List<ProjectorMode> MODES = List.of(ModProjectorModes.CUBE, ModProjectorModes.SPHERE, ModProjectorModes.TUBE, ModProjectorModes.PYRAMID);
+    private static final Map<ProjectorMode, RendererInfo> RENDERERS = Map.of(
+        ModProjectorModes.CUBE, new RendererInfo(ForceCubeModel.LAYER_LOCATION, ForceCubeModel.RENDER_TYPE, CubeModeRenderer::new),
+        ModProjectorModes.SPHERE, new RendererInfo(ForceCubeModel.LAYER_LOCATION, ForceCubeModel.RENDER_TYPE, SphereModeRenderer::new),
+        ModProjectorModes.TUBE, new RendererInfo(ForceTubeModel.LAYER_LOCATION, ForceTubeModel.RENDER_TYPE, CubeModeRenderer::new),
+        ModProjectorModes.PYRAMID, new RendererInfo(null, PYRAMID_RENDER_TYPE, (centerPos, model) -> new PyramidModeRenderer(centerPos))
+    );
+
+    private record RendererInfo(ModelLayerLocation model, RenderType renderType, BiFunction<Vec3, ModelPart, LazyRenderer> factory) {
+        public LazyRenderer createRenderer(Vec3 centerPos, Function<ModelLayerLocation, ModelPart> modelFactory) {
+            ModelPart modelPart = this.model != null ? modelFactory.apply(this.model) : null;
+            return this.factory.apply(centerPos, modelPart);
+        }
+    }
+
     public static void renderCubeMode(BlockEntity be, Function<ModelLayerLocation, ModelPart> modelFactory) {
-        addRenderer(be, modelFactory, ForceCubeModel.LAYER_LOCATION, CubeModeRenderer::new);
+        addRenderer(be, modelFactory, ModProjectorModes.CUBE);
     }
 
     public static void renderSphereMode(BlockEntity be, Function<ModelLayerLocation, ModelPart> modelFactory) {
-        addRenderer(be, modelFactory, ForceCubeModel.LAYER_LOCATION, SphereModeRenderer::new);
+        addRenderer(be, modelFactory, ModProjectorModes.SPHERE);
     }
 
     public static void renderTubeMode(BlockEntity be, Function<ModelLayerLocation, ModelPart> modelFactory) {
-        addRenderer(be, modelFactory, ForceTubeModel.LAYER_LOCATION, CubeModeRenderer::new);
+        addRenderer(be, modelFactory, ModProjectorModes.TUBE);
     }
 
     public static void renderPyramidMode(BlockEntity be, Function<ModelLayerLocation, ModelPart> modelFactory) {
-        Vec3 centerPos = Vec3.atCenterOf(be.getBlockPos());
-        RenderTickHandler.addTransparentRenderer(ModRenderType.POS_TEX_TRANSLUCENT_UNCULLED_TRIANGLE.apply(ForceCubeModel.CORE_TEXTURE), new PyramidModeRenderer(centerPos));
+        addRenderer(be, modelFactory, ModProjectorModes.PYRAMID);
     }
 
     public static void renderCylinderMode(BlockEntity be, Function<ModelLayerLocation, ModelPart> modelFactory) {
@@ -41,15 +65,20 @@ public final class ClientRenderHandler {
         ModelPart tubeModel = modelFactory.apply(ForceCubeModel.LAYER_LOCATION);
         RenderTickHandler.addTransparentRenderer(ForceCubeModel.RENDER_TYPE, new CylinderModeRenderer(centerPos, tubeModel));
     }
-    
+
+    public static void renderCustomMode(BlockEntity be, Function<ModelLayerLocation, ModelPart> modelFactory) {
+        Vec3 centerPos = Vec3.atCenterOf(be.getBlockPos());
+        RenderTickHandler.addTransparentRenderer(ForceCubeModel.RENDER_TYPE, new CustomModeRenderer(centerPos, modelFactory));
+    }
+
     public static IClientItemExtensions biometricIdentifierItemRenderer() {
         return new RendererItemExtension(() -> BiometricIdentifierRenderer.ItemRenderer.INSTANCE);
     }
 
-    private static void addRenderer(BlockEntity be, Function<ModelLayerLocation, ModelPart> modelFactory, ModelLayerLocation modelLocation, BiFunction<Vec3, ModelPart, LazyRenderer> rendererFactory) {
+    private static void addRenderer(BlockEntity be, Function<ModelLayerLocation, ModelPart> modelFactory, ProjectorMode mode) {
         Vec3 centerPos = Vec3.atCenterOf(be.getBlockPos());
-        ModelPart modelPart = modelFactory.apply(modelLocation);
-        RenderTickHandler.addTransparentRenderer(ForceCubeModel.RENDER_TYPE, rendererFactory.apply(centerPos, modelPart));
+        RendererInfo info = RENDERERS.get(mode);
+        RenderTickHandler.addTransparentRenderer(info.renderType, info.createRenderer(centerPos, modelFactory));
     }
 
     private static void hoverObject(PoseStack poseStack, float ticks, float scale, Vec3 centerPos) {
@@ -60,6 +89,28 @@ public final class ClientRenderHandler {
 
         poseStack.mulPose(Vector3f.YP.rotationDegrees(ticks * 4L));
         poseStack.mulPose(Vector3f.ZP.rotationDegrees(36 + ticks * 4L));
+    }
+
+    private record CustomModeRenderer(Vec3 centerPos, Function<ModelLayerLocation, ModelPart> modelFactory) implements LazyRenderer {
+        private static final int PERIOD = 20;
+        private static final int MAX = MODES.size() * PERIOD;
+
+        @Override
+        public void render(PoseStack poseStack, VertexConsumer buffer, int renderTick, float partialTick) {
+            float ticks = renderTick + partialTick;
+            MultiBufferSource.BufferSource source = Minecraft.getInstance().renderBuffers().bufferSource();
+            int index = (int) ((ticks % MAX) / (double) PERIOD);
+            ProjectorMode mode = MODES.get(index);
+            RendererInfo info = RENDERERS.get(mode);
+            LazyRenderer renderer = info.createRenderer(this.centerPos, this.modelFactory);
+            float alpha = (float) -Math.pow(Math.sin((ticks + PERIOD / 2.0) * (Math.PI / (double) PERIOD)), 20) + 1;
+            VertexConsumer actualConsumer = source.getBuffer(info.renderType);
+            VertexConsumer wrapped = new TranslucentVertexConsumer(actualConsumer, (int) (alpha * 255));
+            RenderSystem.setShaderColor(1, 1, 1, alpha);
+            renderer.render(poseStack, wrapped, renderTick, partialTick);
+            source.getBuffer(ForceCubeModel.RENDER_TYPE);
+            RenderSystem.setShaderColor(1, 1, 1, 1);
+        }
     }
 
     private record CubeModeRenderer(Vec3 centerPos, ModelPart model) implements LazyRenderer {

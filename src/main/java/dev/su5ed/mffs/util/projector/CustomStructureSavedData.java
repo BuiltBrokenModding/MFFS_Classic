@@ -4,10 +4,13 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.su5ed.mffs.MFFSMod;
+import dev.su5ed.mffs.api.Projector;
 import dev.su5ed.mffs.network.Network;
 import dev.su5ed.mffs.network.SetStructureShapePacket;
+import dev.su5ed.mffs.setup.ModModules;
 import dev.su5ed.mffs.util.ModUtil;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
@@ -18,9 +21,11 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.registries.ForgeRegistries;
 import one.util.streamex.EntryStream;
@@ -136,7 +141,7 @@ public class CustomStructureSavedData extends SavedData {
         return shape;
     }
 
-    public record Structure(VoxelShape shape, VoxelShape normalShape, Map<BlockPos, Block> blocks) {
+    public static class Structure {
         public static final Codec<Map<BlockPos, Block>> BLOCK_MAP_CODEC = Codec.pair(BlockPos.CODEC.fieldOf("pos").codec(), ForgeRegistries.BLOCKS.getCodec().fieldOf("state").codec()).listOf()
             .xmap(pairs -> StreamEx.of(pairs)
                     .mapToEntry(Pair::getFirst, Pair::getSecond)
@@ -150,8 +155,63 @@ public class CustomStructureSavedData extends SavedData {
             BLOCK_MAP_CODEC.fieldOf("blocks").forGetter(Structure::blocks)
         ).apply(instance, Structure::new));
 
+        private final VoxelShape shape;
+        private final VoxelShape normalShape;
+        private final Map<BlockPos, Block> blocks;
+        private final Lazy<Map<BlockPos, Block>> relativeBlocks = Lazy.of(this::computeRelativeBlocks);
+        @Nullable
+        private Map<Vec3, Block> realBlocks;
+
         public Structure() {
             this(Shapes.empty(), Shapes.empty(), new HashMap<>());
+        }
+
+        public Structure(VoxelShape shape, VoxelShape normalShape, Map<BlockPos, Block> blocks) {
+            this.shape = shape;
+            this.normalShape = normalShape;
+            this.blocks = blocks;
+        }
+
+        public VoxelShape shape() {
+            return shape;
+        }
+
+        public VoxelShape normalShape() {
+            return normalShape;
+        }
+
+        public Map<BlockPos, Block> blocks() {
+            return blocks;
+        }
+
+        public Map<BlockPos, Block> getRelativeBlocks() {
+            return this.relativeBlocks.get();
+        }
+
+        public Map<Vec3, Block> getRealBlocks(Projector projector) {
+            if (this.realBlocks == null) {
+                double scale = Math.max(1.0, projector.getModuleCount(ModModules.SCALE) / 3.0);
+                Map<Vec3, Block> map = new HashMap<>();
+                for (Map.Entry<BlockPos, Block> entry : getRelativeBlocks().entrySet()) {
+                    map.put(Vec3.atLowerCornerOf(entry.getKey()).multiply(scale, scale, scale), entry.getValue());
+                }
+                this.realBlocks = map;
+            }
+            return this.realBlocks;
+        }
+
+        private Map<BlockPos, Block> computeRelativeBlocks() {
+            BlockPos median = new BlockPos(
+                (this.shape.min(Direction.Axis.X) + this.shape.max(Direction.Axis.X)) / 2.0,
+                (this.shape.min(Direction.Axis.Y) + this.shape.max(Direction.Axis.Y)) / 2.0,
+                (this.shape.min(Direction.Axis.Z) + this.shape.max(Direction.Axis.Z)) / 2.0
+            );
+            // Use classic for loop in an effort to improve performance
+            Map<BlockPos, Block> map = new HashMap<>();
+            for (Map.Entry<BlockPos, Block> entry : this.blocks.entrySet()) {
+                map.put(entry.getKey().subtract(median), entry.getValue());
+            }
+            return map;
         }
     }
 }
