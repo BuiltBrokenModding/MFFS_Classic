@@ -4,8 +4,9 @@ import dev.su5ed.mffs.api.FrequencyBlock;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.util.INBTSerializable;
+import net.minecraftforge.energy.IEnergyStorage;
 
-public interface FortronStorage extends INBTSerializable<CompoundTag>, FrequencyBlock {
+public interface FortronStorage extends INBTSerializable<CompoundTag>, FrequencyBlock, IEnergyStorage {
     /**
      * @return the owning block entity
      */
@@ -16,17 +17,17 @@ public interface FortronStorage extends INBTSerializable<CompoundTag>, Frequency
      *
      * @param energy the amount of energy to store
      */
-    void setStoredFortron(int energy);
+    void setStoredEnergy(int energy);
 
     /**
      * @return The amount of fortron stored.
      */
-    int getStoredFortron();
+    int getEnergyStored();
 
     /**
      * @return The maximum possible amount of fortron that can be stored.
      */
-    int getFortronCapacity();
+    int getMaxEnergyStored();
 
     /**
      * Called to use and consume fortron energy from this storage unit.
@@ -35,7 +36,7 @@ public interface FortronStorage extends INBTSerializable<CompoundTag>, Frequency
      * @param simulate whether to execute or simulate the operation
      * @return The amount of energy that was actually provided.
      */
-    int extractFortron(int joules, boolean simulate);
+    int extractEnergy(int joules, boolean simulate);
 
     /**
      * Called to use and give fortron energy from this storage unit.
@@ -44,5 +45,5 @@ public interface FortronStorage extends INBTSerializable<CompoundTag>, Frequency
      * @param simulate whether to execute or simulate the operation
      * @return The amount of energy that was actually injected.
      */
-    int insertFortron(int joules, boolean simulate);
+    int receiveEnergy(int joules, boolean simulate);
 }

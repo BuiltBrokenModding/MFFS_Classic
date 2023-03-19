@@ -41,6 +41,9 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity {
         this.fuelSlot = addSlot("fuel", InventorySlot.Mode.BOTH, stack -> stack.is(ModTags.FORTRON_FUEL));
         this.upgradeSlots = createUpgradeSlots(3);
         this.energy.setMaxTransfer(getMaxTransferRate());
+
+        /* Allow this block to receive forge energy */
+        this.fortronStorage.setCanReceive(true);
     }
 
     public EnergyMode getEnergyMode() {
@@ -96,14 +99,14 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity {
         if (isActive()) {
             if (isInversed() && MFFSConfig.COMMON.enableElectricity.get()) {
                 if (this.energy.getEnergyStored() < this.energy.getMaxEnergyStored()) {
-                    int withdrawnElectricity = (int) (this.fortronStorage.extractFortron(getProductionRate() / 20, false) / getEnergyConversionRatio());
+                    int withdrawnElectricity = (int) (this.fortronStorage.extractEnergy(getProductionRate() / 20, false) / getEnergyConversionRatio());
                     // Inject electricity from Fortron.
                     this.energy.receiveEnergy((int) (withdrawnElectricity * MFFSConfig.COMMON.backConversionEnergyLoss.get()), true);
                 }
 
                 charge(this.batterySlot.getItem());
                 receiveEnergy();
-            } else if (this.fortronStorage.getStoredFortron() < this.fortronStorage.getFortronCapacity()) {
+            } else if (this.fortronStorage.getEnergyStored() < this.fortronStorage.getMaxEnergyStored()) {
                 // Convert Electricity to Fortron
                 discharge(this.batterySlot.getItem());
 
@@ -111,7 +114,7 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity {
                 if (this.energy.canExtract(production) || !MFFSConfig.COMMON.enableElectricity.get() && hasFuel()) {
                     // Fill Fortron
                     this.energy.extractEnergy(production, false);
-                    this.fortronStorage.insertFortron(production, false);
+                    this.fortronStorage.receiveEnergy(production, false);
 
                     // Use fuel
                     // TODO Fuel display

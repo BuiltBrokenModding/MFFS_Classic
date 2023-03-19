@@ -150,7 +150,7 @@ public abstract class FortronBlockEntity extends InventoryBlockEntity implements
     @NotNull
     @Override
     public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        if (cap == ModCapabilities.FORTRON) {
+        if (cap == ModCapabilities.FORTRON || cap == ForgeCapabilities.ENERGY) {
             return this.fortronCap.cast();
         }
         if (cap == ForgeCapabilities.FLUID_HANDLER) {

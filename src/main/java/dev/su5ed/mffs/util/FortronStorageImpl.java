@@ -12,6 +12,7 @@ public class FortronStorageImpl implements FortronStorage {
     private final BlockEntity owner;
     private final FluidTank fortronTank;
     private final Runnable onContentsChanged;
+    private boolean canReceive = false;
 
     private int frequency;
 
@@ -38,27 +39,46 @@ public class FortronStorageImpl implements FortronStorage {
     }
 
     @Override
-    public int getStoredFortron() {
+    public int getEnergyStored() {
         return this.fortronTank.getFluidAmount();
     }
 
     @Override
-    public void setStoredFortron(int energy) {
+    public void setStoredEnergy(int energy) {
         this.fortronTank.setFluid(Fortron.getFortron(energy));
     }
 
     @Override
-    public int getFortronCapacity() {
+    public int getMaxEnergyStored() {
         return this.fortronTank.getCapacity();
     }
 
     @Override
-    public int extractFortron(int joules, boolean simulate) {
+    public boolean canExtract() {
+        return true;
+    }
+
+    @Override
+    public boolean canReceive() {
+        return this.canReceive;
+    }
+
+    /**
+     * Sets whether this storage can receive forge energy.
+     * 
+     * @param canReceive True if this storage can receive forge energy.
+     */
+    public void setCanReceive(boolean canReceive) {
+        this.canReceive = canReceive;
+    }
+
+    @Override
+    public int extractEnergy(int joules, boolean simulate) {
         return this.fortronTank.drain(joules, simulate ? IFluidHandler.FluidAction.SIMULATE : IFluidHandler.FluidAction.EXECUTE).getAmount();
     }
 
     @Override
-    public int insertFortron(int joules, boolean simulate) {
+    public int receiveEnergy(int joules, boolean simulate) {
         return this.fortronTank.fill(Fortron.getFortron(joules), simulate ? IFluidHandler.FluidAction.SIMULATE : IFluidHandler.FluidAction.EXECUTE);
     }
 

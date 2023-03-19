@@ -79,7 +79,7 @@ public class FortronCapacitorBlockEntity extends ModularBlockEntity implements F
 
             for (ItemStack stack : getCards()) {
                 if (stack.is(ModItems.INFINITE_POWER_CARD.get())) {
-                    this.fortronStorage.setStoredFortron(this.fortronStorage.getFortronCapacity());
+                    this.fortronStorage.setStoredEnergy(this.fortronStorage.getMaxEnergyStored());
                 }
                 else if (stack.getItem() instanceof CoordLink coordLink) {
                     Optional.ofNullable(coordLink.getLink(stack))
