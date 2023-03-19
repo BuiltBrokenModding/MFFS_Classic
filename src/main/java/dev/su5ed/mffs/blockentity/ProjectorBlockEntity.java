@@ -540,7 +540,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
     public static Optional<Block> getFilterBlock(ItemStack stack) {
         if (stack.getItem() instanceof BlockItem blockItem) {
             Block block = blockItem.getBlock();
-            if (block.defaultBlockState().getRenderShape() == RenderShape.MODEL) {
+            if (block.defaultBlockState().getRenderShape() != RenderShape.INVISIBLE) {
                 return Optional.of(block);
             }
         }

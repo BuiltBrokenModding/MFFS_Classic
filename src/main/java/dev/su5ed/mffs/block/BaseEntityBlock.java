@@ -50,6 +50,7 @@ public class BaseEntityBlock extends Block implements EntityBlock {
         super(properties);
 
         this.provider = provider;
+        registerDefaultState(this.stateDefinition.any().setValue(ACTIVE, false));
     }
 
     @Override

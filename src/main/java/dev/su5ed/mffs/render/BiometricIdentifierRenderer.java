@@ -6,7 +6,6 @@ import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.block.BaseEntityBlock;
-import dev.su5ed.mffs.block.BiometricIdentifierBlock;
 import dev.su5ed.mffs.blockentity.BiometricIdentifierBlockEntity;
 import dev.su5ed.mffs.render.model.BiometricIdentifierModel;
 import dev.su5ed.mffs.setup.ModBlocks;
@@ -43,16 +42,7 @@ public class BiometricIdentifierRenderer implements BlockEntityRenderer<Biometri
 
     @Override
     public void render(BiometricIdentifierBlockEntity blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
-        BlockState state = null;
-        if (blockEntity.hasLevel()) {
-            BlockState levelState = blockEntity.getLevel().getBlockState(blockEntity.getBlockPos());
-            if (levelState.getBlock() instanceof BiometricIdentifierBlock) {
-                state = levelState;
-            }
-            else {
-                return;
-            }
-        }
+        BlockState state = blockEntity.hasLevel() ? blockEntity.getBlockState() : null;
         ResourceLocation texture = state == null || state.getValue(BaseEntityBlock.ACTIVE) ? BIOMETRIC_IDENTIFIER_ON_TEXTURE : BIOMETRIC_IDENTIFIER_OFF_TEXTURE;
 
         poseStack.pushPose();

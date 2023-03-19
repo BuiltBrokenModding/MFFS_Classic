@@ -4,6 +4,7 @@ import dev.su5ed.mffs.api.ForceFieldBlock;
 import dev.su5ed.mffs.api.Projector;
 import dev.su5ed.mffs.network.InitialDataRequestPacket;
 import dev.su5ed.mffs.network.Network;
+import dev.su5ed.mffs.render.BlockEntityRenderDelegate;
 import dev.su5ed.mffs.setup.ModCapabilities;
 import dev.su5ed.mffs.setup.ModModules;
 import dev.su5ed.mffs.setup.ModObjects;
@@ -53,7 +54,18 @@ public class ForceFieldBlockEntity extends BlockEntity {
         if (this.level.isClientSide) {
             InitialDataRequestPacket packet = new InitialDataRequestPacket(this.worldPosition);
             Network.INSTANCE.sendToServer(packet);
+            if (this.camouflage != null) {
+                BlockEntityRenderDelegate.INSTANCE.putDelegateFor(this, this.camouflage.defaultBlockState());
+            }
         }
+    }
+
+    @Override
+    public void setRemoved() {
+        if (this.level.isClientSide) {
+            BlockEntityRenderDelegate.INSTANCE.removeDelegateOf(this);
+        }
+        super.setRemoved();
     }
 
     @Override
@@ -77,7 +89,9 @@ public class ForceFieldBlockEntity extends BlockEntity {
     public CompoundTag getUpdateTag() {
         CompoundTag tag = new CompoundTag();
         saveAdditional(tag);
-        tag.put("projector", NbtUtils.writeBlockPos(this.projector));
+        if (this.projector != null) {
+            tag.put("projector", NbtUtils.writeBlockPos(this.projector));
+        }
         int clientBlockLight = getProjector().map(projector -> Math.round((float) Math.min(projector.getModuleCount(ModModules.GLOW), 64) / 64 * 15)).orElse(0);
         tag.putInt("clientBlockLight", clientBlockLight);
         return tag;
@@ -87,11 +101,14 @@ public class ForceFieldBlockEntity extends BlockEntity {
     public void handleUpdateTag(CompoundTag tag) {
         super.handleUpdateTag(tag);
         load(tag);
-        this.projector = NbtUtils.readBlockPos(tag.getCompound("projector"));
+        this.projector = tag.contains("projector") ? NbtUtils.readBlockPos(tag.getCompound("projector")) : null;
         this.clientBlockLight = tag.getInt("clientBlockLight");
 
         updateRenderClient();
         this.level.getLightEngine().checkBlock(this.worldPosition);
+        if (this.camouflage != null) {
+            BlockEntityRenderDelegate.INSTANCE.putDelegateFor(this, camouflage.defaultBlockState());
+        }
     }
 
     @Override

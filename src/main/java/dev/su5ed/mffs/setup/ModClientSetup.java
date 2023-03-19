@@ -4,6 +4,7 @@ import dev.su5ed.mffs.block.ForceFieldBlockImpl;
 import dev.su5ed.mffs.render.BiometricIdentifierRenderer;
 import dev.su5ed.mffs.render.ClientRenderHandler;
 import dev.su5ed.mffs.render.CoercionDeriverRenderer;
+import dev.su5ed.mffs.render.ForceFieldBlockEntityRenderer;
 import dev.su5ed.mffs.render.LazyRendererFactory;
 import dev.su5ed.mffs.render.ProjectorRenderer;
 import dev.su5ed.mffs.render.model.BiometricIdentifierModel;
@@ -84,6 +85,7 @@ public final class ModClientSetup {
         event.registerBlockEntityRenderer(ModObjects.PROJECTOR_BLOCK_ENTITY.get(), ProjectorRenderer::new);
         event.registerBlockEntityRenderer(ModObjects.COERCION_DERIVER_BLOCK_ENTITY.get(), CoercionDeriverRenderer::new);
         event.registerBlockEntityRenderer(ModObjects.BIOMETRIC_IDENTIFIER_BLOCK_ENTITY.get(), BiometricIdentifierRenderer::new);
+        event.registerBlockEntityRenderer(ModObjects.FORCE_FIELD_BLOCK_ENTITY.get(), ForceFieldBlockEntityRenderer::new);
     }
 
     @SubscribeEvent
