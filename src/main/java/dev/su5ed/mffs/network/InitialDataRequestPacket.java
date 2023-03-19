@@ -1,10 +1,10 @@
 package dev.su5ed.mffs.network;
 
+import dev.su5ed.mffs.setup.ModObjects;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
@@ -24,10 +24,11 @@ public record InitialDataRequestPacket(BlockPos pos) {
         NetworkEvent.Context context = ctx.get();
         ServerPlayer sender = context.getSender();
         if (sender.level.isLoaded(this.pos)) {
-            BlockEntity be = sender.level.getBlockEntity(this.pos);
-            CompoundTag data = be.getUpdateTag();
-            UpdateBlockEntityPacket packet = new UpdateBlockEntityPacket(this.pos, data);
-            Network.INSTANCE.reply(packet, context);
+            sender.level.getBlockEntity(this.pos, ModObjects.FORCE_FIELD_BLOCK_ENTITY.get()).ifPresent(be -> {
+                CompoundTag data = be.getCustomUpdateTag();
+                UpdateBlockEntityPacket packet = new UpdateBlockEntityPacket(this.pos, data);
+                Network.INSTANCE.reply(packet, context);
+            });
         }
     }
 }

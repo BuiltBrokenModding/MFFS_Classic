@@ -85,8 +85,8 @@ public class ForceFieldBlockEntity extends BlockEntity {
             : Optional.empty();
     }
 
-    @Override
-    public CompoundTag getUpdateTag() {
+    // Manual handling of update tags so that we send data when the BE is first created, rather than only on world load
+    public CompoundTag getCustomUpdateTag() {
         CompoundTag tag = new CompoundTag();
         saveAdditional(tag);
         if (this.projector != null) {
@@ -97,8 +97,7 @@ public class ForceFieldBlockEntity extends BlockEntity {
         return tag;
     }
 
-    @Override
-    public void handleUpdateTag(CompoundTag tag) {
+    public void handleCustomUpdateTag(CompoundTag tag) {
         super.handleUpdateTag(tag);
         load(tag);
         this.projector = tag.contains("projector") ? NbtUtils.readBlockPos(tag.getCompound("projector")) : null;

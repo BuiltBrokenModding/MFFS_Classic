@@ -123,8 +123,8 @@ public class ForceFieldBlockImpl extends Block implements ForceFieldBlock, Entit
         return getProjector(level, pos)
             .map(projector -> {
                 if (context instanceof EntityCollisionContext entityContext && entityContext.getEntity() instanceof Player player) {
-                    BiometricIdentifier bioIndentified = projector.getBiometricIdentifier();
-                    if (player.isShiftKeyDown() && !context.isAbove(COLLIDABLE_BLOCK, pos, true) && (player.isCreative() || bioIndentified != null && bioIndentified.isAccessGranted(player, FieldPermission.WARP))) {
+                    BiometricIdentifier bioIndentifier = projector.getBiometricIdentifier();
+                    if (player.isShiftKeyDown() && !context.isAbove(COLLIDABLE_BLOCK, pos, true) && (player.isCreative() || bioIndentifier != null && bioIndentifier.isAccessGranted(player, FieldPermission.WARP))) {
                         return Shapes.empty();
                     }
                 }
