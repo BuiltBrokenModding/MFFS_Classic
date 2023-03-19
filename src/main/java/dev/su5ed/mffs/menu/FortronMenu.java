@@ -161,7 +161,7 @@ public abstract class FortronMenu<T extends FortronBlockEntity & Activatable> ex
     }
 
     private void trackPower() {
-        addIntDataSlot(this.blockEntity.fortronStorage::getEnergyStored, this.blockEntity.fortronStorage::setStoredEnergy);
+        addIntDataSlot(this.blockEntity.fortronStorage::getFortronStored, this.blockEntity.fortronStorage::setStoredFortron);
         addIntDataSlot(this.blockEntity.fortronStorage::getFrequency, frequency -> {
             this.blockEntity.fortronStorage.setFrequency(frequency);
             if (frequencyChangeListener != null) {

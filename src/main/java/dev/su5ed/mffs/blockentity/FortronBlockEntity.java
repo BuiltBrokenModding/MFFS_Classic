@@ -46,7 +46,7 @@ public abstract class FortronBlockEntity extends InventoryBlockEntity implements
     protected FortronBlockEntity(BlockEntityType<? extends BaseBlockEntity> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
 
-        this.fortronStorage = new FortronStorageImpl(this, getBaseFortronTankCapacity() * FluidType.BUCKET_VOLUME, this::setChanged);
+        this.fortronStorage = new FortronStorageImpl(this, this.getRealFortronTankCapacity(), this::setChanged);
         this.fortronCap = LazyOptional.of(() -> this.fortronStorage);
         this.fluidCap = LazyOptional.of(this.fortronStorage::getFortronTank);
         this.frequencySlot = addSlot("frequency", InventorySlot.Mode.BOTH, ModUtil::isCard, this::onFrequencySlotChanged);
@@ -65,6 +65,13 @@ public abstract class FortronBlockEntity extends InventoryBlockEntity implements
      */
     public int getBaseFortronTankCapacity() {
         return 1;
+    }
+
+    /**
+     * @return The base fortron tank capacity multiplied by the forge bucket volume
+     */
+    public int getRealFortronTankCapacity() {
+        return getBaseFortronTankCapacity() * FluidType.BUCKET_VOLUME;
     }
 
     protected List<ItemStack> getCards() {

@@ -1,5 +1,6 @@
 package dev.su5ed.mffs.util;
 
+import dev.su5ed.mffs.MFFSConfig;
 import dev.su5ed.mffs.api.fortron.FortronStorage;
 import dev.su5ed.mffs.setup.ModFluids;
 import net.minecraft.nbt.CompoundTag;
@@ -39,17 +40,43 @@ public class FortronStorageImpl implements FortronStorage {
     }
 
     @Override
-    public int getEnergyStored() {
-        return this.fortronTank.getFluidAmount();
+    public int receiveEnergy(int maxReceive, boolean simulate) {
+        int joules = Fortron.convertEnergyToFortron(maxReceive);
+
+        return Fortron.convertFortronToEnergy(this.receiveFortron(joules, simulate));
     }
 
     @Override
-    public void setStoredEnergy(int energy) {
-        this.fortronTank.setFluid(Fortron.getFortron(energy));
+    public int extractEnergy(int maxExtract, boolean simulate) {
+        int joules = Fortron.convertEnergyToFortron(maxExtract);
+
+        return Fortron.convertFortronToEnergy(this.extractFortron(joules, simulate));
+    }
+
+    /**
+     * @return The amount of FE stored using the conversion ratio.
+     */
+    @Override
+    public int getEnergyStored() {
+        return Fortron.convertFortronToEnergy(this.fortronTank.getFluidAmount());
     }
 
     @Override
     public int getMaxEnergyStored() {
+        return Fortron.convertFortronToEnergy(this.fortronTank.getCapacity());
+    }
+
+    public int getFortronStored() {
+        return this.fortronTank.getFluidAmount();
+    }
+
+    @Override
+    public void setStoredFortron(int energy) {
+        this.fortronTank.setFluid(Fortron.getFortron(energy));
+    }
+
+    @Override
+    public int getMaxFortron() {
         return this.fortronTank.getCapacity();
     }
 
@@ -73,12 +100,12 @@ public class FortronStorageImpl implements FortronStorage {
     }
 
     @Override
-    public int extractEnergy(int joules, boolean simulate) {
+    public int extractFortron(int joules, boolean simulate) {
         return this.fortronTank.drain(joules, simulate ? IFluidHandler.FluidAction.SIMULATE : IFluidHandler.FluidAction.EXECUTE).getAmount();
     }
 
     @Override
-    public int receiveEnergy(int joules, boolean simulate) {
+    public int receiveFortron(int joules, boolean simulate) {
         return this.fortronTank.fill(Fortron.getFortron(joules), simulate ? IFluidHandler.FluidAction.SIMULATE : IFluidHandler.FluidAction.EXECUTE);
     }
 

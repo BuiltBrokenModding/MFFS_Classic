@@ -120,7 +120,7 @@ public class RemoteControllerItem extends BaseItem implements CoordLink {
         // Find providers
         for (FortronStorage fortron : fortronTiles) {
             int required = energy - total;
-            int receivedEnergy = fortron.extractEnergy(required, true);
+            int receivedEnergy = fortron.extractFortron(required, true);
             if (receivedEnergy > 0) {
                 transmitters.add(fortron);
             }
@@ -134,7 +134,7 @@ public class RemoteControllerItem extends BaseItem implements CoordLink {
             // Draw energy
             for (FortronStorage fortron : transmitters) {
                 int required = energy - total;
-                total += fortron.extractEnergy(required, false);
+                total += fortron.extractFortron(required, false);
                 BlockPos fortronPos = fortron.getOwner().getBlockPos();
                 Fortron.renderClientBeam(level, target, Vec3.atCenterOf(fortronPos), fortronPos, ParticleColor.BLUE_BEAM, 20);
             }

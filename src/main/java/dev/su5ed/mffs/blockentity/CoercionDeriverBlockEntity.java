@@ -5,6 +5,7 @@ import dev.su5ed.mffs.menu.CoercionDeriverMenu;
 import dev.su5ed.mffs.setup.ModModules;
 import dev.su5ed.mffs.setup.ModObjects;
 import dev.su5ed.mffs.setup.ModTags;
+import dev.su5ed.mffs.util.Fortron;
 import dev.su5ed.mffs.util.ModUtil;
 import dev.su5ed.mffs.util.inventory.InventorySlot;
 import net.minecraft.core.BlockPos;
@@ -24,7 +25,6 @@ import java.util.Locale;
 import java.util.Set;
 
 public class CoercionDeriverBlockEntity extends ElectricTileEntity {
-    private static final int DEFAULT_FE_CAPACITY = 1500000;
 
     public final InventorySlot batterySlot;
     public final InventorySlot fuelSlot;
@@ -35,19 +35,19 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity {
     private EnergyMode energyMode = EnergyMode.DERIVE;
 
     public CoercionDeriverBlockEntity(BlockPos pos, BlockState state) {
-        super(ModObjects.COERCION_DERIVER_BLOCK_ENTITY.get(), pos, state, DEFAULT_FE_CAPACITY);
+        super(ModObjects.COERCION_DERIVER_BLOCK_ENTITY.get(), pos, state);
 
-        this.batterySlot = addSlot("battery", InventorySlot.Mode.BOTH, stack -> stack.getCapability(ForgeCapabilities.ENERGY).isPresent());
-        this.fuelSlot = addSlot("fuel", InventorySlot.Mode.BOTH, stack -> stack.is(ModTags.FORTRON_FUEL));
-        this.upgradeSlots = createUpgradeSlots(3);
-        this.energy.setMaxTransfer(getMaxTransferRate());
+        this.batterySlot = this.addSlot("battery", InventorySlot.Mode.BOTH, stack -> stack.getCapability(ForgeCapabilities.ENERGY).isPresent());
+        this.fuelSlot = this.addSlot("fuel", InventorySlot.Mode.BOTH, stack -> stack.is(ModTags.FORTRON_FUEL));
+        this.upgradeSlots = this.createUpgradeSlots(3);
+        this.energy.setMaxTransfer(this.getMaxTransferRate());
 
         /* Allow this block to receive forge energy */
         this.fortronStorage.setCanReceive(true);
     }
 
     public EnergyMode getEnergyMode() {
-        return energyMode;
+        return this.energyMode;
     }
 
     public void setEnergyMode(EnergyMode energyMode) {
@@ -55,7 +55,9 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity {
     }
 
     public int getMaxTransferRate() {
-        return (int) (DEFAULT_FE_CAPACITY + DEFAULT_FE_CAPACITY * (getModuleCount(ModModules.SPEED) / 8.0F));
+        var capacity = Fortron.convertFortronToEnergy(this.getBaseFortronTankCapacity());
+
+        return (int) (capacity + capacity * (this.getModuleCount(ModModules.SPEED) / 8.0F));
     }
 
     public boolean isInversed() {
@@ -89,38 +91,38 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity {
     protected void onInventoryChanged() {
         super.onInventoryChanged();
 
-        this.energy.setMaxTransfer(getMaxTransferRate());
+        this.energy.setMaxTransfer(this.getMaxTransferRate());
     }
 
     @Override
     public void tickServer() {
         super.tickServer();
 
-        if (isActive()) {
-            if (isInversed() && MFFSConfig.COMMON.enableElectricity.get()) {
+        if (this.isActive()) {
+            if (this.isInversed() && MFFSConfig.COMMON.enableElectricity.get()) {
                 if (this.energy.getEnergyStored() < this.energy.getMaxEnergyStored()) {
-                    int withdrawnElectricity = (int) (this.fortronStorage.extractEnergy(getProductionRate() / 20, false) / getEnergyConversionRatio());
+                    int withdrawnElectricity = (int) (this.fortronStorage.extractFortron(this.getProductionRate() / 20, false) / this.getEnergyConversionRatio());
                     // Inject electricity from Fortron.
                     this.energy.receiveEnergy((int) (withdrawnElectricity * MFFSConfig.COMMON.backConversionEnergyLoss.get()), true);
                 }
 
-                charge(this.batterySlot.getItem());
-                receiveEnergy();
-            } else if (this.fortronStorage.getEnergyStored() < this.fortronStorage.getMaxEnergyStored()) {
+                this.charge(this.batterySlot.getItem());
+                this.receiveEnergy();
+            } else if (this.fortronStorage.getFortronStored() < this.fortronStorage.getMaxFortron()) {
                 // Convert Electricity to Fortron
-                discharge(this.batterySlot.getItem());
+                this.discharge(this.batterySlot.getItem());
 
-                int production = getProductionRate();
-                if (this.energy.canExtract(production) || !MFFSConfig.COMMON.enableElectricity.get() && hasFuel()) {
+                int production = this.getProductionRate();
+                if (this.energy.canExtract(production) || !MFFSConfig.COMMON.enableElectricity.get() && this.hasFuel()) {
                     // Fill Fortron
                     this.energy.extractEnergy(production, false);
-                    this.fortronStorage.receiveEnergy(production, false);
+                    this.fortronStorage.receiveFortron(production, false);
 
                     // Use fuel
                     // TODO Fuel display
-                    if (this.processTime == 0 && hasFuel()) {
+                    if (this.processTime == 0 && this.hasFuel()) {
                         this.fuelSlot.getItem().shrink(1);
-                        this.processTime = MFFSConfig.COMMON.catalystBurnTime.get() * Math.max(getModuleCount(ModModules.SCALE) / 20, 1);
+                        this.processTime = MFFSConfig.COMMON.catalystBurnTime.get() * Math.max(this.getModuleCount(ModModules.SCALE) / 20, 1);
                     }
                     this.processTime = Math.max(--this.processTime, 0);
                 }
@@ -132,8 +134,8 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity {
      * @return The Fortron production rate per tick!
      */
     public int getProductionRate() {
-        if (isActive()) {
-            int production = (int) (getMaxTransferRate() / 20F * getEnergyConversionRatio());
+        if (this.isActive()) {
+            int production = (int) (this.getMaxTransferRate() / 20F * this.getEnergyConversionRatio());
             return this.processTime > 0 ? (int) (production * MFFSConfig.COMMON.catalystMultiplier.get()) : production;
         }
         return 0;
@@ -182,11 +184,11 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity {
         private static final EnergyMode[] VALUES = values();
 
         public EnergyMode next() {
-            return VALUES[(ordinal() + 1) % VALUES.length];
+            return VALUES[(this.ordinal() + 1) % VALUES.length];
         }
 
         public MutableComponent translate() {
-            return ModUtil.translate("info", "coercion_deriver.mode." + name().toLowerCase(Locale.ROOT));
+            return ModUtil.translate("info", "coercion_deriver.mode." + this.name().toLowerCase(Locale.ROOT));
         }
     }
 }

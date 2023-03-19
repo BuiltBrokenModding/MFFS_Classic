@@ -109,7 +109,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
     public int computeAnimationSpeed() {
         int speed = 4;
         int fortronCost = getFortronCost();
-        if (isActive() && getMode().isPresent() && this.fortronStorage.extractEnergy(fortronCost, true) >= fortronCost) {
+        if (isActive() && getMode().isPresent() && this.fortronStorage.extractFortron(fortronCost, true) >= fortronCost) {
             speed *= fortronCost / 8.0f;
         }
         return Math.min(120, speed);
@@ -178,7 +178,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
         }
 
         int fortronCost = getFortronCost();
-        if (isActive() && getMode().isPresent() && this.fortronStorage.extractEnergy(fortronCost, true) >= fortronCost) {
+        if (isActive() && getMode().isPresent() && this.fortronStorage.extractFortron(fortronCost, true) >= fortronCost) {
             consumeCost();
 
             if (getTicks() % 10 == 0) {
@@ -397,7 +397,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
             // Only update after the projector has been set to avoid recursive remove block call from ForceFieldBlockEntity#getProjector
             this.level.sendBlockUpdated(pos, state, state, Block.UPDATE_ALL);
 
-            this.fortronStorage.extractEnergy(1, false);
+            this.fortronStorage.extractFortron(1, false);
             this.projectedBlocks.add(pos);
             this.projectionCache.invalidate(pos);
         }

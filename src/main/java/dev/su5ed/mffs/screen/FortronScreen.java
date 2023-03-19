@@ -40,7 +40,7 @@ public abstract class FortronScreen<T extends FortronMenu<?>> extends BaseScreen
         this.menu.setFrequencyChangeListener(this::updateFrequencyValue);
 
         addRenderableWidget(new FortronChargeWidget(this.leftPos + this.fortronEnergyBarPos.leftInt(), this.topPos + this.fortronEnergyBarPos.rightInt(), this.fortronEnergyBarWidth, 11, Component.empty(),
-            () -> this.menu.blockEntity.fortronStorage.getEnergyStored() / (double) this.menu.blockEntity.fortronStorage.getMaxEnergyStored()));
+            () -> this.menu.blockEntity.fortronStorage.getFortronStored() / (double) this.menu.blockEntity.fortronStorage.getMaxFortron()));
     }
 
     private void updateFrequencyValue() {

@@ -88,8 +88,8 @@ public class InterdictionMatrixBlockEntity extends ModularBlockEntity implements
         super.tickServer();
 
         if (getTicks() % 10 == 0 && (isActive() || this.frequencySlot.getItem().is(ModItems.INFINITE_POWER_CARD.get()))) {
-            if (this.fortronStorage.extractEnergy(getFortronCost() * 10, true) > 0) {
-                this.fortronStorage.extractEnergy(getFortronCost() * 10, false);
+            if (this.fortronStorage.extractFortron(getFortronCost() * 10, true) > 0) {
+                this.fortronStorage.extractFortron(getFortronCost() * 10, false);
                 scan();
             }
         }

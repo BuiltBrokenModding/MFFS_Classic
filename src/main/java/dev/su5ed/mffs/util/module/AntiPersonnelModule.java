@@ -31,7 +31,7 @@ public class AntiPersonnelModule extends BaseInterdictionModule {
             }
 
             player.hurt(ModObjects.FIELD_SHOCK, Integer.MAX_VALUE);
-            interdictionMatrix.be().getCapability(ModCapabilities.FORTRON).ifPresent(fortron -> fortron.extractEnergy(MFFSConfig.COMMON.interdictionMatrixKillEnergy.get(), false));
+            interdictionMatrix.be().getCapability(ModCapabilities.FORTRON).ifPresent(fortron -> fortron.extractFortron(MFFSConfig.COMMON.interdictionMatrixKillEnergy.get(), false));
             player.displayClientMessage(ModUtil.translate("info", "interdiction_matrix.fairwell", interdictionMatrix.getDisplayName()), false);
             return true;
         }

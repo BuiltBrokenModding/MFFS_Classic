@@ -54,7 +54,7 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
 
     public void consumeCost() {
         if (getFortronCost() > 0) {
-            this.fortronStorage.extractEnergy(getFortronCost(), false);
+            this.fortronStorage.extractFortron(getFortronCost(), false);
         }
     }
 

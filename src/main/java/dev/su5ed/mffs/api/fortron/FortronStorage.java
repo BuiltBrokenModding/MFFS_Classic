@@ -17,17 +17,17 @@ public interface FortronStorage extends INBTSerializable<CompoundTag>, Frequency
      *
      * @param energy the amount of energy to store
      */
-    void setStoredEnergy(int energy);
+    void setStoredFortron(int energy);
 
     /**
      * @return The amount of fortron stored.
      */
-    int getEnergyStored();
+    int getFortronStored();
 
     /**
      * @return The maximum possible amount of fortron that can be stored.
      */
-    int getMaxEnergyStored();
+    int getMaxFortron();
 
     /**
      * Called to use and consume fortron energy from this storage unit.
@@ -36,7 +36,7 @@ public interface FortronStorage extends INBTSerializable<CompoundTag>, Frequency
      * @param simulate whether to execute or simulate the operation
      * @return The amount of energy that was actually provided.
      */
-    int extractEnergy(int joules, boolean simulate);
+    int extractFortron(int joules, boolean simulate);
 
     /**
      * Called to use and give fortron energy from this storage unit.
@@ -45,5 +45,5 @@ public interface FortronStorage extends INBTSerializable<CompoundTag>, Frequency
      * @param simulate whether to execute or simulate the operation
      * @return The amount of energy that was actually injected.
      */
-    int receiveEnergy(int joules, boolean simulate);
+    int receiveFortron(int joules, boolean simulate);
 }
