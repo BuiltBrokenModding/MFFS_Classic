@@ -55,7 +55,12 @@ public final class BlockEntityRenderDelegate {
         DelegateRendererInfo delegateRendererInfo = this.renderDelegates.get(originalBlockEntity);
         if (delegateRendererInfo != null) {
             try {
-                delegateRendererInfo.delegateRenderer().render(delegateRendererInfo.delegateBlockEntity(), partialTicks, pose, buffer, combinedLight, combinedOverlay);
+                PoseStack copyPose = new PoseStack();
+                copyPose.pushPose();
+                copyPose.last().pose().multiply(pose.last().pose());
+                copyPose.last().normal().mul(pose.last().normal());
+                delegateRendererInfo.delegateRenderer().render(delegateRendererInfo.delegateBlockEntity(), partialTicks, copyPose, buffer, combinedLight, combinedOverlay);
+                copyPose.popPose();
             } catch (Exception e) {
                 MFFSMod.LOGGER.warn("Error rendering delegate BlockEntity {}: {}", delegateRendererInfo.delegateBlockEntity(), e);
                 removeDelegateOf(originalBlockEntity);
