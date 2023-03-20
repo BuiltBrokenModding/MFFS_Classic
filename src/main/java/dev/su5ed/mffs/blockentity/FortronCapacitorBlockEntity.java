@@ -52,7 +52,7 @@ public class FortronCapacitorBlockEntity extends ModularBlockEntity implements F
     }
 
     @Override
-    public int getBaseFortronTankCapacity() {
+    public double getBaseFortronTankCapacity() {
         return 700;
     }
 

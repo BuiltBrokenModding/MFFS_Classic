@@ -160,6 +160,44 @@ public final class Fortron {
         return !interdictionMatrix.hasModule(ModModules.INVERTER);
     }
 
+    /**
+     * Converts Fortron to Energy (likely FE). This is a lossless conversion.
+     *
+     * @param fortron The amount of fortron to convert.
+     * @return The amount of energy likely in FE.
+     */
+    public static int convertFortronToEnergy(Number fortron) {
+        return convertFortronToEnergy(fortron, true);
+    }
+
+    /**
+     * Converts Fortron to Energy (likely FE).
+     *
+     * @param fortron  The amount of fortron to convert.
+     * @param lossless If true, the conversion will be lossless.
+     *                 If false, the conversion will be reduced by the backConversionEnergyLoss config value.
+     * @return The amount of energy likely in FE.
+     */
+    public static int convertFortronToEnergy(Number fortron, boolean lossless) {
+        var value = (fortron.doubleValue() / MFFSConfig.COMMON.energyConversionRatio.get());
+
+        if (!lossless) {
+            value *= MFFSConfig.COMMON.backConversionEnergyLoss.get();
+        }
+
+        return (int) value;
+    }
+
+    /**
+     * Converts Energy (likely FE) to a Fortron value.
+     *
+     * @param energy The amount of energy to convert.
+     * @return The amount in fortron.
+     */
+    public static int convertEnergyToFortron(Number energy) {
+        return (int) (energy.intValue() * MFFSConfig.COMMON.energyConversionRatio.get());
+    }
+
     private static void doTransferFortron(FortronStorage source, FortronStorage destination, int joules, int limit, boolean isCamo) {
         // Take energy from receiver.
         int transfer = Math.min(Math.abs(joules), limit);
@@ -189,15 +227,5 @@ public final class Fortron {
     public enum Action {
         RIGHT_CLICK_BLOCK,
         LEFT_CLICK_BLOCK
-    }
-
-    /* static helper functions */
-
-    public static int convertFortronToEnergy(int fortron) {
-        return (int) (fortron / MFFSConfig.COMMON.energyConversionRatio.get());
-    }
-
-    public static int convertEnergyToFortron(int energy) {
-        return (int) (energy * MFFSConfig.COMMON.energyConversionRatio.get());
     }
 }

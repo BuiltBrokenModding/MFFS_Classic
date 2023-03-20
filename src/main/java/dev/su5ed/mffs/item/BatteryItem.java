@@ -83,7 +83,7 @@ public class BatteryItem extends Item {
         private final LazyOptional<IEnergyStorage> optional;
 
         public BatteryEnergyStorage(int capacity, int maxTransfer) {
-            this.storage = new CustomEnergyStorage(capacity, maxTransfer, () -> true, () -> {});
+            this.storage = new CustomEnergyStorage(capacity, maxTransfer, () -> true, () -> {}, () -> {});
             this.optional = LazyOptional.of(() -> this.storage);
         }
 

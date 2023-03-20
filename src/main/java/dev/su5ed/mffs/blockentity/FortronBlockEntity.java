@@ -63,7 +63,7 @@ public abstract class FortronBlockEntity extends InventoryBlockEntity implements
     /**
      * @return The initial fortron tank capacity in buckets
      */
-    public int getBaseFortronTankCapacity() {
+    public double getBaseFortronTankCapacity() {
         return 1;
     }
 
@@ -71,7 +71,7 @@ public abstract class FortronBlockEntity extends InventoryBlockEntity implements
      * @return The base fortron tank capacity multiplied by the forge bucket volume
      */
     public int getRealFortronTankCapacity() {
-        return getBaseFortronTankCapacity() * FluidType.BUCKET_VOLUME;
+        return (int) (getBaseFortronTankCapacity() * FluidType.BUCKET_VOLUME);
     }
 
     protected List<ItemStack> getCards() {

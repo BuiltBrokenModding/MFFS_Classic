@@ -13,7 +13,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.fluids.FluidType;
 import one.util.streamex.StreamEx;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -34,7 +33,8 @@ public abstract class ElectricTileEntity extends ModularBlockEntity {
                 Fortron.convertFortronToEnergy(this.getRealFortronTankCapacity()),
                 Integer.MAX_VALUE,
                 this::isActive,
-                this::updateFortron
+                this::setChanged,
+                this::energyCleared
         );
 
         Set<Direction> inputSides = this.getEnergyInputSides();
@@ -46,14 +46,9 @@ public abstract class ElectricTileEntity extends ModularBlockEntity {
                 .toMap();
     }
 
-    public void updateFortron() {
-        this.setChanged();
-
-        if (this.level.isClientSide) {
-            return;
-        }
-
-        this.fortronStorage.setStoredFortron(Fortron.convertEnergyToFortron(this.energy.getEnergyStored()));
+    private void energyCleared() {
+        /* clear fortron energy */
+        this.fortronStorage.setStoredFortron(0);
     }
 
     /**

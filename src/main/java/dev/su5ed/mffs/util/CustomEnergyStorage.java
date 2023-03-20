@@ -7,12 +7,14 @@ import java.util.function.BooleanSupplier;
 public class CustomEnergyStorage extends EnergyStorage {
     private final BooleanSupplier canReceive;
     private final Runnable onChanged;
+    private final Runnable onCleared;
 
-    public CustomEnergyStorage(int capacity, int maxTransfer, BooleanSupplier canReceive, Runnable onChanged) {
+    public CustomEnergyStorage(int capacity, int maxTransfer, BooleanSupplier canReceive, Runnable onChanged, Runnable onCleared) {
         super(capacity, maxTransfer, maxTransfer);
 
         this.canReceive = canReceive;
         this.onChanged = onChanged;
+        this.onCleared = onCleared;
     }
 
     protected void onEnergyChanged() {
@@ -36,6 +38,11 @@ public class CustomEnergyStorage extends EnergyStorage {
     public int extractEnergy(int maxExtract, boolean simulate) {
         int rc = super.extractEnergy(maxExtract, simulate);
         if (rc > 0 && !simulate) {
+            /* something is attempting to clear this storage */
+            if (maxExtract >= this.getMaxEnergyStored()) {
+                this.onCleared.run();
+            }
+
             onEnergyChanged();
         }
         return rc;

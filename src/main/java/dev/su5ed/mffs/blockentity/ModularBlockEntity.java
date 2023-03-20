@@ -63,7 +63,7 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
     }
 
     @Override
-    public int getBaseFortronTankCapacity() {
+    public double getBaseFortronTankCapacity() {
         return 500;
     }
 
@@ -177,8 +177,8 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
     }
 
     private void updateFortronTankCapacity() {
-        int capacity = (getModuleCount(ModModules.CAPACITY) * this.capacityBoost + getBaseFortronTankCapacity()) * FluidType.BUCKET_VOLUME;
-        this.fortronStorage.setCapacity(capacity);
+        Number capacity = (getModuleCount(ModModules.CAPACITY) * this.capacityBoost + getBaseFortronTankCapacity()) * FluidType.BUCKET_VOLUME;
+        this.fortronStorage.setCapacity(capacity.intValue());
     }
 
     private StreamEx<ItemStack> getModuleItemsStream(Collection<InventorySlot> slots) {

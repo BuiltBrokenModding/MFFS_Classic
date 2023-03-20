@@ -72,13 +72,9 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity {
         this.processTime = processTime;
     }
 
-    private double getEnergyConversionRatio() {
-        return MFFSConfig.COMMON.energyConversionRatio.get();
-    }
-
     @Override
-    public int getBaseFortronTankCapacity() {
-        return 30;
+    public double getBaseFortronTankCapacity() {
+        return 37.5; // 37500 Fortron
     }
 
     @Override
@@ -101,9 +97,12 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity {
         if (this.isActive()) {
             if (this.isInversed() && MFFSConfig.COMMON.enableElectricity.get()) {
                 if (this.energy.getEnergyStored() < this.energy.getMaxEnergyStored()) {
-                    int withdrawnElectricity = (int) (this.fortronStorage.extractFortron(this.getProductionRate() / 20, false) / this.getEnergyConversionRatio());
+                    int withdrawnElectricity = Fortron.convertFortronToEnergy(
+                            this.fortronStorage.extractFortron(this.getProductionRate(), false),
+                            false
+                    );
                     // Inject electricity from Fortron.
-                    this.energy.receiveEnergy((int) (withdrawnElectricity * MFFSConfig.COMMON.backConversionEnergyLoss.get()), true);
+                    this.energy.receiveEnergy(withdrawnElectricity, false);
                 }
 
                 this.charge(this.batterySlot.getItem());
@@ -112,11 +111,13 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity {
                 // Convert Electricity to Fortron
                 this.discharge(this.batterySlot.getItem());
 
-                int production = this.getProductionRate();
-                if (this.energy.canExtract(production) || !MFFSConfig.COMMON.enableElectricity.get() && this.hasFuel()) {
+                // There are two types of production so they need to used respectively.
+                int fortronProduction = this.getProductionRate(); // in fortron per tick
+                int energyProduction = Fortron.convertFortronToEnergy(fortronProduction); // in FE per tick
+                if (this.energy.canExtract(energyProduction) || !MFFSConfig.COMMON.enableElectricity.get() && this.hasFuel()) {
                     // Fill Fortron
-                    this.energy.extractEnergy(production, false);
-                    this.fortronStorage.receiveFortron(production, false);
+                    this.energy.extractEnergy(energyProduction, false);
+                    this.fortronStorage.receiveFortron(fortronProduction, false);
 
                     // Use fuel
                     // TODO Fuel display
@@ -135,7 +136,7 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity {
      */
     public int getProductionRate() {
         if (this.isActive()) {
-            int production = (int) (this.getMaxTransferRate() / 20F * this.getEnergyConversionRatio());
+            int production = Fortron.convertEnergyToFortron(this.getMaxTransferRate() / 20F);
             return this.processTime > 0 ? (int) (production * MFFSConfig.COMMON.catalystMultiplier.get()) : production;
         }
         return 0;
