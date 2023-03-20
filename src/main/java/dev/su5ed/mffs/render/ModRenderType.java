@@ -1,8 +1,10 @@
 package dev.su5ed.mffs.render;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.Util;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
@@ -10,6 +12,17 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.function.Function;
 
 public class ModRenderType extends RenderType {
+    protected static final RenderStateShard.OutputStateShard TRANSLUCENT_TARGET_NO_DEPTH_MASK = new RenderStateShard.OutputStateShard("translucent_target", () -> {
+        if (Minecraft.useShaderTransparency()) {
+            Minecraft.getInstance().levelRenderer.getTranslucentTarget().bindWrite(false);
+        }
+        RenderSystem.depthMask(false);
+    }, () -> {
+        if (Minecraft.useShaderTransparency()) {
+            Minecraft.getInstance().getMainRenderTarget().bindWrite(false);
+        }
+        RenderSystem.depthMask(true);
+    });
 
     /**
      * Source: Mekanism
@@ -23,7 +36,7 @@ public class ModRenderType extends RenderType {
             .setShaderState(NEW_ENTITY_SHADER)
             .setTextureState(new RenderStateShard.TextureStateShard(location, false, false))
             .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-            .setOutputState(TRANSLUCENT_TARGET)
+            .setOutputState(TRANSLUCENT_TARGET_NO_DEPTH_MASK)
             .createCompositeState(true)
     ));
 
@@ -34,7 +47,7 @@ public class ModRenderType extends RenderType {
         RenderType.CompositeState.builder()
             .setShaderState(POSITION_COLOR_SHADER)
             .setTransparencyState(LIGHTNING_TRANSPARENCY)
-            .setOutputState(TRANSLUCENT_TARGET)
+            .setOutputState(TRANSLUCENT_TARGET_NO_DEPTH_MASK)
             .createCompositeState(true)
     );
 
@@ -46,7 +59,7 @@ public class ModRenderType extends RenderType {
             .setShaderState(POSITION_TEX_SHADER)
             .setTextureState(new RenderStateShard.TextureStateShard(location, false, false))
             .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-            .setOutputState(TRANSLUCENT_TARGET)
+            .setOutputState(TRANSLUCENT_TARGET_NO_DEPTH_MASK)
             .setCullState(NO_CULL)
             .createCompositeState(true)
     ));
@@ -60,7 +73,7 @@ public class ModRenderType extends RenderType {
             .setTextureState(new RenderStateShard.TextureStateShard(location, false, false))
             .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
             .setOutputState(TRANSLUCENT_TARGET)
-            .setCullState(NO_CULL)
+//            .setDepthTestState(NO_DEPTH_TEST)
             .createCompositeState(true)
     ));
 

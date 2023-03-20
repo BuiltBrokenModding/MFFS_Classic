@@ -24,7 +24,6 @@
 
 package dev.su5ed.mffs.render;
 
-import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.su5ed.mffs.MFFSMod;
@@ -54,9 +53,6 @@ import java.util.function.Consumer;
  */
 @EventBusSubscriber(modid = MFFSMod.MODID, value = Dist.CLIENT)
 public final class RenderTickHandler {
-    public static final MultiBufferSource.BufferSource BUFFER_SOURCE = MultiBufferSource.immediateWithBuffers(Map.of(
-        ClientRenderHandler.PYRAMID_RENDER_TYPE, new BufferBuilder(ClientRenderHandler.PYRAMID_RENDER_TYPE.bufferSize())
-    ), new BufferBuilder(256));
     private static final Map<RenderType, List<LazyRenderer>> transparentRenderers = new HashMap<>();
 
     public static void addTransparentRenderer(RenderType renderType, LazyRenderer render) {
@@ -72,10 +68,10 @@ public final class RenderTickHandler {
 
     @SubscribeEvent
     public static void renderLevel(RenderLevelStageEvent event) {
-        if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_WEATHER) {
+        if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS) {
             Minecraft minecraft = Minecraft.getInstance();
             Camera camera = event.getCamera();
-            PoseStack poseStack = new PoseStack();
+            PoseStack poseStack = event.getPoseStack();
             int ticks = event.getRenderTick();
             float partialTicks = event.getPartialTick();
             MultiBufferSource.BufferSource bufferSource = minecraft.renderBuffers().bufferSource();

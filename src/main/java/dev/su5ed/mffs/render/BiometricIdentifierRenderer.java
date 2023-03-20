@@ -33,6 +33,7 @@ public class BiometricIdentifierRenderer implements BlockEntityRenderer<Biometri
     public static final ResourceLocation BIOMETRIC_IDENTIFIER_OFF_TEXTURE = new ResourceLocation(MFFSMod.MODID, "textures/model/biometric_identifier_off.png");
     public static final ResourceLocation BIOMETRIC_IDENTIFIER_ON_TEXTURE = new ResourceLocation(MFFSMod.MODID, "textures/model/biometric_identifier_on.png");
     public static final ResourceLocation HOLO_SCREEN_TEXTURE = new ResourceLocation(MFFSMod.MODID, "model/holo_screen");
+    private static final RenderType RENDER_TYPE = ModRenderType.POS_COL_TEX_TRANSLUCENT_UNCULLED_QUAD.apply(InventoryMenu.BLOCK_ATLAS);
 
     private final ModelPart body;
 
@@ -69,12 +70,12 @@ public class BiometricIdentifierRenderer implements BlockEntityRenderer<Biometri
             poseStack.scale(0.85F, 0.85F, 0.85F);
             poseStack.translate(-0.5, -0.5, -0.5);
             Matrix4f mat = poseStack.last().pose();
-            VertexConsumer holoScreenConsumer = bufferSource.getBuffer(ModRenderType.POS_COL_TEX_TRANSLUCENT_UNCULLED_QUAD.apply(InventoryMenu.BLOCK_ATLAS));
+            VertexConsumer screenConsumer = bufferSource.getBuffer(RENDER_TYPE);
             TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(HOLO_SCREEN_TEXTURE);
-            holoScreenConsumer.vertex(mat, 0, 1, 0).color(1.0F, 1.0F, 1.0F, alpha).uv(sprite.getU0(), sprite.getV0()).endVertex();
-            holoScreenConsumer.vertex(mat, 1, 1, 0).color(1.0F, 1.0F, 1.0F, alpha).uv(sprite.getU1(), sprite.getV0()).endVertex();
-            holoScreenConsumer.vertex(mat, 1, 1, 1).color(1.0F, 1.0F, 1.0F, alpha).uv(sprite.getU1(), sprite.getV1()).endVertex();
-            holoScreenConsumer.vertex(mat, 0, 1, 1).color(1.0F, 1.0F, 1.0F, alpha).uv(sprite.getU0(), sprite.getV1()).endVertex();
+            screenConsumer.vertex(mat, 0.0F, 1.0F, 1.0F).color(1.0F, 1.0F, 1.0F, alpha).uv(sprite.getU0(), sprite.getV1()).endVertex();
+            screenConsumer.vertex(mat, 1.0F, 1.0F, 1.0F).color(1.0F, 1.0F, 1.0F, alpha).uv(sprite.getU1(), sprite.getV1()).endVertex();
+            screenConsumer.vertex(mat, 1.0F, 1.0F, 0.0F).color(1.0F, 1.0F, 1.0F, alpha).uv(sprite.getU1(), sprite.getV0()).endVertex();
+            screenConsumer.vertex(mat, 0.0F, 1.0F, 0.0F).color(1.0F, 1.0F, 1.0F, alpha).uv(sprite.getU0(), sprite.getV0()).endVertex();
             poseStack.popPose();
         }
 
