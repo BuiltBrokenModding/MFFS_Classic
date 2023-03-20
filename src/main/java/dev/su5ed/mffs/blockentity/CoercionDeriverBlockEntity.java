@@ -1,6 +1,7 @@
 package dev.su5ed.mffs.blockentity;
 
 import dev.su5ed.mffs.MFFSConfig;
+import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.menu.CoercionDeriverMenu;
 import dev.su5ed.mffs.setup.ModModules;
 import dev.su5ed.mffs.setup.ModObjects;
@@ -54,10 +55,14 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity {
         this.energyMode = energyMode;
     }
 
+    /**
+     * @return The maximum amount of energy (likely FE) that can be transferred through this block
+     */
     public int getMaxTransferRate() {
-        var capacity = Fortron.convertFortronToEnergy(this.getBaseFortronTankCapacity());
+        var baseCapacity = Fortron.convertFortronToEnergy(this.getBaseFortronTankCapacity());
 
-        return (int) (capacity + capacity * (this.getModuleCount(ModModules.SPEED) / 8.0F));
+        /* increase speed by 20L for every speed module */
+        return baseCapacity + (this.getModuleCount(ModModules.SPEED) * Fortron.convertFortronToEnergy(20));
     }
 
     public boolean isInversed() {
@@ -74,7 +79,7 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity {
 
     @Override
     public double getBaseFortronTankCapacity() {
-        return 37.5; // 37500 Fortron
+        return 30; // 30000 Fortron
     }
 
     @Override

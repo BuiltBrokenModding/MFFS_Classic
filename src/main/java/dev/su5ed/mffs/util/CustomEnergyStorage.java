@@ -39,7 +39,7 @@ public class CustomEnergyStorage extends EnergyStorage {
         int rc = super.extractEnergy(maxExtract, simulate);
         if (rc > 0 && !simulate) {
             /* something is attempting to clear this storage */
-            if (maxExtract >= this.getMaxEnergyStored()) {
+            if (maxExtract > this.getMaxEnergyStored()) {
                 this.onCleared.run();
             }
 
