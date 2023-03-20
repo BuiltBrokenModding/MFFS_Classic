@@ -22,7 +22,7 @@ public interface FortronStorage extends INBTSerializable<CompoundTag>, Frequency
     /**
      * @return The amount of fortron stored.
      */
-    int getFortronStored();
+    int getStoredFortron();
 
     /**
      * @return The maximum possible amount of fortron that can be stored.

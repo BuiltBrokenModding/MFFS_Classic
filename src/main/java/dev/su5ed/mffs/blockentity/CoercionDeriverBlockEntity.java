@@ -1,7 +1,6 @@
 package dev.su5ed.mffs.blockentity;
 
 import dev.su5ed.mffs.MFFSConfig;
-import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.menu.CoercionDeriverMenu;
 import dev.su5ed.mffs.setup.ModModules;
 import dev.su5ed.mffs.setup.ModObjects;
@@ -112,7 +111,7 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity {
 
                 this.charge(this.batterySlot.getItem());
                 this.receiveEnergy();
-            } else if (this.fortronStorage.getFortronStored() < this.fortronStorage.getMaxFortron()) {
+            } else if (this.fortronStorage.getStoredFortron() < this.fortronStorage.getMaxFortron()) {
                 // Convert Electricity to Fortron
                 this.discharge(this.batterySlot.getItem());
 

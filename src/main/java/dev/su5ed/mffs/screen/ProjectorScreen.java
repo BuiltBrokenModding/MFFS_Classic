@@ -27,7 +27,7 @@ public class ProjectorScreen extends FortronScreen<ProjectorMenu> {
         super.renderLabels(poseStack, mouseX, mouseY);
 
         drawWithTooltip(poseStack, 32, 20, GuiColors.DARK_GREY, "matrix");
-        drawWithTooltip(poseStack, 8, 110, GuiColors.DARK_GREY, "fortron", this.menu.blockEntity.fortronStorage.getFortronStored(), this.menu.blockEntity.fortronStorage.getMaxFortron());
+        drawWithTooltip(poseStack, 8, 110, GuiColors.DARK_GREY, "fortron", this.menu.blockEntity.fortronStorage.getStoredFortron(), this.menu.blockEntity.fortronStorage.getMaxFortron());
         int cost = this.menu.getClientFortronCost() * 20;
         if (cost > 0) {
             this.font.draw(poseStack, ModUtil.translate("screen", "fortron_cost", '-', cost).withStyle(ChatFormatting.DARK_RED), 117, 121, GuiColors.DARK_GREY);

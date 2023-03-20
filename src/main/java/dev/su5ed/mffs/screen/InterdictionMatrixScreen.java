@@ -47,7 +47,7 @@ public class InterdictionMatrixScreen extends FortronScreen<InterdictionMatrixMe
         this.font.draw(poseStack, ModUtil.translate("screen", "action_range", this.menu.blockEntity.getActionRange()), 100, 19, GuiColors.DARK_GREY);
         this.font.draw(poseStack, ModUtil.translate("screen", "filter_mode"), 9, 32, GuiColors.DARK_GREY);
 
-        drawWithTooltip(poseStack, 8, 110, GuiColors.DARK_GREY, "fortron", this.menu.blockEntity.fortronStorage.getFortronStored(), this.menu.blockEntity.fortronStorage.getMaxFortron());
+        drawWithTooltip(poseStack, 8, 110, GuiColors.DARK_GREY, "fortron", this.menu.blockEntity.fortronStorage.getStoredFortron(), this.menu.blockEntity.fortronStorage.getMaxFortron());
         this.font.draw(poseStack, ModUtil.translate("screen", "fortron_cost", "-", this.menu.getClientFortronCost() * 20), 120, 121, ChatFormatting.DARK_RED.getColor());
     }
 }

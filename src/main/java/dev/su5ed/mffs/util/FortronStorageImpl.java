@@ -1,6 +1,5 @@
 package dev.su5ed.mffs.util;
 
-import dev.su5ed.mffs.MFFSConfig;
 import dev.su5ed.mffs.api.fortron.FortronStorage;
 import dev.su5ed.mffs.setup.ModFluids;
 import net.minecraft.nbt.CompoundTag;
@@ -66,7 +65,7 @@ public class FortronStorageImpl implements FortronStorage {
         return Fortron.convertFortronToEnergy(this.fortronTank.getCapacity());
     }
 
-    public int getFortronStored() {
+    public int getStoredFortron() {
         return this.fortronTank.getFluidAmount();
     }
 

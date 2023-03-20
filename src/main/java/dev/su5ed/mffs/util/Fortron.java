@@ -43,7 +43,7 @@ public final class Fortron {
             int totalCapacity = 0;
 
             for (FortronStorage storage : receivers) {
-                totalFortron += storage.getFortronStored();
+                totalFortron += storage.getStoredFortron();
                 totalCapacity += storage.getMaxFortron();
             }
 
@@ -56,14 +56,14 @@ public final class Fortron {
                         for (FortronStorage machine : receivers) {
                             double capacityPercentage = (double) machine.getMaxFortron() / (double) totalCapacity;
                             int amountToSet = (int) (totalFortron * capacityPercentage);
-                            doTransferFortron(transmitter, machine, amountToSet - machine.getFortronStored(), limit);
+                            doTransferFortron(transmitter, machine, amountToSet - machine.getStoredFortron(), limit);
                         }
                     }
                     case DISTRIBUTE -> {
                         final int amountToSet = totalFortron / receivers.size();
 
                         for (FortronStorage machine : receivers) {
-                            doTransferFortron(transmitter, machine, amountToSet - machine.getFortronStored(), limit);
+                            doTransferFortron(transmitter, machine, amountToSet - machine.getStoredFortron(), limit);
                         }
                     }
                     case DRAIN -> {
@@ -71,22 +71,22 @@ public final class Fortron {
                             double capacityPercentage = (double) machine.getMaxFortron() / (double) totalCapacity;
                             int amountToSet = (int) (totalFortron * capacityPercentage);
 
-                            if (amountToSet - machine.getFortronStored() > 0) {
-                                doTransferFortron(transmitter, machine, amountToSet - machine.getFortronStored(), limit);
+                            if (amountToSet - machine.getStoredFortron() > 0) {
+                                doTransferFortron(transmitter, machine, amountToSet - machine.getStoredFortron(), limit);
                             }
                         }
                     }
                     case FILL -> {
-                        if (transmitter.getFortronStored() < transmitter.getMaxFortron()) {
+                        if (transmitter.getStoredFortron() < transmitter.getMaxFortron()) {
                             // The amount of energy required to be full.
-                            int requiredFortron = transmitter.getMaxFortron() - transmitter.getFortronStored();
+                            int requiredFortron = transmitter.getMaxFortron() - transmitter.getStoredFortron();
 
                             for (FortronStorage machine : receivers) {
-                                int amountToConsume = Math.min(requiredFortron, machine.getFortronStored());
-                                int amountToSet = -machine.getFortronStored() - amountToConsume;
+                                int amountToConsume = Math.min(requiredFortron, machine.getStoredFortron());
+                                int amountToSet = -machine.getStoredFortron() - amountToConsume;
 
                                 if (amountToConsume > 0) {
-                                    doTransferFortron(transmitter, machine, amountToSet - machine.getFortronStored(), limit);
+                                    doTransferFortron(transmitter, machine, amountToSet - machine.getStoredFortron(), limit);
                                 }
                             }
                         }
