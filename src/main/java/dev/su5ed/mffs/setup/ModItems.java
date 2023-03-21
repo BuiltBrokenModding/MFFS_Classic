@@ -8,7 +8,6 @@ import dev.su5ed.mffs.api.module.ProjectorMode;
 import dev.su5ed.mffs.item.BaseItem;
 import dev.su5ed.mffs.item.BaseItem.ExtendedItemProperties;
 import dev.su5ed.mffs.item.BatteryItem;
-import dev.su5ed.mffs.item.BiometricIdentifierItem;
 import dev.su5ed.mffs.item.CustomProjectorModeItem;
 import dev.su5ed.mffs.item.FrequencyCardItem;
 import dev.su5ed.mffs.item.IdentificationCardItem;
@@ -41,7 +40,7 @@ public final class ModItems {
     public static final RegistryObject<Item> PROJECTOR_ITEM = fromBlock(ModBlocks.PROJECTOR);
     public static final RegistryObject<Item> COERCION_DERIVER_ITEM = fromBlock(ModBlocks.COERCION_DERIVER);
     public static final RegistryObject<Item> FORTRON_CAPACITOR_ITEM = fromBlock(ModBlocks.FORTRON_CAPACITOR);
-    public static final RegistryObject<Item> BIOMETRIC_IDENTIFIER_ITEM = ITEMS.register("biometric_identifier", BiometricIdentifierItem::new);
+    public static final RegistryObject<Item> BIOMETRIC_IDENTIFIER_ITEM = fromBlock(ModBlocks.BIOMETRIC_IDENTIFIER);
     public static final RegistryObject<Item> INTERDICTION_MATRIX_ITEM = fromBlock(ModBlocks.INTERDICTION_MATRIX);
     public static final RegistryObject<Item> REMOTE_CONTROLLER_ITEM = ITEMS.register("remote_controller", RemoteControllerItem::new);
 

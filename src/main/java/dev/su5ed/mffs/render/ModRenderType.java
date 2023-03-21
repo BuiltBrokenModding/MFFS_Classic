@@ -73,7 +73,6 @@ public class ModRenderType extends RenderType {
             .setTextureState(new RenderStateShard.TextureStateShard(location, false, false))
             .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
             .setOutputState(TRANSLUCENT_TARGET)
-//            .setDepthTestState(NO_DEPTH_TEST)
             .createCompositeState(true)
     ));
 

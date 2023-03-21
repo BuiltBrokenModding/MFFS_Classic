@@ -2,19 +2,19 @@
     "parent": "minecraft:block/block",
     "loader": "forge:composite",
     "textures": {
-        "particle": "mffs:model/biometric_identifier_off"
+        "particle": "mffs:model/biometric_identifier_on"
     },
     "children": {
         "body": {
             "parent": "mffs:block/biometric_identifier_body",
             "textures": {
-                "0": "mffs:model/biometric_identifier_off"
+                "0": "mffs:model/biometric_identifier_on"
             }
         },
         "screen": {
             "parent": "mffs:block/biometric_identifier_screen",
             "textures": {
-                "0": "mffs:model/biometric_identifier_off"
+                "0": "mffs:model/biometric_identifier_on"
             }
         }
     }

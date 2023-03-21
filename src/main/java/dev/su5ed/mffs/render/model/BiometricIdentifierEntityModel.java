@@ -14,12 +14,12 @@ import net.minecraft.client.renderer.RenderType;
 
 import static dev.su5ed.mffs.MFFSMod.location;
 
-public class BiometricIdentifierModel extends Model {
+public class BiometricIdentifierEntityModel extends Model {
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(location("biometric_identifier"), "main");
     
 	private final ModelPart root;
 
-    public BiometricIdentifierModel(ModelPart root) {
+    public BiometricIdentifierEntityModel(ModelPart root) {
 		super(RenderType::entityTranslucent);
 
 		this.root = root.getChild("root");

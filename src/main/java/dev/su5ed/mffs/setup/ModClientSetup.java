@@ -7,7 +7,7 @@ import dev.su5ed.mffs.render.CoercionDeriverRenderer;
 import dev.su5ed.mffs.render.ForceFieldBlockEntityRenderer;
 import dev.su5ed.mffs.render.LazyRendererFactory;
 import dev.su5ed.mffs.render.ProjectorRenderer;
-import dev.su5ed.mffs.render.model.BiometricIdentifierModel;
+import dev.su5ed.mffs.render.model.BiometricIdentifierModelLoader;
 import dev.su5ed.mffs.render.model.CoercionDeriverTopModel;
 import dev.su5ed.mffs.render.model.ForceCubeModel;
 import dev.su5ed.mffs.render.model.ForceFieldBlockModelLoader;
@@ -100,7 +100,6 @@ public final class ModClientSetup {
         event.registerLayerDefinition(CoercionDeriverTopModel.LAYER_LOCATION, CoercionDeriverTopModel::createBodyLayer);
         event.registerLayerDefinition(ForceCubeModel.LAYER_LOCATION, ForceCubeModel::createBodyLayer);
         event.registerLayerDefinition(ForceTubeModel.LAYER_LOCATION, ForceTubeModel::createBodyLayer);
-        event.registerLayerDefinition(BiometricIdentifierModel.LAYER_LOCATION, BiometricIdentifierModel::createBodyLayer);
     }
 
     @SubscribeEvent
@@ -113,6 +112,7 @@ public final class ModClientSetup {
     @SubscribeEvent
     public static void registerGeometryLoaders(ModelEvent.RegisterGeometryLoaders event) {
         event.register(ForceFieldBlockModelLoader.NAME.getPath(), new ForceFieldBlockModelLoader());
+        event.register(BiometricIdentifierModelLoader.NAME.getPath(), new BiometricIdentifierModelLoader());
     }
 
     @SubscribeEvent

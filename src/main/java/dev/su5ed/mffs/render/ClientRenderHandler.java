@@ -20,7 +20,6 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 
 import java.util.List;
 import java.util.Map;
@@ -69,10 +68,6 @@ public final class ClientRenderHandler {
     public static void renderCustomMode(BlockEntity be, Function<ModelLayerLocation, ModelPart> modelFactory) {
         Vec3 centerPos = Vec3.atCenterOf(be.getBlockPos());
         RenderTickHandler.addTransparentRenderer(ForceCubeModel.RENDER_TYPE, new CustomModeRenderer(centerPos, modelFactory));
-    }
-
-    public static IClientItemExtensions biometricIdentifierItemRenderer() {
-        return new RendererItemExtension(() -> BiometricIdentifierRenderer.ItemRenderer.INSTANCE);
     }
 
     private static void addRenderer(BlockEntity be, Function<ModelLayerLocation, ModelPart> modelFactory, ProjectorMode mode) {
