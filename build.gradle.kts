@@ -71,7 +71,7 @@ repositories {
 }
 
 dependencies {
-    minecraft(group = "net.minecraftforge", name = "forge", version = "1.19.2-43.1.47")
+    minecraft(group = "net.minecraftforge", name = "forge", version = "1.19.2-43.2.7")
 
     minecraftLibrary(jarJar(group = "one.util", name = "streamex", version = "0.8.1")) { // Streams galore!
         jarJar.ranged(this, "[0.8.1, 0.9)")
