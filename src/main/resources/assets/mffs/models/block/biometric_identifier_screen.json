@@ -1,6 +1,6 @@
 {
-    "loader": "mffs:transformed",
     "transform": {
+        "origin": "corner",
         "translation": [0.0, 0.063, 0.193],
         "rotation": [-0.2419219, 0.0, 0.0, 0.9702957]
     },

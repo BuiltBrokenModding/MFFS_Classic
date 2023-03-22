@@ -7,9 +7,7 @@ import dev.su5ed.mffs.render.CoercionDeriverRenderer;
 import dev.su5ed.mffs.render.ForceFieldBlockEntityRenderer;
 import dev.su5ed.mffs.render.LazyRendererFactory;
 import dev.su5ed.mffs.render.ProjectorRenderer;
-import dev.su5ed.mffs.render.model.BiometricIdentifierModelLoader;
 import dev.su5ed.mffs.render.model.CoercionDeriverTopModel;
-import dev.su5ed.mffs.render.model.CustomTransformationModel;
 import dev.su5ed.mffs.render.model.ForceCubeModel;
 import dev.su5ed.mffs.render.model.ForceFieldBlockModelLoader;
 import dev.su5ed.mffs.render.model.ForceTubeModel;
@@ -113,8 +111,6 @@ public final class ModClientSetup {
     @SubscribeEvent
     public static void registerGeometryLoaders(ModelEvent.RegisterGeometryLoaders event) {
         event.register(ForceFieldBlockModelLoader.NAME.getPath(), new ForceFieldBlockModelLoader());
-        event.register(BiometricIdentifierModelLoader.NAME.getPath(), new BiometricIdentifierModelLoader());
-        event.register(CustomTransformationModel.Loader.NAME.getPath(), new CustomTransformationModel.Loader());
     }
 
     @SubscribeEvent
