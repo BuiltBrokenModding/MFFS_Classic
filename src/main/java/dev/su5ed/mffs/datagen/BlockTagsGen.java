@@ -6,6 +6,7 @@ import dev.su5ed.mffs.setup.ModTags;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.RegistryObject;
@@ -21,7 +22,7 @@ public class BlockTagsGen extends BlockTagsProvider {
     @Override
     protected void addTags() {
         tag(ModTags.FORCEFIELD_REPLACEABLE)
-            .add(Blocks.SNOW, Blocks.VINE, Blocks.GRASS, Blocks.DEAD_BUSH, Blocks.GLOW_LICHEN, Blocks.SEAGRASS, Blocks.TALL_GRASS, Blocks.KELP, Blocks.KELP_PLANT);
+            .add(Blocks.SNOW, Blocks.VINE, Blocks.GRASS, Blocks.DEAD_BUSH, Blocks.GLOW_LICHEN, Blocks.SEAGRASS, Blocks.TALL_SEAGRASS, Blocks.TALL_GRASS, Blocks.KELP, Blocks.KELP_PLANT);
         StreamEx.of(ModBlocks.COERCION_DERIVER, ModBlocks.FORTRON_CAPACITOR, ModBlocks.PROJECTOR, ModBlocks.BIOMETRIC_IDENTIFIER)
             .map(RegistryObject::get)
             .forEach(block -> {

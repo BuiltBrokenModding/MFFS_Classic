@@ -38,7 +38,7 @@ public class SphereProjectorMode implements ProjectorMode {
             for (int z = -radius; z <= radius; z++) {
                 for (int y = -radius; y <= radius; y++) {
                     Vec3 position = new Vec3(x, y, z);
-                    if (isInField(projector, position.add(projectorPos.getX(), projectorPos.getY(), projectorPos.getZ()))) {
+                    if (isInField(projector, position.add(projectorPos.getX(), projectorPos.getY(), projectorPos.getZ()), 0.1)) {
                         fieldBlocks.add(position);
                     }
                 }
@@ -49,8 +49,12 @@ public class SphereProjectorMode implements ProjectorMode {
 
     @Override
     public boolean isInField(Projector projector, Vec3 position) {
+        return isInField(projector, position, -0.5);
+    }
+
+    private boolean isInField(Projector projector, Vec3 position, double tolerance) {
         BlockPos projectorPos = projector.be().getBlockPos();
         int radius = projector.getModuleCount(ModModules.SCALE);
-        return projectorPos.offset(projector.getTranslation()).closerThan(new BlockPos(position), radius - 0.5);
+        return projectorPos.offset(projector.getTranslation()).closerThan(new BlockPos(position), radius + tolerance);
     }
 }

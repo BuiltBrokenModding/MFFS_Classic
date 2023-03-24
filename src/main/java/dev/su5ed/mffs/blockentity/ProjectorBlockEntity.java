@@ -5,6 +5,7 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ListMultimap;
+import com.mojang.datafixers.util.Pair;
 import dev.su5ed.mffs.MFFSConfig;
 import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.api.Projector;
@@ -77,11 +78,11 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
 
     private final Semaphore semaphore = new Semaphore();
     private final Set<BlockPos> projectedBlocks = Collections.synchronizedSet(new HashSet<>());
-    private final LoadingCache<BlockPos, Boolean> projectionCache = CacheBuilder.newBuilder()
+    private final LoadingCache<BlockPos, Pair<BlockState, Boolean>> projectionCache = CacheBuilder.newBuilder()
         .expireAfterWrite(1, TimeUnit.MINUTES)
         .build(new CacheLoader<>() {
             @Override
-            public Boolean load(BlockPos key) {
+            public Pair<BlockState, Boolean> load(BlockPos key) {
                 return canProjectPos(key);
             }
         });
@@ -129,6 +130,11 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
     @Override
     public BlockEntity be() {
         return this;
+    }
+
+    @Override
+    public BlockState getCachedBlockState(BlockPos pos) {
+        return this.projectionCache.getUnchecked(pos).getFirst();
     }
 
     @Override
@@ -410,10 +416,11 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
         this.scheduledEvents.add(new ScheduledEvent(delay, runnable));
     }
 
-    private boolean canProjectPos(BlockPos pos) {
+    private Pair<BlockState, Boolean> canProjectPos(BlockPos pos) {
         BlockState state = this.level.getBlockState(pos);
-        return (state.isAir() || state.getMaterial().isLiquid() || state.is(ModTags.FORCEFIELD_REPLACEABLE) || hasModule(ModModules.DISINTEGRATION) && state.getDestroySpeed(this.level, pos) != -1)
+        boolean canProject = (state.isAir() || state.getMaterial().isLiquid() || state.is(ModTags.FORCEFIELD_REPLACEABLE) || hasModule(ModModules.DISINTEGRATION) && state.getDestroySpeed(this.level, pos) != -1)
             && !state.is(ModBlocks.FORCE_FIELD.get()) && !pos.equals(this.worldPosition);
+        return Pair.of(state, canProject);
     }
 
     @Override
@@ -529,7 +536,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
                     break fieldLoop;
                 }
             }
-            if (this.projectionCache.getUnchecked(pos) && this.level.isLoaded(pos)) {
+            if (this.projectionCache.getUnchecked(pos).getSecond() && this.level.isLoaded(pos)) {
                 projectable.add(pair);
                 constructionCount++;
             }
