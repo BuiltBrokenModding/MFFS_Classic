@@ -31,6 +31,12 @@ public class SlotInventory extends Slot implements TooltipSlot {
     }
 
     @Override
+    public void setChanged() {
+        super.setChanged();
+        this.inventorySlot.onChanged(true);
+    }
+
+    @Override
     public boolean mayPlace(@NotNull ItemStack stack) {
         return !stack.isEmpty() && this.inventorySlot.canInsert(stack);
     }

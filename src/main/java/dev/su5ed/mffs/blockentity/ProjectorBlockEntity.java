@@ -11,6 +11,7 @@ import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.api.Projector;
 import dev.su5ed.mffs.api.TargetPosPair;
 import dev.su5ed.mffs.api.module.Module;
+import dev.su5ed.mffs.api.module.ModuleType;
 import dev.su5ed.mffs.api.module.ProjectorMode;
 import dev.su5ed.mffs.item.CustomProjectorModeItem;
 import dev.su5ed.mffs.menu.ProjectorMenu;
@@ -97,7 +98,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
             .flatMap(side -> IntStreamEx.range(2)
                 .mapToEntry(i -> side, i -> addSlot("field_module_" + side.getName() + "_" + i, InventorySlot.Mode.BOTH, stack -> ModUtil.isModule(stack, Module.Category.FIELD), stack -> destroyField())))
             .toListAndThen(ImmutableListMultimap::copyOf);
-        this.upgradeSlots = createUpgradeSlots(6, null, stack -> destroyField());
+        this.upgradeSlots = createUpgradeSlots(6, this::isMatrixModuleOrPass, stack -> destroyField());
     }
 
     @SubscribeEvent
@@ -105,6 +106,13 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
         if (event.getLevel() == this.level && !this.semaphore.isInStage(ProjectionStage.STANDBY) && !event.getState().is(ModBlocks.FORCE_FIELD.get())) {
             this.projectionCache.invalidate(event.getPos());
         }
+    }
+
+    private boolean isMatrixModuleOrPass(ItemStack stack) {
+        return stack.getCapability(ModCapabilities.MODULE_TYPE)
+            .map(ModuleType::getCategories)
+            .map(categories -> categories.isEmpty() || categories.contains(Module.Category.MATRIX))
+            .orElse(true);
     }
 
     public int computeAnimationSpeed() {
