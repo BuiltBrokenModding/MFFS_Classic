@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-public final class ClientRenderHandler {
+public final class ProjectorModeRenderer {
     public static final RenderType PYRAMID_RENDER_TYPE = ModRenderType.POS_TEX_TRANSLUCENT_UNCULLED_TRIANGLE.apply(ForceCubeModel.CORE_TEXTURE);
     private static final List<ProjectorMode> MODES = List.of(ModProjectorModes.CUBE, ModProjectorModes.SPHERE, ModProjectorModes.TUBE, ModProjectorModes.PYRAMID);
     private static final Map<ProjectorMode, RendererInfo> RENDERERS = Map.of(
@@ -87,7 +87,7 @@ public final class ClientRenderHandler {
     }
 
     private record CustomModeRenderer(Vec3 centerPos, Function<ModelLayerLocation, ModelPart> modelFactory) implements LazyRenderer {
-        private static final int PERIOD = 20;
+        private static final int PERIOD = 40;
         private static final int MAX = MODES.size() * PERIOD;
 
         @Override
@@ -224,5 +224,5 @@ public final class ClientRenderHandler {
         }
     }
 
-    private ClientRenderHandler() {}
+    private ProjectorModeRenderer() {}
 }

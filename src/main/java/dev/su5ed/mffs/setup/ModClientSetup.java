@@ -2,11 +2,12 @@ package dev.su5ed.mffs.setup;
 
 import dev.su5ed.mffs.block.ForceFieldBlockImpl;
 import dev.su5ed.mffs.render.BiometricIdentifierRenderer;
-import dev.su5ed.mffs.render.ClientRenderHandler;
+import dev.su5ed.mffs.render.ProjectorModeRenderer;
 import dev.su5ed.mffs.render.CoercionDeriverRenderer;
 import dev.su5ed.mffs.render.ForceFieldBlockEntityRenderer;
 import dev.su5ed.mffs.render.LazyRendererFactory;
 import dev.su5ed.mffs.render.ProjectorRenderer;
+import dev.su5ed.mffs.render.RenderPostProcessor;
 import dev.su5ed.mffs.render.model.CoercionDeriverTopModel;
 import dev.su5ed.mffs.render.model.ForceCubeModel;
 import dev.su5ed.mffs.render.model.ForceFieldBlockModelLoader;
@@ -23,6 +24,7 @@ import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -30,6 +32,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.ModelEvent;
+import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
@@ -58,12 +61,12 @@ public final class ModClientSetup {
     }
 
     private static void registerLazyRenderers() {
-        LAZY_RENDERERS.put(ModItems.CUBE_MODE.get(), ClientRenderHandler::renderCubeMode);
-        LAZY_RENDERERS.put(ModItems.SPHERE_MODE.get(), ClientRenderHandler::renderSphereMode);
-        LAZY_RENDERERS.put(ModItems.TUBE_MODE.get(), ClientRenderHandler::renderTubeMode);
-        LAZY_RENDERERS.put(ModItems.PYRAMID_MODE.get(), ClientRenderHandler::renderPyramidMode);
-        LAZY_RENDERERS.put(ModItems.CYLINDER_MODE.get(), ClientRenderHandler::renderCylinderMode);
-        LAZY_RENDERERS.put(ModItems.CUSTOM_MODE.get(), ClientRenderHandler::renderCustomMode);
+        LAZY_RENDERERS.put(ModItems.CUBE_MODE.get(), ProjectorModeRenderer::renderCubeMode);
+        LAZY_RENDERERS.put(ModItems.SPHERE_MODE.get(), ProjectorModeRenderer::renderSphereMode);
+        LAZY_RENDERERS.put(ModItems.TUBE_MODE.get(), ProjectorModeRenderer::renderTubeMode);
+        LAZY_RENDERERS.put(ModItems.PYRAMID_MODE.get(), ProjectorModeRenderer::renderPyramidMode);
+        LAZY_RENDERERS.put(ModItems.CYLINDER_MODE.get(), ProjectorModeRenderer::renderCylinderMode);
+        LAZY_RENDERERS.put(ModItems.CUSTOM_MODE.get(), ProjectorModeRenderer::renderCustomMode);
     }
 
     @SubscribeEvent
@@ -76,6 +79,7 @@ public final class ModClientSetup {
             MenuScreens.register(ModMenus.INTERDICTION_MATRIX_MENU.get(), InterdictionMatrixScreen::new);
 
             registerLazyRenderers();
+            RenderPostProcessor.initRenderTarget();
         });
     }
 
@@ -125,6 +129,11 @@ public final class ModClientSetup {
             }
             return 3473151;
         }, ModBlocks.FORCE_FIELD.get());
+    }
+
+    @SubscribeEvent
+    public static void onResourceReload(RegisterClientReloadListenersEvent event) {
+        event.registerReloadListener((ResourceManagerReloadListener) resourceManager -> RenderPostProcessor.reloadPostProcessPass());
     }
 
     private ModClientSetup() {}
