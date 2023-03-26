@@ -16,6 +16,7 @@ version = changelog.getVersionFromTag()
 val versionMc: String by project
 val curseForgeId: String by project
 val versionJei: String by project
+val versionTOP: String by project
 val publishReleaseType = System.getenv("PUBLISH_RELEASE_TYPE") ?: "beta"
 val changelogText = changelog.generateChangelog(1, true)
 
@@ -67,6 +68,10 @@ repositories {
         name = "Modmaven"
         url = uri("https://modmaven.dev/")
     }
+    maven {
+        name = "TOP"
+        url = uri("https://maven.k-4u.nl")
+    }
     mavenCentral()
 }
 
@@ -79,6 +84,7 @@ dependencies {
 
     compileOnly(fg.deobf("mezz.jei:jei-$versionMc-common-api:$versionJei"))
     compileOnly(fg.deobf("mezz.jei:jei-$versionMc-forge-api:$versionJei"))
+    compileOnly(fg.deobf(create(group = "mcjty.theoneprobe", name = "theoneprobe", version = versionTOP).apply { isTransitive = false }))
 
     runtimeOnly(fg.deobf("mezz.jei:jei-$versionMc-forge:$versionJei"))
     runtimeOnly(fg.deobf("mekanism:Mekanism:1.19.2-10.3.5.474"))

@@ -39,6 +39,7 @@
   "death.attack.mffs.field_shock": "%1$s was disintegrated by a force field.",
   
   "block.mffs.machine_block": "Base Machine Block",
+  "block.mffs.force_field": "Force Field",
   "block.mffs.projector": "Force Field Projector",
   "block.mffs.coercion_deriver": "Coercion Deriver",
   "block.mffs.fortron_capacitor": "Fortron Capacitor",

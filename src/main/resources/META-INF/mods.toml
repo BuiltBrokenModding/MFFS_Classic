@@ -27,3 +27,9 @@ Ever tired of nuclear explosions blowing up your house or want to keep people ou
     versionRange="[1.19.2, 1.20)"
     ordering="NONE"
     side="BOTH"
+[[dependencies.mffs]]
+    modId="theoneprobe"
+    mandatory=false
+    versionRange="[1.19-6.2.0-6, )"
+    ordering="NONE"
+    side="BOTH"
