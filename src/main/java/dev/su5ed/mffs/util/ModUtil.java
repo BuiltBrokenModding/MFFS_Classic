@@ -5,10 +5,13 @@ import dev.su5ed.mffs.api.module.Module;
 import dev.su5ed.mffs.api.module.ModuleType;
 import dev.su5ed.mffs.api.security.FieldPermission;
 import dev.su5ed.mffs.setup.ModCapabilities;
+import dev.su5ed.mffs.setup.ModObjects;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -26,12 +29,7 @@ import java.util.List;
 import java.util.Locale;
 
 public final class ModUtil {
-
-    public static BlockPos rotateByAngle(BlockPos pos, double yaw, double pitch, double roll) {
-        Vec3 vec = rotateByAngleExact(Vec3.atLowerCornerOf(pos), yaw, pitch, roll);
-        return new BlockPos(Math.round(vec.x()), Math.round(vec.y()), Math.round(vec.z()));
-    }
-
+    
     public static Vec3 rotateByAngleExact(Vec3 pos, double yaw, double pitch, double roll) {
         double yawRadians = Math.toRadians(yaw);
         double pitchRadians = Math.toRadians(pitch);
@@ -196,6 +194,13 @@ public final class ModUtil {
         }
 
         return buffer[0];
+    }
+
+    public static void shockEntity(Entity entity, int damage) {
+        entity.hurt(ModObjects.FIELD_SHOCK, damage);
+        if (entity instanceof ServerPlayer serverPlayer) {
+            ModObjects.DAMAGE_TRIGGER.get().trigger(serverPlayer, ModObjects.FIELD_SHOCK);
+        }
     }
 
     @SuppressWarnings("unused") // Called from injected hook

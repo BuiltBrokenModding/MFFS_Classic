@@ -18,6 +18,7 @@ import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
@@ -33,6 +34,7 @@ public final class MFFSMod {
 
     public MFFSMod() {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+        bus.addListener(this::commonSetup);
         bus.addListener(this::enqueIMC);
         bus.addListener(ModCapabilities::registerCaps);
         ModBlocks.init(bus);
@@ -49,6 +51,10 @@ public final class MFFSMod {
         ctx.registerConfig(ModConfig.Type.COMMON, MFFSConfig.COMMON_SPEC);
 
         MinecraftForge.EVENT_BUS.register(ForgeEventHandler.class);
+    }
+
+    private void commonSetup(FMLCommonSetupEvent event) {
+        ModObjects.initCriteriaTriggers();
     }
 
     private void enqueIMC(InterModEnqueueEvent event) {

@@ -3,22 +3,26 @@ package dev.su5ed.mffs.menu;
 import dev.su5ed.mffs.api.Activatable;
 import dev.su5ed.mffs.blockentity.FortronBlockEntity;
 import dev.su5ed.mffs.setup.ModItems;
+import dev.su5ed.mffs.setup.ModObjects;
 import dev.su5ed.mffs.util.DataSlotWrapper;
 import dev.su5ed.mffs.util.ModUtil;
 import dev.su5ed.mffs.util.inventory.InventorySlot;
 import dev.su5ed.mffs.util.inventory.SlotInventory;
 import dev.su5ed.mffs.util.inventory.SlotInventoryFilter;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.ContainerListener;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.SlotItemHandler;
@@ -35,6 +39,7 @@ public abstract class FortronMenu<T extends FortronBlockEntity & Activatable> ex
     public final T blockEntity;
     protected final Player player;
     protected final IItemHandler playerInventory;
+    private final IItemHandler itemHandler;
 
     private final List<Slot> hotBarSlots = new ArrayList<>();
     private final List<Slot> playerInventorySlots = new ArrayList<>();
@@ -51,6 +56,9 @@ public abstract class FortronMenu<T extends FortronBlockEntity & Activatable> ex
         this.playerInventory = new InvWrapper(playerInventory);
 
         trackPower();
+
+        this.itemHandler = this.blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).orElseThrow(() -> new IllegalArgumentException("IItemHandler capability not found"));
+        addSlotListener(new AdvancementContainerListener());
     }
 
     protected Slot addInventorySlot(Slot slot) {
@@ -65,6 +73,13 @@ public abstract class FortronMenu<T extends FortronBlockEntity & Activatable> ex
 
     public void setFrequencyChangeListener(Runnable frequencyChangeListener) {
         this.frequencyChangeListener = frequencyChangeListener;
+    }
+
+    public void triggerMenuAdvancement() {
+        if (this.player instanceof ServerPlayer serverPlayer) {
+            boolean active = this.blockEntity.isActive();
+            ModObjects.MENU_INVENTORY_TRIGGER.get().trigger(serverPlayer, active, this.itemHandler);
+        }
     }
 
     @Override
@@ -87,6 +102,7 @@ public abstract class FortronMenu<T extends FortronBlockEntity & Activatable> ex
                 }
                 return;
             }
+            triggerMenuAdvancement();
         }
         super.clicked(slotId, button, clickType, player);
     }
@@ -189,5 +205,15 @@ public abstract class FortronMenu<T extends FortronBlockEntity & Activatable> ex
 
     protected void addDataSlot(IntSupplier gettter, IntConsumer setter) {
         addDataSlot(new DataSlotWrapper(gettter, setter));
+    }
+
+    private class AdvancementContainerListener implements ContainerListener {
+        @Override
+        public void slotChanged(AbstractContainerMenu containerToSend, int dataSlotIndex, ItemStack stack) {
+            FortronMenu.this.triggerMenuAdvancement();
+        }
+
+        @Override
+        public void dataChanged(AbstractContainerMenu containerMenu, int dataSlotIndex, int value) {}
     }
 }

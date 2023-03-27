@@ -1,0 +1,29 @@
+{
+  "parent": "mffs:projector",
+  "criteria": {
+    "create_field_shape": {
+      "conditions": {},
+      "trigger": "mffs:field_shape"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.mffs.field_shape.description"
+    },
+    "frame": "goal",
+    "hidden": false,
+    "icon": {
+      "item": "mffs:custom_mode"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.mffs.field_shape.title"
+    }
+  },
+  "requirements": [
+    [
+      "create_field_shape"
+    ]
+  ]
+}

@@ -5,6 +5,7 @@ import dev.su5ed.mffs.api.Projector;
 import dev.su5ed.mffs.api.module.ProjectorMode;
 import dev.su5ed.mffs.setup.ModCapabilities;
 import dev.su5ed.mffs.setup.ModItems;
+import dev.su5ed.mffs.setup.ModObjects;
 import dev.su5ed.mffs.util.ModUtil;
 import dev.su5ed.mffs.util.projector.CustomStructureSavedData;
 import net.minecraft.ChatFormatting;
@@ -47,7 +48,6 @@ public class CustomProjectorModeItem extends BaseItem {
 
     private CustomStructureSavedData structureManager;
 
-    // TODO: Projector mode renderer
     public CustomProjectorModeItem() {
         super(new ExtendedItemProperties(ModItems.itemProperties().stacksTo(1)));
     }
@@ -72,6 +72,7 @@ public class CustomProjectorModeItem extends BaseItem {
                         data.join(id, level, serverPlayer, primary, secondary, getMode(tag) == Mode.ADDITIVE);
 
                         player.displayClientMessage(ModUtil.translate("item", "custom_mode.data_saved"), true);
+                        ModObjects.FIELD_SHAPE_TRIGGER.get().trigger(serverPlayer);
                     } else {
                         player.displayClientMessage(ModUtil.translate("item", "custom_mode.too_far", distance), true);
                     }

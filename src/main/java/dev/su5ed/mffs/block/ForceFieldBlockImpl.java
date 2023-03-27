@@ -7,6 +7,7 @@ import dev.su5ed.mffs.api.security.BiometricIdentifier;
 import dev.su5ed.mffs.api.security.FieldPermission;
 import dev.su5ed.mffs.blockentity.ForceFieldBlockEntity;
 import dev.su5ed.mffs.setup.ModObjects;
+import dev.su5ed.mffs.util.ModUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
@@ -151,7 +152,7 @@ public class ForceFieldBlockImpl extends Block implements ForceFieldBlock, Entit
                     }
                     BiometricIdentifier identifier = projector.getBiometricIdentifier();
                     if (!(entity instanceof Player player) || !entity.isShiftKeyDown() || !player.isCreative() && (identifier == null || !identifier.isAccessGranted(player, FieldPermission.WARP))) {
-                        entity.hurt(ModObjects.FIELD_SHOCK, Integer.MAX_VALUE);
+                        ModUtil.shockEntity(entity, Integer.MAX_VALUE);
                     }
                 }
             });

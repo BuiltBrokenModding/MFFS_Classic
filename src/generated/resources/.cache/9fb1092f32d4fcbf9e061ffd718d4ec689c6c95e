@@ -1,4 +1,4 @@
-// 1.19.2	2023-03-15T15:40:10.629319	Recipes
+// 1.19.2	2023-03-27T21:18:33.1108072	Recipes
 ffc1b628eb205edfdd176b0951b6a5b8d1343783 data/mffs/advancements/recipes/mffs/anti_friendly_module.json
 6c4fd490a97f24422db6a627ed8ff70ede589a8a data/mffs/advancements/recipes/mffs/anti_hostile_module.json
 3f89037a6d2382591c92a1b3fea26cc4141e714c data/mffs/advancements/recipes/mffs/anti_personnel_module.json
@@ -78,7 +78,7 @@ f5e3bfb55be89f988ca6cf3504f0530be2d85c5e data/mffs/recipes/rotation_module.json
 0a60c8d7da58a5e3d5c2819fbce54beac97a8288 data/mffs/recipes/silence_module.json
 62e8fcd01a183f721eba4880011e29386e9fce28 data/mffs/recipes/speed_module.json
 b6bac2702e977fcad95b3fd094be125be4aa200d data/mffs/recipes/sphere_mode.json
-62a0168c63c9d8270b0a69f8cacc528d782254ab data/mffs/recipes/sponge_module.json
+98db202b8aea52cea5b2a84469ffa0429c51decf data/mffs/recipes/sponge_module.json
 86e1d41efe8e571ca24ad1d8051502cd23e7cdd4 data/mffs/recipes/stabilization_module.json
 efc02e42dcc331ace2ba1ba8f975f10d1ad570fe data/mffs/recipes/steel_compound.json
 67a92a96162646110c40671118f01d3e54fe7d24 data/mffs/recipes/steel_ingot.json
