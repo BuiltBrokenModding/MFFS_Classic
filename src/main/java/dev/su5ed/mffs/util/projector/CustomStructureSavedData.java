@@ -188,12 +188,11 @@ public class CustomStructureSavedData extends SavedData {
             return this.relativeBlocks.get();
         }
 
-        public Map<Vec3, Block> getRealBlocks(Projector projector) {
+        public Map<Vec3, Block> getRealBlocks() {
             if (this.realBlocks == null) {
-                double scale = Math.max(1.0, projector.getModuleCount(ModModules.SCALE) / 3.0);
                 Map<Vec3, Block> map = new HashMap<>();
                 for (Map.Entry<BlockPos, Block> entry : getRelativeBlocks().entrySet()) {
-                    map.put(Vec3.atLowerCornerOf(entry.getKey()).multiply(scale, scale, scale), entry.getValue());
+                    map.put(Vec3.atLowerCornerOf(entry.getKey()), entry.getValue());
                 }
                 this.realBlocks = map;
             }

@@ -19,8 +19,6 @@ public interface ModuleAcceptor {
 
     Set<ItemStack> getModuleStacks();
 
-    Set<ModuleType<?>> getModules();
-    
     Set<Module> getModuleInstances();
 
     StreamEx<ItemStack> getAllModuleItemsStream();

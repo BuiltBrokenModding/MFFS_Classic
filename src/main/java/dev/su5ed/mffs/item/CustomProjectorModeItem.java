@@ -196,7 +196,7 @@ public class CustomProjectorModeItem extends BaseItem {
             String id = tag.getString(TAG_PATTERN_ID);
             CustomStructureSavedData.Structure structure = data.get(id);
             if (structure != null) {
-                return structure.getRealBlocks(projector);
+                return structure.getRealBlocks();
             }
         }
         return Map.of();

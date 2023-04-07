@@ -1,13 +1,13 @@
 package dev.su5ed.mffs.blockentity;
 
 import dev.su5ed.mffs.MFFSConfig;
-import dev.su5ed.mffs.util.ObjectCache;
 import dev.su5ed.mffs.api.module.Module;
 import dev.su5ed.mffs.api.module.ModuleAcceptor;
 import dev.su5ed.mffs.api.module.ModuleType;
 import dev.su5ed.mffs.setup.ModCapabilities;
 import dev.su5ed.mffs.setup.ModModules;
 import dev.su5ed.mffs.util.ModUtil;
+import dev.su5ed.mffs.util.ObjectCache;
 import dev.su5ed.mffs.util.inventory.InventorySlot;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
@@ -31,7 +31,6 @@ import java.util.function.Supplier;
 
 public abstract class ModularBlockEntity extends FortronBlockEntity implements ModuleAcceptor, ObjectCache {
     private static final String FOTRON_COST_CACHE_KEY = "getFortronCost";
-    private static final String ALL_MODULES_CACHE_KEY = "getModules";
     private static final String MODULE_CACHE_KEY = "getModule_";
     private static final String MODULE_COUNT_CACHE_KEY = "getModuleCount_";
     private static final String MODULE_INSTANCE_CACHE_KEY = "getModuleInstances";
@@ -102,13 +101,6 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
         return getAllModuleItemsStream()
             .filter(ModUtil::isModule)
             .toSet();
-    }
-
-    @Override
-    public Set<ModuleType<?>> getModules() {
-        return cached(ALL_MODULES_CACHE_KEY, () -> getModuleItemsStream(List.of())
-            .mapPartial(stack -> stack.getCapability(ModCapabilities.MODULE_TYPE).resolve())
-            .toSet());
     }
 
     public Set<Module> getModuleInstances() {

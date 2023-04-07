@@ -450,6 +450,12 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
         return 28 + 28 * getModuleCount(ModModules.SPEED, getUpgradeSlots());
     }
 
+    @Override
+    public int getModuleCount(ModuleType<?> module, Collection<InventorySlot> slots) {
+        // Disable scaling of custom mode fields
+        return module == ModModules.SCALE && getModeStack().getItem() instanceof CustomProjectorModeItem ? 0 : super.getModuleCount(module, slots);
+    }
+
     private void reCalculateForceField() {
         if (getMode().isPresent()) {
             if (getModeStack().getItem() instanceof ObjectCache cache) {
