@@ -76,6 +76,8 @@ public final class RenderTickHandler {
             float partialTicks = event.getPartialTick();
             MultiBufferSource.BufferSource bufferSource = minecraft.renderBuffers().bufferSource();
 
+            RenderPostProcessor.prepareRender();
+
             poseStack.pushPose();
             // here we translate based on the inverse position of the client viewing camera to get back to 0, 0, 0
             Vec3 camPos = camera.getPosition();
@@ -106,6 +108,10 @@ public final class RenderTickHandler {
             transparentRenderers.clear();
 
             poseStack.popPose();
+        }
+
+        if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_WEATHER) {
+            RenderPostProcessor.process(event.getRenderTick());
         }
     }
 

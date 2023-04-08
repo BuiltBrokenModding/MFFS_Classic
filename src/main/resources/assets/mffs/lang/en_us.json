@@ -39,6 +39,7 @@
   "death.attack.mffs.field_shock": "%1$s was disintegrated by a force field.",
   
   "block.mffs.machine_block": "Base Machine Block",
+  "block.mffs.force_field": "Force Field",
   "block.mffs.projector": "Force Field Projector",
   "block.mffs.coercion_deriver": "Coercion Deriver",
   "block.mffs.fortron_capacitor": "Fortron Capacitor",
@@ -168,5 +169,24 @@
   "screen.mffs.copy.tooltip": "Copy all data from the Rights slot to this card",
   "screen.mffs.warn_range": "Warning: %s",
   "screen.mffs.action_range": "Action: %s",
-  "screen.mffs.filter_mode": "Filter Mode:"
+  "screen.mffs.filter_mode": "Filter Mode:",
+  
+  "advancements.mffs.root.title": "Modular Force Field Systems",
+  "advancements.mffs.root.description": "Enter the world of Force Fields!",
+  "advancements.mffs.steel_compound.title": "A Sturdy Mixture",
+  "advancements.mffs.steel_compound.description": "Craft Steel Compound",
+  "advancements.mffs.smelt_steel.title": "Harder than Iron",
+  "advancements.mffs.smelt_steel.description": "Smelt a Steel Ingot",
+  "advancements.mffs.field_shock.title": "A Shocking Experience",
+  "advancements.mffs.field_shock.description": "Get exterminated by a Force Field",
+  "advancements.mffs.projector.title": "May the Force by with you!",
+  "advancements.mffs.projector.description": "Craft a Force Field Projector",
+  "advancements.mffs.sponge_module.title": "Where's my water?",
+  "advancements.mffs.sponge_module.description": "Craft a Sponge Module",
+  "advancements.mffs.field_shape.title": "Field Architect",
+  "advancements.mffs.field_shape.description": "Create your own field shape",
+  "advancements.mffs.camouflage.title": "Hidden in plain sight",
+  "advancements.mffs.camouflage.description": "Craft a camouflage module",
+  "advancements.mffs.custom_camouflage.title": "Enter the Matrix",
+  "advancements.mffs.custom_camouflage.description": "Use Custom Mode with Camouflage"
 }

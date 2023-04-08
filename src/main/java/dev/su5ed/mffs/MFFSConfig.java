@@ -79,9 +79,14 @@ public class MFFSConfig {
     }
 
     public static final class Client {
+        public final ForgeConfigSpec.BooleanValue enableProjectorModeGlitch;
 
         private Client(ForgeConfigSpec.Builder builder) {
-
+            builder.push("general");
+            this.enableProjectorModeGlitch = builder
+                .comment("Apply a fancy glitch effect on projector mode renders. Requires game restart.")
+                .define("enableProjectorModeGlitch", true);
+            builder.pop();
         }
     }
 }

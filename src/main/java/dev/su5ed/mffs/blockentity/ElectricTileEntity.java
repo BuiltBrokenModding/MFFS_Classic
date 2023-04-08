@@ -76,6 +76,10 @@ public abstract class ElectricTileEntity extends ModularBlockEntity {
         return Collections.emptySet();
     }
 
+    public IEnergyStorage getGlobalEnergyStorage() {
+        return this.energy;
+    }
+    
     @Override
     public void setRemoved() {
         super.setRemoved();

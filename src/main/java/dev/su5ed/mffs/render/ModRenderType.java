@@ -11,8 +11,10 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.util.function.Function;
 
+import static dev.su5ed.mffs.render.RenderPostProcessor.GLITCH_TARGET;
+
 public class ModRenderType extends RenderType {
-    protected static final RenderStateShard.OutputStateShard TRANSLUCENT_TARGET_NO_DEPTH_MASK = new RenderStateShard.OutputStateShard("translucent_target", () -> {
+    protected static final RenderStateShard.OutputStateShard TRANSLUCENT_TARGET_NO_DEPTH_MASK = new RenderStateShard.OutputStateShard("translucent_target_no_depth_mask", () -> {
         if (Minecraft.useShaderTransparency()) {
             Minecraft.getInstance().levelRenderer.getTranslucentTarget().bindWrite(false);
         }
@@ -36,7 +38,7 @@ public class ModRenderType extends RenderType {
             .setShaderState(NEW_ENTITY_SHADER)
             .setTextureState(new RenderStateShard.TextureStateShard(location, false, false))
             .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-            .setOutputState(TRANSLUCENT_TARGET_NO_DEPTH_MASK)
+            .setOutputState(GLITCH_TARGET)
             .createCompositeState(true)
     ));
 
@@ -59,7 +61,7 @@ public class ModRenderType extends RenderType {
             .setShaderState(POSITION_TEX_SHADER)
             .setTextureState(new RenderStateShard.TextureStateShard(location, false, false))
             .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-            .setOutputState(TRANSLUCENT_TARGET_NO_DEPTH_MASK)
+            .setOutputState(GLITCH_TARGET)
             .setCullState(NO_CULL)
             .createCompositeState(true)
     ));

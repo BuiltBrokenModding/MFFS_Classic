@@ -1,7 +1,7 @@
 package dev.su5ed.mffs.util.module;
 
 import dev.su5ed.mffs.api.module.ModuleType;
-import dev.su5ed.mffs.setup.ModObjects;
+import dev.su5ed.mffs.util.ModUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -17,7 +17,7 @@ public class ShockModule extends BaseModule {
     @Override
     public boolean onCollideWithForceField(Level level, BlockPos pos, Entity entity) {
         if (entity instanceof LivingEntity living) {
-            living.hurt(ModObjects.FIELD_SHOCK, this.stack.getCount());
+            ModUtil.shockEntity(living, this.stack.getCount());
         }
         return super.onCollideWithForceField(level, pos, entity);
     }

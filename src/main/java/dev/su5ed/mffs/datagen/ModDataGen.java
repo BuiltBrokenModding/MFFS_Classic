@@ -25,6 +25,7 @@ public final class ModDataGen {
         generator.addProvider(event.includeServer(), new ItemTagsGen(generator, blockTags, helper));
         generator.addProvider(event.includeServer(), new RecipesGen(generator));
         generator.addProvider(event.includeServer(), new LootTableGen(generator));
+        generator.addProvider(event.includeServer(), new AdvancementsGen(generator, helper));
     }
 
     private ModDataGen() {}

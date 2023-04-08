@@ -1,0 +1,37 @@
+{
+  "criteria": {
+    "has_steel_compound": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mffs:steel_compound"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "background": "mffs:textures/block/machine_block.png",
+    "description": {
+      "translate": "advancements.mffs.root.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "mffs:coercion_deriver"
+    },
+    "show_toast": false,
+    "title": {
+      "translate": "advancements.mffs.root.title"
+    }
+  },
+  "requirements": [
+    [
+      "has_steel_compound"
+    ]
+  ]
+}

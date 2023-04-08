@@ -283,7 +283,7 @@ public class RecipesGen extends RecipeProvider {
             .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
             .save(finishedRecipeConsumer, location("glow_module"));
 
-        ShapedRecipeBuilder.shaped(ModItems.SPONGE_MODULE.get(), 4)
+        ShapedRecipeBuilder.shaped(ModItems.SPONGE_MODULE.get())
             .define('F', ModItems.FOCUS_MATRIX.get())
             .define('S', Items.SPONGE)
             .pattern("SSS")

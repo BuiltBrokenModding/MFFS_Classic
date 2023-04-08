@@ -1,0 +1,37 @@
+{
+  "parent": "mffs:projector",
+  "criteria": {
+    "has_sponge_module": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mffs:sponge_module"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.mffs.sponge_module.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "mffs:sponge_module"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.mffs.sponge_module.title"
+    }
+  },
+  "requirements": [
+    [
+      "has_sponge_module"
+    ]
+  ]
+}

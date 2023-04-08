@@ -1,0 +1,37 @@
+{
+  "parent": "mffs:smelt_steel",
+  "criteria": {
+    "has_projector": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mffs:projector"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.mffs.projector.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "mffs:projector"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.mffs.projector.title"
+    }
+  },
+  "requirements": [
+    [
+      "has_projector"
+    ]
+  ]
+}
