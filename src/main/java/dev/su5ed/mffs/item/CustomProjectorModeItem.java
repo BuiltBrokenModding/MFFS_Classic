@@ -64,7 +64,7 @@ public class CustomProjectorModeItem extends BaseItem {
                     BlockPos primary = getPos(tag, TAG_POINT_PRIMARY);
                     BlockPos secondary = getPos(tag, TAG_POINT_SECONDARY);
                     int distance = MFFSConfig.COMMON.maxCustomModeScale.get();
-                    if (!primary.equals(secondary) && primary.closerThan(secondary, distance)) {
+                    if (primary.closerThan(secondary, distance)) {
                         tag.remove(TAG_POINT_PRIMARY);
                         tag.remove(TAG_POINT_SECONDARY);
 

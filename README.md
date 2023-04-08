@@ -50,7 +50,7 @@ Pull Request or get in touch with us on Discord if you have any questions.
 
 ### Credits
 
-- Block highlighting render code - [DarkKronicle's BetterBlockOutline renderer](https://github.com/DarkKronicle/BetterBlockOutline)
+Block highlighting render code - [DarkKronicle's BetterBlockOutline renderer](https://github.com/DarkKronicle/BetterBlockOutline)
 
 #### Past Developers
 
