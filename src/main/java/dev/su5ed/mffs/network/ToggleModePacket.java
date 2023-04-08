@@ -1,9 +1,10 @@
 package dev.su5ed.mffs.network;
 
 import dev.su5ed.mffs.api.Activatable;
+import dev.su5ed.mffs.menu.FortronMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
@@ -21,8 +22,13 @@ public record ToggleModePacket(BlockPos pos, boolean active) {
     }
 
     public void processServerPacket(Supplier<NetworkEvent.Context> ctx) {
-        Level level = ctx.get().getSender().getLevel();
-        Network.findBlockEntity(Activatable.class, level, this.pos)
-            .ifPresent(be -> be.setActive(this.active));
+        ServerPlayer player = ctx.get().getSender();
+        Network.findBlockEntity(Activatable.class, player.getLevel(), this.pos)
+            .ifPresent(be -> {
+                be.setActive(this.active);
+                if (player.containerMenu instanceof FortronMenu<?> fortronMenu) {
+                    fortronMenu.triggerMenuAdvancement();
+                }
+            });
     }
 }
