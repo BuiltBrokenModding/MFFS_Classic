@@ -47,11 +47,6 @@ public class ForceFieldBlockImpl extends Block implements ForceFieldBlock, Entit
     }
 
     @Override
-    public boolean skipRendering(BlockState state, BlockState adjacentBlockState, Direction side) {
-        return false;
-    }
-
-    @Override
     public boolean propagatesSkylightDown(BlockState state, BlockGetter level, BlockPos pos) {
         return getCamouflageBlock(level, pos)
             .map(block -> block.propagatesSkylightDown(level, pos))

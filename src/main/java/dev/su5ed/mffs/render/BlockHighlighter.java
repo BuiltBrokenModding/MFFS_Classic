@@ -61,6 +61,7 @@ public final class BlockHighlighter {
 
         // Setup rendering
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.enableBlend();
         RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
         RenderSystem.disableDepthTest(); // See through

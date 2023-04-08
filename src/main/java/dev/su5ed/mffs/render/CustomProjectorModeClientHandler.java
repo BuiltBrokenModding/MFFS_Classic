@@ -51,12 +51,12 @@ public final class CustomProjectorModeClientHandler {
 
     @SubscribeEvent
     public static void renderLevel(RenderLevelStageEvent event) {
-        if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_PARTICLES) {
+        if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_WEATHER) {
             Minecraft minecraft = Minecraft.getInstance();
             StreamEx.of(minecraft.player.getMainHandItem(), minecraft.player.getOffhandItem())
                 .findFirst(stack -> stack.is(ModItems.CUSTOM_MODE.get()))
                 .ifPresent(stack -> {
-                    PoseStack pose = event.getPoseStack();
+                    PoseStack pose = new PoseStack();
                     Vec3 cameraPos = event.getCamera().getPosition();
                     CompoundTag tag = stack.getOrCreateTag();
                     if (tag.contains(CustomProjectorModeItem.TAG_POINT_PRIMARY)) {
