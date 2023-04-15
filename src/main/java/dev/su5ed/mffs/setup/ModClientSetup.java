@@ -2,10 +2,10 @@ package dev.su5ed.mffs.setup;
 
 import dev.su5ed.mffs.block.ForceFieldBlockImpl;
 import dev.su5ed.mffs.render.BiometricIdentifierRenderer;
-import dev.su5ed.mffs.render.ProjectorModeRenderer;
 import dev.su5ed.mffs.render.CoercionDeriverRenderer;
 import dev.su5ed.mffs.render.ForceFieldBlockEntityRenderer;
 import dev.su5ed.mffs.render.LazyRendererFactory;
+import dev.su5ed.mffs.render.ProjectorModeRenderer;
 import dev.su5ed.mffs.render.ProjectorRenderer;
 import dev.su5ed.mffs.render.RenderPostProcessor;
 import dev.su5ed.mffs.render.model.CoercionDeriverTopModel;
@@ -27,8 +27,8 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.ModelEvent;
@@ -122,9 +122,9 @@ public final class ModClientSetup {
         event.register((state, level, pos, tintIndex) -> {
             BlockEntity be = level.getBlockEntity(pos);
             if (be != null) {
-                Block camo = be.getModelData().get(ForceFieldBlockImpl.CAMOUFLAGE_BLOCK);
+                BlockState camo = be.getModelData().get(ForceFieldBlockImpl.CAMOUFLAGE_BLOCK);
                 if (camo != null) {
-                    return event.getBlockColors().getColor(camo.defaultBlockState(), level, pos, tintIndex);
+                    return event.getBlockColors().getColor(camo, level, pos, tintIndex);
                 }
             }
             return 3473151;

@@ -15,7 +15,6 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.phys.AABB;
@@ -25,7 +24,6 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.network.PacketDistributor;
-import net.minecraftforge.registries.ForgeRegistries;
 import one.util.streamex.EntryStream;
 import one.util.streamex.StreamEx;
 import org.jetbrains.annotations.Nullable;
@@ -78,7 +76,7 @@ public class CustomStructureSavedData extends SavedData {
                     BlockState state = level.getBlockState(pos);
                     if (!state.isAir()) {
                         if (add) {
-                            structure.blocks.put(pos, state.getBlock());
+                            structure.blocks.put(pos, state);
                         } else {
                             structure.blocks.remove(pos);
                         }
@@ -140,7 +138,7 @@ public class CustomStructureSavedData extends SavedData {
     }
 
     public static class Structure {
-        public static final Codec<Map<BlockPos, Block>> BLOCK_MAP_CODEC = Codec.pair(BlockPos.CODEC.fieldOf("pos").codec(), ForgeRegistries.BLOCKS.getCodec().fieldOf("state").codec()).listOf()
+        public static final Codec<Map<BlockPos, BlockState>> BLOCK_MAP_CODEC = Codec.pair(BlockPos.CODEC.fieldOf("pos").codec(), BlockState.CODEC.fieldOf("state").codec()).listOf()
             .xmap(pairs -> StreamEx.of(pairs)
                     .mapToEntry(Pair::getFirst, Pair::getSecond)
                     .toMap(),
@@ -155,16 +153,16 @@ public class CustomStructureSavedData extends SavedData {
 
         private final VoxelShape shape;
         private final VoxelShape normalShape;
-        private final Map<BlockPos, Block> blocks;
-        private final Lazy<Map<BlockPos, Block>> relativeBlocks = Lazy.of(this::computeRelativeBlocks);
+        private final Map<BlockPos, BlockState> blocks;
+        private final Lazy<Map<BlockPos, BlockState>> relativeBlocks = Lazy.of(this::computeRelativeBlocks);
         @Nullable
-        private Map<Vec3, Block> realBlocks;
+        private Map<Vec3, BlockState> realBlocks;
 
         public Structure() {
             this(Shapes.empty(), Shapes.empty(), new HashMap<>());
         }
 
-        public Structure(VoxelShape shape, VoxelShape normalShape, Map<BlockPos, Block> blocks) {
+        public Structure(VoxelShape shape, VoxelShape normalShape, Map<BlockPos, BlockState> blocks) {
             this.shape = shape;
             this.normalShape = normalShape;
             this.blocks = blocks;
@@ -178,18 +176,18 @@ public class CustomStructureSavedData extends SavedData {
             return normalShape;
         }
 
-        public Map<BlockPos, Block> blocks() {
+        public Map<BlockPos, BlockState> blocks() {
             return blocks;
         }
 
-        public Map<BlockPos, Block> getRelativeBlocks() {
+        public Map<BlockPos, BlockState> getRelativeBlocks() {
             return this.relativeBlocks.get();
         }
 
-        public Map<Vec3, Block> getRealBlocks() {
+        public Map<Vec3, BlockState> getRealBlocks() {
             if (this.realBlocks == null) {
-                Map<Vec3, Block> map = new HashMap<>();
-                for (Map.Entry<BlockPos, Block> entry : getRelativeBlocks().entrySet()) {
+                Map<Vec3, BlockState> map = new HashMap<>();
+                for (Map.Entry<BlockPos, BlockState> entry : getRelativeBlocks().entrySet()) {
                     map.put(Vec3.atLowerCornerOf(entry.getKey()), entry.getValue());
                 }
                 this.realBlocks = map;
@@ -197,15 +195,15 @@ public class CustomStructureSavedData extends SavedData {
             return this.realBlocks;
         }
 
-        private Map<BlockPos, Block> computeRelativeBlocks() {
+        private Map<BlockPos, BlockState> computeRelativeBlocks() {
             BlockPos median = new BlockPos(
                 (this.shape.min(Direction.Axis.X) + this.shape.max(Direction.Axis.X)) / 2.0,
                 (this.shape.min(Direction.Axis.Y) + this.shape.max(Direction.Axis.Y)) / 2.0,
                 (this.shape.min(Direction.Axis.Z) + this.shape.max(Direction.Axis.Z)) / 2.0
             );
             // Use classic for loop in an effort to improve performance
-            Map<BlockPos, Block> map = new HashMap<>();
-            for (Map.Entry<BlockPos, Block> entry : this.blocks.entrySet()) {
+            Map<BlockPos, BlockState> map = new HashMap<>();
+            for (Map.Entry<BlockPos, BlockState> entry : this.blocks.entrySet()) {
                 map.put(entry.getKey().subtract(median), entry.getValue());
             }
             return map;

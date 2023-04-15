@@ -22,7 +22,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
@@ -45,11 +44,11 @@ public class MFFSProbeProvider implements IBlockDisplayOverride, IProbeInfoProvi
         BlockPos pos = data.getPos();
         // Override info for camouflaged blocks
         if (level.getExistingBlockEntity(pos) instanceof ForceFieldBlockEntity forceField) {
-            Block camo = forceField.getCamouflage();
+            BlockState camo = forceField.getCamouflage();
             if (camo != null) {
                 HitResult mouseOver = new BlockHitResult(data.getHitVec(), data.getSideHit(), pos, false);
-                ItemStack clone = camo.getCloneItemStack(blockState, mouseOver, level, pos, player);
-                DefaultProbeInfoProvider.showStandardBlockInfo(Config.getRealConfig(), mode, info, camo.defaultBlockState(), camo, level, pos, player, new ProbeHitData(data.getPos(), data.getHitVec(), data.getSideHit(), clone));
+                ItemStack clone = camo.getCloneItemStack(mouseOver, level, pos, player);
+                DefaultProbeInfoProvider.showStandardBlockInfo(Config.getRealConfig(), mode, info, camo, camo.getBlock(), level, pos, player, new ProbeHitData(data.getPos(), data.getHitVec(), data.getSideHit(), clone));
                 return true;
             }
         }

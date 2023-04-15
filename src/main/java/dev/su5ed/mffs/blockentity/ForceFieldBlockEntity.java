@@ -11,18 +11,16 @@ import dev.su5ed.mffs.setup.ModObjects;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.ModelData;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Optional;
 
 public class ForceFieldBlockEntity extends BlockEntity {
     private BlockPos projector;
-    private Block camouflage;
+    private BlockState camouflage;
     private int clientBlockLight;
 
     public ForceFieldBlockEntity(BlockPos pos, BlockState state) {
@@ -38,11 +36,11 @@ public class ForceFieldBlockEntity extends BlockEntity {
         setChanged();
     }
 
-    public Block getCamouflage() {
+    public BlockState getCamouflage() {
         return this.camouflage;
     }
 
-    public void setCamouflage(Block camouflage) {
+    public void setCamouflage(BlockState camouflage) {
         this.camouflage = camouflage;
         setChanged();
     }
@@ -55,7 +53,7 @@ public class ForceFieldBlockEntity extends BlockEntity {
             InitialDataRequestPacket packet = new InitialDataRequestPacket(this.worldPosition);
             Network.INSTANCE.sendToServer(packet);
             if (this.camouflage != null) {
-                BlockEntityRenderDelegate.INSTANCE.putDelegateFor(this, this.camouflage.defaultBlockState());
+                BlockEntityRenderDelegate.INSTANCE.putDelegateFor(this, this.camouflage);
             }
         }
     }
@@ -106,7 +104,7 @@ public class ForceFieldBlockEntity extends BlockEntity {
         updateRenderClient();
         this.level.getLightEngine().checkBlock(this.worldPosition);
         if (this.camouflage != null) {
-            BlockEntityRenderDelegate.INSTANCE.putDelegateFor(this, camouflage.defaultBlockState());
+            BlockEntityRenderDelegate.INSTANCE.putDelegateFor(this, this.camouflage);
         }
     }
 
@@ -118,7 +116,7 @@ public class ForceFieldBlockEntity extends BlockEntity {
             tag.put("projector", NbtUtils.writeBlockPos(this.projector));
         }
         if (this.camouflage != null) {
-            tag.putString("camouflage", ForgeRegistries.BLOCKS.getKey(this.camouflage).toString());
+            tag.put("camouflage", NbtUtils.writeBlockState(this.camouflage));
         }
     }
 
@@ -130,7 +128,7 @@ public class ForceFieldBlockEntity extends BlockEntity {
             this.projector = NbtUtils.readBlockPos(tag.getCompound("projector"));
         }
         if (tag.contains("camouflage")) {
-            this.camouflage = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(tag.getString("camouflage")));
+            this.camouflage = NbtUtils.readBlockState(tag.getCompound("camouflage"));
         }
     }
 

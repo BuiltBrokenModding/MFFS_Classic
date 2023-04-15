@@ -14,7 +14,6 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.ChunkRenderTypeSet;
 import net.minecraftforge.client.model.IDynamicBakedModel;
@@ -26,13 +25,11 @@ import java.util.List;
 
 public class ForceFieldBlockModel implements IDynamicBakedModel {
     private final BakedModel defaultModel;
-    private final LoadingCache<Block, Pair<BakedModel, BlockState>> cache = CacheBuilder.newBuilder()
+    private final LoadingCache<BlockState, BakedModel> cache = CacheBuilder.newBuilder()
         .build(new CacheLoader<>() {
             @Override
-            public Pair<BakedModel, BlockState> load(Block block) {
-                BlockState camoState = block.defaultBlockState();
-                BakedModel model = Minecraft.getInstance().getBlockRenderer().getBlockModel(camoState);
-                return Pair.of(model, camoState);
+            public BakedModel load(BlockState state) {
+                return Minecraft.getInstance().getBlockRenderer().getBlockModel(state);
             }
         });
 
@@ -90,7 +87,7 @@ public class ForceFieldBlockModel implements IDynamicBakedModel {
     }
 
     private Pair<BakedModel, BlockState> getCamouflageModel(BlockState state, ModelData data) {
-        Block block = data.get(ForceFieldBlock.CAMOUFLAGE_BLOCK);
-        return block != null ? this.cache.getUnchecked(block) : Pair.of(this.defaultModel, state);
+        BlockState camoState = data.get(ForceFieldBlock.CAMOUFLAGE_BLOCK);
+        return camoState != null ? Pair.of(this.cache.getUnchecked(camoState), camoState) : Pair.of(this.defaultModel, state);
     }
 }

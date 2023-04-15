@@ -403,7 +403,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
             this.level.getBlockEntity(pos, ModObjects.FORCE_FIELD_BLOCK_ENTITY.get())
                 .ifPresent(be -> {
                     be.setProjector(this.worldPosition);
-                    Block camouflage = getCamoBlock(pair.original());
+                    BlockState camouflage = getCamoBlock(pair.original());
                     if (camouflage != null) {
                         be.setCamouflage(camouflage);
                     }
@@ -470,11 +470,11 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
         }
     }
 
-    public Block getCamoBlock(Vec3 pos) {
+    public BlockState getCamoBlock(Vec3 pos) {
         if (!this.level.isClientSide && hasModule(ModModules.CAMOUFLAGE)) {
             if (getModeStack().getItem() instanceof CustomProjectorModeItem custom) {
-                Map<Vec3, Block> map = custom.getFieldBlocks(this, getModeStack());
-                Block block = map.get(pos);
+                Map<Vec3, BlockState> map = custom.getFieldBlocks(this, getModeStack());
+                BlockState block = map.get(pos);
                 if (block != null) {
                     return block;
                 }
@@ -482,6 +482,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
             return getAllModuleItemsStream()
                 .mapPartial(ProjectorBlockEntity::getFilterBlock)
                 .findFirst()
+                .map(Block::defaultBlockState)
                 .orElse(null);
         }
         return null;

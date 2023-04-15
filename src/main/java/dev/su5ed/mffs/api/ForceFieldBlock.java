@@ -3,6 +3,7 @@ package dev.su5ed.mffs.api;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.ModelProperty;
 
 import java.util.Optional;
@@ -14,7 +15,7 @@ public interface ForceFieldBlock {
     /**
      * Model Property holding a block whose model is used for camouflaging force field blocks
      */
-    ModelProperty<Block> CAMOUFLAGE_BLOCK = new ModelProperty<>();
+    ModelProperty<BlockState> CAMOUFLAGE_BLOCK = new ModelProperty<>();
 
     /**
      * Get the projector that created this force field block

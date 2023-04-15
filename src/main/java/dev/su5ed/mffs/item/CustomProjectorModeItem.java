@@ -25,7 +25,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -190,7 +190,7 @@ public class CustomProjectorModeItem extends BaseItem {
         return this.structureManager;
     }
 
-    public Map<Vec3, Block> getFieldBlocks(Projector projector, ItemStack stack) {
+    public Map<Vec3, BlockState> getFieldBlocks(Projector projector, ItemStack stack) {
         if (projector.be().getLevel() instanceof ServerLevel serverLevel) {
             CompoundTag tag = stack.getOrCreateTag();
             CustomStructureSavedData data = getOrCreateData(serverLevel);

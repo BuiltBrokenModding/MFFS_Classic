@@ -98,8 +98,7 @@ public class ForceFieldBlockImpl extends Block implements ForceFieldBlock, Entit
 
     private Optional<BlockState> getCamouflageBlock(BlockGetter level, BlockPos pos) {
         return Optional.ofNullable(level.getExistingBlockEntity(pos))
-            .map(be -> be instanceof ForceFieldBlockEntity forceField ? forceField.getCamouflage() : null)
-            .map(Block::defaultBlockState);
+            .map(be -> be instanceof ForceFieldBlockEntity forceField ? forceField.getCamouflage() : null);
     }
 
     @Override
