@@ -1,0 +1,19 @@
+{
+    "name": "Crafting Components",
+    "icon": "mffs:battery",
+    "category": "mffs:getting_started",
+    "sortnum": 2,
+    "pages": [
+        {
+            "type": "patchouli:spotlight",
+            "item": "mffs:focus_matrix",
+            "link_recipe": true,
+            "text": "A sturdy steel plate used for crafting Field Modules, Projector Modes and Machines. Always good to have a couple at hand."
+        },
+        {
+            "type": "patchouli:crafting",
+            "recipe": "mffs:focus_matrix",
+            "text": "Crafting the Focus Matrix."
+        }
+    ]
+}

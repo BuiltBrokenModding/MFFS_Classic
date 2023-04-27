@@ -1,0 +1,29 @@
+{
+    "name": "Introduction",
+    "icon": "minecraft:lectern",
+    "category": "mffs:getting_started",
+    "sortnum": 0,
+    "priority": true,
+    "pages": [
+        {
+            "type": "patchouli:text",
+            "text": "$(l)Modular Force Field Systems$() (or MFFS) is a mod that adds $(3)force fields$(), $(5)high tech machinery$() and $(6)defensive measures$() to Minecraft. Ever tired of nuclear explosions blowing up your house or want to keep people out of your secret bases? Say no more, $(l)we've got you covered!$()"
+        },
+        {
+            "type": "patchouli:image",
+            "images": [
+                "mffs:textures/gui/handbook/overview.png"
+            ],
+            "border": true,
+            "text": "An overview of MFFS Force Field technology"
+        },
+        {
+            "type": "patchouli:text",
+            "text": "Force fields can be used for a myriad of things, including: $(li)Keeping intruders out of your house$(li)Building structures$(li)Creating underwater bases or airlocks$(li)Exterminating approaching mobs$(li)Capturing enemies in traps$(li)Protecting against ballistic missiles$(li)Confiscating items from players$()"
+        },
+        {
+            "type": "patchouli:text",
+            "text": "MFFS also features configuration options that can $(3)remove its dependency on electrical energy$(), making it usable within vanilla Minecraft or in combination with other mods. MFFS is most commonly used in $(2)multi-player$() worlds, but certainly provides many benefits for $(2)single-player$() as well."
+        }
+    ]
+}

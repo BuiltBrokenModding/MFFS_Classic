@@ -9,7 +9,11 @@ import dev.su5ed.mffs.util.FieldShapeTrigger;
 import dev.su5ed.mffs.util.MenuInventoryTrigger;
 import dev.su5ed.mffs.util.ModUtil;
 import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementRewards;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.advancements.FrameType;
+import net.minecraft.advancements.critereon.EntityPredicate;
+import net.minecraft.advancements.critereon.PlayerTrigger;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.advancements.AdvancementProvider;
 import net.minecraft.network.chat.Component;
@@ -18,6 +22,7 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 
 import java.util.function.Consumer;
 
+import static dev.su5ed.mffs.MFFSMod.location;
 import static net.minecraft.advancements.critereon.InventoryChangeTrigger.TriggerInstance.hasItems;
 
 public class AdvancementsGen extends AdvancementProvider {
@@ -29,7 +34,7 @@ public class AdvancementsGen extends AdvancementProvider {
     @Override
     protected void registerAdvancements(Consumer<Advancement> consumer, ExistingFileHelper fileHelper) {
         Advancement root = Advancement.Builder.advancement()
-            .display(ModItems.COERCION_DERIVER_ITEM.get(), title("root"), description("root"), MFFSMod.location("textures/block/machine_block.png"), FrameType.TASK, false, false, false)
+            .display(ModItems.COERCION_DERIVER_ITEM.get(), title("root"), description("root"), location("textures/block/machine_block.png"), FrameType.TASK, false, false, false)
             .addCriterion("has_steel_compound", hasItems(ModItems.STEEL_COMPOUND.get()))
             .save(consumer, id("root"));
         Advancement steelCompound = Advancement.Builder.advancement()
@@ -72,6 +77,11 @@ public class AdvancementsGen extends AdvancementProvider {
             .display(Items.ENDER_PEARL, title("custom_camouflage"), description("custom_camouflage"), null, FrameType.GOAL, true, true, false)
             .addCriterion("use_custom_camouflage", MenuInventoryTrigger.TriggerInstance.create(ModMenus.PROJECTOR_MENU.get(), true, ModItems.CUSTOM_MODE.get(), ModItems.CAMOUFLAGE_MODULE.get()))
             .save(consumer, id("custom_camouflage"));
+
+        Advancement.Builder.advancement()
+            .addCriterion("tick", new PlayerTrigger.TriggerInstance(CriteriaTriggers.TICK.getId(), EntityPredicate.Composite.ANY))
+            .rewards(AdvancementRewards.Builder.loot(location("grant_book_on_first_join")))
+            .save(consumer, id("grant_book_on_first_join"));
     }
 
     private static Component title(String name) {
