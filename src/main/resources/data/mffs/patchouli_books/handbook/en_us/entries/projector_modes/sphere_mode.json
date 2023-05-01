@@ -1,0 +1,32 @@
+{
+    "name": "Sphere Mode",
+    "icon": "mffs:sphere_mode",
+    "category": "mffs:projector_modes",
+    "pages": [
+        {
+            "type": "patchouli:spotlight",
+            "item": "mffs:sphere_mode",
+            "link_recipe": true,
+            "text": "By default, the $(2)Sphere Mode$() sets the Projector to generate a force field in the shape of a sphere that is exactly 1 block thick. Each $(5)Scale Module$() increases the size of the force field by 1 block."
+        },
+        {
+            "type": "patchouli:crafting",
+            "recipe": "mffs:sphere_mode",
+            "text": "Crafting the $(2)Sphere Mode$()."
+        },
+        {
+            "type": "patchouli:text",
+            "title": "Field Adjustment",
+            "text": "Adding $(5)Scale Module$()s to item slots marked with a directional arrow further increases the radius of the force field by 1 block per module. "
+        },
+        {
+            "type": "patchouli:image",
+            "images": [
+                "mffs:textures/gui/handbook/sphere_mode.png"
+            ],
+            "border": true,
+            "title": "Projection",
+            "text": "A scaled $(2)Sphere Mode$() field being projected."
+        }
+    ]
+}
