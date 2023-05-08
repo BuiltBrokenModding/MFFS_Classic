@@ -1,0 +1,32 @@
+{
+    "name": "Disintegration Module",
+    "icon": "mffs:disintegration_module",
+    "category": "mffs:projector_modules",
+    "pages": [
+        {
+            "type": "patchouli:spotlight",
+            "item": "mffs:disintegration_module",
+            "link_recipe": true,
+            "text": "The $(5)Disintegration Module$() can be used in a Force Field Projector to alter the effect a force field has on its surroundings. Placing a $(5)Disintegration Module$() into a Projector's matrix slots will cause the field it generates to break any blocks that are obstructing it. Broken blocks are dropped as items and can be picked up."
+        },
+        {
+            "type": "patchouli:crafting",
+            "recipe": "mffs:disintegration_module",
+            "text": "Crafting the $(5)Disintegration Module$()."
+        },
+        {
+            "type": "patchouli:text",
+            "title": "Usage",
+            "text": "The $(5)Disintegration Module$() is compatible with all projector modes and can be used to reverse the effect of the $(5)Field Stabilizer Module$(). Adding $(5)Speed Module$()s into a Projector allows multiple blocks to be disintegrated at once. It can also be combined with a $(l:mffs:projector_modules/collection_module)$(5)Collection Module$() to automatically pick up broken blocks."
+        },
+        {
+            "type": "patchouli:image",
+            "images": [
+                "mffs:textures/gui/handbook/disintegration_module.png"
+            ],
+            "border": true,
+            "title": "Projection",
+            "text": "A Force Field Projector destroying a wall using the $(5)Disintegration Module$()."
+        }
+    ]
+}

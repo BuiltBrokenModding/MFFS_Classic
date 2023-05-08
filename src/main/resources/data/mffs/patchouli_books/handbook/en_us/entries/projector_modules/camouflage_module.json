@@ -1,0 +1,32 @@
+{
+    "name": "Camouflage Module",
+    "icon": "mffs:camouflage_module",
+    "category": "mffs:projector_modules",
+    "pages": [
+        {
+            "type": "patchouli:spotlight",
+            "item": "mffs:camouflage_module",
+            "link_recipe": true,
+            "text": "The $(5)Camouflage Module$() can be used in a Force Field Projector to alter the appearance of the force field itself. With a $(5)Camouflage Module$() installed, force fields may be disguised as regular blocks. For example, a force field might be masked as a wall of Stone. The $(5)Camouflage Module$() can be used in combination with all Projector Modes."
+        },
+        {
+            "type": "patchouli:crafting",
+            "recipe": "mffs:camouflage_module",
+            "text": "Crafting the $(5)Camouflage Module$()."
+        },
+        {
+            "type": "patchouli:text",
+            "title": "Usage",
+            "text": "This feature of the Projector can help players to hide things from other people or camouflage the entrance to a secret base. Select a block you wish to use as camouflage and place it in another empty slot of the Projector's left-hand item matrix (the same matrix as the $(5)Camouflage Module$()). Activate the Projector in the usual way."
+        },
+        {
+            "type": "patchouli:image",
+            "images": [
+                "mffs:textures/gui/handbook/pyramid_camo.png"
+            ],
+            "border": true,
+            "title": "Projection",
+            "text": "A Pyramid force field camouflaged as Stripped Oak Wood."
+        }
+    ]
+}

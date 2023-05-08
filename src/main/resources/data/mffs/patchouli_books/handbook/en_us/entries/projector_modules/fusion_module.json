@@ -1,0 +1,18 @@
+{
+    "name": "Field Fusion Module",
+    "icon": "mffs:fusion_module",
+    "category": "mffs:projector_modules",
+    "pages": [
+        {
+            "type": "patchouli:spotlight",
+            "item": "mffs:fusion_module",
+            "link_recipe": true,
+            "text": "The $(5)Field Fusion Module$() can be placed in the matrix slots of Force Field Projectors to fuse two or more projected fields. The module will cut off any projected blocks that overlap with another forcefield. Multiple force field having this module will then be seamlessly merged into one."
+        },
+        {
+            "type": "patchouli:crafting",
+            "recipe": "mffs:fusion_module",
+            "text": "Crafting the $(5)Field Fusion Module$()."
+        }
+    ]
+}
