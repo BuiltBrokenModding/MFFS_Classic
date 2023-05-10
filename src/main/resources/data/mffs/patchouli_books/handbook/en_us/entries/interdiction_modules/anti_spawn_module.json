@@ -1,0 +1,18 @@
+{
+    "name": "Anti-Spawn Module",
+    "icon": "mffs:anti_spawn_module",
+    "category": "mffs:interdiction_modules",
+    "pages": [
+        {
+            "type": "patchouli:spotlight",
+            "item": "mffs:anti_spawn_module",
+            "link_recipe": true,
+            "text": "The $(5)Anti-Spawn Module$() is an optional module for the Interdiction Matrix. With this module installed, the Matrix will prevent hostile or friendly entities from spawning within its action area. If a player posseses a spawn egg, standing just outside the action range of the Matrix will let them spawn the entity inside the protected region."
+        },
+        {
+            "type": "patchouli:crafting",
+            "recipe": "mffs:anti_spawn_module",
+            "text": "Crafting the $(5)Anti-Spawn Module$()."
+        }
+    ]
+}

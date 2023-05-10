@@ -1,0 +1,6 @@
+{
+    "name": "Interdiction Modules",
+    "description": "Available upgrade modules for your Interdiction Matrix.",
+    "sortnum": 1,
+    "icon": "mffs:anti_hostile_module"
+}
