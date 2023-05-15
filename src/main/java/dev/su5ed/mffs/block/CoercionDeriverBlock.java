@@ -24,7 +24,7 @@ public class CoercionDeriverBlock extends BaseEntityBlock {
     );
 
     public CoercionDeriverBlock(Properties properties) {
-        super(properties, ModObjects.COERCION_DERIVER_BLOCK_ENTITY::get);
+        super(properties, ModObjects.COERCION_DERIVER_BLOCK_ENTITY);
     }
 
     @Override
