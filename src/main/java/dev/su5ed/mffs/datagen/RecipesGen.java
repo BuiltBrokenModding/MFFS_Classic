@@ -13,7 +13,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.Tags;
 
-import java.util.HashMap;
 import java.util.function.Consumer;
 
 import static dev.su5ed.mffs.MFFSMod.location;
