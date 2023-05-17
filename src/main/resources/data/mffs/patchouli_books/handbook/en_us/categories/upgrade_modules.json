@@ -1,0 +1,6 @@
+{
+    "name": "Upgrade Modules",
+    "description": "Universally available upgrade modules for your Force Field machines.",
+    "sortnum": 2,
+    "icon": "mffs:scale_module"
+}

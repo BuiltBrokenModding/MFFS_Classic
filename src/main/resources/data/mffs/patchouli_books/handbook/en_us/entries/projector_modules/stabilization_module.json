@@ -1,0 +1,49 @@
+{
+    "name": "Stabilization Module",
+    "icon": "mffs:stabilization_module",
+    "category": "mffs:projector_modules",
+    "pages": [
+        {
+            "type": "patchouli:spotlight",
+            "item": "mffs:stabilization_module",
+            "link_recipe": true,
+            "text": "The $(5)Stabilization Module$() may be used in a $(l:mffs:machines/projector)Force Field Projector$() to crystallise the field into a solid form. Instead of creating an energy field barrier that disappears when it is turned off, the Projector replaces the field with real blocks supplied by the player."
+        },
+        {
+            "type": "patchouli:text",
+            "text": "In this manner, the $(5)Stabilization Module$() makes it possible to produce an exact physical replica of a force field pattern that remains after the Projector is deactivated. Because the field is constructed using actual blocks, its durability corresponds to that of the blocks. However, as long as the Projector is sufficiently powered and supplied with enough replacement blocks, it will continually regenerate the field structure if it is broken."
+        },
+        {
+            "type": "patchouli:text",
+            "text": "The stabilization (transposition) process requires more $(l:mffs:getting_started/fortron)Fortron$() and is slower than normal field projection; but if used in combination with the $(l:mffs:projector_modes/custom_mode)$(2)Custom Mode$() feature of a Projector, its conceivable applications are virtually limitless. For example, a player could create a structure that was automatically repaired whenever a $(2)Creeper$() tried to blow it up. Adding $(l:mffs:upgrade_modules/speed_module)$(5)Speed Module$()s into a Projector allows multiple blocks to be stabilized at once."
+        },
+        {
+            "type": "patchouli:crafting",
+            "recipe": "mffs:stabilization_module",
+            "text": "Crafting the $(5)Stabilization Module$()."
+        },
+        {
+            "type": "patchouli:text",
+            "title": "Usage",
+            "text": "$(li)Place a chest next to the $(l:mffs:machines/projector)Force Field Projector$() (any side) and make sure it contains the required blocks to build the field up.$(li)Insert a Field Stabilization Module into the Projector's matrix slots. Setup the field as your wish and then activate the Projector.$(li)The Projector will consume blocks from adjacent chests in the order that they appear. If a chest contains a mixture of different blocks, the target structure will also be composed of a block mixture.$()"
+        },
+        {
+            "type": "patchouli:image",
+            "images": [
+                "mffs:textures/gui/handbook/stabilization_module.png"
+            ],
+            "border": true,
+            "title": "Projection",
+            "text": "A Force Field Projector stabilizing a wall using the $(5)Stabilization Module$()."
+        },
+        {
+            "type": "patchouli:text",
+            "title": "Custom Mode Usage",
+            "text": "Unlike the other modes available for the $(l:mffs:machines/projector)Force Field Projector$(), the $(l:mffs:projector_modes/custom_mode)$(2)Custom Mode$() item stores the precise position and type of each block it analyses. As a result, the stabilization process for the $(l:mffs:projector_modes/custom_mode)$(2)Custom Mode$() does not work in the same way. Instead of consuming blocks in their order of appearance and transposing them to arbitrary locations; the Projector will take only the block types that match the original pattern."
+        },
+        {
+            "type": "patchouli:text",
+            "text": "Each block is placed exactly as it should be according to its type and position. If a Projector runs out of the matching block types necessary to replicate a pattern, it will pause until they are provided."
+        }
+    ]
+}

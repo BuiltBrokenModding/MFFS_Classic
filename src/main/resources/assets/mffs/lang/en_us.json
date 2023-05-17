@@ -35,6 +35,8 @@
   "info.mffs.show_details": "Hold %s for details",
   "info.mffs.key.shift": "Shift",
   "info.mffs.fortron_usage": "Fortron: %s L/s",
+  "info.mffs.handbook.title": "Force Field Handbook", 
+  "info.mffs.handbook.landing_text": "Welcome to the in-game MFFS user guide, designed to help you navigate the complex world of Force Field technology. Force Fields, high tech machinery and defensive measures are all included. Let's get started!", 
   
   "death.attack.mffs.field_shock": "%1$s was disintegrated by a force field.",
   

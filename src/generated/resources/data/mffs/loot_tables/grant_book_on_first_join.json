@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:empty",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "patchouli:guide_book"
+        }
+      ],
+      "functions": [
+        {
+          "function": "minecraft:set_nbt",
+          "tag": "{\"patchouli:book\":\"mffs:handbook\"}"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+    "name": "Shock Module",
+    "icon": "mffs:shock_module",
+    "category": "mffs:projector_modules",
+    "pages": [
+        {
+            "type": "patchouli:spotlight",
+            "item": "mffs:shock_module",
+            "link_recipe": true,
+            "text": "Placing a $(5)Shock Module$() in a $(l:mffs:machines/projector)Force Field Projector$() makes the force field become electrified. When a player or entity comes into contact with an electrified field, they receive a shock which causes damage. Each $(5)Shock Module$() added to the Projector increases the damage done to a player or entity by half a heart."
+        },
+        {
+            "type": "patchouli:crafting",
+            "recipe": "mffs:shock_module",
+            "text": "Crafting the $(5)Shock Module$()."
+        }
+    ]
+}

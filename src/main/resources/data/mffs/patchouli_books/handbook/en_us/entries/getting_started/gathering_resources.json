@@ -1,0 +1,29 @@
+{
+    "name": "Gathering Resources",
+    "icon": "mffs:steel_compound",
+    "category": "mffs:getting_started",
+    "sortnum": 1,
+    "turnin": "mffs:smelt_steel",
+    "pages": [
+        {
+            "type": "patchouli:text",
+            "text": "The first step towards force fields is finding the base resources.$(br)MFFS components are mainly made out of $(5)Steel Ingots$(), which can be crafted in 2 simple steps. First, make yourself some $(5)Steel Compound$() in crafting, which you can then smelt into ingots."
+        },
+        {
+            "type": "patchouli:crafting",
+            "recipe": "mffs:steel_compound",
+            "text": "Combine an Iron Ingot with 4 Coal to create a Steel Compound."
+        },
+        {
+            "type": "patchouli:smelting",
+            "recipe": "mffs:steel_ingot",
+            "text": "Smelting the Steel Compound into a Steel Ingot."
+        },
+        {
+            "type": "patchouli:spotlight",
+            "item": "mffs:steel_ingot",
+            "link_recipe": true,
+            "text": "One of the most common ingredients you'll be using in MFFS. It is used to craft base components such as the $(5)Focus Matrix$() or the $(2)Blank Card$(), as well as force field machinery."
+        }
+    ]
+}

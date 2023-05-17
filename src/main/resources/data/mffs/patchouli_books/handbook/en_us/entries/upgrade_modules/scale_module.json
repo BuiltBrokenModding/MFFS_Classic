@@ -1,0 +1,18 @@
+{
+    "name": "Scale Module",
+    "icon": "mffs:scale_module",
+    "category": "mffs:upgrade_modules",
+    "pages": [
+        {
+            "type": "patchouli:spotlight",
+            "item": "mffs:scale_module",
+            "link_recipe": true,
+            "text": "The $(5)Scale Module$() can be placed in the upgrade slots of various MFFS machines to upgrade their distance capabilities. Its effects vary depending on the machine, but most commonly include: $(li)Incrasing force field size$(li)Increasing interdiction area$(li)Increasing the fuel boost in a $(l:mffs:machines/coercion_deriver)Coercion Deriver$()"
+        },
+        {
+            "type": "patchouli:crafting",
+            "recipe": "mffs:scale_module",
+            "text": "Crafting the $(5)Scale Module$()."
+        }
+    ]
+}

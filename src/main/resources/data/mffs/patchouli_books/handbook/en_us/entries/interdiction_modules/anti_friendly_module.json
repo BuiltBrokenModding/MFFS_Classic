@@ -1,0 +1,18 @@
+{
+    "name": "Anti-Friendly Module",
+    "icon": "mffs:anti_friendly_module",
+    "category": "mffs:interdiction_modules",
+    "pages": [
+        {
+            "type": "patchouli:spotlight",
+            "item": "mffs:anti_friendly_module",
+            "link_recipe": true,
+            "text": "The $(5)Anti-Friendly Module$() is an optional module for the $(l:mffs:machines/interdiction_matrix)Interdiction Matrix$(). With this module installed, the Matrix will automatically detect friendly entities (like sheep, cows and villagers) that enter its scanning range and kill them - almost instantly. Players and hostile mobs are unharmed."
+        },
+        {
+            "type": "patchouli:crafting",
+            "recipe": "mffs:anti_friendly_module",
+            "text": "Crafting the $(5)Anti-Friendly Module$()."
+        }
+    ]
+}

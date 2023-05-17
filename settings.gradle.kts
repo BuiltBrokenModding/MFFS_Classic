@@ -10,8 +10,8 @@ pluginManagement {
             url = uri("https://maven.parchmentmc.org")
         }
         maven {
-            name = "Su5eD"
-            url = uri("https://maven.su5ed.dev/releases")
+            name = "Gofancy"
+            url = uri("https://maven.gofancy.wtf/releases")
         }
     }
 }

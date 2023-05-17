@@ -1,0 +1,50 @@
+{
+    "name": "Custom Mode",
+    "icon": "mffs:custom_mode",
+    "category": "mffs:projector_modes",
+    "pages": [
+        {
+            "type": "patchouli:spotlight",
+            "item": "mffs:custom_mode",
+            "link_recipe": true,
+            "text": "The $(2)Custom Mode$() is the most versatile of all the modes, as it allows a force field of any shape or structure to be projected. Once a user-defined block pattern has been analysed and stored by the $(2)Custom Mode$() item itself, the Projector is able to generate a force field that is an $(9)exact replica$() of the original. In this manner, force fields may be constructed in the shape of $(9)anything that can be crafted$() - including a bridge, a house, or even an entire fortress!"
+        },
+        {
+            "type": "patchouli:crafting",
+            "recipe": "mffs:custom_mode",
+            "text": "Crafting the $(2)Custom Mode$()."
+        },
+        {
+            "type": "patchouli:text",
+            "title": "Usage",
+            "text": "Hold the $(2)Custom Mode$() item and use it on two blocks in the world. These two (primary and secondary) blocks will define a 3D space that the $(2)Custom Mode$() can analyse. As each block is clicked on, their coordinates in the world will be stored as 'Primary pos' and 'Secondary pos'. Use while sneaking to instruct the $(2)Custom Mode$() item to analyze and save all the blocks that exist between the selected points."
+        },
+        {
+            "type": "patchouli:text",
+            "text": "When the Projector detects that a $(2)Custom Mode$() item has been entered into the correct slot, random holograms will continuously appear above it to indicate that the field pattern does not match any of the known mode shapes (this is a feature, not a bug). If desired, set where the force field should appear (in relation to the Projector) by adding $(l:mffs:projector_modules/translation_module)$(5)Translation Modules$() into the item slots marked by directional arrows."
+        },
+        {
+            "type": "patchouli:text",
+            "title": "Field Adjustment",
+            "text": "As with the other projector modes, $(2)Custom Mode$() force fields can be rotated and scaled using the $(l:mffs:projector_modules/rotation_module)$(5)Rotation$() and $(l:mffs:upgrade_modules/scale_module)$(5)Scale Modules$() respectively."
+        },
+        {
+            "type": "patchouli:image",
+            "images": [
+                "mffs:textures/gui/handbook/custom_mode.png"
+            ],
+            "border": true,
+            "title": "Projection",
+            "text": "A $(2)Custom Mode$() field being projected."
+        },
+        {
+            "type": "patchouli:image",
+            "images": [
+                "mffs:textures/gui/handbook/custom_mode_camo.png"
+            ],
+            "border": true,
+            "title": "Projection",
+            "text": "A $(2)Custom Mode$() field being projected with a $(l:mffs:projector_modules/camouflage_module)$(5)Camouflage Module$() applied."
+        }
+    ]
+}

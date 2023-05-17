@@ -1,0 +1,28 @@
+{
+    "name": "Remote Controller",
+    "icon": "mffs:remote_controller",
+    "category": "mffs:tools",
+    "pages": [
+        {
+            "type": "patchouli:spotlight",
+            "item": "mffs:remote_controller",
+            "link_recipe": true,
+            "text": "The $(5)Remote Controller$() is an extraordinary device that is at the forefront of remote configuration technology. Instead of plainly allowing an MFFS machine to be turned on or off, it provides material access to the machine's actual GUI."
+        },
+        {
+            "type": "patchouli:crafting",
+            "recipe": "mffs:remote_controller",
+            "text": "Crafting the $(5)Remote Controller$()."
+        },
+        {
+            "type": "patchouli:text",
+            "title": "Operation",
+            "text": "When activated, the Remote establishes a bidirectional matter stream with the machine it has been set to control. In doing so, a player is not only granted access to all the machine's configurable options, but can add and remove its items as well - like they were standing right beside it. A $(5)Remote Controller$() does not need to be charged; it draws energy directly from a nearby MFFS machine using the same frequency. As such, a Remote cannot function if there is insufficient $(l:mffs:getting_started/fortron)Fortron$() available."
+        },
+        {
+            "type": "patchouli:text",
+            "title": "Usage",
+            "text": "$(li)Open the GUI of the MFFS machine to be controlled and place the Controller into its frequency slot to set the controller's frequency. $(li)Link the remote to the target machine by shift-right-clicking on it. The controller will display the name and coordinates of the machine it has linked with. $(li)Walk away from the machine and right-click with the remote to access the machine's GUI."
+        }
+    ]
+}

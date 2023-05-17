@@ -1,0 +1,19 @@
+{
+    "name": "Crafting Components",
+    "icon": "mffs:focus_matrix",
+    "category": "mffs:getting_started",
+    "sortnum": 2,
+    "pages": [
+        {
+            "type": "patchouli:spotlight",
+            "item": "mffs:focus_matrix",
+            "link_recipe": true,
+            "text": "A sturdy steel plate used for crafting $(l:mffs:projector_modes)Projector Modes$(), $(l:mffs:projector_modules)Projector Modules$() and $(l:mffs:machines)Machines$(). Always good to have a couple at hand."
+        },
+        {
+            "type": "patchouli:crafting",
+            "recipe": "mffs:focus_matrix",
+            "text": "Crafting the Focus Matrix."
+        }
+    ]
+}

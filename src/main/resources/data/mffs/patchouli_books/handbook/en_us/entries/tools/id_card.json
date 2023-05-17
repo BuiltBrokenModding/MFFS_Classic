@@ -1,0 +1,23 @@
+{
+    "name": "Identification Card",
+    "icon": "mffs:id_card",
+    "category": "mffs:tools",
+    "pages": [
+        {
+            "type": "patchouli:spotlight",
+            "item": "mffs:id_card",
+            "link_recipe": true,
+            "text": "MFFS $(5)Identification Card$() are used in combination with the $(l:mffs:machines/biometric_identifier)Biometric Identifier$() to govern the rights and privileges of players."
+        },
+        {
+            "type": "patchouli:crafting",
+            "recipe": "mffs:id_card",
+            "text": "Crafting the $(5)Identification Card$()."
+        },
+        {
+            "type": "patchouli:text",
+            "title": "Usage",
+            "text": "Before an Identification Card can be used, it needs to be assigned to a player. An Identification Card can be assigned to yourself by shift-right-clicking while holding the card. You can also shift-right-click other players to assign the card to them. Activate the card again to clear the stored identity."
+        }
+    ]
+}

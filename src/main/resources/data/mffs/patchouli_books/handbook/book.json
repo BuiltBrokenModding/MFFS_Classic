@@ -1,0 +1,9 @@
+{
+  "name": "info.mffs.handbook.title",
+  "landing_text": "info.mffs.handbook.landing_text",
+  "version": 1,
+  "book_texture": "patchouli:textures/gui/book_blue.png",
+  "model": "mffs:handbook",
+  "creative_tab": "mffs",
+  "advancements_tab": "mffs"
+}

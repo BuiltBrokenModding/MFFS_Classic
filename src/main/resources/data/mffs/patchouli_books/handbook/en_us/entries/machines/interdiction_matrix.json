@@ -1,0 +1,27 @@
+{
+    "name": "Interdiction Matrix",
+    "icon": "mffs:interdiction_matrix",
+    "category": "mffs:machines",
+    "pages": [
+        {
+            "type": "patchouli:spotlight",
+            "item": "mffs:interdiction_matrix",
+            "link_recipe": true,
+            "text": "The $(9)Interdiction Matrix$() is a member of the MFFS family of machines. It imposes restrictions on players or entities present in the space around it. For example, it can be configured to automatically kill mobs or players that move into its area of effect, or to prevent unauthorised players from tampering with other machines."
+        },
+        {
+            "type": "patchouli:crafting",
+            "recipe": "mffs:interdiction_matrix",
+            "text": "Crafting the $(9)Interdiction Matrix$()."
+        },
+        {
+            "type": "patchouli:text",
+            "title": "Operation",
+            "text": "The space around an $(9)Interdiction Matrix$() is split up into two logical regions: $(bold)Action$() and $(bold)Warning$(). The action region radiates out from the Matrix itself by the same number of blocks as there are $(l:mffs:upgrade_modules/scale_module)$(5)Scale Modules$() installed. By default, the warning region continues from the edge of the action region (as a concentric sphere) by an additional 3 blocks."
+        },
+        {
+            "type": "patchouli:text",
+            "text": "When a player moves into the warning area of an $(l:mffs:machines/interdiction_matrix)Interdiction Matrix$(), it will send an alert message to say they have just entered its scanning range. If a player does not wish to experience first-hand which modules the Matrix has installed, they should not proceed closer. With no modules installed, an $(l:mffs:machines/interdiction_matrix)Interdiction Matrix$() doesn't really do anything. With $(l:mffs:interdiction_modules)$(5)modules$() installed, it can serve as a powerful defense system."
+        }
+    ]
+}
