@@ -7,7 +7,7 @@
             "type": "patchouli:spotlight",
             "item": "mffs:pyramid_mode",
             "link_recipe": true,
-            "text": "By default, the $(2)Pyramid Mode$() sets the Projector to generate a force field in a pyramid-like shape. The thickness of the pyramid-like shape depends on its size. Each $(5)Scale Module$() increases the size of the field by 1 block in all directions."
+            "text": "By default, the $(2)Pyramid Mode$() sets the Projector to generate a force field in a pyramid-like shape. The thickness of the pyramid-like shape depends on its size. Each $(l:mffs:upgrade_modules/scale_module)$(5)Scale Module$() increases the size of the field by 1 block in all directions."
         },
         {
             "type": "patchouli:crafting",
@@ -17,11 +17,11 @@
         {
             "type": "patchouli:text",
             "title": "Field Adjustment",
-            "text": "Placing a $(5)Scale Module$() into an item slot marked by a directional arrow has a different effect. A module placed in either the left, right, front or back item slots will scale the field by 1 block in both opposing directions at the same time. Placing a module in either the up or down item slots will scale the field by 1 block only in that direction."
+            "text": "Placing a $(l:mffs:upgrade_modules/scale_module)$(5)Scale Module$() into an item slot marked by a directional arrow has a different effect. A module placed in either the left, right, front or back item slots will scale the field by 1 block in both opposing directions at the same time. Placing a module in either the up or down item slots will scale the field by 1 block only in that direction."
         },
         {
             "type": "patchouli:text",
-            "text": "For example, to increase the height of a force field by 1 block; add a $(5)Scale Module$() into an item slot marked by a directional arrow pointing towards the top-left or top-right of the GUI screen. "
+            "text": "For example, to increase the height of a force field by 1 block; add a $(l:mffs:upgrade_modules/scale_module)$(5)Scale Module$() into an item slot marked by a directional arrow pointing towards the top-left or top-right of the GUI screen."
         },
         {
             "type": "patchouli:image",

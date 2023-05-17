@@ -7,7 +7,7 @@
             "type": "patchouli:spotlight",
             "item": "mffs:collection_module",
             "link_recipe": true,
-            "text": "When placed in a Force Field Projector's matrix slots, in combination with a $(l:mffs:projector_modules/disintegration_module)$(5)Disintegration Module$(), the $(5)Collection Module$() collects items dropped from destroyed blocks into inventories surrounding the Projector."
+            "text": "When placed in a $(l:mffs:machines/projector)Force Field Projector$()'s matrix slots, in combination with a $(l:mffs:projector_modules/disintegration_module)$(5)Disintegration Module$(), the $(5)Collection Module$() collects items dropped from destroyed blocks into inventories surrounding the Projector."
         },
         {
             "type": "patchouli:crafting",

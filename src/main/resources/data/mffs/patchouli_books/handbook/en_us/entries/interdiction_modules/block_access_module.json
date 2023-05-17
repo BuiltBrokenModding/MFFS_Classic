@@ -7,7 +7,7 @@
             "type": "patchouli:spotlight",
             "item": "mffs:block_access_module",
             "link_recipe": true,
-            "text": "The $(5)Block Access Module$() is an optional module for the Interdiction Matrix. It enables a Matrix to inhibit a player's ability to right-click on a block and access its GUI screen."
+            "text": "The $(5)Block Access Module$() is an optional module for the $(l:mffs:machines/interdiction_matrix)Interdiction Matrix$(). It enables a Matrix to inhibit a player's ability to right-click on a block and access its GUI screen."
         },
         {
             "type": "patchouli:crafting",

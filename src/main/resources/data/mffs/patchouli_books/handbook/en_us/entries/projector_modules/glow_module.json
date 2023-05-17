@@ -7,7 +7,7 @@
             "type": "patchouli:spotlight",
             "item": "mffs:glow_module",
             "link_recipe": true,
-            "text": "The $(5)Glow Module$() can be used in a Force Field Projector to illuminate the area around the field. Installing $(5)Glow Modules$() into a Projector makes the force field emit light. As more $(5)Glow Modules$() are added (up to a maximum of 64), the field's brightness increases - until it becomes equal to that of Glowstone."
+            "text": "The $(5)Glow Module$() can be used in a $(l:mffs:machines/projector)Force Field Projector$() to illuminate the area around the field. Installing $(5)Glow Modules$() into a Projector makes the force field emit light. As more $(5)Glow Modules$() are added (up to a maximum of 64), the field's brightness increases - until it becomes equal to that of Glowstone."
         },
         {
             "type": "patchouli:crafting",

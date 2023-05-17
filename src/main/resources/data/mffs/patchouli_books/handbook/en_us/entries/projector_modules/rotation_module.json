@@ -7,7 +7,7 @@
             "type": "patchouli:spotlight",
             "item": "mffs:rotation_module",
             "link_recipe": true,
-            "text": "The $(5)Rotation Module$() can be placed in the field slots of the Force Field Projector to rotate the projected field. You can move the force field around the x, y or z axis by placing $(5)Rotation Module$()s in the respective slot for that axis. $(li)EAST, WEST - Adjust the Yaw$(li)UP, DOWN - Adjust the Pitch$(li)SOUTH, NORTH - Adjust the Roll$()"
+            "text": "The $(5)Rotation Module$() can be placed in the field slots of the $(l:mffs:machines/projector)Force Field Projector$() to rotate the projected field. You can move the force field around the x, y or z axis by placing $(5)Rotation Module$()s in the respective slot for that axis. $(li)EAST, WEST - Adjust the Yaw$(li)UP, DOWN - Adjust the Pitch$(li)SOUTH, NORTH - Adjust the Roll$()"
         },
         {
             "type": "patchouli:crafting",

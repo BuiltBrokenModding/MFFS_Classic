@@ -7,7 +7,7 @@
             "type": "patchouli:spotlight",
             "item": "mffs:inverter_module",
             "link_recipe": true,
-            "text": "The $(5)Inverter Module$() can be placed in the matrix slots of Force Field Projectors to flip the projected shape inside out, creating a filled force field area."
+            "text": "The $(5)Inverter Module$() can be placed in the matrix slots of $(l:mffs:machines/projector)Force Field Projector$()s to flip the projected shape inside out, creating a filled force field area."
         },
         {
             "type": "patchouli:crafting",

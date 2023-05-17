@@ -7,7 +7,7 @@
             "type": "patchouli:spotlight",
             "item": "mffs:silence_module",
             "link_recipe": true,
-            "text": "The $(5)Silence Module$() can be placed in the matrix slots of Force Field Projectors to muffle its sounds."
+            "text": "The $(5)Silence Module$() can be placed in the matrix slots of $(l:mffs:machines/projector)Force Field Projector$()s to muffle its sounds."
         },
         {
             "type": "patchouli:crafting",

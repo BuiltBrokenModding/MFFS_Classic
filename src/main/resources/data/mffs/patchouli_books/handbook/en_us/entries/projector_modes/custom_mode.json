@@ -21,12 +21,12 @@
         },
         {
             "type": "patchouli:text",
-            "text": "When the Projector detects that a $(2)Custom Mode$() item has been entered into the correct slot, random holograms will continuously appear above it to indicate that the field pattern does not match any of the known mode shapes (this is a feature, not a bug). If desired, set where the force field should appear (in relation to the Projector) by adding $(5)Translation Modules$() into the item slots marked by directional arrows."
+            "text": "When the Projector detects that a $(2)Custom Mode$() item has been entered into the correct slot, random holograms will continuously appear above it to indicate that the field pattern does not match any of the known mode shapes (this is a feature, not a bug). If desired, set where the force field should appear (in relation to the Projector) by adding $(l:mffs:projector_modules/translation_module)$(5)Translation Modules$() into the item slots marked by directional arrows."
         },
         {
             "type": "patchouli:text",
             "title": "Field Adjustment",
-            "text": "As with the other projector modes, $(2)Custom Mode$() force fields can be rotated and scaled using the $(5)Rotation$() and $(5)Scale Modules$() respectively."
+            "text": "As with the other projector modes, $(2)Custom Mode$() force fields can be rotated and scaled using the $(l:mffs:projector_modules/rotation_module)$(5)Rotation$() and $(l:mffs:upgrade_modules/scale_module)$(5)Scale Modules$() respectively."
         },
         {
             "type": "patchouli:image",
@@ -44,7 +44,7 @@
             ],
             "border": true,
             "title": "Projection",
-            "text": "A $(2)Custom Mode$() field being projected with a $(5)Camouflage Module$() applied."
+            "text": "A $(2)Custom Mode$() field being projected with a $(l:mffs:projector_modules/camouflage_module)$(5)Camouflage Module$() applied."
         }
     ]
 }

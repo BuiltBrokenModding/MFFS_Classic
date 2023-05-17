@@ -17,11 +17,11 @@
         {
             "type": "patchouli:text",
             "title": "Operation",
-            "text": "The space around an $(9)Interdiction Matrix$() is split up into two logical regions: $(bold)Action$() and $(bold)Warning$(). The action region radiates out from the Matrix itself by the same number of blocks as there are $(5)Scale Modules$() installed. By default, the warning region continues from the edge of the action region (as a concentric sphere) by an additional 3 blocks."
+            "text": "The space around an $(9)Interdiction Matrix$() is split up into two logical regions: $(bold)Action$() and $(bold)Warning$(). The action region radiates out from the Matrix itself by the same number of blocks as there are $(l:mffs:upgrade_modules/scale_module)$(5)Scale Modules$() installed. By default, the warning region continues from the edge of the action region (as a concentric sphere) by an additional 3 blocks."
         },
         {
             "type": "patchouli:text",
-            "text": "When a player moves into the warning area of an $(9)Interdiction Matrix$(), it will send an alert message to say they have just entered its scanning range. If a player does not wish to experience first-hand which modules the Matrix has installed, they should not proceed closer. With no modules installed, an $(9)Interdiction Matrix$() doesn't really do anything. With $(l:mffs:interdiction_modules)$(5)modules$() installed, it can serve as a powerful defense system."
+            "text": "When a player moves into the warning area of an $(l:mffs:machines/interdiction_matrix)Interdiction Matrix$(), it will send an alert message to say they have just entered its scanning range. If a player does not wish to experience first-hand which modules the Matrix has installed, they should not proceed closer. With no modules installed, an $(l:mffs:machines/interdiction_matrix)Interdiction Matrix$() doesn't really do anything. With $(l:mffs:interdiction_modules)$(5)modules$() installed, it can serve as a powerful defense system."
         }
     ]
 }

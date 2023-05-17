@@ -7,7 +7,7 @@
             "type": "patchouli:spotlight",
             "item": "mffs:cube_mode",
             "link_recipe": true,
-            "text": "By default, the $(2)Cube Mode$() sets the Projector to generate a force field in the shape of a cube that is exactly 1 block thick. Each $(5)Scale Module$() increases the size of the force field by 1 block in all directions."
+            "text": "By default, the $(2)Cube Mode$() sets the Projector to generate a force field in the shape of a cube that is exactly 1 block thick. Each $(l:mffs:upgrade_modules/scale_module)$(5)Scale Module$() increases the size of the force field by 1 block in all directions."
         },
         {
             "type": "patchouli:crafting",
@@ -17,7 +17,7 @@
         {
             "type": "patchouli:text",
             "title": "Field Adjustment",
-            "text": "The $(2)Cube Mode$() item can also be used to create cuboid (or right rectangular prism) shape force fields. Placing a $(5)Scale Module$() into an item slot marked by a directional arrow will scale the field by 1 block in only that direction. For example, to increase the height of a force field by 1 block; add a $(5)Scale Module$() into an item slot marked by a directional arrow pointing towards the top-left or top-right of the GUI screen."
+            "text": "The $(2)Cube Mode$() item can also be used to create cuboid (or right rectangular prism) shape force fields. Placing a $(l:mffs:upgrade_modules/scale_module)$(5)Scale Module$() into an item slot marked by a directional arrow will scale the field by 1 block in only that direction. For example, to increase the height of a force field by 1 block; add a $(l:mffs:upgrade_modules/scale_module)$(5)Scale Module$() into an item slot marked by a directional arrow pointing towards the top-left or top-right of the GUI screen."
         },
         {
             "type": "patchouli:image",

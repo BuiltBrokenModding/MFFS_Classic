@@ -7,7 +7,7 @@
             "type": "patchouli:spotlight",
             "item": "mffs:speed_module",
             "link_recipe": true,
-            "text": "The $(5)Speed Module$() can be placed in the upgrade slots of various MFFS machines to upgrade their performance. Its effects vary depending on the machine, but most commonly include: $(li)Speeding up force field projection$(li)Increasing the Fortron transfer limit of a Fortron Capacitor$(li)Increasing the efficiency of a Coercion Deriver$()"
+            "text": "The $(5)Speed Module$() can be placed in the upgrade slots of various MFFS machines to upgrade their performance. Its effects vary depending on the machine, but most commonly include: $(li)Speeding up force field projection$(li)Increasing the $(l:mffs:getting_started/fortron)Fortron$() transfer limit of a $(l:mffs:machines/fortron_capacitor)Fortron Capacitor$()$(li)Increasing the efficiency of a $(l:mffs:machines/coercion_deriver)Coercion Deriver$()"
         },
         {
             "type": "patchouli:crafting",

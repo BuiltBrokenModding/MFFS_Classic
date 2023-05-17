@@ -7,7 +7,7 @@
             "type": "patchouli:spotlight",
             "item": "mffs:coercion_deriver",
             "link_recipe": true,
-            "text": "The $(9)Coercion Deriver$() is a member of the MFFS family of machines. It is primarily used to generate Fortron from FE energy, which other MFFS machines require to function. A $(9)Coercion Deriver$() is designed to work in conjunction with a $(9)Fortron Capacitor$() to charge it with Fortron. Fortron is then distributed to the other machines by the Capacitor."
+            "text": "The $(9)Coercion Deriver$() is a member of the MFFS family of machines. It is primarily used to generate $(l:mffs:getting_started/fortron)Fortron$() from FE energy, which other MFFS machines require to function. A $(9)Coercion Deriver$() is designed to work in conjunction with a $(l:mffs:machines/fortron_capacitor)Fortron Capacitor$() to charge it with $(l:mffs:getting_started/fortron)Fortron$(). $(l:mffs:getting_started/fortron)Fortron$() is then distributed to the other machines by the Capacitor."
         },
         {
             "type": "patchouli:crafting",
@@ -17,21 +17,21 @@
         {
             "type": "patchouli:text",
             "title": "Usage",
-            "text": "To generate Fortron, connect the $(9)Coercion Deriver$() to a FE source and activate it using a Redstone signal. Once powered and activated, the $(9)Coercion Deriver$() will change from red to blue and begin generating Fortron. A $(9)Coercion Deriver$() may be linked to other MFFS machines, such as a $(9)Fortron Capacitor$(), by setting its frequency number to match that of the other machines."
+            "text": "To generate $(l:mffs:getting_started/fortron)Fortron$(), connect the $(9)Coercion Deriver$() to a FE source and activate it using a Redstone signal. Once powered and activated, the $(9)Coercion Deriver$() will change from red to blue and begin generating $(l:mffs:getting_started/fortron)Fortron$(). A $(9)Coercion Deriver$() may be linked to other MFFS machines, such as a $(l:mffs:machines/fortron_capacitor)Fortron Capacitor$(), by setting its frequency number to match that of the other machines."
         },
         {
             "type": "patchouli:text",
-            "text": "This can be achieved by either:$(li)Right-clicking the Deriver and entering the desired frequency number into its GUI screen$(li)Shift-right-clicking the Coercion Deriver while holding a Frequency Card$(p)The $(9)Coercion Deriver$()'s ability to generate Fortron can be amplified using $(2)Lapis Lazuli$() or $(2)Nether Quartz$(). For this, place either into the slot next to the arrow. This should increase Fortron output by about 20x."
+            "text": "This can be achieved by either:$(li)Right-clicking the Deriver and entering the desired frequency number into its GUI screen$(li)Shift-right-clicking the Coercion Deriver while holding a Frequency Card$(p)The $(9)Coercion Deriver$()'s ability to generate $(l:mffs:getting_started/fortron)Fortron$() can be amplified using $(2)Lapis Lazuli$() or $(2)Nether Quartz$(). For this, place either into the slot next to the arrow. This should increase $(l:mffs:getting_started/fortron)Fortron$() output by about 20x."
         },
         {
             "type": "patchouli:text",
             "title": "Operation Modes",
-            "text": "The $(9)Coercion Deriver$() has two modes of operation: Derive and Integrate. By default, the it is set to Derive - meaning it steadily converts supplied FE into Fortron. Clicking the $(2)Derive$() toggle button in the middle of the GUI screen switches its operating mode to $(2)Integrate$() and vice versa. In Integrate mode, the Deriver operates in reverse by converting available Fortron back into FE."
+            "text": "The $(9)Coercion Deriver$() has two modes of operation: Derive and Integrate. By default, the it is set to Derive - meaning it steadily converts supplied FE into $(l:mffs:getting_started/fortron)Fortron$(). Clicking the $(2)Derive$() toggle button in the middle of the GUI screen switches its operating mode to $(2)Integrate$() and vice versa. In Integrate mode, the Deriver operates in reverse by converting available $(l:mffs:getting_started/fortron)Fortron$() back into FE."
         },
         {
             "type": "patchouli:text",
             "title": "Upgradability",
-            "text": "A Coercion Deriver may be augmented with various modules to improve its performance.$(li)$(5)Speed Module$(): Increases the boosting effect gained when inserting $(2)Lapis Lazuli$() or $(2)Nether Quartz$() into the Deriver.$(li)$(5)Capacity Module$(): Increases the amount of Fortron the Deriver is able to store.$()"
+            "text": "A Coercion Deriver may be augmented with various modules to improve its performance.$(li)$(l:mffs:upgrade_modules/speed_module)$(5)Speed Module$(): Increases the boosting effect gained when inserting $(2)Lapis Lazuli$() or $(2)Nether Quartz$() into the Deriver.$(li)$(l:mffs:upgrade_modules/capacity_module)$(5)Capacity Module$(): Increases the amount of $(l:mffs:getting_started/fortron)Fortron$() the Deriver is able to store.$()"
         }
     ]
 }
