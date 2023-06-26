@@ -18,7 +18,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -27,6 +27,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -68,22 +69,23 @@ public class IdentificationCardItem extends BaseItem {
         return super.use(level, player, usedHand);
     }
 
-    @Override
-    public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity interactionTarget, InteractionHand usedHand) {
-        if (player.isShiftKeyDown() && interactionTarget instanceof Player targetPlayer) {
-            return stack.getCapability(ModCapabilities.IDENTIFICATION_CARD)
-                .map(card -> {
+    public static void onLivingEntityInteract(PlayerInteractEvent.EntityInteract event) {
+        ItemStack stack = event.getItemStack();
+        Player player = event.getEntity();
+        Entity target = event.getTarget();
+        if (player.isShiftKeyDown() && target instanceof Player targetPlayer) {
+            stack.getCapability(ModCapabilities.IDENTIFICATION_CARD)
+                .ifPresent(card -> {
                     if (!player.level.isClientSide) {
                         setCardIdentity(card, player, targetPlayer.getGameProfile());
                     }
-                    return InteractionResult.SUCCESS;
-                })
-                .orElse(InteractionResult.PASS);
+                    event.setCanceled(true);
+                    event.setCancellationResult(InteractionResult.sidedSuccess(player.level.isClientSide));
+                });
         }
-        return super.interactLivingEntity(stack, player, interactionTarget, usedHand);
     }
 
-    private void setCardIdentity(IdentificationCard card, Player user, GameProfile profile) {
+    private static void setCardIdentity(IdentificationCard card, Player user, GameProfile profile) {
         card.setIdentity(profile);
         user.displayClientMessage(ModUtil.translate("info", "identity_set", Component.literal(profile.getName()).withStyle(ChatFormatting.GREEN)), true);
     }
@@ -121,7 +123,7 @@ public class IdentificationCardItem extends BaseItem {
     @Override
     public void readShareTag(ItemStack stack, @Nullable CompoundTag tag) {
         super.readShareTag(stack, tag);
-        
+
         if (tag != null) {
             stack.getCapability(ModCapabilities.IDENTIFICATION_CARD).ifPresent(card -> {
                 CompoundTag cardTag = tag.getCompound("card_capability");

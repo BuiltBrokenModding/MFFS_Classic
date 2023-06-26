@@ -2,6 +2,7 @@ package dev.su5ed.mffs;
 
 import com.mojang.logging.LogUtils;
 import dev.su5ed.mffs.compat.MFFSProbeProvider;
+import dev.su5ed.mffs.item.IdentificationCardItem;
 import dev.su5ed.mffs.network.Network;
 import dev.su5ed.mffs.setup.ModBlocks;
 import dev.su5ed.mffs.setup.ModCapabilities;
@@ -51,6 +52,7 @@ public final class MFFSMod {
         ctx.registerConfig(ModConfig.Type.COMMON, MFFSConfig.COMMON_SPEC);
 
         MinecraftForge.EVENT_BUS.register(ForgeEventHandler.class);
+        MinecraftForge.EVENT_BUS.addListener(IdentificationCardItem::onLivingEntityInteract);
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
