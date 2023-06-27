@@ -3,7 +3,6 @@ package dev.su5ed.mffs.api.security;
 import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.api.Activatable;
 import dev.su5ed.mffs.api.module.ModuleAcceptor;
-import dev.su5ed.mffs.blockentity.InterdictionMatrixBlockEntity;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
@@ -40,7 +39,7 @@ public interface InterdictionMatrix extends Activatable, BiometricIdentifierLink
      */
     ConfiscationMode getConfiscationMode();
     
-    Component getDisplayName();
+    Component getTitle();
 
     enum ConfiscationMode {
         BLACKLIST(0x308F0000),

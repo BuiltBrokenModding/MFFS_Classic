@@ -19,7 +19,7 @@ public class WarnModule extends BaseInterdictionModule {
     public boolean onDefend(InterdictionMatrix interdictionMatrix, LivingEntity target) {
         BiometricIdentifier identifier = interdictionMatrix.getBiometricIdentifier();
         if (target instanceof Player player && (identifier == null || !identifier.isAccessGranted(player, FieldPermission.BYPASS_DEFENSE))) {
-            player.displayClientMessage(ModUtil.translate("info", "interdiction_matrix.no_entry", interdictionMatrix.getDisplayName()), false);
+            player.displayClientMessage(ModUtil.translate("info", "interdiction_matrix.no_entry", interdictionMatrix.getTitle()), false);
         }
         return false;
     }

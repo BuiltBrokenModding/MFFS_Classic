@@ -15,6 +15,7 @@ import dev.su5ed.mffs.util.inventory.InventorySlot;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -73,6 +74,11 @@ public class InterdictionMatrixBlockEntity extends ModularBlockEntity implements
         return this.confiscationMode;
     }
 
+    @Override
+    public Component getTitle() {
+        return getDisplayName();
+    }
+
     public void setConfiscationMode(ConfiscationMode confiscationMode) {
         this.confiscationMode = confiscationMode;
     }
@@ -109,7 +115,7 @@ public class InterdictionMatrixBlockEntity extends ModularBlockEntity implements
 
         for (LivingEntity entity : warningList) {
             if (entity instanceof Player player && !actionList.contains(entity) && !canPlayerBypass(identifier, player) && this.level.random.nextInt(3) == 0) {
-                player.displayClientMessage(ModUtil.translate("info", "interdiction_matrix.warning", getDisplayName()).withStyle(ChatFormatting.RED), false);
+                player.displayClientMessage(ModUtil.translate("info", "interdiction_matrix.warning", getTitle()).withStyle(ChatFormatting.RED), false);
             }
         }
 

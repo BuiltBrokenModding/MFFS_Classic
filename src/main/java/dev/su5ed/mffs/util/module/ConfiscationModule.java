@@ -49,7 +49,7 @@ public class ConfiscationModule extends BaseInterdictionModule {
             }
 
             if (confiscationCount > 0) {
-                player.displayClientMessage(ModUtil.translate("info", "interdiction_matrix.confiscation_" + (confiscationCount == 1 ? "singular" : "plural"), interdictionMatrix.getDisplayName(), confiscationCount), false);
+                player.displayClientMessage(ModUtil.translate("info", "interdiction_matrix.confiscation_" + (confiscationCount == 1 ? "singular" : "plural"), interdictionMatrix.getTitle(), confiscationCount), false);
                 final int finalConfiscationCount = confiscationCount;
                 interdictionMatrix.be().getCapability(ModCapabilities.FORTRON)
                     .ifPresent(fortron -> fortron.extractFortron(finalConfiscationCount, false));
