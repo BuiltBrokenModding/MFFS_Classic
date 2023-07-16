@@ -1,12 +1,12 @@
 package dev.su5ed.mffs.screen;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import dev.su5ed.mffs.menu.FortronMenu;
 import dev.su5ed.mffs.network.Network;
 import dev.su5ed.mffs.network.ToggleModePacket;
 import dev.su5ed.mffs.network.UpdateFrequencyPacket;
 import dev.su5ed.mffs.util.ModUtil;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -56,15 +56,15 @@ public abstract class FortronScreen<T extends FortronMenu<?>> extends BaseScreen
     }
 
     @Override
-    public void renderFg(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
-        this.frequency.render(poseStack, mouseX, mouseY, partialTick);
+    public void renderFg(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        this.frequency.render(guiGraphics, mouseX, mouseY, partialTick);
     }
 
     @Override
-    protected void renderLabels(PoseStack poseStack, int mouseX, int mouseY) {
-        super.renderLabels(poseStack, mouseX, mouseY);
+    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        super.renderLabels(guiGraphics, mouseX, mouseY);
 
-        drawWithTooltip(poseStack, this.frequencyLabelPos.leftInt(), this.frequencyLabelPos.rightInt(), GuiColors.DARK_GREY, this.frequency.getMessage(), ModUtil.translate("screen", "frequency.tooltip"));
+        drawWithTooltip(guiGraphics, this.frequencyLabelPos.leftInt(), this.frequencyLabelPos.rightInt(), GuiColors.DARK_GREY, this.frequency.getMessage(), ModUtil.translate("screen", "frequency.tooltip"));
     }
 
     private void onFrequencyChanged(String str) {

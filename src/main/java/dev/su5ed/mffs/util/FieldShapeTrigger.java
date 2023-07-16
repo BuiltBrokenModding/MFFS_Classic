@@ -3,8 +3,8 @@ package dev.su5ed.mffs.util;
 import com.google.gson.JsonObject;
 import dev.su5ed.mffs.setup.ModObjects;
 import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
+import net.minecraft.advancements.critereon.ContextAwarePredicate;
 import net.minecraft.advancements.critereon.DeserializationContext;
-import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -23,8 +23,8 @@ public class FieldShapeTrigger extends SimpleCriterionTrigger<FieldShapeTrigger.
     }
 
     @NotNull
-    public TriggerInstance createInstance(JsonObject json, EntityPredicate.Composite player, DeserializationContext context) {
-        return new TriggerInstance(player);
+    public TriggerInstance createInstance(JsonObject json, ContextAwarePredicate predicate, DeserializationContext context) {
+        return new TriggerInstance(predicate);
     }
 
     public void trigger(ServerPlayer player) {
@@ -32,12 +32,12 @@ public class FieldShapeTrigger extends SimpleCriterionTrigger<FieldShapeTrigger.
     }
 
     public static class TriggerInstance extends AbstractCriterionTriggerInstance {
-        public TriggerInstance(EntityPredicate.Composite player) {
-            super(ModObjects.FIELD_SHAPE_TRIGGER.get().getId(), player);
+        public TriggerInstance(ContextAwarePredicate predicate) {
+            super(ModObjects.FIELD_SHAPE_TRIGGER.get().getId(), predicate);
         }
 
         public static TriggerInstance create() {
-            return new TriggerInstance(EntityPredicate.Composite.ANY);
+            return new TriggerInstance(ContextAwarePredicate.ANY);
         }
     }
 }

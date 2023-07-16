@@ -22,7 +22,7 @@ public record SwitchEnergyModePacket(BlockPos pos, CoercionDeriverBlockEntity.En
     }
 
     public void processServerPacket(Supplier<NetworkEvent.Context> ctx) {
-        Level level = ctx.get().getSender().getLevel();
+        Level level = ctx.get().getSender().level();
         Network.findBlockEntity(ModObjects.COERCION_DERIVER_BLOCK_ENTITY.get(), level, this.pos)
             .ifPresent(be -> be.setEnergyMode(this.mode));
     }

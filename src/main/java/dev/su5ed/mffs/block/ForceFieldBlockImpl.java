@@ -20,10 +20,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.EntityCollisionContext;
@@ -37,14 +37,10 @@ public class ForceFieldBlockImpl extends Block implements ForceFieldBlock, Entit
     private static final VoxelShape COLLIDABLE_BLOCK = Shapes.create(0.01, 0.01, 0.01, 0.99, 0.99, 0.99);
 
     public ForceFieldBlockImpl() {
-        super(Properties.of(Material.GLASS)
+        super(Properties.copy(Blocks.GLASS)
             .destroyTime(-1)
             .strength(-1.0F, 3600000.0F)
-            .noLootTable()
-            .noOcclusion()
-            .isValidSpawn((state, level, pos, type) -> false)
-            .isRedstoneConductor((state, level, pos) -> false)
-            .isViewBlocking((state, level, pos) -> false));
+            .noLootTable());
     }
 
     @Override
@@ -139,7 +135,7 @@ public class ForceFieldBlockImpl extends Block implements ForceFieldBlock, Entit
                         return;
                     }
                 }
-                if (!entity.level.isClientSide && entity.distanceToSqr(new Vec3(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5)) < Mth.square(0.7)) {
+                if (!entity.level().isClientSide && entity.distanceToSqr(new Vec3(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5)) < Mth.square(0.7)) {
                     if (entity instanceof LivingEntity living && (!(entity instanceof Player player) || !player.isCreative())) {
                         living.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 4 * 20, 3));
                         living.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 20, 1));

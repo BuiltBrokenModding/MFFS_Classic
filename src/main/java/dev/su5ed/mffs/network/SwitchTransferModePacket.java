@@ -22,7 +22,7 @@ public record SwitchTransferModePacket(BlockPos pos, TransferMode mode) {
     }
 
     public void processServerPacket(Supplier<NetworkEvent.Context> ctx) {
-        Level level = ctx.get().getSender().getLevel();
+        Level level = ctx.get().getSender().level();
         Network.findBlockEntity(ModObjects.FORTRON_CAPACITOR_BLOCK_ENTITY.get(), level, this.pos)
             .ifPresent(be -> be.setTransferMode(this.mode));
     }

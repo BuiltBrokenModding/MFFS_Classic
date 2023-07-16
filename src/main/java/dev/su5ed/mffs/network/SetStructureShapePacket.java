@@ -2,7 +2,7 @@ package dev.su5ed.mffs.network;
 
 import dev.su5ed.mffs.render.CustomProjectorModeClientHandler;
 import dev.su5ed.mffs.util.projector.CustomStructureSavedData;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
@@ -23,7 +23,7 @@ public record SetStructureShapePacket(ResourceKey<Level> level, String id, Voxel
     }
 
     public static SetStructureShapePacket decode(FriendlyByteBuf buf) {
-        ResourceKey<Level> level = buf.readResourceKey(Registry.DIMENSION_REGISTRY);
+        ResourceKey<Level> level = buf.readResourceKey(Registries.DIMENSION);
         String id = buf.readUtf();
         VoxelShape shape = buf.readNullable(b -> CustomStructureSavedData.shapeFromAABBs(b.readCollection(ArrayList::new, SetStructureShapePacket::decodeAABB)));
         return new SetStructureShapePacket(level, id, shape);

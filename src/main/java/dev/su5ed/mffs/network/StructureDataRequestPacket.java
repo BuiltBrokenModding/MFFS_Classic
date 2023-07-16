@@ -20,7 +20,7 @@ public record StructureDataRequestPacket(String id) {
 
     public void processServerPacket(Supplier<NetworkEvent.Context> ctx) {
         NetworkEvent.Context context = ctx.get();
-        ServerLevel level = context.getSender().getLevel();
+        ServerLevel level = context.getSender().serverLevel();
         CustomStructureSavedData data = ModItems.CUSTOM_MODE.get().getOrCreateData(level);
         CustomStructureSavedData.Structure structure = data.get(this.id);
         Network.INSTANCE.reply(new SetStructureShapePacket(level.dimension(), this.id, structure != null ? structure.shape() : null), context);

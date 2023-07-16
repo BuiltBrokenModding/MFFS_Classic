@@ -2,7 +2,7 @@ package dev.su5ed.mffs.datagen;
 
 import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.setup.ModItems;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
@@ -14,8 +14,8 @@ import static dev.su5ed.mffs.MFFSMod.location;
 final class ItemModelGen extends ItemModelProvider {
     private final ResourceLocation generatedParent = mcLoc("item/generated");
 
-    public ItemModelGen(DataGenerator generator, ExistingFileHelper existingFileHelper) {
-        super(generator, MFFSMod.MODID, existingFileHelper);
+    public ItemModelGen(PackOutput output, ExistingFileHelper existingFileHelper) {
+        super(output, MFFSMod.MODID, existingFileHelper);
     }
 
     @Override

@@ -57,7 +57,7 @@ public final class BlockEntityRenderDelegate {
             try {
                 PoseStack copyPose = new PoseStack();
                 copyPose.pushPose();
-                copyPose.last().pose().multiply(pose.last().pose());
+                copyPose.last().pose().mul(pose.last().pose());
                 copyPose.last().normal().mul(pose.last().normal());
                 delegateRendererInfo.delegateRenderer().render(delegateRendererInfo.delegateBlockEntity(), partialTicks, copyPose, buffer, combinedLight, combinedOverlay);
                 copyPose.popPose();

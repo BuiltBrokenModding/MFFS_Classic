@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "F": {
       "item": "mffs:focus_matrix"
@@ -12,5 +13,6 @@
   ],
   "result": {
     "item": "mffs:pyramid_mode"
-  }
+  },
+  "show_notification": true
 }

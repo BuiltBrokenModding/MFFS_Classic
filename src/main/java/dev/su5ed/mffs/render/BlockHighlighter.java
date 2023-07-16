@@ -14,8 +14,6 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3d;
 import dev.su5ed.mffs.util.ModUtil;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.core.BlockPos;
@@ -24,6 +22,8 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4f;
+import org.joml.Vector3d;
 import org.lwjgl.opengl.GL11;
 
 /**

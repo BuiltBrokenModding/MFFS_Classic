@@ -4,7 +4,6 @@ import com.mojang.authlib.GameProfile;
 import dev.su5ed.mffs.api.card.IdentificationCard;
 import dev.su5ed.mffs.api.security.FieldPermission;
 import dev.su5ed.mffs.setup.ModCapabilities;
-import dev.su5ed.mffs.setup.ModItems;
 import dev.su5ed.mffs.util.ModUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
@@ -20,6 +19,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
@@ -39,7 +39,7 @@ import java.util.Set;
 public class IdentificationCardItem extends BaseItem {
 
     public IdentificationCardItem() {
-        super(new ExtendedItemProperties(ModItems.itemProperties().stacksTo(1)).description());
+        super(new ExtendedItemProperties(new Item.Properties().stacksTo(1)).description());
     }
 
     @Nullable
@@ -76,11 +76,11 @@ public class IdentificationCardItem extends BaseItem {
         if (player.isShiftKeyDown() && target instanceof Player targetPlayer) {
             stack.getCapability(ModCapabilities.IDENTIFICATION_CARD)
                 .ifPresent(card -> {
-                    if (!player.level.isClientSide) {
+                    if (!player.level().isClientSide) {
                         setCardIdentity(card, player, targetPlayer.getGameProfile());
                     }
                     event.setCanceled(true);
-                    event.setCancellationResult(InteractionResult.sidedSuccess(player.level.isClientSide));
+                    event.setCancellationResult(InteractionResult.sidedSuccess(player.level().isClientSide));
                 });
         }
     }

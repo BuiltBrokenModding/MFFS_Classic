@@ -2,7 +2,6 @@ package dev.su5ed.mffs.item;
 
 import dev.su5ed.mffs.api.card.FrequencyCard;
 import dev.su5ed.mffs.setup.ModCapabilities;
-import dev.su5ed.mffs.setup.ModItems;
 import dev.su5ed.mffs.util.ModUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
@@ -12,6 +11,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
@@ -29,7 +29,7 @@ public class FrequencyCardItem extends BaseItem {
     private static final int MAX_FREQUENCY = 999999;
 
     public FrequencyCardItem() {
-        super(new ExtendedItemProperties(ModItems.itemProperties().stacksTo(1)).description());
+        super(new ExtendedItemProperties(new Item.Properties().stacksTo(1)).description());
     }
 
     @Nullable

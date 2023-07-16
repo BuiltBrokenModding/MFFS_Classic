@@ -36,12 +36,7 @@ field shapes, size scaling,
 position offset, and utility modules. For example, the upgrade to shock attacks, kill monsters, remove blocks, and
 protect tiles.
 
-### Status
-
-Porting to Minecraft 1.19.x is underway.
-- Expect Bugs
-
-If you run into an issue / bug, please use the Issue Tracker found in this repository.
+Please report any bugs you find on our Issue Tracker found in this repository, or ask us in the discord if you're unsure.
 
 ### Contributing
 

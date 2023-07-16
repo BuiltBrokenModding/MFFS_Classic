@@ -25,7 +25,6 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -35,7 +34,6 @@ import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
-import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
@@ -93,8 +91,8 @@ public final class ModClientSetup {
 
     @SubscribeEvent
     public static void registerParticleFactory(RegisterParticleProvidersEvent event) {
-        event.register(ModObjects.BEAM_PARTICLE.get(), new BeamParticleProvider());
-        event.register(ModObjects.MOVING_HOLOGRAM_PARTICLE.get(), new MovingHologramParticleProvider());
+        event.registerSpecial(ModObjects.BEAM_PARTICLE.get(), new BeamParticleProvider());
+        event.registerSpecial(ModObjects.MOVING_HOLOGRAM_PARTICLE.get(), new MovingHologramParticleProvider());
     }
 
     @SubscribeEvent
@@ -103,13 +101,6 @@ public final class ModClientSetup {
         event.registerLayerDefinition(CoercionDeriverTopModel.LAYER_LOCATION, CoercionDeriverTopModel::createBodyLayer);
         event.registerLayerDefinition(ForceCubeModel.LAYER_LOCATION, ForceCubeModel::createBodyLayer);
         event.registerLayerDefinition(ForceTubeModel.LAYER_LOCATION, ForceTubeModel::createBodyLayer);
-    }
-
-    @SubscribeEvent
-    public static void onTextureStitch(TextureStitchEvent.Pre event) {
-        if (event.getAtlas().location().equals(InventoryMenu.BLOCK_ATLAS)) {
-            event.addSprite(BiometricIdentifierRenderer.HOLO_SCREEN_TEXTURE);
-        }
     }
 
     @SubscribeEvent

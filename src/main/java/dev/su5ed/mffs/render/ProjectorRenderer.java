@@ -2,8 +2,7 @@ package dev.su5ed.mffs.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.blockentity.ProjectorBlockEntity;
 import dev.su5ed.mffs.render.model.ProjectorRotorModel;
@@ -21,6 +20,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4f;
 
 import java.util.function.Function;
 
@@ -54,7 +54,7 @@ public class ProjectorRenderer implements BlockEntityRenderer<ProjectorBlockEnti
         poseStack.pushPose();
         poseStack.translate(0.5, -0.75, 0.5);
         float activePartial = blockEntity.isActive() ? partialTick : 0;
-        poseStack.mulPose(Vector3f.YN.rotationDegrees((blockEntity.getAnimation() + activePartial) * blockEntity.getAnimationSpeed()));
+        poseStack.mulPose(Axis.YN.rotationDegrees((blockEntity.getAnimation() + activePartial) * blockEntity.getAnimationSpeed()));
 
         VertexConsumer buffer = bufferSource.getBuffer(RenderType.entityTranslucent(texture));
         this.rotor.render(poseStack, buffer, packedLight, packedOverlay);
@@ -81,7 +81,7 @@ public class ProjectorRenderer implements BlockEntityRenderer<ProjectorBlockEnti
             double xDifference = playerPos.x - (bePos.getX() + 0.5D);
             double zDifference = playerPos.z - (bePos.getZ() + 0.5D);
             float rotation = (float) Math.toDegrees(Math.atan2(zDifference, xDifference));
-            poseStack.mulPose(Vector3f.YP.rotationDegrees(-rotation + 27.0F));
+            poseStack.mulPose(Axis.YP.rotationDegrees(-rotation + 27.0F));
 
             float height = 2.0F;
             float width = 2.0F;

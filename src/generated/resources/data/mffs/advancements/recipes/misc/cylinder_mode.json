@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_sphere_mode": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mffs:sphere_mode"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "mffs:cylinder_mode"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_sphere_mode",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "mffs:cylinder_mode"
+    ]
+  },
+  "sends_telemetry_event": false
+}

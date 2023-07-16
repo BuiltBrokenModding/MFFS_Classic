@@ -2,7 +2,7 @@ package dev.su5ed.mffs.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.blockentity.FortronBlockEntity;
 import dev.su5ed.mffs.render.model.CoercionDeriverTopModel;
@@ -29,9 +29,9 @@ public class CoercionDeriverRenderer implements BlockEntityRenderer<FortronBlock
 
         poseStack.pushPose();
         poseStack.translate(0.5, 1.96, 0.5);
-        poseStack.mulPose(Vector3f.ZP.rotationDegrees(180f));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(180f));
         poseStack.scale(1.3f, 1.3f, 1.3f);
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(blockEntity.getAnimation()));
+        poseStack.mulPose(Axis.YP.rotationDegrees(blockEntity.getAnimation()));
 
         VertexConsumer buffer = bufferSource.getBuffer(RenderType.entityTranslucent(texture));
         this.top.render(poseStack, buffer, packedLight, packedOverlay);

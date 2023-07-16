@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "B": {
       "item": "mffs:battery"
@@ -18,5 +19,6 @@
   ],
   "result": {
     "item": "mffs:fortron_capacitor"
-  }
+  },
+  "show_notification": true
 }

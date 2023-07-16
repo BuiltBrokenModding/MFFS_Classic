@@ -1,6 +1,5 @@
 package dev.su5ed.mffs.item;
 
-import dev.su5ed.mffs.setup.ModItems;
 import dev.su5ed.mffs.util.CustomEnergyStorage;
 import dev.su5ed.mffs.util.ModUtil;
 import net.minecraft.ChatFormatting;
@@ -32,7 +31,7 @@ public class BatteryItem extends Item {
     }
 
     public BatteryItem(int capacity, int maxTransfer) {
-        super(ModItems.itemProperties().stacksTo(1));
+        super(new Item.Properties().stacksTo(1));
 
         this.capacity = capacity;
         this.maxTransfer = maxTransfer;

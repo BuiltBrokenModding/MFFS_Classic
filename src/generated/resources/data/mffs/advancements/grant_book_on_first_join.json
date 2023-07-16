@@ -14,5 +14,6 @@
     "loot": [
       "mffs:grant_book_on_first_join"
     ]
-  }
+  },
+  "sends_telemetry_event": true
 }

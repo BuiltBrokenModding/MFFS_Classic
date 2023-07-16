@@ -3,8 +3,7 @@ package dev.su5ed.mffs.render;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import dev.su5ed.mffs.api.module.ProjectorMode;
 import dev.su5ed.mffs.render.model.ForceCubeModel;
 import dev.su5ed.mffs.render.model.ForceTubeModel;
@@ -20,6 +19,8 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
 
 import java.util.List;
 import java.util.Map;
@@ -82,8 +83,8 @@ public final class ProjectorModeRenderer {
 
         poseStack.scale(scale, scale, scale);
 
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(ticks * 4L));
-        poseStack.mulPose(Vector3f.ZP.rotationDegrees(36 + ticks * 4L));
+        poseStack.mulPose(Axis.YP.rotationDegrees(ticks * 4L));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(36 + ticks * 4L));
     }
 
     private record CustomModeRenderer(Vec3 centerPos, Function<ModelLayerLocation, ModelPart> modelFactory) implements LazyRenderer {
@@ -159,7 +160,7 @@ public final class ProjectorModeRenderer {
 
             poseStack.pushPose();
             hoverObject(poseStack, ticks, 1, this.centerPos);
-            poseStack.mulPose(Vector3f.ZP.rotationDegrees(180));
+            poseStack.mulPose(Axis.ZP.rotationDegrees(180));
 
             Vector3f translation = new Vector3f(0, -0.4F, 0);
             Matrix4f mat = poseStack.last().pose();

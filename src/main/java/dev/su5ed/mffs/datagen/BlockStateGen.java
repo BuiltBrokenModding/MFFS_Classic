@@ -5,7 +5,7 @@ import dev.su5ed.mffs.block.ProjectorBlock;
 import dev.su5ed.mffs.render.model.ForceFieldBlockModelBuilder;
 import dev.su5ed.mffs.render.model.ForceFieldBlockModelLoader;
 import dev.su5ed.mffs.setup.ModBlocks;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -16,8 +16,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 final class BlockStateGen extends BlockStateProvider {
 
-    public BlockStateGen(DataGenerator gen, ExistingFileHelper helper) {
-        super(gen, MFFSMod.MODID, helper);
+    public BlockStateGen(PackOutput output, ExistingFileHelper helper) {
+        super(output, MFFSMod.MODID, helper);
     }
 
     @Override

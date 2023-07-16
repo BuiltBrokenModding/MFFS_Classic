@@ -4,7 +4,6 @@ import dev.su5ed.mffs.MFFSConfig;
 import dev.su5ed.mffs.api.Projector;
 import dev.su5ed.mffs.api.module.ProjectorMode;
 import dev.su5ed.mffs.setup.ModCapabilities;
-import dev.su5ed.mffs.setup.ModItems;
 import dev.su5ed.mffs.setup.ModObjects;
 import dev.su5ed.mffs.util.ModUtil;
 import dev.su5ed.mffs.util.projector.CustomStructureSavedData;
@@ -21,6 +20,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
@@ -49,7 +49,7 @@ public class CustomProjectorModeItem extends BaseItem {
     private CustomStructureSavedData structureManager;
 
     public CustomProjectorModeItem() {
-        super(new ExtendedItemProperties(ModItems.itemProperties().stacksTo(1)));
+        super(new ExtendedItemProperties(new Item.Properties().stacksTo(1)));
     }
 
     @Override
@@ -85,7 +85,7 @@ public class CustomProjectorModeItem extends BaseItem {
                     return InteractionResultHolder.success(stack);
                 }
             } else if (tag.contains(TAG_POINT_PRIMARY) && !tag.contains(TAG_POINT_SECONDARY)) {
-                HitResult result = player.pick(player.getReachDistance(), 0, true);
+                HitResult result = player.pick(player.getBlockReach(), 0, true);
                 if (result instanceof BlockHitResult blockHitResult) {
                     selectBlock(player, tag, blockHitResult.getBlockPos(), TAG_POINT_SECONDARY, ChatFormatting.GOLD);
                     return InteractionResultHolder.success(stack);

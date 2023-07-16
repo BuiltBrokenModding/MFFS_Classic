@@ -1,6 +1,5 @@
 package dev.su5ed.mffs.screen;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.api.security.InterdictionMatrix;
 import dev.su5ed.mffs.menu.InterdictionMatrixMenu;
@@ -9,6 +8,7 @@ import dev.su5ed.mffs.network.SwitchConfiscationModePacket;
 import dev.su5ed.mffs.util.ModUtil;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -40,14 +40,14 @@ public class InterdictionMatrixScreen extends FortronScreen<InterdictionMatrixMe
     }
 
     @Override
-    protected void renderLabels(PoseStack poseStack, int mouseX, int mouseY) {
-        super.renderLabels(poseStack, mouseX, mouseY);
+    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        super.renderLabels(guiGraphics, mouseX, mouseY);
 
-        this.font.draw(poseStack, ModUtil.translate("screen", "warn_range", this.menu.blockEntity.getWarningRange()), 35, 19, GuiColors.DARK_GREY);
-        this.font.draw(poseStack, ModUtil.translate("screen", "action_range", this.menu.blockEntity.getActionRange()), 100, 19, GuiColors.DARK_GREY);
-        this.font.draw(poseStack, ModUtil.translate("screen", "filter_mode"), 9, 32, GuiColors.DARK_GREY);
+        guiGraphics.drawString(this.font, ModUtil.translate("screen", "warn_range", this.menu.blockEntity.getWarningRange()), 35, 19, GuiColors.DARK_GREY, false);
+        guiGraphics.drawString(this.font, ModUtil.translate("screen", "action_range", this.menu.blockEntity.getActionRange()), 100, 19, GuiColors.DARK_GREY, false);
+        guiGraphics.drawString(this.font, ModUtil.translate("screen", "filter_mode"), 9, 32, GuiColors.DARK_GREY, false);
 
-        drawWithTooltip(poseStack, 8, 110, GuiColors.DARK_GREY, "fortron", this.menu.blockEntity.fortronStorage.getStoredFortron(), this.menu.blockEntity.fortronStorage.getFortronCapacity());
-        this.font.draw(poseStack, ModUtil.translate("screen", "fortron_cost", "-", this.menu.getClientFortronCost() * 20), 120, 121, ChatFormatting.DARK_RED.getColor());
+        drawWithTooltip(guiGraphics, 8, 110, GuiColors.DARK_GREY, "fortron", this.menu.blockEntity.fortronStorage.getStoredFortron(), this.menu.blockEntity.fortronStorage.getFortronCapacity());
+        guiGraphics.drawString(this.font, ModUtil.translate("screen", "fortron_cost", "-", this.menu.getClientFortronCost() * 20), 120, 121, ChatFormatting.DARK_RED.getColor(), false);
     }
 }

@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "E": {
       "item": "minecraft:ender_chest"
@@ -18,5 +19,6 @@
   ],
   "result": {
     "item": "mffs:interdiction_matrix"
-  }
+  },
+  "show_notification": true
 }

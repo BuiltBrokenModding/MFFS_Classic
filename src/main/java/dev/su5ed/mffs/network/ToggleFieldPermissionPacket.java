@@ -24,7 +24,7 @@ public record ToggleFieldPermissionPacket(BlockPos pos, FieldPermission permissi
     }
 
     public void processServerPacket(Supplier<NetworkEvent.Context> ctx) {
-        Level level = ctx.get().getSender().getLevel();
+        Level level = ctx.get().getSender().level();
         Network.findBlockEntity(BiometricIdentifierBlockEntity.class, level, this.pos)
             .flatMap(be -> be.getManipulatingCard().resolve())
             .ifPresent(card -> {

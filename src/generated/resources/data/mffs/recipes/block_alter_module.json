@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "G": {
       "tag": "forge:storage_blocks/gold"
@@ -15,5 +16,6 @@
   ],
   "result": {
     "item": "mffs:block_alter_module"
-  }
+  },
+  "show_notification": true
 }

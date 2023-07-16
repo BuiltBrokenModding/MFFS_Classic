@@ -7,7 +7,6 @@ import dev.su5ed.mffs.api.security.FieldPermission;
 import dev.su5ed.mffs.menu.FortronMenu;
 import dev.su5ed.mffs.render.particle.ParticleColor;
 import dev.su5ed.mffs.setup.ModCapabilities;
-import dev.su5ed.mffs.setup.ModItems;
 import dev.su5ed.mffs.util.Fortron;
 import dev.su5ed.mffs.util.FrequencyGrid;
 import dev.su5ed.mffs.util.ModUtil;
@@ -24,6 +23,7 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
@@ -42,7 +42,7 @@ import java.util.List;
 public class RemoteControllerItem extends BaseItem implements CoordLink {
 
     public RemoteControllerItem() {
-        super(new ExtendedItemProperties(ModItems.itemProperties().stacksTo(1)).description());
+        super(new ExtendedItemProperties(new Item.Properties().stacksTo(1)).description());
     }
 
     @Override

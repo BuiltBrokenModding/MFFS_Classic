@@ -7,8 +7,7 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import dev.su5ed.mffs.MFFSMod;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -20,6 +19,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
 
 public class BeamParticle extends Particle {
     private static final ResourceLocation FORTRON_TEXTURE = new ResourceLocation(MFFSMod.MODID, "textures/particle/fortron.png");
@@ -63,7 +64,7 @@ public class BeamParticle extends Particle {
     @Override
     public void render(VertexConsumer buffer, Camera renderInfo, float partialTicks) {
         Matrix4f mat = new Matrix4f();
-        mat.setIdentity();
+        mat.identity();
 
         int deg = 360 / ROTATION_SPEED;
         float rot = this.level.getGameTime() % deg * ROTATION_SPEED + ROTATION_SPEED * partialTicks;
@@ -90,9 +91,9 @@ public class BeamParticle extends Particle {
 
         float ry = Mth.lerp(partialTicks, this.prevYaw, this.rotYaw);
         float rp = Mth.lerp(partialTicks, this.prevPitch, this.rotPitch);
-        mat.multiply(Vector3f.XP.rotationDegrees(90));
-        mat.multiply(Vector3f.ZN.rotationDegrees(180 + ry));
-        mat.multiply(Vector3f.XP.rotationDegrees(rp));
+        mat.rotate(Axis.XP.rotationDegrees(90));
+        mat.rotate(Axis.ZN.rotationDegrees(180 + ry));
+        mat.rotate(Axis.XP.rotationDegrees(rp));
 
         float xNegMin = -0.15f * size;
         float xNegMax = -0.15f * size;
@@ -111,12 +112,12 @@ public class BeamParticle extends Particle {
         float u1 = 1.0F;
         int brightness = LightTexture.FULL_BRIGHT;
 
-        mat.multiply(Vector3f.YP.rotationDegrees(rot));
+        mat.rotate(Axis.YP.rotationDegrees(rot));
         for (int i = 0; i < 3; i++) {
             float v0 = -1.0F + vOffset + i / 3.0F;
             float v1 = this.length * size + v0;
 
-            mat.multiply(Vector3f.YP.rotationDegrees(60));
+            mat.rotate(Axis.YP.rotationDegrees(60));
 
             buffer.vertex(mat, vectors[0].x(), vectors[0].y(), vectors[0].z()).uv(u1, v1).color(this.rCol, this.gCol, this.bCol, opacity).uv2(brightness).endVertex();
             buffer.vertex(mat, vectors[1].x(), vectors[1].y(), vectors[1].z()).uv(u1, v0).color(this.rCol, this.gCol, this.bCol, opacity).uv2(brightness).endVertex();

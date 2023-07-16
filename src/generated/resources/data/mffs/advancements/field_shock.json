@@ -3,7 +3,7 @@
   "criteria": {
     "shocked": {
       "conditions": {
-        "damage": "mffs.field_shock",
+        "damage": "mffs:field_shock",
         "killed": true
       },
       "trigger": "mffs:damage_source"
@@ -28,5 +28,6 @@
     [
       "shocked"
     ]
-  ]
+  ],
+  "sends_telemetry_event": true
 }

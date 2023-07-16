@@ -15,7 +15,9 @@ import dev.su5ed.mffs.item.InterdictionMatrixModuleItem;
 import dev.su5ed.mffs.item.ModuleItem;
 import dev.su5ed.mffs.item.ProjectorModeItem;
 import dev.su5ed.mffs.item.RemoteControllerItem;
+import dev.su5ed.mffs.util.ModUtil;
 import dev.su5ed.mffs.util.projector.ModProjectorModes;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -28,14 +30,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 public final class ModItems {
     private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MFFSMod.MODID);
-
-    public static final CreativeModeTab ITEM_GROUP = new CreativeModeTab(MFFSMod.MODID) {
-        @Override
-        public ItemStack makeIcon() {
-            return new ItemStack(PROJECTOR_ITEM.get());
-        }
-    };
-    private static final Item.Properties ITEM_PROPERTIES = new Item.Properties().tab(ITEM_GROUP);
+    private static final DeferredRegister<CreativeModeTab> ITEM_GROUPS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MFFSMod.MODID);
 
     public static final RegistryObject<Item> PROJECTOR_ITEM = fromBlock(ModBlocks.PROJECTOR);
     public static final RegistryObject<Item> COERCION_DERIVER_ITEM = fromBlock(ModBlocks.COERCION_DERIVER);
@@ -77,7 +72,7 @@ public final class ModItems {
     public static final RegistryObject<ModuleItem<InterdictionMatrixModule>> CONFISCATION_MODULE = interdictionMatrixModule("confiscation_module", ModModules.CONFISCATION);
     public static final RegistryObject<Item> BLANK_CARD = ITEMS.register("blank_card", ModItems::simpleItem);
     public static final RegistryObject<Item> ID_CARD = ITEMS.register("id_card", IdentificationCardItem::new);
-    public static final RegistryObject<Item> INFINITE_POWER_CARD = ITEMS.register("infinite_power_card", () -> new BaseItem(new ExtendedItemProperties(itemProperties().stacksTo(1)).description()));
+    public static final RegistryObject<Item> INFINITE_POWER_CARD = ITEMS.register("infinite_power_card", () -> new BaseItem(new ExtendedItemProperties(new Item.Properties().stacksTo(1)).description()));
     public static final RegistryObject<Item> FREQUENCY_CARD = ITEMS.register("frequency_card", FrequencyCardItem::new);
     public static final RegistryObject<Item> STEEL_COMPOUND = ITEMS.register("steel_compound", ModItems::simpleItem);
     public static final RegistryObject<Item> STEEL_INGOT = ITEMS.register("steel_ingot", ModItems::simpleItem);
@@ -85,16 +80,29 @@ public final class ModItems {
 
     public static final RegistryObject<Item> REDSTONE_TORCH_OFF = ITEMS.register("redstone_torch_off", () -> new Item(new Item.Properties()));
 
+    public static final RegistryObject<CreativeModeTab> ITEM_GROUP = ITEM_GROUPS.register("main", () -> CreativeModeTab.builder()
+        .title(ModUtil.translate("itemGroup", "main"))
+        .icon(() -> new ItemStack(PROJECTOR_ITEM.get()))
+        .displayItems((parameters, output) -> {
+            for (RegistryObject<Item> entry : ITEMS.getEntries()) {
+                if (entry != REDSTONE_TORCH_OFF) {
+                    output.accept(entry.get());
+                }
+            }
+        })
+        .build());
+    
     public static void init(final IEventBus bus) {
         ITEMS.register(bus);
+        ITEM_GROUPS.register(bus);
     }
 
     private static RegistryObject<Item> fromBlock(final RegistryObject<? extends Block> block) {
-        return ITEMS.register(block.getId().getPath(), () -> new BlockItem(block.get(), ITEM_PROPERTIES));
+        return ITEMS.register(block.getId().getPath(), () -> new BlockItem(block.get(), new Item.Properties()));
     }
 
     private static RegistryObject<ModuleItem<InterdictionMatrixModule>> interdictionMatrixModule(String name, ModuleType<InterdictionMatrixModule> module) {
-        return ITEMS.register(name, () -> new InterdictionMatrixModuleItem(new ExtendedItemProperties(itemProperties()).description(), module));
+        return ITEMS.register(name, () -> new InterdictionMatrixModuleItem(new ExtendedItemProperties(new Item.Properties()).description(), module));
     }
 
     private static RegistryObject<ModuleItem<Module>> module(String name, ModuleType<Module> module, ExtendedItemProperties properties) {
@@ -102,23 +110,19 @@ public final class ModItems {
     }
 
     private static RegistryObject<ProjectorModeItem> projectorMode(String name, ProjectorMode projectorMode) {
-        return ITEMS.register(name, () -> new ProjectorModeItem(itemProperties(), projectorMode));
+        return ITEMS.register(name, () -> new ProjectorModeItem(new Item.Properties(), projectorMode));
     }
 
     public static Item simpleItem() {
-        return new Item(itemProperties());
+        return new Item(new Item.Properties());
     }
 
     public static ExtendedItemProperties singleStack() {
-        return new ExtendedItemProperties(itemProperties().stacksTo(1));
+        return new ExtendedItemProperties(new Item.Properties().stacksTo(1));
     }
     
     public static ExtendedItemProperties withDescription() {
-        return new ExtendedItemProperties(itemProperties()).description();
-    }
-
-    public static Item.Properties itemProperties() {
-        return new Item.Properties().tab(ITEM_GROUP);
+        return new ExtendedItemProperties(new Item.Properties()).description();
     }
 
     private ModItems() {}

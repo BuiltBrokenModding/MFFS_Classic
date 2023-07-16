@@ -9,6 +9,7 @@ import dev.su5ed.mffs.setup.ModCapabilities;
 import dev.su5ed.mffs.setup.ModModules;
 import dev.su5ed.mffs.setup.ModObjects;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.level.block.Block;
@@ -128,7 +129,7 @@ public class ForceFieldBlockEntity extends BlockEntity {
             this.projector = NbtUtils.readBlockPos(tag.getCompound("projector"));
         }
         if (tag.contains("camouflage")) {
-            this.camouflage = NbtUtils.readBlockState(tag.getCompound("camouflage"));
+            this.camouflage = NbtUtils.readBlockState(this.level.holderLookup(Registries.BLOCK), tag.getCompound("camouflage"));
         }
     }
 

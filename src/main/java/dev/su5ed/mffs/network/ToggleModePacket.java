@@ -23,7 +23,7 @@ public record ToggleModePacket(BlockPos pos, boolean active) {
 
     public void processServerPacket(Supplier<NetworkEvent.Context> ctx) {
         ServerPlayer player = ctx.get().getSender();
-        Network.findBlockEntity(Activatable.class, player.getLevel(), this.pos)
+        Network.findBlockEntity(Activatable.class, player.level(), this.pos)
             .ifPresent(be -> {
                 be.setActive(this.active);
                 if (player.containerMenu instanceof FortronMenu<?> fortronMenu) {

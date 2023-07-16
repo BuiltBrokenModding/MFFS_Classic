@@ -35,7 +35,7 @@ public class ModRenderType extends RenderType {
         DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS,
         256, true, true,
         RenderType.CompositeState.builder()
-            .setShaderState(NEW_ENTITY_SHADER)
+            .setShaderState(RENDERTYPE_EYES_SHADER)
             .setTextureState(new RenderStateShard.TextureStateShard(location, false, false))
             .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
             .setOutputState(GLITCH_TARGET)

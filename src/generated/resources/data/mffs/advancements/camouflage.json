@@ -33,5 +33,6 @@
     [
       "has_camouflage"
     ]
-  ]
+  ],
+  "sends_telemetry_event": true
 }

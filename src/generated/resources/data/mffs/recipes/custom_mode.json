@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "C": {
       "item": "mffs:cube_mode"
@@ -24,5 +25,6 @@
   ],
   "result": {
     "item": "mffs:custom_mode"
-  }
+  },
+  "show_notification": true
 }

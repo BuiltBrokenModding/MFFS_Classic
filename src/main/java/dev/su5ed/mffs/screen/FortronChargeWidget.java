@@ -1,11 +1,10 @@
 package dev.su5ed.mffs.screen;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import dev.su5ed.mffs.MFFSMod;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -23,23 +22,18 @@ public class FortronChargeWidget extends AbstractWidget {
     }
 
     @Override
-    public void renderButton(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderTexture(0, COMPONENTS);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
-
+    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.enableDepthTest();
 
         double scale = this.scale.getAsDouble();
         if (scale > 0) {
-            blit(poseStack, this.x, this.y, 54, 11, (int) (scale * this.width), this.height);
+            guiGraphics.setColor(1.0F, 1.0F, 1.0F, this.alpha);
+            guiGraphics.blit(COMPONENTS, getX(), getY(), 54, 11, (int) (scale * this.width), this.height);
         }
     }
 
     @Override
-    public void updateNarration(NarrationElementOutput narrationElementOutput) {
-
-    }
+    protected void updateWidgetNarration(NarrationElementOutput output) {}
 }

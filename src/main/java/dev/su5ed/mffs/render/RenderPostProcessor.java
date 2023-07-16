@@ -9,7 +9,6 @@ import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.math.Matrix4f;
 import dev.su5ed.mffs.MFFSConfig;
 import dev.su5ed.mffs.MFFSMod;
 import net.minecraft.client.Minecraft;
@@ -17,6 +16,7 @@ import net.minecraft.client.renderer.EffectInstance;
 import net.minecraft.client.renderer.PostPass;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.resources.ResourceLocation;
+import org.joml.Matrix4f;
 
 public final class RenderPostProcessor {
     public static final RenderStateShard.OutputStateShard GLITCH_TARGET = new RenderStateShard.OutputStateShard(MFFSMod.MODID + ":glitch_target", () -> {
@@ -48,7 +48,7 @@ public final class RenderPostProcessor {
             Window window = minecraft.getWindow();
             glitchRenderTarget = new OffscreenRenderTarget(window.getWidth(), window.getHeight());
             glitchRenderTarget.setClearColor(0.0F, 0.0F, 0.0F, 0.0F);
-            shaderOrthoMatrix = Matrix4f.orthographic(0.0F, mainRenderTarget.width, mainRenderTarget.height, 0.0F, 0.1F, 1000.0F);
+            shaderOrthoMatrix = new Matrix4f().ortho(0.0F, mainRenderTarget.width, mainRenderTarget.height, 0.0F, 0.1F, 1000.0F);
         }
     }
 
@@ -77,7 +77,7 @@ public final class RenderPostProcessor {
             if (glitchRenderTarget != null) {
                 glitchRenderTarget.resize(window.getWidth(), window.getHeight(), Minecraft.ON_OSX);
             }
-            shaderOrthoMatrix = Matrix4f.orthographic(0.0F, mainRenderTarget.width, mainRenderTarget.height, 0.0F, 0.1F, 1000.0F);
+            shaderOrthoMatrix = new Matrix4f().ortho(0.0F, mainRenderTarget.width, mainRenderTarget.height, 0.0F, 0.1F, 1000.0F);
             if (postProcessPass != null) {
                 postProcessPass.setOrthoMatrix(shaderOrthoMatrix);
             }

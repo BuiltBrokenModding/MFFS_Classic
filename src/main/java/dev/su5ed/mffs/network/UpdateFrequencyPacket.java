@@ -22,7 +22,7 @@ public record UpdateFrequencyPacket(BlockPos pos, int frequency) {
     }
 
     public void processServerPacket(Supplier<NetworkEvent.Context> ctx) {
-        Level level = ctx.get().getSender().getLevel();
+        Level level = ctx.get().getSender().level();
         Network.findBlockEntity(ModCapabilities.FORTRON, level, this.pos)
             .ifPresent(be -> be.setFrequency(this.frequency));
     }

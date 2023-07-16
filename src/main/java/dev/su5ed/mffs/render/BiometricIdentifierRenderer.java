@@ -2,8 +2,7 @@ package dev.su5ed.mffs.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.blockentity.BiometricIdentifierBlockEntity;
 import net.minecraft.client.Minecraft;
@@ -17,6 +16,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import org.joml.Matrix4f;
 
 public class BiometricIdentifierRenderer implements BlockEntityRenderer<BiometricIdentifierBlockEntity> {
     public static final ResourceLocation HOLO_SCREEN_TEXTURE = new ResourceLocation(MFFSMod.MODID, "model/holo_screen");
@@ -31,8 +31,8 @@ public class BiometricIdentifierRenderer implements BlockEntityRenderer<Biometri
             Direction facing = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
             poseStack.pushPose();
             poseStack.translate(0.5D, 0.5D, 0.5D);
-            poseStack.mulPose(Vector3f.YN.rotationDegrees(facing.toYRot()));
-            poseStack.mulPose(Vector3f.XP.rotationDegrees(25));
+            poseStack.mulPose(Axis.YN.rotationDegrees(facing.toYRot()));
+            poseStack.mulPose(Axis.XP.rotationDegrees(25));
             float offset = 0.4F * (0.5F - quadraticCurve(Math.min(0.05F + blockEntity.getAnimation() / 50F, 0.5F)));
             float alpha = Math.max(0, Math.min(-1F + blockEntity.getAnimation() / 4F, 1));
             poseStack.translate(-0.5, -0.65 - offset, -0.5 - offset * 0.6);

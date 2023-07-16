@@ -1,12 +1,12 @@
 package dev.su5ed.mffs.screen;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import dev.su5ed.mffs.util.ModUtil;
 import dev.su5ed.mffs.util.TooltipSlot;
 import dev.su5ed.mffs.util.inventory.ColoredSlot;
 import dev.su5ed.mffs.util.inventory.SlotActive;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -36,51 +36,47 @@ public abstract class BaseScreen<T extends AbstractContainerMenu> extends Abstra
     }
 
     @Override
-    public final void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
-        renderBackground(poseStack);
-        super.render(poseStack, mouseX, mouseY, partialTick);
-        renderFg(poseStack, mouseX, mouseY, partialTick);
-        renderTooltip(poseStack, mouseX, mouseY);
+    public final void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        renderBackground(guiGraphics);
+        super.render(guiGraphics, mouseX, mouseY, partialTick);
+        renderFg(guiGraphics, mouseX, mouseY, partialTick);
+        renderTooltip(guiGraphics, mouseX, mouseY);
     }
 
     @Override
-    protected void renderBg(PoseStack poseStack, float partialTick, int mouseX, int mouseY) {
-        RenderSystem.setShaderTexture(0, this.background);
+    protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
         int relX = (this.width - this.imageWidth) / 2;
         int relY = (this.height - this.imageHeight) / 2;
-        blit(poseStack, relX, relY, 0, 0, this.imageWidth, this.imageHeight);
+        guiGraphics.blit(this.background, relX, relY, 0, 0, this.imageWidth, this.imageHeight);
     }
 
     @Override
-    protected void renderTooltip(PoseStack poseStack, int mouseX, int mouseY) {
-        super.renderTooltip(poseStack, mouseX, mouseY);
+    protected void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        super.renderTooltip(guiGraphics, mouseX, mouseY);
 
         if (this.menu.getCarried().isEmpty() && this.hoveredSlot instanceof TooltipSlot tooltipSlot && !this.hoveredSlot.hasItem()) {
-            renderComponentTooltip(poseStack, tooltipSlot.getTooltips(), mouseX, mouseY);
+            guiGraphics.renderComponentTooltip(this.font, tooltipSlot.getTooltips(), mouseX, mouseY);
         } else if (!this.tooltips.isEmpty()) {
             StreamEx.of(this.tooltips)
                 .filter(coord -> isHovering(coord.x, coord.y, coord.width, coord.height, mouseX, mouseY))
-                .forEach(coord -> renderComponentTooltip(poseStack, List.of(coord.tooltip), mouseX, mouseY));
+                .forEach(coord -> guiGraphics.renderComponentTooltip(this.font, List.of(coord.tooltip), mouseX, mouseY));
         }
 
         this.tooltips.clear();
     }
 
     @Override
-    protected void renderLabels(PoseStack poseStack, int mouseX, int mouseY) {
-        this.font.draw(poseStack, this.title, this.titleLabelX, this.titleLabelY, GuiColors.DARK_GREY);
+    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        guiGraphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, GuiColors.DARK_GREY, false);
     }
 
-    public void renderFg(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {}
+    public void renderFg(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {}
 
     @Override
-    protected void renderSlot(PoseStack poseStack, Slot slot) {
-        super.renderSlot(poseStack, slot);
+    protected void renderSlot(GuiGraphics guiGraphics, Slot slot) {
+        super.renderSlot(guiGraphics, slot);
         if (slot instanceof ColoredSlot colored && colored.shouldTint()) {
-            if (colored.tintItems()) {
-                RenderSystem.disableDepthTest();
-            }
-            fill(poseStack, slot.x - 1, slot.y - 1, slot.x + 17, slot.y + 17, colored.getTintColor());
+            guiGraphics.fill(colored.tintItems() ? RenderType.guiOverlay() : RenderType.gui(), slot.x - 1, slot.y - 1, slot.x + 17, slot.y + 17, colored.getTintColor());
         }
     }
 
@@ -89,16 +85,16 @@ public abstract class BaseScreen<T extends AbstractContainerMenu> extends Abstra
         return (!(slot instanceof SlotActive slotActive) || !slotActive.isDisabled()) && super.isHovering(slot, mouseX, mouseY);
     }
 
-    protected void drawWithTooltip(PoseStack poseStack, float x, float y, int color, String name, Object... args) {
-        drawWithTooltip(poseStack, x, y, color, ModUtil.translate("screen", name, args), ModUtil.translate("screen", name + ".tooltip"));
+    protected void drawWithTooltip(GuiGraphics guiGraphics, float x, float y, int color, String name, Object... args) {
+        drawWithTooltip(guiGraphics, x, y, color, ModUtil.translate("screen", name, args), ModUtil.translate("screen", name + ".tooltip"));
     }
 
-    protected void drawWithTooltip(PoseStack poseStack, float x, float y, int color, Component message, Component tooltip) {
+    protected void drawWithTooltip(GuiGraphics guiGraphics, float x, float y, int color, Component message, Component tooltip) {
         String text = message.getString();
         int width = this.font.width(text);
         int height = this.font.lineHeight;
 
-        this.font.draw(poseStack, text, x, y, color);
+        guiGraphics.drawString(this.font, text, (int) x, (int) y, color, false);
         this.tooltips.add(new TooltipCoordinate((int) x, (int) y, width, height, tooltip));
     }
 

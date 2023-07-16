@@ -196,7 +196,7 @@ public class CustomStructureSavedData extends SavedData {
         }
 
         private Map<BlockPos, BlockState> computeRelativeBlocks() {
-            BlockPos median = new BlockPos(
+            BlockPos median = BlockPos.containing(
                 (this.shape.min(Direction.Axis.X) + this.shape.max(Direction.Axis.X)) / 2.0,
                 (this.shape.min(Direction.Axis.Y) + this.shape.max(Direction.Axis.Y)) / 2.0,
                 (this.shape.min(Direction.Axis.Z) + this.shape.max(Direction.Axis.Z)) / 2.0

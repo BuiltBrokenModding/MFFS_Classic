@@ -1,5 +1,5 @@
 {
-  "itemGroup.mffs": "MFFS",
+  "itemGroup.mffs.main": "MFFS",
   
   "info.mffs.coercion_deriver.mode.integrate": "Integrate",
   "info.mffs.coercion_deriver.mode.derive": "Derive",

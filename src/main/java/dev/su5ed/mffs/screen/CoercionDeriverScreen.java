@@ -1,7 +1,7 @@
 package dev.su5ed.mffs.screen;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.blockentity.CoercionDeriverBlockEntity.EnergyMode;
 import dev.su5ed.mffs.menu.CoercionDeriverMenu;
@@ -10,6 +10,7 @@ import dev.su5ed.mffs.network.SwitchEnergyModePacket;
 import dev.su5ed.mffs.util.ModUtil;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -41,21 +42,22 @@ public class CoercionDeriverScreen extends FortronScreen<CoercionDeriverMenu> {
     }
 
     @Override
-    protected void renderLabels(PoseStack poseStack, int mouseX, int mouseY) {
-        super.renderLabels(poseStack, mouseX, mouseY);
+    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        super.renderLabels(guiGraphics, mouseX, mouseY);
 
+        PoseStack poseStack = guiGraphics.pose();
         poseStack.pushPose();
-        poseStack.mulPose(Vector3f.ZP.rotationDegrees(-90));
-        this.font.draw(poseStack, ModUtil.translate("screen", "upgrade"), -95, 140, GuiColors.DARK_GREY);
+        poseStack.mulPose(Axis.ZP.rotationDegrees(-90));
+        guiGraphics.drawString(this.font, ModUtil.translate("screen", "upgrade"), -95, 140, GuiColors.DARK_GREY, false);
         poseStack.popPose();
 
-        this.font.draw(poseStack, ModUtil.translate("screen", "progress")
-            .append(ModUtil.translate("screen", "progress." + (this.menu.blockEntity.isActive() ? "running" : "idle"))), 8, 70, GuiColors.DARK_GREY);
+        guiGraphics.drawString(this.font, ModUtil.translate("screen", "progress")
+            .append(ModUtil.translate("screen", "progress." + (this.menu.blockEntity.isActive() ? "running" : "idle"))), 8, 70, GuiColors.DARK_GREY, false);
 
         int energy = this.menu.blockEntity.fortronStorage.getStoredFortron();
-        this.font.draw(poseStack, ModUtil.translate("screen", "fortron.short", energy), 8, 105, GuiColors.DARK_GREY);
+        guiGraphics.drawString(this.font, ModUtil.translate("screen", "fortron.short", energy), 8, 105, GuiColors.DARK_GREY, false);
         boolean inversed = this.menu.blockEntity.isInversed();
-        this.font.draw(poseStack, ModUtil.translate("screen", "fortron_cost", inversed ? "-" : "+", this.menu.blockEntity.getProductionRate() * 20)
-            .withStyle(inversed ? ChatFormatting.DARK_RED : ChatFormatting.DARK_GREEN), 114, 117, GuiColors.DARK_GREY);
+        guiGraphics.drawString(this.font, ModUtil.translate("screen", "fortron_cost", inversed ? "-" : "+", this.menu.blockEntity.getProductionRate() * 20)
+            .withStyle(inversed ? ChatFormatting.DARK_RED : ChatFormatting.DARK_GREEN), 114, 117, GuiColors.DARK_GREY, false);
     }
 }

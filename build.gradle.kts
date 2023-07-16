@@ -4,7 +4,7 @@ import java.time.LocalDateTime
 plugins {
     eclipse
     `maven-publish`
-    id("net.minecraftforge.gradle") version "5.1.+"
+    id("net.minecraftforge.gradle") version "[6.0,6.2)"
     id("org.parchmentmc.librarian.forgegradle") version "1.+"
     id("io.github.CDAGaming.cursegradle") version "1.6.+"
     id("wtf.gofancy.git-changelog") version "1.1.+"
@@ -14,9 +14,11 @@ group = "dev.su5ed.mffs"
 version = changelog.getVersionFromTag()
 
 val versionMc: String by project
+val versionForge: String by project
 val curseForgeId: String by project
 val versionJei: String by project
 val versionTOP: String by project
+val versionPatchouli: String by project
 val publishReleaseType = System.getenv("PUBLISH_RELEASE_TYPE") ?: "beta"
 val changelogText = changelog.generateChangelog(1, true)
 
@@ -25,7 +27,7 @@ java.toolchain.languageVersion.set(JavaLanguageVersion.of(17))
 logger.lifecycle("\nConfigured version: $version")
 
 minecraft {
-    mappings("parchment", "2022.10.16-1.19.2")
+    mappings("parchment", "2023.06.26-1.20.1")
 
     accessTransformer(file("src/main/resources/META-INF/accesstransformer.cfg"))
 
@@ -42,7 +44,6 @@ minecraft {
             workingDirectory(project.file("run"))
             property("forge.logging.markers", "REGISTRIES")
             property("forge.logging.console.level", "debug")
-            forceExit = false
 
             mods {
                 create("mffs") {
@@ -76,7 +77,7 @@ repositories {
 }
 
 dependencies {
-    minecraft(group = "net.minecraftforge", name = "forge", version = "1.19.2-43.2.8")
+    minecraft(group = "net.minecraftforge", name = "forge", version = "$versionMc-$versionForge")
 
     minecraftLibrary(jarJar(group = "one.util", name = "streamex", version = "0.8.1")) { // Streams galore!
         jarJar.ranged(this, "[0.8.1, 0.9)")
@@ -87,8 +88,7 @@ dependencies {
     compileOnly(fg.deobf(create(group = "mcjty.theoneprobe", name = "theoneprobe", version = versionTOP).apply { isTransitive = false }))
 
     runtimeOnly(fg.deobf("mezz.jei:jei-$versionMc-forge:$versionJei"))
-    runtimeOnly(fg.deobf("mekanism:Mekanism:1.19.2-10.3.5.474"))
-    runtimeOnly(fg.deobf("mekanism:Mekanism:1.19.2-10.3.5.474:generators"))
+    runtimeOnly(fg.deobf("vazkii.patchouli:Patchouli:$versionPatchouli"))
 }
 
 reobf {

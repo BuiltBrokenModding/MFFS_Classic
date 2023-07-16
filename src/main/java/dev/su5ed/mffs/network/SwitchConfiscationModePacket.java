@@ -22,7 +22,7 @@ public record SwitchConfiscationModePacket(BlockPos pos, InterdictionMatrix.Conf
     }
 
     public void processServerPacket(Supplier<NetworkEvent.Context> ctx) {
-        Level level = ctx.get().getSender().getLevel();
+        Level level = ctx.get().getSender().level();
         Network.findBlockEntity(ModObjects.INTERDICTION_MATRIX_BLOCK_ENTITY.get(), level, this.pos)
             .ifPresent(be -> be.setConfiscationMode(this.mode));
     }

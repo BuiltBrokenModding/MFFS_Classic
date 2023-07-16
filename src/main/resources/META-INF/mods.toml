@@ -18,18 +18,18 @@ Ever tired of nuclear explosions blowing up your house or want to keep people ou
 [[dependencies.mffs]]
     modId="forge"
     mandatory=true
-    versionRange="[43.2.8,)"
+    versionRange="[47.1.19,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.mffs]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.19.2, 1.20)"
+    versionRange="[1.20.1, 1.21)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.mffs]]
     modId="theoneprobe"
     mandatory=false
-    versionRange="[1.19-6.2.0-6, )"
+    versionRange="[1.20.1-81-FORGE, )"
     ordering="NONE"
     side="BOTH"

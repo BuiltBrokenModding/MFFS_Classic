@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "F": {
       "item": "mffs:anti_friendly_module"
@@ -15,5 +16,6 @@
   ],
   "result": {
     "item": "mffs:anti_spawn_module"
-  }
+  },
+  "show_notification": true
 }

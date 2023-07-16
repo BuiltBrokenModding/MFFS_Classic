@@ -373,7 +373,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
             int rotationRoll = getRotationRoll();
             return StreamEx.of(interiorPoints)
                 .map(pos -> rotationYaw != 0 || rotationPitch != 0 || rotationRoll != 0 ? ModUtil.rotateByAngleExact(pos, rotationYaw, rotationPitch, rotationRoll) : pos)
-                .map(pos -> new BlockPos(pos).offset(translation))
+                .map(pos -> BlockPos.containing(pos).offset(translation))
                 .toSet();
         });
     }
@@ -426,7 +426,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
 
     private Pair<BlockState, Boolean> canProjectPos(BlockPos pos) {
         BlockState state = this.level.getBlockState(pos);
-        boolean canProject = (state.isAir() || state.getMaterial().isLiquid() || state.is(ModTags.FORCEFIELD_REPLACEABLE) || hasModule(ModModules.DISINTEGRATION) && state.getDestroySpeed(this.level, pos) != -1)
+        boolean canProject = (state.isAir() || state.liquid() || state.is(ModTags.FORCEFIELD_REPLACEABLE) || hasModule(ModModules.DISINTEGRATION) && state.getDestroySpeed(this.level, pos) != -1)
             && !state.is(ModBlocks.FORCE_FIELD.get()) && !pos.equals(this.worldPosition);
         return Pair.of(state, canProject);
     }
@@ -515,7 +515,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
             .mapToEntry(pos -> rotationYaw != 0 || rotationPitch != 0 || rotationRoll != 0 ? ModUtil.rotateByAngleExact(pos, rotationYaw, rotationPitch, rotationRoll) : pos)
             .mapValues(pos -> pos.add(this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ()).add(translation.getX(), translation.getY(), translation.getZ()))
             .filterValues(pos -> pos.y() <= this.level.getHeight())
-            .mapKeyValue((original, pos) -> new TargetPosPair(new BlockPos(Math.round(pos.x), Math.round(pos.y), Math.round(pos.z)), original))
+            .mapKeyValue((original, pos) -> new TargetPosPair(new BlockPos((int) Math.round(pos.x), (int) Math.round(pos.y), (int) Math.round(pos.z)), original))
             .toMutableList();
     }
 

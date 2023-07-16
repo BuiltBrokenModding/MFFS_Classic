@@ -1,8 +1,8 @@
 package dev.su5ed.mffs.screen;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import dev.su5ed.mffs.setup.ModItems;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
@@ -21,7 +21,7 @@ public class ToggleButton extends BaseButton {
     }
 
     @Override
-    public void renderFg(PoseStack poseStack, Minecraft minecraft, int mouseX, int mouseY, float partialTick) {
-        minecraft.getItemRenderer().renderGuiItem(this.enabled.getAsBoolean() ? this.itemOn : this.itemOff, this.x + 2, this.y - 1);
+    public void renderFg(GuiGraphics guiGraphics, Minecraft minecraft, int mouseX, int mouseY, float partialTick) {
+        guiGraphics.renderItem(this.enabled.getAsBoolean() ? this.itemOn : this.itemOff, getX() + 2, getY() - 1);
     }
 }

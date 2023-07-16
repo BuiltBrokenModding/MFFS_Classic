@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "S": {
       "item": "mffs:sphere_mode"
@@ -12,5 +13,6 @@
   ],
   "result": {
     "item": "mffs:cylinder_mode"
-  }
+  },
+  "show_notification": true
 }

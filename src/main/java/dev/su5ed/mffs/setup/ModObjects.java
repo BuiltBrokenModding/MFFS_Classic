@@ -15,7 +15,10 @@ import dev.su5ed.mffs.util.FieldShapeTrigger;
 import dev.su5ed.mffs.util.MenuInventoryTrigger;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.particles.ParticleType;
-import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -25,7 +28,6 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
-import java.util.List;
 import java.util.function.Supplier;
 
 public final class ModObjects {
@@ -42,12 +44,10 @@ public final class ModObjects {
     public static final RegistryObject<ModParticleType<BeamParticleOptions>> BEAM_PARTICLE = PARTICLES.register("beam", () -> new ModParticleType<>(true, BeamParticleOptions.DESERIALIZER, BeamParticleOptions.CODEC));
     public static final RegistryObject<ModParticleType<MovingHologramParticleOptions>> MOVING_HOLOGRAM_PARTICLE = PARTICLES.register("moving_hologram", () -> new ModParticleType<>(true, MovingHologramParticleOptions.DESERIALIZER, MovingHologramParticleOptions.CODEC));
 
-    public static final DamageSource FIELD_SHOCK = new DamageSource("mffs.field_shock").bypassArmor();
+    public static final ResourceKey<DamageType> FIELD_SHOCK_TYPE = ResourceKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(MFFSMod.MODID, "field_shock"));
     public static final Lazy<DamageSourceTrigger> DAMAGE_TRIGGER = Lazy.of(() -> new DamageSourceTrigger(MFFSMod.location("damage_source")));
     public static final Lazy<FieldShapeTrigger> FIELD_SHAPE_TRIGGER = Lazy.of(() -> new FieldShapeTrigger(MFFSMod.location("field_shape")));
     public static final Lazy<MenuInventoryTrigger> MENU_INVENTORY_TRIGGER = Lazy.of(() -> new MenuInventoryTrigger(MFFSMod.location("menu_inventory")));
-
-    public static final List<DamageSource> DAMAGE_SOURCES = List.of(FIELD_SHOCK);
 
     public static void init(IEventBus bus) {
         BLOCK_ENTITY_TYPES.register(bus);

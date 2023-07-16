@@ -54,12 +54,6 @@ public class SlotInventory extends Slot implements TooltipSlot {
     }
 
     @Override
-    public void initialize(ItemStack stack) {
-        this.inventorySlot.setItem(stack);
-        setChanged();
-    }
-
-    @Override
     public void onQuickCraft(@NotNull ItemStack oldStackIn, @NotNull ItemStack newStackIn) {}
 
     @Override

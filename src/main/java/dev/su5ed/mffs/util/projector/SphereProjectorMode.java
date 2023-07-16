@@ -55,6 +55,6 @@ public class SphereProjectorMode implements ProjectorMode {
     private boolean isInField(Projector projector, Vec3 position, double tolerance) {
         BlockPos projectorPos = projector.be().getBlockPos();
         int radius = projector.getModuleCount(ModModules.SCALE);
-        return projectorPos.offset(projector.getTranslation()).closerThan(new BlockPos(position), radius + tolerance);
+        return projectorPos.offset(projector.getTranslation()).closerThan(BlockPos.containing(position), radius + tolerance);
     }
 }

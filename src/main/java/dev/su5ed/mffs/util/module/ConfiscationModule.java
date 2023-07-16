@@ -38,7 +38,7 @@ public class ConfiscationModule extends BaseInterdictionModule {
             for (int i = 0; i < inventory.getContainerSize(); i++) {
                 ItemStack checkStack = inventory.getItem(i);
                 if (!checkStack.isEmpty()) {
-                    boolean stacksMatch = StreamEx.of(filteredItems).anyMatch(stack -> stack.sameItem(checkStack));
+                    boolean stacksMatch = StreamEx.of(filteredItems).anyMatch(stack -> ItemStack.isSameItem(stack, checkStack));
                     InterdictionMatrix.ConfiscationMode mode = interdictionMatrix.getConfiscationMode();
                     if (mode == InterdictionMatrix.ConfiscationMode.BLACKLIST && stacksMatch || mode == InterdictionMatrix.ConfiscationMode.WHITELIST && !stacksMatch) {
                         interdictionMatrix.mergeIntoInventory(inventory.getItem(i));

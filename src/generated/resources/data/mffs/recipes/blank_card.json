@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "P": {
       "item": "minecraft:paper"
@@ -15,5 +16,6 @@
   ],
   "result": {
     "item": "mffs:blank_card"
-  }
+  },
+  "show_notification": true
 }

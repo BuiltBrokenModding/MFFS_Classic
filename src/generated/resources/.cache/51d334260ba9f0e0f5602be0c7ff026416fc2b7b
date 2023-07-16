@@ -1,6 +1,0 @@
-// 1.19.2	2023-04-27T14:53:45.1090767	MFFSLootTables
-0fa9fc9f94191b313550053b3bf0fcbb1b83f09a data/mffs/loot_tables/blocks/biometric_identifier.json
-49d78360997c9ab584dedf5cbdc5ecf56ce48a0a data/mffs/loot_tables/blocks/coercion_deriver.json
-599d2c985d6a5dc8b3fd6e1228b495d0e7d1ef52 data/mffs/loot_tables/blocks/fortron_capacitor.json
-c9515f1e3b1fc30d51dec6908fd253156c9dc6b7 data/mffs/loot_tables/blocks/projector.json
-3bed99fd5f4a3106edba241a7d89aca7f526cebb data/mffs/loot_tables/grant_book_on_first_join.json

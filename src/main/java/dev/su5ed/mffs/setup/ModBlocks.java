@@ -10,7 +10,8 @@ import dev.su5ed.mffs.blockentity.BaseBlockEntity;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -21,7 +22,7 @@ import java.util.function.Supplier;
 
 public final class ModBlocks {
     private static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MFFSMod.MODID);
-    private static final BlockBehaviour.Properties BLOCK_PROPERTIES = BlockBehaviour.Properties.of(Material.STONE).strength(3F).requiresCorrectToolForDrops();
+    private static final BlockBehaviour.Properties BLOCK_PROPERTIES = BlockBehaviour.Properties.of().mapColor(MapColor.STONE).instrument(NoteBlockInstrument.BASEDRUM).strength(3F).requiresCorrectToolForDrops();
 
     public static final RegistryObject<ProjectorBlock> PROJECTOR = block("projector", ProjectorBlock::new);
     public static final RegistryObject<CoercionDeriverBlock> COERCION_DERIVER = block("coercion_deriver", CoercionDeriverBlock::new);

@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "C": {
       "item": "minecraft:coal"
@@ -15,5 +16,6 @@
   ],
   "result": {
     "item": "mffs:steel_compound"
-  }
+  },
+  "show_notification": true
 }

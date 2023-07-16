@@ -3,21 +3,24 @@ package dev.su5ed.mffs.datagen;
 import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.setup.ModItems;
 import dev.su5ed.mffs.setup.ModTags;
-import net.minecraft.data.DataGenerator;
-import net.minecraft.data.tags.BlockTagsProvider;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.concurrent.CompletableFuture;
+
 public class ItemTagsGen extends ItemTagsProvider {
 
-    public ItemTagsGen(DataGenerator generator, BlockTagsProvider blockTagsProvider, @Nullable ExistingFileHelper existingFileHelper) {
-        super(generator, blockTagsProvider, MFFSMod.MODID, existingFileHelper);
+    public ItemTagsGen(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, CompletableFuture<TagLookup<Block>> blockTags, @Nullable ExistingFileHelper existingFileHelper) {
+        super(output, lookupProvider, blockTags, MFFSMod.MODID, existingFileHelper);
     }
 
     @Override
-    protected void addTags() {
+    protected void addTags(HolderLookup.Provider pProvider) {
         tag(ModTags.FORTRON_FUEL).add(Items.LAPIS_LAZULI, Items.QUARTZ);
         tag(ModTags.INGOTS_STEEL).add(ModItems.STEEL_INGOT.get());
     }

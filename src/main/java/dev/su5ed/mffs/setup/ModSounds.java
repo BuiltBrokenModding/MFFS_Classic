@@ -19,7 +19,7 @@ public final class ModSounds {
     }
 
     private static RegistryObject<SoundEvent> registerSound(String name) {
-        return SOUND_EVENTS.register(name, () -> new SoundEvent(location(name)));
+        return SOUND_EVENTS.register(name, () -> SoundEvent.createVariableRangeEvent(location(name)));
     }
 
     private ModSounds() {}

@@ -6,9 +6,9 @@ import com.google.gson.JsonObject;
 import dev.su5ed.mffs.setup.ModObjects;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
+import net.minecraft.advancements.critereon.ContextAwarePredicate;
 import net.minecraft.advancements.critereon.DeserializationContext;
 import net.minecraft.advancements.critereon.EnchantmentPredicate;
-import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.advancements.critereon.MinMaxBounds;
 import net.minecraft.advancements.critereon.NbtPredicate;
@@ -39,7 +39,7 @@ public class MenuInventoryTrigger extends SimpleCriterionTrigger<MenuInventoryTr
     }
 
     @NotNull
-    public TriggerInstance createInstance(JsonObject json, EntityPredicate.Composite player, DeserializationContext context) {
+    public TriggerInstance createInstance(JsonObject json, ContextAwarePredicate predicate, DeserializationContext context) {
         String name = GsonHelper.getAsString(json, "menu_type");
         MenuType<?> menuType = ForgeRegistries.MENU_TYPES.getValue(new ResourceLocation(name));
         boolean active = GsonHelper.getAsBoolean(json, "active");
@@ -47,7 +47,7 @@ public class MenuInventoryTrigger extends SimpleCriterionTrigger<MenuInventoryTr
             throw new IllegalArgumentException("Unknown MenuType " + name);
         }
         ItemPredicate[] predicates = ItemPredicate.fromJsonArray(json.get("items"));
-        return new TriggerInstance(player, menuType, active, predicates);
+        return new TriggerInstance(predicate, menuType, active, predicates);
     }
 
     public void trigger(ServerPlayer player, boolean active, IItemHandler itemHandler) {
@@ -69,8 +69,8 @@ public class MenuInventoryTrigger extends SimpleCriterionTrigger<MenuInventoryTr
         private final boolean active;
         private final ItemPredicate[] items;
 
-        public TriggerInstance(EntityPredicate.Composite player, MenuType<?> menuType, boolean active, ItemPredicate[] items) {
-            super(ModObjects.MENU_INVENTORY_TRIGGER.get().getId(), player);
+        public TriggerInstance(ContextAwarePredicate predicate, MenuType<?> menuType, boolean active, ItemPredicate[] items) {
+            super(ModObjects.MENU_INVENTORY_TRIGGER.get().getId(), predicate);
 
             this.menuType = menuType;
             this.items = items;
@@ -97,7 +97,7 @@ public class MenuInventoryTrigger extends SimpleCriterionTrigger<MenuInventoryTr
             for (int i = 0; i < items.length; ++i) {
                 predicates[i] = new ItemPredicate(null, ImmutableSet.of(items[i].asItem()), MinMaxBounds.Ints.ANY, MinMaxBounds.Ints.ANY, EnchantmentPredicate.NONE, EnchantmentPredicate.NONE, null, NbtPredicate.ANY);
             }
-            return new TriggerInstance(EntityPredicate.Composite.ANY, menuType, active, predicates);
+            return new TriggerInstance(ContextAwarePredicate.ANY, menuType, active, predicates);
         }
     }
 }

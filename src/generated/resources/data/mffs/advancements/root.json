@@ -33,5 +33,6 @@
     [
       "has_steel_compound"
     ]
-  ]
+  ],
+  "sends_telemetry_event": true
 }

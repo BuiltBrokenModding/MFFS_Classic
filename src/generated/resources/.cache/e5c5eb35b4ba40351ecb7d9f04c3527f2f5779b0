@@ -1,11 +1,11 @@
-// 1.19.2	2023-04-27T14:53:45.1070887	Advancements
-b7f3005aee0954c0e1eb6bd0b03ba6f3bcdaae1f data/mffs/advancements/camouflage.json
-1e49462463fee943e2b405139de8cc78c2e30134 data/mffs/advancements/custom_camouflage.json
-e358c1f7c1073583945a1d0a5cac7709d1d481f4 data/mffs/advancements/field_shape.json
-c2f6561e4974f7b21e7becf3c11f88af162f8c7c data/mffs/advancements/field_shock.json
-421d8608373184ffd07b51a0cbedd51ea2dbf629 data/mffs/advancements/grant_book_on_first_join.json
-275eb90dd05b592f53ccbd8e2fa27df87a04f164 data/mffs/advancements/projector.json
-5b88b15c188d6644a45e35c5ed4078dca16e88cb data/mffs/advancements/root.json
-6a69aac732a399b455768526df9fbd4706afef74 data/mffs/advancements/smelt_steel.json
-91051396e7f5daceba5c53512b390a01e7bbe0e7 data/mffs/advancements/sponge_module.json
-1910b52e5417a5204c2c6909c10229b2317dc491 data/mffs/advancements/steel_compound.json
+// 1.20.1	2023-07-16T12:59:36.1657434	Advancements
+f832b7421defccbc1d78bbbffd4bbafd72b939fd data/mffs/advancements/camouflage.json
+99fbfb0f076a3a552fb74ec2b90bbe10a420d9f7 data/mffs/advancements/custom_camouflage.json
+9b19a674a6309e085fb7e3a8d5fb595a8a43aa44 data/mffs/advancements/field_shape.json
+d49d73a35a1cba524fcb25a1adcce3b18c198689 data/mffs/advancements/field_shock.json
+40d92a4623a3cc0d818cff9f6d1607eb98ea2953 data/mffs/advancements/grant_book_on_first_join.json
+b5c793203c1e6f4ca644a06882ebaf49bc546b80 data/mffs/advancements/projector.json
+200d0fbf22ddb256a1e1d41c252c6b90451552e3 data/mffs/advancements/root.json
+7783fe4382c609340f4a7e1675fd52f06b35b696 data/mffs/advancements/smelt_steel.json
+bdda2a464ef415b70f8d8fb931a278b176f1380e data/mffs/advancements/sponge_module.json
+f68f37d6cc2eca032e202b349e8b69dcc81210c9 data/mffs/advancements/steel_compound.json

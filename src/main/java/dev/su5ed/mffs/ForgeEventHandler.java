@@ -14,7 +14,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.event.entity.living.LivingSpawnEvent;
+import net.minecraftforge.event.entity.living.MobSpawnEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.Event;
@@ -51,8 +51,8 @@ public class ForgeEventHandler {
     }
 
     @SubscribeEvent
-    public static void livingSpawnEvent(LivingSpawnEvent event) {
-        InterdictionMatrix interdictionMatrix = Fortron.getNearestInterdictionMatrix(event.getEntity().getLevel(), new BlockPos(event.getX(), event.getY(), event.getZ()));
+    public static void livingSpawnEvent(MobSpawnEvent event) {
+        InterdictionMatrix interdictionMatrix = Fortron.getNearestInterdictionMatrix(event.getEntity().level(), BlockPos.containing(event.getX(), event.getY(), event.getZ()));
         if (interdictionMatrix != null && interdictionMatrix.hasModule(ModModules.ANTI_SPAWN)) {
             event.setResult(Event.Result.DENY);
         }

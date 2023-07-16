@@ -3,15 +3,16 @@ package dev.su5ed.mffs.util;
 import com.google.gson.JsonObject;
 import dev.su5ed.mffs.setup.ModObjects;
 import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
+import net.minecraft.advancements.critereon.ContextAwarePredicate;
 import net.minecraft.advancements.critereon.DeserializationContext;
-import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.SerializationContext;
 import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.GsonHelper;
-import net.minecraft.world.damagesource.DamageSource;
-import one.util.streamex.StreamEx;
+import net.minecraft.world.damagesource.DamageType;
 
 /**
  * Source: Mekanism's <a href="https://github.com/mekanism/Mekanism/blob/b0b9bec27bcfd4795ad1eb94f6f96c1cbc42a06d/src/main/java/mekanism/common/advancements/triggers/MekanismDamageTrigger.java">MekanismDamageTrigger</a>
@@ -29,40 +30,38 @@ public class DamageSourceTrigger extends SimpleCriterionTrigger<DamageSourceTrig
     }
 
     @Override
-    protected TriggerInstance createInstance(JsonObject json, EntityPredicate.Composite playerPredicate, DeserializationContext context) {
+    protected TriggerInstance createInstance(JsonObject json, ContextAwarePredicate playerPredicate, DeserializationContext context) {
         String damage = GsonHelper.getAsString(json, "damage");
-        DamageSource damageSource = StreamEx.of(ModObjects.DAMAGE_SOURCES)
-            .findFirst(source -> source.getMsgId().equals(damage))
-            .orElseThrow(() -> new IllegalArgumentException("Unknown DamageSource id " + damage));
-        return new TriggerInstance(playerPredicate, damageSource, GsonHelper.getAsBoolean(json, "killed"));
+        ResourceKey<DamageType> key = ResourceKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(damage));
+        return new TriggerInstance(playerPredicate, key, GsonHelper.getAsBoolean(json, "killed"));
     }
 
-    public void trigger(ServerPlayer player, DamageSource damageSource) {
+    public void trigger(ServerPlayer player, ResourceKey<DamageType> damageType) {
         // If it is just any damage regardless of killed or the player is dead (or is on hardcore and used up a totem of undying)
         // And the damage source matches
-        trigger(player, instance -> (!instance.killed || player.isDeadOrDying()) && instance.damageSource == damageSource);
+        trigger(player, instance -> (!instance.killed || player.isDeadOrDying()) && instance.damageType.equals(damageType));
     }
 
     public static class TriggerInstance extends AbstractCriterionTriggerInstance {
-        private final DamageSource damageSource;
+        private final ResourceKey<DamageType> damageType;
         private final boolean killed;
 
-        public TriggerInstance(EntityPredicate.Composite playerPredicate, DamageSource damageSource, boolean killed) {
-            super(ModObjects.DAMAGE_TRIGGER.get().getId(), playerPredicate);
-            this.damageSource = damageSource;
+        public TriggerInstance(ContextAwarePredicate predicate, ResourceKey<DamageType> damageType, boolean killed) {
+            super(ModObjects.DAMAGE_TRIGGER.get().getId(), predicate);
+            this.damageType = damageType;
             this.killed = killed;
         }
 
         @Override
         public JsonObject serializeToJson(SerializationContext context) {
             JsonObject json = super.serializeToJson(context);
-            json.addProperty("damage", this.damageSource.getMsgId());
+            json.addProperty("damage", this.damageType.location().toString());
             json.addProperty("killed", this.killed);
             return json;
         }
 
-        public static TriggerInstance killed(DamageSource damageSource) {
-            return new TriggerInstance(EntityPredicate.Composite.ANY, damageSource, true);
+        public static TriggerInstance killed(ResourceKey<DamageType> damageType) {
+            return new TriggerInstance(ContextAwarePredicate.ANY, damageType, true);
         }
     }
 }

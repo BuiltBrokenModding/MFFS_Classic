@@ -1,12 +1,10 @@
 package dev.su5ed.mffs.screen;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import dev.su5ed.mffs.MFFSMod;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -39,15 +37,12 @@ public class IconCycleButton<T extends Enum<T>> extends AbstractButton {
     }
 
     @Override
-    public void renderButton(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
-        Minecraft minecraft = Minecraft.getInstance();
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderTexture(0, this.image);
+    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         if (this.isHovered) {
-            RenderSystem.setShaderColor(0.85F, 0.85F, 0.85F, this.alpha);
+            guiGraphics.setColor(0.85F, 0.85F, 0.85F, this.alpha);
         }
         else {
-            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
+            guiGraphics.setColor(1.0F, 1.0F, 1.0F, this.alpha);
         }
 
         RenderSystem.enableBlend();
@@ -55,9 +50,8 @@ public class IconCycleButton<T extends Enum<T>> extends AbstractButton {
         RenderSystem.enableDepthTest();
 
         int vOffset = this.imageV + this.value.get().ordinal() * this.yStep;
-        blit(poseStack, this.x, this.y, this.imageU, vOffset, this.width, this.height);
-        blit(poseStack, this.x + this.width / 2, this.y, 200 - this.width / 2, vOffset, this.width / 2, this.height);
-        renderBg(poseStack, minecraft, mouseX, mouseY);
+        guiGraphics.blit(this.image, getX(), getY(), this.imageU, vOffset, this.width, this.height);
+        guiGraphics.blit(this.image, getX() + this.width / 2, getY(), 200 - this.width / 2, vOffset, this.width / 2, this.height);
     }
 
     @Override
@@ -66,5 +60,5 @@ public class IconCycleButton<T extends Enum<T>> extends AbstractButton {
     }
 
     @Override
-    public void updateNarration(NarrationElementOutput narrationElementOutput) {}
+    protected void updateWidgetNarration(NarrationElementOutput output) {}
 }
