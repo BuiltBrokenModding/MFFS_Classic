@@ -48,11 +48,12 @@ public final class RenderPostProcessor {
             Window window = minecraft.getWindow();
             glitchRenderTarget = new OffscreenRenderTarget(window.getWidth(), window.getHeight());
             glitchRenderTarget.setClearColor(0.0F, 0.0F, 0.0F, 0.0F);
-            shaderOrthoMatrix = new Matrix4f().ortho(0.0F, mainRenderTarget.width, mainRenderTarget.height, 0.0F, 0.1F, 1000.0F);
+            shaderOrthoMatrix = new Matrix4f().setOrtho(0.0F, mainRenderTarget.width, 0.0F, mainRenderTarget.height, 0.1F, 1000.0F);
         }
     }
 
     public static void reloadPostProcessPass() {
+        enableGlitchEffect = MFFSConfig.CLIENT.enableProjectorModeGlitch.get();
         if (enableGlitchEffect) {
             Minecraft minecraft = Minecraft.getInstance();
             RenderTarget mainRenderTarget = minecraft.getMainRenderTarget();
@@ -77,7 +78,7 @@ public final class RenderPostProcessor {
             if (glitchRenderTarget != null) {
                 glitchRenderTarget.resize(window.getWidth(), window.getHeight(), Minecraft.ON_OSX);
             }
-            shaderOrthoMatrix = new Matrix4f().ortho(0.0F, mainRenderTarget.width, mainRenderTarget.height, 0.0F, 0.1F, 1000.0F);
+            shaderOrthoMatrix = new Matrix4f().setOrtho(0.0F, mainRenderTarget.width, 0.0F, mainRenderTarget.height, 0.1F, 1000.0F);
             if (postProcessPass != null) {
                 postProcessPass.setOrthoMatrix(shaderOrthoMatrix);
             }

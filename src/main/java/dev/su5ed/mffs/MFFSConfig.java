@@ -84,7 +84,7 @@ public class MFFSConfig {
         private Client(ForgeConfigSpec.Builder builder) {
             builder.push("general");
             this.enableProjectorModeGlitch = builder
-                .comment("Apply a fancy glitch effect on projector mode renders. Requires game restart.")
+                .comment("Apply a fancy glitch effect on projector mode renders. Reload resources to apply change.")
                 .define("enableProjectorModeGlitch", true);
             builder.pop();
         }
