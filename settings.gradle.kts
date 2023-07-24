@@ -13,6 +13,10 @@ pluginManagement {
             name = "Gofancy"
             url = uri("https://maven.gofancy.wtf/releases")
         }
+        maven {
+            name = "Sponge Snapshots"
+            url = uri("https://repo.spongepowered.org/repository/maven-public/")
+        }
     }
 }
 plugins {

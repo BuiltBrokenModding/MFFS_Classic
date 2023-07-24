@@ -8,6 +8,8 @@ plugins {
     id("org.parchmentmc.librarian.forgegradle") version "1.+"
     id("io.github.CDAGaming.cursegradle") version "1.6.+"
     id("wtf.gofancy.git-changelog") version "1.1.+"
+    // Required to run mixin mods in dev
+    id("org.spongepowered.mixin") version "0.7-SNAPSHOT"
 }
 
 group = "dev.su5ed.mffs"
