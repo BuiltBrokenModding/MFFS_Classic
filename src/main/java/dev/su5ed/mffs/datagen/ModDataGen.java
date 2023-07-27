@@ -32,8 +32,7 @@ public final class ModDataGen {
 
         RegistrySetBuilder builder = new RegistrySetBuilder()
             .add(Registries.DAMAGE_TYPE, DamageTypeGen::bootstrap);
-        DatapackBuiltinEntriesProvider entriesProvider = new DatapackBuiltinEntriesProvider(output, event.getLookupProvider(), builder, Set.of(MFFSMod.MODID));
-        generator.addProvider(event.includeServer(), entriesProvider);
+        DatapackBuiltinEntriesProvider entriesProvider = generator.addProvider(event.includeServer(), new DatapackBuiltinEntriesProvider(output, event.getLookupProvider(), builder, Set.of(MFFSMod.MODID)));
         CompletableFuture<HolderLookup.Provider> registries = entriesProvider.getRegistryProvider();
         generator.addProvider(event.includeClient(), new BlockStateGen(output, helper));
         generator.addProvider(event.includeClient(), new ItemModelGen(output, helper));
