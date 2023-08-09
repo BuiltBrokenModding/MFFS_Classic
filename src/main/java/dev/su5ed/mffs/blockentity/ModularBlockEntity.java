@@ -156,9 +156,9 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
     protected void addModuleSlots(List<? super InventorySlot> list) {}
 
     protected List<InventorySlot> createUpgradeSlots(int count) {
-        return createUpgradeSlots(count, stack -> true, stack -> {});
+        return createUpgradeSlots(count, ModUtil::isModule, stack -> {});
     }
-    
+
     protected List<InventorySlot> createUpgradeSlots(int count, @Nullable Module.Category category, Consumer<ItemStack> onChanged) {
         return createUpgradeSlots(count, stack -> category == null || ModUtil.isModule(stack, category), onChanged);
     }

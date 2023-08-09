@@ -65,25 +65,14 @@ public class InventorySlotItemHandler implements IItemHandler, IItemHandlerModif
     @Override
     public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
         validateSlotIndex(slot);
-        InventorySlot invSlot = this.slots.get(slot);
-        if (invSlot.canInsert(stack)) {
-            if (!simulate) {
-                invSlot.setItem(stack);
-            }
-            return stack;
-        }
-        return ItemStack.EMPTY;
+        return this.slots.get(slot).insert(stack, simulate);
     }
 
     @NotNull
     @Override
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
         validateSlotIndex(slot);
-        InventorySlot invSlot = this.slots.get(slot);
-        if (invSlot.canExtract(amount)) {
-            return invSlot.extract(amount);
-        }
-        return ItemStack.EMPTY;
+        return this.slots.get(slot).extract(amount, simulate);
     }
 
     @Override
@@ -95,7 +84,7 @@ public class InventorySlotItemHandler implements IItemHandler, IItemHandlerModif
     @Override
     public boolean isItemValid(int slot, @NotNull ItemStack stack) {
         validateSlotIndex(slot);
-        return this.slots.get(slot).canInsert(stack);
+        return this.slots.get(slot).accepts(stack);
     }
 
     @Override

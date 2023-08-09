@@ -74,13 +74,13 @@ public class SlotInventory extends Slot implements TooltipSlot {
 
     @Override
     public boolean mayPickup(Player player) {
-        return this.inventorySlot.canExtract(1);
+        return this.inventorySlot.canExtract();
     }
 
     @Override
     @NotNull
     public ItemStack remove(int amount) {
-        return this.inventorySlot.extract(amount);
+        return this.inventorySlot.extract(amount, false);
     }
 
     @Override
