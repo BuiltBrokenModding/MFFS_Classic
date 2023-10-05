@@ -1,4 +1,4 @@
-package dev.su5ed.mffs.util;
+package dev.su5ed.mffs.util.loot;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonArray;

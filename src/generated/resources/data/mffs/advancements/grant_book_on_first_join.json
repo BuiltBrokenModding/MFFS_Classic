@@ -1,13 +1,13 @@
 {
   "criteria": {
-    "tick": {
+    "guidebook": {
       "conditions": {},
-      "trigger": "minecraft:tick"
+      "trigger": "mffs:guidebook"
     }
   },
   "requirements": [
     [
-      "tick"
+      "guidebook"
     ]
   ],
   "rewards": {

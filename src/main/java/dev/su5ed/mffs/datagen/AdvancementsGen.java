@@ -4,16 +4,15 @@ import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.setup.ModItems;
 import dev.su5ed.mffs.setup.ModMenus;
 import dev.su5ed.mffs.setup.ModObjects;
-import dev.su5ed.mffs.util.DamageSourceTrigger;
-import dev.su5ed.mffs.util.FieldShapeTrigger;
-import dev.su5ed.mffs.util.MenuInventoryTrigger;
 import dev.su5ed.mffs.util.ModUtil;
+import dev.su5ed.mffs.util.loot.DamageSourceTrigger;
+import dev.su5ed.mffs.util.loot.FieldShapeTrigger;
+import dev.su5ed.mffs.util.loot.GuideBookTrigger;
+import dev.su5ed.mffs.util.loot.MenuInventoryTrigger;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRewards;
-import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.advancements.FrameType;
 import net.minecraft.advancements.critereon.ContextAwarePredicate;
-import net.minecraft.advancements.critereon.PlayerTrigger;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Items;
@@ -75,7 +74,7 @@ public class AdvancementsGen implements ForgeAdvancementProvider.AdvancementGene
             .save(saver, id("custom_camouflage"));
 
         Advancement.Builder.advancement()
-            .addCriterion("tick", new PlayerTrigger.TriggerInstance(CriteriaTriggers.TICK.getId(), ContextAwarePredicate.ANY))
+            .addCriterion("guidebook", new GuideBookTrigger.TriggerInstance(ModObjects.GUIDEBOOK_TRIGGER.get().getId(), ContextAwarePredicate.ANY))
             .rewards(AdvancementRewards.Builder.loot(location("grant_book_on_first_join")))
             .save(saver, id("grant_book_on_first_join"));
     }

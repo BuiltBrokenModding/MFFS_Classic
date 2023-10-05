@@ -6,14 +6,17 @@ import dev.su5ed.mffs.api.security.InterdictionMatrix;
 import dev.su5ed.mffs.blockentity.FortronBlockEntity;
 import dev.su5ed.mffs.setup.ModBlocks;
 import dev.su5ed.mffs.setup.ModModules;
+import dev.su5ed.mffs.setup.ModObjects;
 import dev.su5ed.mffs.util.Fortron;
 import dev.su5ed.mffs.util.FrequencyGrid;
 import dev.su5ed.mffs.util.ModUtil;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.living.MobSpawnEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
@@ -55,6 +58,13 @@ public class ForgeEventHandler {
         InterdictionMatrix interdictionMatrix = Fortron.getNearestInterdictionMatrix(event.getEntity().level(), BlockPos.containing(event.getX(), event.getY(), event.getZ()));
         if (interdictionMatrix != null && interdictionMatrix.hasModule(ModModules.ANTI_SPAWN)) {
             event.setResult(Event.Result.DENY);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onPlayerJoinLevel(EntityJoinLevelEvent event) {
+        if (event.getEntity() instanceof ServerPlayer serverPlayer && MFFSConfig.COMMON.giveGuidebookOnFirstJoin.get()) {
+            ModObjects.GUIDEBOOK_TRIGGER.get().trigger(serverPlayer);
         }
     }
 

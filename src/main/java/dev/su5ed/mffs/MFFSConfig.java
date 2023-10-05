@@ -29,6 +29,7 @@ public class MFFSConfig {
         public final ForgeConfigSpec.BooleanValue allowOpBiometryOverride;
         public final ForgeConfigSpec.BooleanValue interactCreative;
         public final ForgeConfigSpec.IntValue maxCustomModeScale;
+        public final ForgeConfigSpec.BooleanValue giveGuidebookOnFirstJoin;
 
         public final ForgeConfigSpec.DoubleValue energyConversionRatio;
         public final ForgeConfigSpec.DoubleValue catalystMultiplier;
@@ -56,6 +57,9 @@ public class MFFSConfig {
             this.maxCustomModeScale = builder
                 .comment("Max custom mode field scale")
                 .defineInRange("maxCustomModeScale", 200, 0, Integer.MAX_VALUE);
+            this.giveGuidebookOnFirstJoin = builder
+                .comment("Give players a copy of the MFFS guidebook when they first join a world")
+                .define("giveGuidebookOnFirstJoin", true);
             builder.pop();
 
             builder.push("balance");

@@ -10,9 +10,10 @@ import dev.su5ed.mffs.blockentity.ProjectorBlockEntity;
 import dev.su5ed.mffs.render.ModParticleType;
 import dev.su5ed.mffs.render.particle.BeamParticleOptions;
 import dev.su5ed.mffs.render.particle.MovingHologramParticleOptions;
-import dev.su5ed.mffs.util.DamageSourceTrigger;
-import dev.su5ed.mffs.util.FieldShapeTrigger;
-import dev.su5ed.mffs.util.MenuInventoryTrigger;
+import dev.su5ed.mffs.util.loot.DamageSourceTrigger;
+import dev.su5ed.mffs.util.loot.FieldShapeTrigger;
+import dev.su5ed.mffs.util.loot.GuideBookTrigger;
+import dev.su5ed.mffs.util.loot.MenuInventoryTrigger;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.Registries;
@@ -48,16 +49,18 @@ public final class ModObjects {
     public static final Lazy<DamageSourceTrigger> DAMAGE_TRIGGER = Lazy.of(() -> new DamageSourceTrigger(MFFSMod.location("damage_source")));
     public static final Lazy<FieldShapeTrigger> FIELD_SHAPE_TRIGGER = Lazy.of(() -> new FieldShapeTrigger(MFFSMod.location("field_shape")));
     public static final Lazy<MenuInventoryTrigger> MENU_INVENTORY_TRIGGER = Lazy.of(() -> new MenuInventoryTrigger(MFFSMod.location("menu_inventory")));
+    public static final Lazy<GuideBookTrigger> GUIDEBOOK_TRIGGER = Lazy.of(() -> new GuideBookTrigger(MFFSMod.location("guidebook")));
 
     public static void init(IEventBus bus) {
         BLOCK_ENTITY_TYPES.register(bus);
         PARTICLES.register(bus);
     }
-    
+
     public static void initCriteriaTriggers() {
         CriteriaTriggers.register(DAMAGE_TRIGGER.get());
         CriteriaTriggers.register(FIELD_SHAPE_TRIGGER.get());
         CriteriaTriggers.register(MENU_INVENTORY_TRIGGER.get());
+        CriteriaTriggers.register(GUIDEBOOK_TRIGGER.get());
     }
 
     private static <T extends BlockEntity> RegistryObject<BlockEntityType<T>> blockEntity(String name, BlockEntityType.BlockEntitySupplier<T> factory, Supplier<Block> block) {
