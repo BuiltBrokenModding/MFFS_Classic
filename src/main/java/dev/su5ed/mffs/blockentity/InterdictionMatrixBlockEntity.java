@@ -7,6 +7,7 @@ import dev.su5ed.mffs.api.security.BiometricIdentifier;
 import dev.su5ed.mffs.api.security.FieldPermission;
 import dev.su5ed.mffs.api.security.InterdictionMatrix;
 import dev.su5ed.mffs.menu.InterdictionMatrixMenu;
+import dev.su5ed.mffs.setup.ModCapabilities;
 import dev.su5ed.mffs.setup.ModItems;
 import dev.su5ed.mffs.setup.ModModules;
 import dev.su5ed.mffs.setup.ModObjects;
@@ -14,6 +15,7 @@ import dev.su5ed.mffs.util.ModUtil;
 import dev.su5ed.mffs.util.inventory.InventorySlot;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
@@ -24,6 +26,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 import one.util.streamex.IntStreamEx;
 import one.util.streamex.StreamEx;
 import org.jetbrains.annotations.Nullable;
@@ -32,6 +36,7 @@ import java.util.Collection;
 import java.util.List;
 
 public class InterdictionMatrixBlockEntity extends ModularBlockEntity implements InterdictionMatrix {
+    private final LazyOptional<InterdictionMatrix> interdictionMatrixOptional = LazyOptional.of(() -> this);
     public final InventorySlot secondaryCard;
     public final List<InventorySlot> upgradeSlots;
     public final List<InventorySlot> bannedItemSlots;
@@ -157,6 +162,14 @@ public class InterdictionMatrixBlockEntity extends ModularBlockEntity implements
         super.saveCommonTag(tag);
 
         tag.putString("confiscationMode", this.confiscationMode.name());
+    }
+
+    @Override
+    public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
+        if (cap == ModCapabilities.INTERDICTION_MATRIX) {
+            return this.interdictionMatrixOptional.cast();
+        }
+        return super.getCapability(cap, side);
     }
 
     @Nullable

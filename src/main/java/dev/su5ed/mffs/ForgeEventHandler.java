@@ -80,7 +80,7 @@ public class ForgeEventHandler {
                     return;
                 }
                 if (!Fortron.hasPermission(level, pos, interdictionMatrix, action, player)) {
-                    player.displayClientMessage(ModUtil.translate("info", "interdiction_matrix.no_permission"), false);
+                    player.displayClientMessage(ModUtil.translate("info", "interdiction_matrix.no_permission", interdictionMatrix.getTitle()), false);
                     event.setCanceled(true);
                 }
             }
