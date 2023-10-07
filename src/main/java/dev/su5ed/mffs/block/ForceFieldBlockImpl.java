@@ -6,6 +6,7 @@ import dev.su5ed.mffs.api.module.Module;
 import dev.su5ed.mffs.api.security.BiometricIdentifier;
 import dev.su5ed.mffs.api.security.FieldPermission;
 import dev.su5ed.mffs.blockentity.ForceFieldBlockEntity;
+import dev.su5ed.mffs.compat.CreateTrainCompat;
 import dev.su5ed.mffs.setup.ModObjects;
 import dev.su5ed.mffs.util.ModUtil;
 import net.minecraft.core.BlockPos;
@@ -141,11 +142,15 @@ public class ForceFieldBlockImpl extends Block implements ForceFieldBlock, Entit
                         living.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 20, 1));
                     }
                     BiometricIdentifier identifier = projector.getBiometricIdentifier();
-                    if (!(entity instanceof Player player) || !entity.isShiftKeyDown() || !player.isCreative() && (identifier == null || !identifier.isAccessGranted(player, FieldPermission.WARP))) {
+                    if (!(entity instanceof Player player) || !isSneaking(entity) || !player.isCreative() && (identifier == null || !identifier.isAccessGranted(player, FieldPermission.WARP))) {
                         ModUtil.shockEntity(entity, Integer.MAX_VALUE);
                     }
                 }
             });
+    }
+
+    private boolean isSneaking(Entity entity) {
+        return entity.isShiftKeyDown() || CreateTrainCompat.isTrainPassenger(entity);
     }
 
     @Nullable
