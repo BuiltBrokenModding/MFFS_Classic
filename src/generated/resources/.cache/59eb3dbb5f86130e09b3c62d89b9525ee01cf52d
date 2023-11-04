@@ -1,6 +1,7 @@
-// 1.20.1	2023-07-16T12:59:36.1617435	Loot Tables
+// 1.20.1	2023-11-04T21:06:33.0104073	Loot Tables
 4804a8a554848205259f3ed59d44be6ea8360668 data/mffs/loot_tables/blocks/biometric_identifier.json
 9396034393fff9598d734ca910c48ea0f889d5e3 data/mffs/loot_tables/blocks/coercion_deriver.json
 fe535b3d8bcc66b2b35972cc72914ac8f8bf9915 data/mffs/loot_tables/blocks/fortron_capacitor.json
+da0ff7432f5a299c3407db98e22efd89e6c433d7 data/mffs/loot_tables/blocks/interdiction_matrix.json
 7f0c69e210e22a54de38af5f508778b0e31a35af data/mffs/loot_tables/blocks/projector.json
 b342e176dba0bf7fffbb9a05c8fbf44b0f9747f7 data/mffs/loot_tables/grant_book_on_first_join.json

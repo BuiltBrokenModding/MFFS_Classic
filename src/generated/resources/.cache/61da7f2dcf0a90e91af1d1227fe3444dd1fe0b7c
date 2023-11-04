@@ -1,4 +1,4 @@
-// 1.20.1	2023-07-16T12:59:36.1612428	MFFS Block Tags
+// 1.20.1	2023-11-04T21:02:20.7353137	MFFS Block Tags
 bd870fcd58f6ea6aad12f31f589aa63fcfa3cf34 data/mffs/tags/blocks/forcefield_replaceable.json
-72b8928a0efa6cb9c1c3a8c80818b166bf4fd48c data/minecraft/tags/blocks/mineable/pickaxe.json
-72b8928a0efa6cb9c1c3a8c80818b166bf4fd48c data/minecraft/tags/blocks/needs_iron_tool.json
+3f19675c96c43461bb23aee30a545482b9097f53 data/minecraft/tags/blocks/mineable/pickaxe.json
+3f19675c96c43461bb23aee30a545482b9097f53 data/minecraft/tags/blocks/needs_iron_tool.json

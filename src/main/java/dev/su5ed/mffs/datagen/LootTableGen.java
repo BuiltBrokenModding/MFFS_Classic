@@ -30,7 +30,7 @@ final class LootTableGen {
     private LootTableGen() {}
     
     public static class ModBlockLoot extends BlockLootSubProvider {
-        private final List<Block> blocks = StreamEx.of(ModBlocks.COERCION_DERIVER, ModBlocks.FORTRON_CAPACITOR, ModBlocks.PROJECTOR, ModBlocks.BIOMETRIC_IDENTIFIER)
+        private final List<Block> blocks = StreamEx.of(ModBlocks.COERCION_DERIVER, ModBlocks.FORTRON_CAPACITOR, ModBlocks.PROJECTOR, ModBlocks.BIOMETRIC_IDENTIFIER, ModBlocks.INTERDICTION_MATRIX)
             .<Block>map(Supplier::get)
             .toList();
 

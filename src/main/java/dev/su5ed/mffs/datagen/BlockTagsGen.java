@@ -25,7 +25,7 @@ public class BlockTagsGen extends BlockTagsProvider {
     protected void addTags(HolderLookup.Provider pProvider) {
         tag(ModTags.FORCEFIELD_REPLACEABLE)
             .add(Blocks.SNOW, Blocks.VINE, Blocks.GRASS, Blocks.DEAD_BUSH, Blocks.GLOW_LICHEN, Blocks.SEAGRASS, Blocks.TALL_SEAGRASS, Blocks.TALL_GRASS, Blocks.KELP, Blocks.KELP_PLANT);
-        StreamEx.of(ModBlocks.COERCION_DERIVER, ModBlocks.FORTRON_CAPACITOR, ModBlocks.PROJECTOR, ModBlocks.BIOMETRIC_IDENTIFIER)
+        StreamEx.of(ModBlocks.COERCION_DERIVER, ModBlocks.FORTRON_CAPACITOR, ModBlocks.PROJECTOR, ModBlocks.BIOMETRIC_IDENTIFIER, ModBlocks.INTERDICTION_MATRIX)
             .map(RegistryObject::get)
             .forEach(block -> {
                 tag(BlockTags.MINEABLE_WITH_PICKAXE).add(block);
