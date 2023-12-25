@@ -19,10 +19,7 @@ val versionPatchouli: String by project
 val versionStreamex: String by project
 
 val minecraftVersion: String by project
-val minecraftVersionRange: String by project
 val neoVersion: String by project
-val neoVersionRange: String by project
-val loaderVersionRange: String by project
 val modId: String by project
 
 val CI: Provider<String> = providers.environmentVariable("CI")

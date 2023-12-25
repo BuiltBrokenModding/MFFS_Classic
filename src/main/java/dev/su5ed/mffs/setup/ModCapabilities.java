@@ -16,7 +16,7 @@ import dev.su5ed.mffs.item.BatteryItem;
 import dev.su5ed.mffs.item.CustomProjectorModeItem;
 import dev.su5ed.mffs.item.ModuleItem;
 import dev.su5ed.mffs.item.ProjectorModeItem;
-import dev.su5ed.mffs.util.CustomEnergyStorage;
+import dev.su5ed.mffs.util.ItemEnergyStorage;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.Capabilities;
@@ -39,8 +39,8 @@ public final class ModCapabilities {
     public static final ItemCapability<FrequencyCard, Void> FREQUENCY_CARD = ItemCapability.createVoid(MFFSMod.location("frequency_card"), FrequencyCard.class);
 
     public static void registerCaps(RegisterCapabilitiesEvent event) {
-        Block[] modMachines = new Block[] { ModBlocks.COERCION_DERIVER.get(), ModBlocks.FORTRON_CAPACITOR.get(), ModBlocks.PROJECTOR.get(), ModBlocks.BIOMETRIC_IDENTIFIER.get(), ModBlocks.INTERDICTION_MATRIX.get() };
-        
+        Block[] modMachines = new Block[]{ModBlocks.COERCION_DERIVER.get(), ModBlocks.FORTRON_CAPACITOR.get(), ModBlocks.PROJECTOR.get(), ModBlocks.BIOMETRIC_IDENTIFIER.get(), ModBlocks.INTERDICTION_MATRIX.get()};
+
         event.registerBlock(
             FORTRON,
             (level, pos, state, be, context) -> be != null ? ((FortronBlockEntity) be).fortronStorage : null,
@@ -66,15 +66,16 @@ public final class ModCapabilities {
         );
 
         event.registerItem(Capabilities.EnergyStorage.ITEM, (stack, unused) -> {
-            if (!stack.hasData(ModAttachmentTypes.BATTERY_ENERGY_STORAGE)) {
-                BatteryItem batteryItem = (BatteryItem) stack.getItem();
-                return stack.setData(ModAttachmentTypes.BATTERY_ENERGY_STORAGE, new CustomEnergyStorage(batteryItem.getCapacity(), batteryItem.getMaxTransfer(), () -> true, () -> {}));
-            }
-            return stack.getData(ModAttachmentTypes.BATTERY_ENERGY_STORAGE);
+            BatteryItem batteryItem = (BatteryItem) stack.getItem();
+            return new ItemEnergyStorage(stack, batteryItem.getCapacity(), batteryItem.getMaxTransfer());
         }, ModItems.BATTERY);
         event.registerItem(FREQUENCY_CARD, (stack, unused) -> stack.getData(ModAttachmentTypes.FREQUENCY_CARD_DATE), ModItems.FREQUENCY_CARD);
-        event.registerItem(IDENTIFICATION_CARD, (stack, unused) -> stack.getData(ModAttachmentTypes.IDENTIFICATION_CARD_DATE), ModItems.ID_CARD);
-        event.registerItem(PROJECTOR_MODE, (stack, unused) -> ((ProjectorModeItem) stack.getItem()).getProjectorMode(), ModItems.PROJECTOR_ITEM);
+        event.registerItem(IDENTIFICATION_CARD, (stack, unused) -> stack.getData(ModAttachmentTypes.IDENTIFICATION_CARD_DATA), ModItems.ID_CARD);
+        event.registerItem(
+            PROJECTOR_MODE,
+            (stack, unused) -> ((ProjectorModeItem) stack.getItem()).getProjectorMode(),
+            ModItems.CUBE_MODE, ModItems.SPHERE_MODE, ModItems.TUBE_MODE, ModItems.PYRAMID_MODE, ModItems.CYLINDER_MODE
+        );
         event.registerItem(PROJECTOR_MODE, (stack, unused) -> ((CustomProjectorModeItem) stack.getItem()).new CustomProjectorModeCapability(stack), ModItems.CUSTOM_MODE);
         event.registerItem(MODULE_TYPE,
             (stack, unused) -> ((ModuleItem) stack.getItem()).getModule(),
