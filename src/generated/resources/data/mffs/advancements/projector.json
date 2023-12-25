@@ -15,16 +15,12 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancements.mffs.projector.description"
     },
-    "frame": "task",
-    "hidden": false,
     "icon": {
       "item": "mffs:projector"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancements.mffs.projector.title"
     }

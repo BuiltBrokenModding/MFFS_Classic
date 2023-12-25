@@ -15,16 +15,12 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancements.mffs.sponge_module.description"
     },
-    "frame": "task",
-    "hidden": false,
     "icon": {
       "item": "mffs:sponge_module"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancements.mffs.sponge_module.title"
     }

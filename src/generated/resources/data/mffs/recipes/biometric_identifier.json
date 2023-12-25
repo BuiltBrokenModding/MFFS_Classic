@@ -19,6 +19,5 @@
   ],
   "result": {
     "item": "mffs:biometric_identifier"
-  },
-  "show_notification": true
+  }
 }

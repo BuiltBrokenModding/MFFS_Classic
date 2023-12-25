@@ -3,23 +3,20 @@
   "criteria": {
     "shocked": {
       "conditions": {
-        "damage": "mffs:field_shock",
+        "damageType": "mffs:field_shock",
         "killed": true
       },
       "trigger": "mffs:damage_source"
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancements.mffs.field_shock.description"
     },
     "frame": "goal",
-    "hidden": false,
     "icon": {
       "item": "mffs:shock_module"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancements.mffs.field_shock.title"
     }

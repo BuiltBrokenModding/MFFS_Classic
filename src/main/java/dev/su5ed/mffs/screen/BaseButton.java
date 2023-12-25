@@ -24,11 +24,10 @@ public abstract class BaseButton extends AbstractButton {
         RenderSystem.defaultBlendFunc();
         RenderSystem.enableDepthTest();
 
-        // TODO this might be wrong
         guiGraphics.setColor(1.0F, 1.0F, 1.0F, this.alpha);
-        ResourceLocation widgetsLocation = SPRITES.get(this.active, this.isHoveredOrFocused());
-        guiGraphics.blitSprite(widgetsLocation, getX(), getY(), this.width / 2, this.height);
-        guiGraphics.blitSprite(widgetsLocation, getX() + this.width / 2, getY(), this.width / 2, this.height);
+        ResourceLocation widgetsLocation = SPRITES.get(this.active, this.isHovered());
+        guiGraphics.blitSprite(widgetsLocation, getX(), getY(), this.width, this.height);
+        guiGraphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
 
         renderFg(guiGraphics, minecraft, mouseX, mouseY, partialTick);
     }

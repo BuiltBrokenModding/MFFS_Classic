@@ -22,14 +22,13 @@
   },
   "requirements": [
     [
-      "has_shock_module",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_shock_module"
     ]
   ],
   "rewards": {
     "recipes": [
       "mffs:fusion_module"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

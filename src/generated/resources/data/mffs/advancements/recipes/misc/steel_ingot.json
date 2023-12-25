@@ -22,14 +22,13 @@
   },
   "requirements": [
     [
-      "has_steel_compound",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_steel_compound"
     ]
   ],
   "rewards": {
     "recipes": [
       "mffs:steel_ingot"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

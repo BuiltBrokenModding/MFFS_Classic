@@ -22,14 +22,13 @@
   },
   "requirements": [
     [
-      "has_scale_module",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_scale_module"
     ]
   ],
   "rewards": {
     "recipes": [
       "mffs:translation_module"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

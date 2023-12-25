@@ -22,14 +22,13 @@
   },
   "requirements": [
     [
-      "has_battery",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_battery"
     ]
   ],
   "rewards": {
     "recipes": [
       "mffs:remote_controller"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

@@ -15,16 +15,12 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancements.mffs.smelt_steel.description"
     },
-    "frame": "task",
-    "hidden": false,
     "icon": {
       "item": "mffs:steel_ingot"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancements.mffs.smelt_steel.title"
     }

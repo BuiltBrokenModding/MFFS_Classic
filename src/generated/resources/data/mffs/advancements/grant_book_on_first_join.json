@@ -1,7 +1,6 @@
 {
   "criteria": {
     "guidebook": {
-      "conditions": {},
       "trigger": "mffs:guidebook"
     }
   },

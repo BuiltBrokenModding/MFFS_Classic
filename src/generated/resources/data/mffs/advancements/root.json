@@ -19,8 +19,6 @@
     "description": {
       "translate": "advancements.mffs.root.description"
     },
-    "frame": "task",
-    "hidden": false,
     "icon": {
       "item": "mffs:coercion_deriver"
     },

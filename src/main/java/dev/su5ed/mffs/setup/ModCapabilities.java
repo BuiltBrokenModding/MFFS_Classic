@@ -73,7 +73,7 @@ public final class ModCapabilities {
             return stack.getData(ModAttachmentTypes.BATTERY_ENERGY_STORAGE);
         }, ModItems.BATTERY);
         event.registerItem(FREQUENCY_CARD, (stack, unused) -> stack.getData(ModAttachmentTypes.FREQUENCY_CARD_DATE), ModItems.FREQUENCY_CARD);
-        event.registerItem(IDENTIFICATION_CARD, (stack, unused) -> stack.getData(ModAttachmentTypes.IDENTIFICATION_CARD_DATE), ModItems.BIOMETRIC_IDENTIFIER_ITEM);
+        event.registerItem(IDENTIFICATION_CARD, (stack, unused) -> stack.getData(ModAttachmentTypes.IDENTIFICATION_CARD_DATE), ModItems.ID_CARD);
         event.registerItem(PROJECTOR_MODE, (stack, unused) -> ((ProjectorModeItem) stack.getItem()).getProjectorMode(), ModItems.PROJECTOR_ITEM);
         event.registerItem(PROJECTOR_MODE, (stack, unused) -> ((CustomProjectorModeItem) stack.getItem()).new CustomProjectorModeCapability(stack), ModItems.CUSTOM_MODE);
         event.registerItem(MODULE_TYPE,

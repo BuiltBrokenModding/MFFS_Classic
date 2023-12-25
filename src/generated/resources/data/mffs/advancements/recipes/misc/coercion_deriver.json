@@ -22,14 +22,13 @@
   },
   "requirements": [
     [
-      "has_focus_matrix",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_focus_matrix"
     ]
   ],
   "rewards": {
     "recipes": [
       "mffs:coercion_deriver"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

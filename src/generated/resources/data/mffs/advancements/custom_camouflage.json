@@ -16,22 +16,19 @@
             ]
           }
         ],
-        "menu_type": "mffs:projector"
+        "menuType": "mffs:projector"
       },
       "trigger": "mffs:menu_inventory"
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancements.mffs.custom_camouflage.description"
     },
     "frame": "goal",
-    "hidden": false,
     "icon": {
       "item": "minecraft:ender_pearl"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancements.mffs.custom_camouflage.title"
     }

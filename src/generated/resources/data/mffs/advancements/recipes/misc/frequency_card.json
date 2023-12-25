@@ -22,14 +22,13 @@
   },
   "requirements": [
     [
-      "has_blank_card",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_blank_card"
     ]
   ],
   "rewards": {
     "recipes": [
       "mffs:frequency_card"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

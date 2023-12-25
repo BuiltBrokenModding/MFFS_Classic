@@ -22,14 +22,13 @@
   },
   "requirements": [
     [
-      "has_anti_friendly_module",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_anti_friendly_module"
     ]
   ],
   "rewards": {
     "recipes": [
       "mffs:anti_spawn_module"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }
