@@ -11,28 +11,23 @@ import dev.su5ed.mffs.util.ModUtil;
 import dev.su5ed.mffs.util.inventory.CopyingIdentificationCard;
 import dev.su5ed.mffs.util.inventory.InventorySlot;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 import one.util.streamex.IntStreamEx;
 import one.util.streamex.StreamEx;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Optional;
 
 public class BiometricIdentifierBlockEntity extends FortronBlockEntity implements BiometricIdentifier {
     public final InventorySlot masterSlot;
     public final InventorySlot rightsSlot;
     public final InventorySlot copySlot;
     public final List<InventorySlot> identitySlots;
-
-    private final LazyOptional<BiometricIdentifier> identifierCap = LazyOptional.of(() -> this);
 
     public BiometricIdentifierBlockEntity(BlockPos pos, BlockState state) {
         super(ModObjects.BIOMETRIC_IDENTIFIER_BLOCK_ENTITY.get(), pos, state);
@@ -47,16 +42,16 @@ public class BiometricIdentifierBlockEntity extends FortronBlockEntity implement
     }
 
     @Override
-    public LazyOptional<IdentificationCard> getManipulatingCard() {
-        return this.rightsSlot.getItem().getCapability(ModCapabilities.IDENTIFICATION_CARD)
-            .lazyMap(card -> this.copySlot.getItem().getCapability(ModCapabilities.IDENTIFICATION_CARD)
+    public Optional<IdentificationCard> getManipulatingCard() {
+        return Optional.ofNullable(this.rightsSlot.getItem().getCapability(ModCapabilities.IDENTIFICATION_CARD))
+            .map(card -> Optional.ofNullable(this.copySlot.getItem().getCapability(ModCapabilities.IDENTIFICATION_CARD))
                 .<IdentificationCard>map(copy -> new CopyingIdentificationCard(card, copy))
                 .orElse(card));
     }
 
     private void copyCard(ItemStack stack) {
-        this.rightsSlot.getItem().getCapability(ModCapabilities.IDENTIFICATION_CARD)
-            .ifPresent(card -> stack.getCapability(ModCapabilities.IDENTIFICATION_CARD)
+        Optional.ofNullable(this.rightsSlot.getItem().getCapability(ModCapabilities.IDENTIFICATION_CARD))
+            .ifPresent(card -> Optional.ofNullable(stack.getCapability(ModCapabilities.IDENTIFICATION_CARD))
                 .ifPresent(card::copyTo));
     }
 
@@ -85,17 +80,10 @@ public class BiometricIdentifierBlockEntity extends FortronBlockEntity implement
     public boolean isAccessGranted(Player player, FieldPermission permission) {
         return !isActive() || canOpBypass(player) || StreamEx.of(this.masterSlot)
             .append(this.identitySlots)
-            .anyMatch(slot -> slot.getItem().getCapability(ModCapabilities.IDENTIFICATION_CARD)
-                .map(card -> card.checkIdentity(player))
-                .orElse(false));
-    }
-
-    @Override
-    public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
-        if (cap == ModCapabilities.BIOMETRIC_IDENTIFIER) {
-            return this.identifierCap.cast();
-        }
-        return super.getCapability(cap, side);
+            .anyMatch(slot -> {
+                IdentificationCard card = slot.getItem().getCapability(ModCapabilities.IDENTIFICATION_CARD);
+                return card != null && card.checkIdentity(player);
+            });
     }
 
     @Override

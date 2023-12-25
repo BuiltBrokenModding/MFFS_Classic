@@ -3,13 +3,11 @@ package dev.su5ed.mffs.item;
 import dev.su5ed.mffs.MFFSConfig;
 import dev.su5ed.mffs.api.Projector;
 import dev.su5ed.mffs.api.module.ProjectorMode;
-import dev.su5ed.mffs.setup.ModCapabilities;
 import dev.su5ed.mffs.setup.ModObjects;
 import dev.su5ed.mffs.util.ModUtil;
 import dev.su5ed.mffs.util.projector.CustomStructureSavedData;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
@@ -26,12 +24,10 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.util.LazyOptional;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.jetbrains.annotations.Nullable;
 
@@ -72,7 +68,7 @@ public class CustomProjectorModeItem extends BaseItem {
                         data.join(id, level, serverPlayer, primary, secondary, getMode(tag) == Mode.ADDITIVE);
 
                         player.displayClientMessage(ModUtil.translate("item", "custom_mode.data_saved"), true);
-                        ModObjects.FIELD_SHAPE_TRIGGER.get().trigger(serverPlayer);
+                        ModObjects.FIELD_SHAPE_TRIGGER.trigger(serverPlayer);
                     } else {
                         player.displayClientMessage(ModUtil.translate("item", "custom_mode.too_far", distance), true);
                     }
@@ -150,12 +146,6 @@ public class CustomProjectorModeItem extends BaseItem {
         super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
     }
 
-    @Nullable
-    @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
-        return new CustomProjectorModeCapability(stack);
-    }
-
     public Mode getMode(CompoundTag tag) {
         return tag.contains(TAG_MODE) ? Mode.valueOf(tag.getString(TAG_MODE)) : Mode.ADDITIVE;
     }
@@ -181,11 +171,14 @@ public class CustomProjectorModeItem extends BaseItem {
     @SuppressWarnings("resource")
     public CustomStructureSavedData getOrCreateData(ServerLevel level) {
         if (this.structureManager == null) {
-            this.structureManager = level.getServer().overworld().getDataStorage().computeIfAbsent(tag -> {
-                CustomStructureSavedData data = new CustomStructureSavedData();
-                data.load(tag);
-                return data;
-            }, CustomStructureSavedData::new, CustomStructureSavedData.NAME);
+            this.structureManager = level.getServer().overworld().getDataStorage().computeIfAbsent(new SavedData.Factory<>(
+                CustomStructureSavedData::new,
+                tag -> {
+                    CustomStructureSavedData data = new CustomStructureSavedData();
+                    data.load(tag);
+                    return data;
+                }
+            ), CustomStructureSavedData.NAME);
         }
         return this.structureManager;
     }
@@ -203,17 +196,11 @@ public class CustomProjectorModeItem extends BaseItem {
         return Map.of();
     }
 
-    private class CustomProjectorModeCapability implements ICapabilityProvider, ProjectorMode {
-        private final LazyOptional<ProjectorMode> optional = LazyOptional.of(() -> this);
+    public class CustomProjectorModeCapability implements ProjectorMode {
         private final ItemStack stack;
 
         public CustomProjectorModeCapability(ItemStack stack) {
             this.stack = stack;
-        }
-
-        @Override
-        public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
-            return ModCapabilities.PROJECTOR_MODE.orEmpty(cap, this.optional);
         }
 
         @Override

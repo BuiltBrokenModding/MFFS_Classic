@@ -2,11 +2,8 @@ package dev.su5ed.mffs.network;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.network.NetworkEvent;
-
-import java.util.function.Supplier;
+import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.network.NetworkEvent;
 
 public record UpdateAnimationSpeed(BlockPos pos, int animationSpeed) {
     public void encode(FriendlyByteBuf buf) {
@@ -20,7 +17,9 @@ public record UpdateAnimationSpeed(BlockPos pos, int animationSpeed) {
         return new UpdateAnimationSpeed(pos, animationSpeed);
     }
 
-    public void processClientPacket(Supplier<NetworkEvent.Context> ctx) {
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> ClientPacketHandler.handleUpdateAnimationSpeedPacket(this));
+    public void processClientPacket(NetworkEvent.Context ctx) {
+        if (FMLEnvironment.dist.isClient()) {
+            ClientPacketHandler.handleUpdateAnimationSpeedPacket(this);
+        }
     }
 }

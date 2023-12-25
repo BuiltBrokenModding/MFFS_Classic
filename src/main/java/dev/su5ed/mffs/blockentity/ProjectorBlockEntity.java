@@ -40,10 +40,8 @@ import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.common.NeoForge;
 import one.util.streamex.IntStreamEx;
 import one.util.streamex.StreamEx;
 import org.jetbrains.annotations.Nullable;
@@ -70,7 +68,6 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
     private static final String ROTATION_ROLL_CACHE_KEY = "getRotationRoll";
     private static final String INTERIOR_POINTS_CACHE_KEY = "getInteriorPoints";
 
-    private final LazyOptional<Projector> projectorOptional = LazyOptional.of(() -> this);
     private final List<ScheduledEvent> scheduledEvents = new ArrayList<>();
     public final InventorySlot secondaryCard;
     public final InventorySlot projectorModeSlot;
@@ -109,7 +106,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
     }
 
     private boolean isMatrixModuleOrPass(ItemStack stack) {
-        return stack.getCapability(ModCapabilities.MODULE_TYPE)
+        return Optional.ofNullable(stack.getCapability(ModCapabilities.MODULE_TYPE))
             .map(ModuleType::getCategories)
             .map(categories -> categories.isEmpty() || categories.contains(Module.Category.MATRIX))
             .orElse(true);
@@ -149,7 +146,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
     public void onLoad() {
         super.onLoad();
         if (!this.level.isClientSide) {
-            MinecraftForge.EVENT_BUS.register(this);
+            NeoForge.EVENT_BUS.register(this);
             reCalculateForceField();
         }
     }
@@ -157,17 +154,9 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
     @Override
     public void setRemoved() {
         if (!this.level.isClientSide) {
-            MinecraftForge.EVENT_BUS.unregister(this);
+            NeoForge.EVENT_BUS.unregister(this);
         }
         super.setRemoved();
-    }
-
-    @Override
-    public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
-        if (cap == ModCapabilities.PROJECTOR) {
-            return this.projectorOptional.cast();
-        }
-        return super.getCapability(cap, side);
     }
 
     @Override
@@ -263,7 +252,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
 
     @Override
     public Optional<ProjectorMode> getMode() {
-        return getModeStack().getCapability(ModCapabilities.PROJECTOR_MODE).resolve();
+        return Optional.ofNullable(getModeStack().getCapability(ModCapabilities.PROJECTOR_MODE));
     }
 
     @Override

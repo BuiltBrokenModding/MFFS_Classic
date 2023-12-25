@@ -50,7 +50,7 @@ public final class BlockHighlighter {
 
     public static void highlightArea(PoseStack pose, Vec3 cameraPos, BlockPos from, BlockPos to) {
         BlockPos normalFrom = ModUtil.normalize(from, to);
-        AABB area = new AABB(normalFrom, ModUtil.normalize(to, normalFrom));
+        AABB area = AABB.encapsulatingFullBlocks(normalFrom, ModUtil.normalize(to, normalFrom));
         VoxelShape shape = Shapes.create(area);
         highlightArea(pose, cameraPos, shape, null);
     }

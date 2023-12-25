@@ -10,71 +10,71 @@ import dev.su5ed.mffs.util.loot.FieldShapeTrigger;
 import dev.su5ed.mffs.util.loot.GuideBookTrigger;
 import dev.su5ed.mffs.util.loot.MenuInventoryTrigger;
 import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementRewards;
-import net.minecraft.advancements.FrameType;
-import net.minecraft.advancements.critereon.ContextAwarePredicate;
+import net.minecraft.advancements.AdvancementType;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Items;
-import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.common.data.ForgeAdvancementProvider;
+import net.neoforged.neoforge.common.data.AdvancementProvider;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 import java.util.function.Consumer;
 
 import static dev.su5ed.mffs.MFFSMod.location;
 import static net.minecraft.advancements.critereon.InventoryChangeTrigger.TriggerInstance.hasItems;
 
-public class AdvancementsGen implements ForgeAdvancementProvider.AdvancementGenerator {
+public class AdvancementsGen implements AdvancementProvider.AdvancementGenerator {
 
     @Override
-    public void generate(HolderLookup.Provider registries, Consumer<Advancement> saver, ExistingFileHelper existingFileHelper) {
-        Advancement root = Advancement.Builder.advancement()
-            .display(ModItems.COERCION_DERIVER_ITEM.get(), title("root"), description("root"), location("textures/block/machine_block.png"), FrameType.TASK, false, false, false)
+    public void generate(HolderLookup.Provider registries, Consumer<AdvancementHolder> saver, ExistingFileHelper existingFileHelper) {
+        AdvancementHolder root = Advancement.Builder.advancement()
+            .display(ModItems.COERCION_DERIVER_ITEM.get(), title("root"), description("root"), location("textures/block/machine_block.png"), AdvancementType.TASK, false, false, false)
             .addCriterion("has_steel_compound", hasItems(ModItems.STEEL_COMPOUND.get()))
             .save(saver, id("root"));
-        Advancement steelCompound = Advancement.Builder.advancement()
+        AdvancementHolder steelCompound = Advancement.Builder.advancement()
             .parent(root)
-            .display(ModItems.STEEL_COMPOUND.get(), title("steel_compound"), description("steel_compound"), null, FrameType.TASK, true, true, false)
+            .display(ModItems.STEEL_COMPOUND.get(), title("steel_compound"), description("steel_compound"), null, AdvancementType.TASK, true, true, false)
             .addCriterion("has_steel_compound", hasItems(ModItems.STEEL_COMPOUND.get()))
             .save(saver, id("steel_compound"));
-        Advancement smeltSteel = Advancement.Builder.advancement()
+        AdvancementHolder smeltSteel = Advancement.Builder.advancement()
             .parent(steelCompound)
-            .display(ModItems.STEEL_INGOT.get(), title("smelt_steel"), description("smelt_steel"), null, FrameType.TASK, true, true, false)
+            .display(ModItems.STEEL_INGOT.get(), title("smelt_steel"), description("smelt_steel"), null, AdvancementType.TASK, true, true, false)
             .addCriterion("has_steel_ingot", hasItems(ModItems.STEEL_INGOT.get()))
             .save(saver, id("smelt_steel"));
-        Advancement projector = Advancement.Builder.advancement()
+        AdvancementHolder projector = Advancement.Builder.advancement()
             .parent(smeltSteel)
-            .display(ModItems.PROJECTOR_ITEM.get(), title("projector"), description("projector"), null, FrameType.TASK, true, true, false)
+            .display(ModItems.PROJECTOR_ITEM.get(), title("projector"), description("projector"), null, AdvancementType.TASK, true, true, false)
             .addCriterion("has_projector", hasItems(ModItems.PROJECTOR_ITEM.get()))
             .save(saver, id("projector"));
         Advancement.Builder.advancement()
             .parent(projector)
-            .display(ModItems.SHOCK_MODULE.get(), title("field_shock"), description("field_shock"), null, FrameType.GOAL, true, true, false)
-            .addCriterion("shocked", DamageSourceTrigger.TriggerInstance.killed(ModObjects.FIELD_SHOCK_TYPE))
+            .display(ModItems.SHOCK_MODULE.get(), title("field_shock"), description("field_shock"), null, AdvancementType.GOAL, true, true, false)
+            .addCriterion("shocked", ModObjects.DAMAGE_TRIGGER.createCriterion(DamageSourceTrigger.TriggerInstance.killed(ModObjects.FIELD_SHOCK_TYPE)))
             .save(saver, id("field_shock"));
         Advancement.Builder.advancement()
             .parent(projector)
-            .display(ModItems.SPONGE_MODULE.get(), title("sponge_module"), description("sponge_module"), null, FrameType.TASK, true, true, false)
+            .display(ModItems.SPONGE_MODULE.get(), title("sponge_module"), description("sponge_module"), null, AdvancementType.TASK, true, true, false)
             .addCriterion("has_sponge_module", hasItems(ModItems.SPONGE_MODULE.get()))
             .save(saver, id("sponge_module"));
-        Advancement camouflage = Advancement.Builder.advancement()
+        AdvancementHolder camouflage = Advancement.Builder.advancement()
             .parent(projector)
-            .display(ModItems.CAMOUFLAGE_MODULE.get(), title("camouflage"), description("camouflage"), null, FrameType.TASK, true, true, false)
+            .display(ModItems.CAMOUFLAGE_MODULE.get(), title("camouflage"), description("camouflage"), null, AdvancementType.TASK, true, true, false)
             .addCriterion("has_camouflage", hasItems(ModItems.CAMOUFLAGE_MODULE.get()))
             .save(saver, id("camouflage"));
         Advancement.Builder.advancement()
             .parent(projector)
-            .display(ModItems.CUSTOM_MODE.get(), title("field_shape"), description("field_shape"), null, FrameType.GOAL, true, true, false)
-            .addCriterion("create_field_shape", FieldShapeTrigger.TriggerInstance.create())
+            .display(ModItems.CUSTOM_MODE.get(), title("field_shape"), description("field_shape"), null, AdvancementType.GOAL, true, true, false)
+            .addCriterion("create_field_shape", ModObjects.FIELD_SHAPE_TRIGGER.createCriterion(FieldShapeTrigger.TriggerInstance.INSTANCE))
             .save(saver, id("field_shape"));
         Advancement.Builder.advancement()
             .parent(camouflage)
-            .display(Items.ENDER_PEARL, title("custom_camouflage"), description("custom_camouflage"), null, FrameType.GOAL, true, true, false)
-            .addCriterion("use_custom_camouflage", MenuInventoryTrigger.TriggerInstance.create(ModMenus.PROJECTOR_MENU.get(), true, ModItems.CUSTOM_MODE.get(), ModItems.CAMOUFLAGE_MODULE.get()))
+            .display(Items.ENDER_PEARL, title("custom_camouflage"), description("custom_camouflage"), null, AdvancementType.GOAL, true, true, false)
+            .addCriterion("use_custom_camouflage", ModObjects.MENU_INVENTORY_TRIGGER.createCriterion(MenuInventoryTrigger.TriggerInstance.create(ModMenus.PROJECTOR_MENU.get(), true, ModItems.CUSTOM_MODE, ModItems.CAMOUFLAGE_MODULE)))
             .save(saver, id("custom_camouflage"));
 
         Advancement.Builder.advancement()
-            .addCriterion("guidebook", new GuideBookTrigger.TriggerInstance(ModObjects.GUIDEBOOK_TRIGGER.get().getId(), ContextAwarePredicate.ANY))
+            .addCriterion("guidebook", ModObjects.GUIDEBOOK_TRIGGER.createCriterion(GuideBookTrigger.TriggerInstance.INSTANCE))
             .rewards(AdvancementRewards.Builder.loot(location("grant_book_on_first_join")))
             .save(saver, id("grant_book_on_first_join"));
     }

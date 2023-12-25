@@ -6,6 +6,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 public abstract class BaseButton extends AbstractButton {
     private final Runnable onPress;
@@ -23,10 +24,11 @@ public abstract class BaseButton extends AbstractButton {
         RenderSystem.defaultBlendFunc();
         RenderSystem.enableDepthTest();
 
-        int i = getTextureY();
+        // TODO this might be wrong
         guiGraphics.setColor(1.0F, 1.0F, 1.0F, this.alpha);
-        guiGraphics.blit(WIDGETS_LOCATION, getX(), getY(), 0, i, this.width / 2, this.height);
-        guiGraphics.blit(WIDGETS_LOCATION, getX() + this.width / 2, getY(), 200 - this.width / 2, i, this.width / 2, this.height);
+        ResourceLocation widgetsLocation = SPRITES.get(this.active, this.isHoveredOrFocused());
+        guiGraphics.blitSprite(widgetsLocation, getX(), getY(), this.width / 2, this.height);
+        guiGraphics.blitSprite(widgetsLocation, getX() + this.width / 2, getY(), this.width / 2, this.height);
 
         renderFg(guiGraphics, minecraft, mouseX, mouseY, partialTick);
     }

@@ -1,6 +1,7 @@
 package dev.su5ed.mffs.util.module;
 
 import dev.su5ed.mffs.MFFSConfig;
+import dev.su5ed.mffs.api.fortron.FortronStorage;
 import dev.su5ed.mffs.api.module.ModuleType;
 import dev.su5ed.mffs.api.security.BiometricIdentifier;
 import dev.su5ed.mffs.api.security.FieldPermission;
@@ -11,6 +12,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 public class AntiPersonnelModule extends BaseInterdictionModule {
 
@@ -30,7 +32,11 @@ public class AntiPersonnelModule extends BaseInterdictionModule {
             }
 
             ModUtil.shockEntity(player, Integer.MAX_VALUE);
-            interdictionMatrix.be().getCapability(ModCapabilities.FORTRON).ifPresent(fortron -> fortron.extractFortron(MFFSConfig.COMMON.interdictionMatrixKillEnergy.get(), false));
+            BlockEntity be = interdictionMatrix.be();
+            FortronStorage fortron = be.getLevel().getCapability(ModCapabilities.FORTRON, be.getBlockPos(), be.getBlockState(), be, null);
+            if (fortron != null) {
+                fortron.extractFortron(MFFSConfig.COMMON.interdictionMatrixKillEnergy.get(), false);
+            }
             player.displayClientMessage(ModUtil.translate("info", "interdiction_matrix.fairwell", interdictionMatrix.getTitle()), false);
             return true;
         }

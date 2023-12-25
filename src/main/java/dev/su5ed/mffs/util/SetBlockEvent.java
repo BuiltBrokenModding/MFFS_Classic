@@ -3,7 +3,7 @@ package dev.su5ed.mffs.util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.event.level.LevelEvent;
+import net.neoforged.neoforge.event.level.LevelEvent;
 
 public class SetBlockEvent extends LevelEvent {
     private final BlockPos pos;

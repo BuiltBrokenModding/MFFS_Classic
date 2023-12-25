@@ -49,11 +49,7 @@ public abstract class FortronScreen<T extends FortronMenu<?>> extends BaseScreen
         this.frequency.setResponder(this::onFrequencyChanged);
     }
 
-    @Override
-    protected void containerTick() {
-        super.containerTick();
-        this.frequency.tick();
-    }
+    // TODO Test edit box tick
 
     @Override
     public void renderFg(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {

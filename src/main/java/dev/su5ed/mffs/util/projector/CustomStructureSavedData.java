@@ -1,5 +1,6 @@
 package dev.su5ed.mffs.util.projector;
 
+import com.google.common.base.Suppliers;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -22,8 +23,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.util.Lazy;
-import net.minecraftforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.PacketDistributor;
 import one.util.streamex.EntryStream;
 import one.util.streamex.StreamEx;
 import org.jetbrains.annotations.Nullable;
@@ -31,6 +31,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 public class CustomStructureSavedData extends SavedData {
     public static final String NAME = MFFSMod.MODID + ":custom_structures";
@@ -65,10 +66,10 @@ public class CustomStructureSavedData extends SavedData {
         Structure structure = getOrCreate(id);
         BooleanOp op = add ? BooleanOp.OR : BooleanOp.ONLY_FIRST;
         BlockPos normalFrom = ModUtil.normalize(min, max);
-        VoxelShape normalShape = Shapes.joinUnoptimized(structure.normalShape, Shapes.create(new AABB(normalFrom, ModUtil.normalize(max, normalFrom))), op);
-        VoxelShape shape = Shapes.joinUnoptimized(structure.shape, Shapes.create(new AABB(min, normalizeAxis(min, max))), op);
+        VoxelShape normalShape = Shapes.joinUnoptimized(structure.normalShape, Shapes.create(AABB.encapsulatingFullBlocks(normalFrom, ModUtil.normalize(max, normalFrom))), op);
+        VoxelShape shape = Shapes.joinUnoptimized(structure.shape, Shapes.create(AABB.encapsulatingFullBlocks(min, normalizeAxis(min, max))), op);
 
-        AABB area = new AABB(min, max);
+        AABB area = AABB.encapsulatingFullBlocks(min, max);
         for (int x = (int) area.minX; x <= area.maxX; x++) {
             for (int y = (int) area.minY; y <= area.maxY; y++) {
                 for (int z = (int) area.minZ; z <= area.maxZ; z++) {
@@ -154,7 +155,7 @@ public class CustomStructureSavedData extends SavedData {
         private final VoxelShape shape;
         private final VoxelShape normalShape;
         private final Map<BlockPos, BlockState> blocks;
-        private final Lazy<Map<BlockPos, BlockState>> relativeBlocks = Lazy.of(this::computeRelativeBlocks);
+        private final Supplier<Map<BlockPos, BlockState>> relativeBlocks = Suppliers.memoize(this::computeRelativeBlocks);
         @Nullable
         private Map<Vec3, BlockState> realBlocks;
 

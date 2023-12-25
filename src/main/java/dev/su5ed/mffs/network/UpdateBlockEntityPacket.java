@@ -3,11 +3,8 @@ package dev.su5ed.mffs.network;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.network.NetworkEvent;
-
-import java.util.function.Supplier;
+import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.network.NetworkEvent;
 
 public record UpdateBlockEntityPacket(BlockPos pos, CompoundTag data) {
     public void encode(FriendlyByteBuf buf) {
@@ -21,7 +18,9 @@ public record UpdateBlockEntityPacket(BlockPos pos, CompoundTag data) {
         return new UpdateBlockEntityPacket(pos, data);
     }
 
-    public void processClientPacket(Supplier<NetworkEvent.Context> ctx) {
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> ClientPacketHandler.handleBlockEntityUpdatePacket(this));
+    public void processClientPacket(NetworkEvent.Context ctx) {
+        if (FMLEnvironment.dist.isClient()) {
+            ClientPacketHandler.handleBlockEntityUpdatePacket(this);
+        }
     }
 }

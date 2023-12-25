@@ -11,7 +11,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraftforge.fluids.IFluidBlock;
+import net.neoforged.neoforge.fluids.IFluidBlock;
 
 import java.util.ArrayList;
 import java.util.Collection;

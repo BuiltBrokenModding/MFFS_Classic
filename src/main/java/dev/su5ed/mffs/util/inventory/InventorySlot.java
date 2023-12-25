@@ -2,8 +2,8 @@ package dev.su5ed.mffs.util.inventory;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.util.INBTSerializable;
-import net.minecraftforge.items.ItemHandlerHelper;
+import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.items.ItemHandlerHelper;
 
 import java.util.function.Consumer;
 import java.util.function.Predicate;

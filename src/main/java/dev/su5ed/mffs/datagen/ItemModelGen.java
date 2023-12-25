@@ -4,10 +4,9 @@ import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.setup.ModItems;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
-import net.minecraftforge.client.model.generators.ItemModelProvider;
-import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.registries.DeferredItem;
 
 import static dev.su5ed.mffs.MFFSMod.location;
 
@@ -65,7 +64,7 @@ final class ItemModelGen extends ItemModelProvider {
         simpleItem(ModItems.FREQUENCY_CARD);
     }
 
-    private void simpleItem(RegistryObject<? extends Item> item) {
+    private void simpleItem(DeferredItem<?> item) {
         String name = item.getId().getPath();
         singleTexture(name, this.generatedParent, "layer0", location("item/" + name));
     }

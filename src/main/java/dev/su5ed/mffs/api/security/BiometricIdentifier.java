@@ -2,7 +2,8 @@ package dev.su5ed.mffs.api.security;
 
 import dev.su5ed.mffs.api.card.IdentificationCard;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.common.util.LazyOptional;
+
+import java.util.Optional;
 
 /**
  * Applied to Biometric Identifiers (extends TileEntity).
@@ -19,5 +20,5 @@ public interface BiometricIdentifier {
     /**
      * Gets the card currently placed in the manipulating slot.
      */
-    LazyOptional<IdentificationCard> getManipulatingCard();
+    Optional<IdentificationCard> getManipulatingCard();
 }

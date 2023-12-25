@@ -20,11 +20,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.EntityCollisionContext;
@@ -38,7 +40,7 @@ public class ForceFieldBlockImpl extends Block implements ForceFieldBlock, Entit
     private static final VoxelShape COLLIDABLE_BLOCK = Shapes.create(0.01, 0.01, 0.01, 0.99, 0.99, 0.99);
 
     public ForceFieldBlockImpl() {
-        super(Properties.copy(Blocks.GLASS)
+        super(Properties.ofFullCopy(Blocks.GLASS)
             .destroyTime(-1)
             .strength(-1.0F, 3600000.0F)
             .noLootTable());
@@ -99,7 +101,7 @@ public class ForceFieldBlockImpl extends Block implements ForceFieldBlock, Entit
     }
 
     @Override
-    public ItemStack getCloneItemStack(BlockGetter level, BlockPos pos, BlockState state) {
+    public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader level, BlockPos pos, Player player) {
         return ItemStack.EMPTY;
     }
 

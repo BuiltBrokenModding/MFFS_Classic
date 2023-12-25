@@ -15,9 +15,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.network.PacketDistributor;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.Optional;
 
@@ -41,7 +41,7 @@ public class StabilizationModule extends BaseModule {
 
             for (Direction side : Direction.values()) {
                 IItemHandler handler = Optional.ofNullable(level.getBlockEntity(pos.relative(side)))
-                    .flatMap(neighbor -> neighbor.getCapability(ForgeCapabilities.ITEM_HANDLER, side).resolve())
+                    .map(neighbor -> neighbor.getLevel().getCapability(Capabilities.ItemHandler.BLOCK, neighbor.getBlockPos(), neighbor.getBlockState(), neighbor, side))
                     .orElse(null);
                 if (handler != null) {
                     for (int i = 0; i < handler.getSlots(); i++) {

@@ -1,21 +1,21 @@
 package dev.su5ed.mffs;
 
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class MFFSConfig {
-    static final ForgeConfigSpec COMMON_SPEC;
-    static final ForgeConfigSpec CLIENT_SPEC;
+    static final ModConfigSpec COMMON_SPEC;
+    static final ModConfigSpec CLIENT_SPEC;
 
     public static final Common COMMON;
     public static final Client CLIENT;
 
     static {
-        Pair<Common, ForgeConfigSpec> commonPair = new ForgeConfigSpec.Builder().configure(Common::new);
+        Pair<Common, ModConfigSpec> commonPair = new ModConfigSpec.Builder().configure(Common::new);
         COMMON = commonPair.getLeft();
         COMMON_SPEC = commonPair.getRight();
 
-        Pair<Client, ForgeConfigSpec> clientPair = new ForgeConfigSpec.Builder().configure(Client::new);
+        Pair<Client, ModConfigSpec> clientPair = new ModConfigSpec.Builder().configure(Client::new);
         CLIENT = clientPair.getLeft();
         CLIENT_SPEC = clientPair.getRight();
     }
@@ -23,21 +23,21 @@ public class MFFSConfig {
     private MFFSConfig() {}
 
     public static final class Common {
-        public final ForgeConfigSpec.BooleanValue enableElectricity;
-        public final ForgeConfigSpec.BooleanValue useCache;
-        public final ForgeConfigSpec.IntValue maxFFGenPerTick;
-        public final ForgeConfigSpec.BooleanValue allowOpBiometryOverride;
-        public final ForgeConfigSpec.BooleanValue interactCreative;
-        public final ForgeConfigSpec.IntValue maxCustomModeScale;
-        public final ForgeConfigSpec.BooleanValue giveGuidebookOnFirstJoin;
+        public final ModConfigSpec.BooleanValue enableElectricity;
+        public final ModConfigSpec.BooleanValue useCache;
+        public final ModConfigSpec.IntValue maxFFGenPerTick;
+        public final ModConfigSpec.BooleanValue allowOpBiometryOverride;
+        public final ModConfigSpec.BooleanValue interactCreative;
+        public final ModConfigSpec.IntValue maxCustomModeScale;
+        public final ModConfigSpec.BooleanValue giveGuidebookOnFirstJoin;
 
-        public final ForgeConfigSpec.DoubleValue energyConversionRatio;
-        public final ForgeConfigSpec.DoubleValue catalystMultiplier;
-        public final ForgeConfigSpec.IntValue catalystBurnTime;
-        public final ForgeConfigSpec.DoubleValue backConversionEnergyLoss;
-        public final ForgeConfigSpec.IntValue interdictionMatrixKillEnergy;
+        public final ModConfigSpec.DoubleValue energyConversionRatio;
+        public final ModConfigSpec.DoubleValue catalystMultiplier;
+        public final ModConfigSpec.IntValue catalystBurnTime;
+        public final ModConfigSpec.DoubleValue backConversionEnergyLoss;
+        public final ModConfigSpec.IntValue interdictionMatrixKillEnergy;
 
-        private Common(ForgeConfigSpec.Builder builder) {
+        private Common(ModConfigSpec.Builder builder) {
             builder.push("general");
             this.enableElectricity = builder
                 .comment("Turning this to false will make MFFS run without electricity or energy systems required. Great for vanilla!")
@@ -83,9 +83,9 @@ public class MFFSConfig {
     }
 
     public static final class Client {
-        public final ForgeConfigSpec.BooleanValue enableProjectorModeGlitch;
+        public final ModConfigSpec.BooleanValue enableProjectorModeGlitch;
 
-        private Client(ForgeConfigSpec.Builder builder) {
+        private Client(ModConfigSpec.Builder builder) {
             builder.push("general");
             this.enableProjectorModeGlitch = builder
                 .comment("Apply a fancy glitch effect on projector mode renders. Reload resources to apply change.")

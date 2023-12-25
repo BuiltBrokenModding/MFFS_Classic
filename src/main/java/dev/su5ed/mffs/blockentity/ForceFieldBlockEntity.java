@@ -15,7 +15,7 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.model.data.ModelData;
+import net.neoforged.neoforge.client.model.data.ModelData;
 
 import java.util.Optional;
 
@@ -78,10 +78,7 @@ public class ForceFieldBlockEntity extends BlockEntity {
     }
 
     public Optional<Projector> getProjector() {
-        return this.projector != null
-            ? Optional.ofNullable(this.level.getBlockEntity(this.projector))
-                .flatMap(be -> be.getCapability(ModCapabilities.PROJECTOR).resolve())
-            : Optional.empty();
+        return this.projector != null ? Optional.ofNullable(this.level.getCapability(ModCapabilities.PROJECTOR, this.projector, null)) : Optional.empty();
     }
 
     // Manual handling of update tags so that we send data when the BE is first created, rather than only on world load

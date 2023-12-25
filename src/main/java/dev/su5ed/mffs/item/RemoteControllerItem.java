@@ -1,6 +1,5 @@
 package dev.su5ed.mffs.item;
 
-import dev.su5ed.mffs.api.FrequencyBlock;
 import dev.su5ed.mffs.api.card.CoordLink;
 import dev.su5ed.mffs.api.fortron.FortronStorage;
 import dev.su5ed.mffs.api.security.FieldPermission;
@@ -31,13 +30,14 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.fluids.FluidType;
-import net.minecraftforge.network.NetworkHooks;
+import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 public class RemoteControllerItem extends BaseItem implements CoordLink {
 
@@ -52,7 +52,7 @@ public class RemoteControllerItem extends BaseItem implements CoordLink {
         if (!level.isClientSide && player.isShiftKeyDown()) {
             BlockPos pos = context.getClickedPos();
             BlockEntity be = level.getBlockEntity(pos);
-            if (be != null && be.getCapability(ModCapabilities.FORTRON).isPresent()) {
+            if (be != null && level.getCapability(ModCapabilities.FORTRON, be.getBlockPos(), be.getBlockState(), be, null) != null) {
                 setLink(stack, pos);
                 BlockState state = level.getBlockState(pos);
                 player.displayClientMessage(ModUtil.translate("info", "link", state.getBlock().getName(), pos.toShortString()).withStyle(ChatFormatting.AQUA), true);
@@ -73,7 +73,7 @@ public class RemoteControllerItem extends BaseItem implements CoordLink {
 
                 if (be instanceof MenuProvider menuProvider && (Fortron.hasPermission(level, pos, FieldPermission.USE_BLOCKS, player) || Fortron.hasPermission(level, pos, FieldPermission.REMOTE_CONTROL, player))) {
                     double requiredEnergy = ModUtil.distance(player.blockPosition(), pos) * (FluidType.BUCKET_VOLUME / 100.0);
-                    int frequency = be.getCapability(ModCapabilities.FORTRON).map(FrequencyBlock::getFrequency).orElseThrow();
+                    int frequency = Objects.requireNonNull(level.getCapability(ModCapabilities.FORTRON, be.getBlockPos(), be.getBlockState(), be, null)).getFrequency();
                     if (drawEnergy(level, player.blockPosition(), player.position().add(0, player.getEyeHeight() - 0.2, 0), frequency, (int) requiredEnergy)) {
                         NetworkHooks.openScreen((ServerPlayer) player, new RemoteMenuProvider(menuProvider), pos);
                         return InteractionResultHolder.success(stack);
@@ -91,7 +91,7 @@ public class RemoteControllerItem extends BaseItem implements CoordLink {
         BlockPos pos = getLink(stack);
         if (level != null && pos != null) {
             BlockEntity be = level.getBlockEntity(pos);
-            if (be != null && be.getCapability(ModCapabilities.FORTRON).isPresent()) {
+            if (be != null && level.getCapability(ModCapabilities.FORTRON, be.getBlockPos(), be.getBlockState(), be, null) != null) {
                 tooltipComponents.add(ModUtil.translate("info", "link",
                     be.getBlockState().getBlock().getName().withStyle(ChatFormatting.GREEN),
                     Component.literal(pos.toShortString()).withStyle(ChatFormatting.GRAY)).withStyle(ChatFormatting.DARK_GRAY));

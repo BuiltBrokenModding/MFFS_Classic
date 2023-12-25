@@ -1,5 +1,6 @@
 package dev.su5ed.mffs.block;
 
+import dev.su5ed.mffs.api.Projector;
 import dev.su5ed.mffs.setup.ModCapabilities;
 import dev.su5ed.mffs.setup.ModObjects;
 import net.minecraft.core.BlockPos;
@@ -9,8 +10,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-
-import java.util.Optional;
+import net.neoforged.neoforge.common.extensions.ILevelExtension;
 
 public class ProjectorBlock extends BaseEntityBlock {
     private static final VoxelShape SHAPE = Shapes.or(
@@ -31,9 +31,12 @@ public class ProjectorBlock extends BaseEntityBlock {
 
     @Override
     public int getLightEmission(BlockState state, BlockGetter level, BlockPos pos) {
-        return Optional.ofNullable(level.getBlockEntity(pos))
-            .flatMap(be -> be.getCapability(ModCapabilities.PROJECTOR).resolve())
-            .map(projector -> projector.getMode().isPresent() ? 10 : 0)
-            .orElseGet(() -> super.getLightEmission(state, level, pos));
+        if (level instanceof ILevelExtension ext) {
+            Projector projector = ext.getCapability(ModCapabilities.PROJECTOR, pos, null);
+            if (projector != null && projector.getMode().isPresent()) {
+                return 10;
+            }
+        }
+        return super.getLightEmission(state, level, pos);
     }
 }

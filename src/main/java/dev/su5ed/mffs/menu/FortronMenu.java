@@ -22,16 +22,17 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemHandlerHelper;
-import net.minecraftforge.items.SlotItemHandler;
-import net.minecraftforge.items.wrapper.InvWrapper;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.ItemHandlerHelper;
+import net.neoforged.neoforge.items.SlotItemHandler;
+import net.neoforged.neoforge.items.wrapper.InvWrapper;
 import org.apache.commons.lang3.function.TriFunction;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
 
@@ -57,7 +58,7 @@ public abstract class FortronMenu<T extends FortronBlockEntity & Activatable> ex
 
         trackPower();
 
-        this.itemHandler = this.blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).orElseThrow(() -> new IllegalArgumentException("IItemHandler capability not found"));
+        this.itemHandler = Objects.requireNonNull(this.blockEntity.getLevel().getCapability(Capabilities.ItemHandler.BLOCK, this.blockEntity.getBlockPos(), this.blockEntity.getBlockState(), this.blockEntity, null), "IItemHandler capability not found");
         addSlotListener(new AdvancementContainerListener());
     }
 
@@ -78,7 +79,7 @@ public abstract class FortronMenu<T extends FortronBlockEntity & Activatable> ex
     public void triggerMenuAdvancement() {
         if (this.player instanceof ServerPlayer serverPlayer) {
             boolean active = this.blockEntity.isActive();
-            ModObjects.MENU_INVENTORY_TRIGGER.get().trigger(serverPlayer, active, this.itemHandler);
+            ModObjects.MENU_INVENTORY_TRIGGER.trigger(serverPlayer, active, this.itemHandler);
         }
     }
 

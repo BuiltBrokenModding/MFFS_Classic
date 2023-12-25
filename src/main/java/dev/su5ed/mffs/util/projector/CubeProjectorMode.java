@@ -59,7 +59,7 @@ public class CubeProjectorMode implements ProjectorMode {
         BlockPos projectorPos = projector.be().getBlockPos().offset(projector.getTranslation());
         Vec3 relativePosition = position.subtract(projectorPos.getX(), projectorPos.getY(), projectorPos.getZ());
         Vec3 rotated = ModUtil.rotateByAngleExact(relativePosition, -projector.getRotationYaw(), -projector.getRotationPitch(), -projector.getRotationRoll());
-        AABB region = new AABB(projector.getNegativeScale().multiply(-1).offset(1, 1, 1), projector.getPositiveScale());
+        AABB region = AABB.encapsulatingFullBlocks(projector.getNegativeScale().multiply(-1).offset(1, 1, 1), projector.getPositiveScale());
         return region.contains(rotated.x(), rotated.y(), rotated.z());
     }
 }

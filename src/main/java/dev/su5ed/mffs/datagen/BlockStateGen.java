@@ -5,14 +5,14 @@ import dev.su5ed.mffs.block.ProjectorBlock;
 import dev.su5ed.mffs.render.model.ForceFieldBlockModelBuilder;
 import dev.su5ed.mffs.render.model.ForceFieldBlockModelLoader;
 import dev.su5ed.mffs.setup.ModBlocks;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraftforge.client.model.generators.BlockStateProvider;
-import net.minecraftforge.client.model.generators.ConfiguredModel;
-import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
+import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 final class BlockStateGen extends BlockStateProvider {
 
@@ -35,7 +35,7 @@ final class BlockStateGen extends BlockStateProvider {
     }
 
     public void machineBlock(Block block) {
-        ResourceLocation id = ForgeRegistries.BLOCKS.getKey(block);
+        ResourceLocation id = BuiltInRegistries.BLOCK.getKey(block);
         getVariantBuilder(block)
             .forAllStates(state -> {
                 ResourceLocation modelLocation = state.getValue(ProjectorBlock.ACTIVE)

@@ -1,5 +1,6 @@
 package dev.su5ed.mffs.blockentity;
 
+import com.google.common.base.Suppliers;
 import dev.su5ed.mffs.util.CustomEnergyStorage;
 import dev.su5ed.mffs.util.SidedEnergyWrapper;
 import net.minecraft.core.BlockPos;
@@ -8,22 +9,20 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.energy.IEnergyStorage;
 import one.util.streamex.StreamEx;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Supplier;
 
 public abstract class ElectricTileEntity extends ModularBlockEntity {
     protected final CustomEnergyStorage energy;
-    private final Map<Direction, LazyOptional<IEnergyStorage>> sidedEnergyCap;
+    private final Map<Direction, Supplier<IEnergyStorage>> sidedEnergyCap;
 
     protected ElectricTileEntity(BlockEntityType<? extends BaseBlockEntity> type, BlockPos pos, BlockState state, int capacity) {
         super(type, pos, state);
@@ -34,32 +33,41 @@ public abstract class ElectricTileEntity extends ModularBlockEntity {
         this.sidedEnergyCap = StreamEx.of(inputSides)
             .append(outputSides)
             .distinct()
-            .<LazyOptional<IEnergyStorage>>mapToEntry(side -> LazyOptional.of(() -> new SidedEnergyWrapper(this.energy, side == null || inputSides.contains(side), side == null || outputSides.contains(side))))
+            .<Supplier<IEnergyStorage>>mapToEntry(side -> Suppliers.memoize(() -> new SidedEnergyWrapper(this.energy, side == null || inputSides.contains(side), side == null || outputSides.contains(side))))
             .toMap();
+    }
+    
+    @Nullable
+    public IEnergyStorage getEnergy(Direction side) {
+        Supplier<IEnergyStorage> supplier = this.sidedEnergyCap.get(side);
+        return supplier != null ? supplier.get() : null;
     }
 
     /**
      * Charges electric item.
      */
     public void charge(ItemStack stack) {
-        stack.getCapability(ForgeCapabilities.ENERGY)
-            .ifPresent(energy -> this.energy.extractEnergy(energy.receiveEnergy(this.energy.getEnergyStored(), false), false));
+        IEnergyStorage energy = stack.getCapability(Capabilities.EnergyStorage.ITEM);
+        if (energy != null) {
+            this.energy.extractEnergy(energy.receiveEnergy(this.energy.getEnergyStored(), false), false);
+        }
     }
 
     /**
      * Discharges electric item.
      */
     public void discharge(ItemStack stack) {
-        stack.getCapability(ForgeCapabilities.ENERGY)
-            .ifPresent(energy -> this.energy.receiveEnergy(energy.extractEnergy(this.energy.getRequestedEnergy(), false), false));
+        IEnergyStorage energy = stack.getCapability(Capabilities.EnergyStorage.ITEM);
+        if (energy != null) {
+            this.energy.receiveEnergy(energy.extractEnergy(this.energy.getRequestedEnergy(), false), false);
+        }
     }
 
     protected long receiveEnergy() {
         long totalUsed = 0;
         for (Direction direction : getEnergyOutputSides()) {
             if (this.energy.getEnergyStored() > 0) {
-                int received = Optional.ofNullable(this.level.getBlockEntity(this.worldPosition.relative(direction)))
-                    .flatMap(be -> be.getCapability(ForgeCapabilities.ENERGY, direction.getOpposite()).resolve())
+                int received = Optional.ofNullable(this.level.getCapability(Capabilities.EnergyStorage.BLOCK, this.worldPosition.relative(direction), direction.getOpposite()))
                     .map(energy -> energy.receiveEnergy(this.energy.extractEnergy(this.energy.getEnergyStored(), true), false))
                     .orElse(0);
                 totalUsed += this.energy.extractEnergy(received, false);
@@ -78,21 +86,6 @@ public abstract class ElectricTileEntity extends ModularBlockEntity {
 
     public IEnergyStorage getGlobalEnergyStorage() {
         return this.energy;
-    }
-    
-    @Override
-    public void setRemoved() {
-        super.setRemoved();
-        this.sidedEnergyCap.values().forEach(LazyOptional::invalidate);
-    }
-
-    @NotNull
-    @Override
-    public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        if (cap == ForgeCapabilities.ENERGY && this.sidedEnergyCap.containsKey(side)) {
-            return this.sidedEnergyCap.get(side).cast();
-        }
-        return super.getCapability(cap, side);
     }
 
     @Override

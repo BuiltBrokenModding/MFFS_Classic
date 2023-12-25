@@ -1,53 +1,31 @@
 package dev.su5ed.mffs.util.loot;
 
-import com.google.common.collect.ImmutableSet;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import dev.su5ed.mffs.setup.ModObjects;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
 import net.minecraft.advancements.critereon.ContextAwarePredicate;
-import net.minecraft.advancements.critereon.DeserializationContext;
-import net.minecraft.advancements.critereon.EnchantmentPredicate;
+import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.advancements.critereon.MinMaxBounds;
-import net.minecraft.advancements.critereon.NbtPredicate;
-import net.minecraft.advancements.critereon.SerializationContext;
 import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.GsonHelper;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.ItemLike;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.registries.ForgeRegistries;
-import org.jetbrains.annotations.NotNull;
+import net.neoforged.neoforge.items.IItemHandler;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 public class MenuInventoryTrigger extends SimpleCriterionTrigger<MenuInventoryTrigger.TriggerInstance> {
-    private final ResourceLocation id;
-
-    public MenuInventoryTrigger(ResourceLocation id) {
-        this.id = id;
-    }
-
     @Override
-    public ResourceLocation getId() {
-        return this.id;
-    }
-
-    @NotNull
-    public TriggerInstance createInstance(JsonObject json, ContextAwarePredicate predicate, DeserializationContext context) {
-        String name = GsonHelper.getAsString(json, "menu_type");
-        MenuType<?> menuType = ForgeRegistries.MENU_TYPES.getValue(new ResourceLocation(name));
-        boolean active = GsonHelper.getAsBoolean(json, "active");
-        if (menuType == null) {
-            throw new IllegalArgumentException("Unknown MenuType " + name);
-        }
-        ItemPredicate[] predicates = ItemPredicate.fromJsonArray(json.get("items"));
-        return new TriggerInstance(predicate, menuType, active, predicates);
+    public Codec<TriggerInstance> codec() {
+        return TriggerInstance.CODEC;
     }
 
     public void trigger(ServerPlayer player, boolean active, IItemHandler itemHandler) {
@@ -64,40 +42,20 @@ public class MenuInventoryTrigger extends SimpleCriterionTrigger<MenuInventoryTr
         });
     }
 
-    public static class TriggerInstance extends AbstractCriterionTriggerInstance {
-        private final MenuType<?> menuType;
-        private final boolean active;
-        private final ItemPredicate[] items;
+    public record TriggerInstance(Optional<ContextAwarePredicate> player, MenuType<?> menuType, boolean active, List<ItemPredicate> items) implements SimpleInstance {
+        public static final Codec<TriggerInstance> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            ExtraCodecs.strictOptionalField(EntityPredicate.ADVANCEMENT_CODEC, "player").forGetter(TriggerInstance::player),
+            BuiltInRegistries.MENU.byNameCodec().fieldOf("menuType").forGetter(TriggerInstance::menuType),
+            Codec.BOOL.fieldOf("active").forGetter(TriggerInstance::active),
+            ItemPredicate.CODEC.listOf().fieldOf("items").forGetter(TriggerInstance::items)
+        ).apply(instance, TriggerInstance::new));
 
-        public TriggerInstance(ContextAwarePredicate predicate, MenuType<?> menuType, boolean active, ItemPredicate[] items) {
-            super(ModObjects.MENU_INVENTORY_TRIGGER.get().getId(), predicate);
-
-            this.menuType = menuType;
-            this.items = items;
-            this.active = active;
-        }
-
-        @Override
-        public JsonObject serializeToJson(SerializationContext context) {
-            JsonObject json = super.serializeToJson(context);
-            json.addProperty("menu_type", ForgeRegistries.MENU_TYPES.getKey(this.menuType).toString());
-            json.addProperty("active", this.active);
-            if (this.items.length > 0) {
-                JsonArray predicatesJson = new JsonArray();
-                for (ItemPredicate predicate : this.items) {
-                    predicatesJson.add(predicate.serializeToJson());
-                }
-                json.add("items", predicatesJson);
-            }
-            return json;
-        }
-
-        public static TriggerInstance create(MenuType<?> menuType, boolean active, ItemLike... items) {
-            ItemPredicate[] predicates = new ItemPredicate[items.length];
-            for (int i = 0; i < items.length; ++i) {
-                predicates[i] = new ItemPredicate(null, ImmutableSet.of(items[i].asItem()), MinMaxBounds.Ints.ANY, MinMaxBounds.Ints.ANY, EnchantmentPredicate.NONE, EnchantmentPredicate.NONE, null, NbtPredicate.ANY);
-            }
-            return new TriggerInstance(ContextAwarePredicate.ANY, menuType, active, predicates);
+        @SafeVarargs
+        public static TriggerInstance create(MenuType<?> menuType, boolean active, Holder<Item>... items) {
+            List<ItemPredicate> predicates = Stream.of(items)
+                .map(holder -> new ItemPredicate(Optional.empty(), Optional.of(HolderSet.direct(holder)), MinMaxBounds.Ints.ANY, MinMaxBounds.Ints.ANY, List.of(), List.of(), Optional.empty(), Optional.empty()))
+                .toList();
+            return new TriggerInstance(Optional.empty(), menuType, active, predicates);
         }
     }
 }

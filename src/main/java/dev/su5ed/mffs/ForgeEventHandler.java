@@ -16,12 +16,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.event.entity.EntityJoinLevelEvent;
-import net.minecraftforge.event.entity.living.MobSpawnEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.server.ServerStartingEvent;
-import net.minecraftforge.eventbus.api.Event;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.neoforged.bus.api.Event;
+import net.neoforged.bus.api.ICancellableEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
+import net.neoforged.neoforge.event.entity.living.MobSpawnEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.neoforged.neoforge.event.server.ServerStartingEvent;
 
 public class ForgeEventHandler {
 
@@ -64,24 +65,26 @@ public class ForgeEventHandler {
     @SubscribeEvent
     public static void onPlayerJoinLevel(EntityJoinLevelEvent event) {
         if (event.getEntity() instanceof ServerPlayer serverPlayer && MFFSConfig.COMMON.giveGuidebookOnFirstJoin.get()) {
-            ModObjects.GUIDEBOOK_TRIGGER.get().trigger(serverPlayer);
+            ModObjects.GUIDEBOOK_TRIGGER.trigger(serverPlayer);
         }
     }
 
     private static void onPlayerInteract(PlayerInteractEvent event, Fortron.Action action) {
-        Player player = event.getEntity();
-        if (!player.isCreative()) {
-            Level level = event.getLevel();
-            BlockPos pos = event.getPos();
-            InterdictionMatrix interdictionMatrix = Fortron.getNearestInterdictionMatrix(level, pos);
-            if (interdictionMatrix != null) {
-                BlockState state = level.getBlockState(pos);
-                if (state.is(ModBlocks.BIOMETRIC_IDENTIFIER.get()) && Fortron.isPermittedByInterdictionMatrix(interdictionMatrix, player, FieldPermission.CONFIGURE_SECURITY_CENTER)) {
-                    return;
-                }
-                if (!Fortron.hasPermission(level, pos, interdictionMatrix, action, player)) {
-                    player.displayClientMessage(ModUtil.translate("info", "interdiction_matrix.no_permission", interdictionMatrix.getTitle()), false);
-                    event.setCanceled(true);
+        if (event instanceof ICancellableEvent cancellableEvent) {
+            Player player = event.getEntity();
+            if (!player.isCreative()) {
+                Level level = event.getLevel();
+                BlockPos pos = event.getPos();
+                InterdictionMatrix interdictionMatrix = Fortron.getNearestInterdictionMatrix(level, pos);
+                if (interdictionMatrix != null) {
+                    BlockState state = level.getBlockState(pos);
+                    if (state.is(ModBlocks.BIOMETRIC_IDENTIFIER.get()) && Fortron.isPermittedByInterdictionMatrix(interdictionMatrix, player, FieldPermission.CONFIGURE_SECURITY_CENTER)) {
+                        return;
+                    }
+                    if (!Fortron.hasPermission(level, pos, interdictionMatrix, action, player)) {
+                        player.displayClientMessage(ModUtil.translate("info", "interdiction_matrix.no_permission", interdictionMatrix.getTitle()), false);
+                        cancellableEvent.setCanceled(true);
+                    }
                 }
             }
         }

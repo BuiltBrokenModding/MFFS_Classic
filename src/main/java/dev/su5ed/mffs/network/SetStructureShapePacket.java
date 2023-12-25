@@ -8,12 +8,10 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.network.NetworkEvent;
+import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.network.NetworkEvent;
 
 import java.util.ArrayList;
-import java.util.function.Supplier;
 
 public record SetStructureShapePacket(ResourceKey<Level> level, String id, VoxelShape shape) {
     public void encode(FriendlyByteBuf buf) {
@@ -29,8 +27,10 @@ public record SetStructureShapePacket(ResourceKey<Level> level, String id, Voxel
         return new SetStructureShapePacket(level, id, shape);
     }
 
-    public void processClientPacket(Supplier<NetworkEvent.Context> ctx) {
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> CustomProjectorModeClientHandler.setShape(this.level, this.id, this.shape));
+    public void processClientPacket(NetworkEvent.Context ctx) {
+        if (FMLEnvironment.dist.isClient()) {
+            CustomProjectorModeClientHandler.setShape(this.level, this.id, this.shape);
+        }
     }
 
     private static void encodeAABB(FriendlyByteBuf buf, AABB aabb) {

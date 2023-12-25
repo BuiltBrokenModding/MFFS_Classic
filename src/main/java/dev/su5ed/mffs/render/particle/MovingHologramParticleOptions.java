@@ -5,8 +5,8 @@ import com.mojang.serialization.Codec;
 import dev.su5ed.mffs.setup.ModObjects;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.registries.ForgeRegistries;
 
 public record MovingHologramParticleOptions(ParticleColor color, int lifetime) implements ParticleOptions {
     public static final MovingHologramParticleOptions DEFAULT = new MovingHologramParticleOptions(ParticleColor.WHITE, 20);
@@ -32,6 +32,6 @@ public record MovingHologramParticleOptions(ParticleColor color, int lifetime) i
 
     @Override
     public String writeToString() {
-        return ForgeRegistries.PARTICLE_TYPES.getKey(getType()).toString();
+        return BuiltInRegistries.PARTICLE_TYPE.getKey(getType()).toString();
     }
 }

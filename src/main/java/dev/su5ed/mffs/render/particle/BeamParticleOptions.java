@@ -5,9 +5,9 @@ import com.mojang.serialization.Codec;
 import dev.su5ed.mffs.setup.ModObjects;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.registries.ForgeRegistries;
 
 public record BeamParticleOptions(Vec3 target, ParticleColor color, int lifetime) implements ParticleOptions {
     public static final BeamParticleOptions DEFAULT = new BeamParticleOptions(Vec3.ZERO, ParticleColor.BLUE_BEAM, 20);
@@ -33,6 +33,6 @@ public record BeamParticleOptions(Vec3 target, ParticleColor color, int lifetime
 
     @Override
     public String writeToString() {
-        return ForgeRegistries.PARTICLE_TYPES.getKey(getType()).toString();
+        return BuiltInRegistries.PARTICLE_TYPE.getKey(getType()).toString();
     }
 }

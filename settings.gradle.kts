@@ -2,20 +2,12 @@ pluginManagement {
     repositories {
         gradlePluginPortal()
         maven {
-            name = "MinecraftForge"
-            url = uri("https://maven.minecraftforge.net")
-        }
-        maven {
-            name = "Parchment"
-            url = uri("https://maven.parchmentmc.org")
+            name = "NeoForged"
+            url = uri("https://maven.neoforged.net")
         }
         maven {
             name = "Gofancy"
             url = uri("https://maven.gofancy.wtf/releases")
-        }
-        maven {
-            name = "Sponge Snapshots"
-            url = uri("https://repo.spongepowered.org/repository/maven-public/")
         }
     }
 }

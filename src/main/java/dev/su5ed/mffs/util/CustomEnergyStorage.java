@@ -1,6 +1,6 @@
 package dev.su5ed.mffs.util;
 
-import net.minecraftforge.energy.EnergyStorage;
+import net.neoforged.neoforge.energy.EnergyStorage;
 
 import java.util.function.BooleanSupplier;
 

@@ -21,8 +21,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fluids.IFluidBlock;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.fluids.IFluidBlock;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -136,31 +136,29 @@ public final class ModUtil {
     }
 
     public static boolean isCard(ItemStack stack) {
-        return stack.getCapability(ModCapabilities.FREQUENCY_CARD).isPresent();
+        return stack.getCapability(ModCapabilities.FREQUENCY_CARD) != null;
     }
 
     public static boolean isIdentificationCard(ItemStack stack) {
-        return stack.getCapability(ModCapabilities.IDENTIFICATION_CARD).isPresent();
+        return stack.getCapability(ModCapabilities.IDENTIFICATION_CARD) != null;
     }
 
     public static boolean isModule(ItemStack stack) {
-        return stack.getCapability(ModCapabilities.MODULE_TYPE).isPresent();
+        return stack.getCapability(ModCapabilities.MODULE_TYPE) != null;
     }
 
     public static boolean isModule(ItemStack stack, Module.Category category) {
-        return stack.getCapability(ModCapabilities.MODULE_TYPE)
-            .map(module -> module.getCategories().contains(category))
-            .orElse(false);
+        ModuleType<?> moduleType =  stack.getCapability(ModCapabilities.MODULE_TYPE);
+        return moduleType != null && moduleType.getCategories().contains(category);
     }
 
     public static boolean isModule(ItemStack stack, ModuleType<?> module) {
-        return stack.getCapability(ModCapabilities.MODULE_TYPE)
-            .filter(mod -> mod == module)
-            .isPresent();
+        ModuleType<?> moduleType =  stack.getCapability(ModCapabilities.MODULE_TYPE);
+        return moduleType == module;
     }
 
     public static boolean isProjectorMode(ItemStack stack) {
-        return stack.getCapability(ModCapabilities.PROJECTOR_MODE).isPresent();
+        return stack.getCapability(ModCapabilities.PROJECTOR_MODE) != null;
     }
 
     @Nullable
@@ -199,14 +197,14 @@ public final class ModUtil {
     public static void shockEntity(Entity entity, int damage) {
         entity.hurt(entity.level().damageSources().source(ModObjects.FIELD_SHOCK_TYPE), damage);
         if (entity instanceof ServerPlayer serverPlayer) {
-            ModObjects.DAMAGE_TRIGGER.get().trigger(serverPlayer, ModObjects.FIELD_SHOCK_TYPE);
+            ModObjects.DAMAGE_TRIGGER.trigger(serverPlayer, ModObjects.FIELD_SHOCK_TYPE);
         }
     }
 
     @SuppressWarnings("unused") // Called from injected hook
     public static void onSetBlock(Level level, BlockPos pos, BlockState state) {
         SetBlockEvent event = new SetBlockEvent(level, pos, state);
-        MinecraftForge.EVENT_BUS.post(event);
+        NeoForge.EVENT_BUS.post(event);
     }
 
     private ModUtil() {}

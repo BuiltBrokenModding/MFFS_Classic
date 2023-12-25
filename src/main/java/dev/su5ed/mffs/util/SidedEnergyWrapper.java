@@ -1,6 +1,6 @@
 package dev.su5ed.mffs.util;
 
-import net.minecraftforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.energy.IEnergyStorage;
 
 public class SidedEnergyWrapper implements IEnergyStorage {
     private final IEnergyStorage wrapped;

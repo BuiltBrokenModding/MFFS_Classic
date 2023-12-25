@@ -13,7 +13,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.fluids.FluidType;
+import net.neoforged.neoforge.fluids.FluidType;
 import one.util.streamex.IntStreamEx;
 import one.util.streamex.StreamEx;
 import org.jetbrains.annotations.Nullable;
@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -105,7 +106,7 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
 
     public Set<Module> getModuleInstances() {
         return cached(MODULE_INSTANCE_CACHE_KEY, () -> getModuleItemsStream(List.of())
-            .<Module>mapPartial(stack -> stack.getCapability(ModCapabilities.MODULE_TYPE).resolve()
+            .<Module>mapPartial(stack -> Optional.ofNullable(stack.getCapability(ModCapabilities.MODULE_TYPE))
                 .map(moduleType -> moduleType.createModule(stack)))
             .toSet());
     }
@@ -146,7 +147,7 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
 
     protected int doGetFortronCost() {
         double cost = StreamEx.of(getModuleStacks())
-            .mapToDouble(stack -> stack.getCount() * stack.getCapability(ModCapabilities.MODULE_TYPE)
+            .mapToDouble(stack -> stack.getCount() * Optional.ofNullable(stack.getCapability(ModCapabilities.MODULE_TYPE))
                 .map(module -> (double) module.getFortronCost(getAmplifier()))
                 .orElse(0.0))
             .sum();

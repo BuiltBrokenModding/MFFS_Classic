@@ -2,11 +2,8 @@ package dev.su5ed.mffs.network;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.network.NetworkEvent;
-
-import java.util.function.Supplier;
+import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.network.NetworkEvent;
 
 public record DrawHologramPacket(Vec3 pos, Vec3 target, Type type) {
     public void encode(FriendlyByteBuf buf) {
@@ -28,8 +25,10 @@ public record DrawHologramPacket(Vec3 pos, Vec3 target, Type type) {
         return new DrawHologramPacket(pos, target, type);
     }
 
-    public void processClientPacket(Supplier<NetworkEvent.Context> ctx) {
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> ClientPacketHandler.handleDrawHologramPacket(this));
+    public void processClientPacket(NetworkEvent.Context ctx) {
+        if (FMLEnvironment.dist.isClient()) {
+            ClientPacketHandler.handleDrawHologramPacket(this);
+        }
     }
 
     public enum Type {

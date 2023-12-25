@@ -5,9 +5,7 @@ import dev.su5ed.mffs.blockentity.BiometricIdentifierBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.network.NetworkEvent;
-
-import java.util.function.Supplier;
+import net.neoforged.neoforge.network.NetworkEvent;
 
 public record ToggleFieldPermissionPacket(BlockPos pos, FieldPermission permission, boolean value) {
     public void encode(FriendlyByteBuf buf) {
@@ -23,10 +21,10 @@ public record ToggleFieldPermissionPacket(BlockPos pos, FieldPermission permissi
         return new ToggleFieldPermissionPacket(pos, permission, enabled);
     }
 
-    public void processServerPacket(Supplier<NetworkEvent.Context> ctx) {
-        Level level = ctx.get().getSender().level();
+    public void processServerPacket(NetworkEvent.Context ctx) {
+        Level level = ctx.getSender().level();
         Network.findBlockEntity(BiometricIdentifierBlockEntity.class, level, this.pos)
-            .flatMap(be -> be.getManipulatingCard().resolve())
+            .flatMap(BiometricIdentifierBlockEntity::getManipulatingCard)
             .ifPresent(card -> {
                 if (this.value) {
                     card.addPermission(this.permission);

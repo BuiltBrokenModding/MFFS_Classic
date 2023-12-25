@@ -1,23 +1,23 @@
 package dev.su5ed.mffs.util;
 
+import com.google.common.base.Suppliers;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.common.util.Lazy;
-import net.minecraftforge.fluids.FluidType;
-import net.minecraftforge.fluids.ForgeFlowingFluid;
+import net.neoforged.neoforge.fluids.BaseFlowingFluid;
+import net.neoforged.neoforge.fluids.FluidType;
 
 import java.util.function.Supplier;
 
 public class FluidRegistryObject {
     private final Supplier<FluidType> fluidType;
-    private final Lazy<Fluid> sourceFluid;
-    private final Lazy<Fluid> flowingFluid;
+    private final Supplier<Fluid> sourceFluid;
+    private final Supplier<Fluid> flowingFluid;
 
     public FluidRegistryObject(ModFluidType.FluidProperties properties) {
-        this.fluidType = Lazy.of(() -> new ModFluidType(properties));
+        this.fluidType = Suppliers.memoize(() -> new ModFluidType(properties));
 
-        ForgeFlowingFluid.Properties fluidProperties = new ForgeFlowingFluid.Properties(this.fluidType, this::getSourceFluid, this::getFlowingFluid);
-        this.sourceFluid = Lazy.of(() -> new ForgeFlowingFluid.Source(fluidProperties));
-        this.flowingFluid = Lazy.of(() -> new ForgeFlowingFluid.Flowing(fluidProperties));
+        BaseFlowingFluid.Properties fluidProperties = new BaseFlowingFluid.Properties(this.fluidType, this::getSourceFluid, this::getFlowingFluid);
+        this.sourceFluid = Suppliers.memoize(() -> new BaseFlowingFluid.Source(fluidProperties));
+        this.flowingFluid = Suppliers.memoize(() -> new BaseFlowingFluid.Flowing(fluidProperties));
     }
 
     public Supplier<FluidType> fluidType() {

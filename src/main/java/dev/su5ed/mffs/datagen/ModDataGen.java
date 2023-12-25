@@ -8,14 +8,14 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
-import net.minecraftforge.common.data.BlockTagsProvider;
-import net.minecraftforge.common.data.DatapackBuiltinEntriesProvider;
-import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.common.data.ForgeAdvancementProvider;
-import net.minecraftforge.data.event.GatherDataEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod.EventBusSubscriber;
+import net.neoforged.fml.common.Mod.EventBusSubscriber.Bus;
+import net.neoforged.neoforge.common.data.AdvancementProvider;
+import net.neoforged.neoforge.common.data.BlockTagsProvider;
+import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.data.event.GatherDataEvent;
 
 import java.util.List;
 import java.util.Set;
@@ -39,12 +39,12 @@ public final class ModDataGen {
         BlockTagsProvider blockTags = new BlockTagsGen(output, registries, helper);
         generator.addProvider(event.includeServer(), blockTags);
         generator.addProvider(event.includeServer(), new ItemTagsGen(output, registries, blockTags.contentsGetter(), helper));
-        generator.addProvider(event.includeServer(), new RecipesGen(output));
+        generator.addProvider(event.includeServer(), new RecipesGen(output, registries));
         generator.addProvider(event.includeServer(), new LootTableProvider(output, Set.of(), List.of(
             new LootTableProvider.SubProviderEntry(LootTableGen.ModBlockLoot::new, LootContextParamSets.BLOCK),
             new LootTableProvider.SubProviderEntry(LootTableGen.ModItemLoot::new, LootContextParamSets.EMPTY)
         )));
-        generator.addProvider(event.includeServer(), new ForgeAdvancementProvider(output, registries, helper, List.of(new AdvancementsGen())));
+        generator.addProvider(event.includeServer(), new AdvancementProvider(output, registries, helper, List.of(new AdvancementsGen())));
         generator.addProvider(event.includeServer(), new DamageTypeTagsGen(output, registries, helper));
         generator.addProvider(true, PackMetadataGen.create(output));
     }

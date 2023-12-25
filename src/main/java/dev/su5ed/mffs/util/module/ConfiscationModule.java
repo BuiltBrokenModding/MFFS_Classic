@@ -1,5 +1,6 @@
 package dev.su5ed.mffs.util.module;
 
+import dev.su5ed.mffs.api.fortron.FortronStorage;
 import dev.su5ed.mffs.api.module.ModuleType;
 import dev.su5ed.mffs.api.security.BiometricIdentifier;
 import dev.su5ed.mffs.api.security.FieldPermission;
@@ -10,6 +11,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import one.util.streamex.StreamEx;
 
 import java.util.Collection;
@@ -50,9 +52,11 @@ public class ConfiscationModule extends BaseInterdictionModule {
 
             if (confiscationCount > 0) {
                 player.displayClientMessage(ModUtil.translate("info", "interdiction_matrix.confiscation_" + (confiscationCount == 1 ? "singular" : "plural"), interdictionMatrix.getTitle(), confiscationCount), false);
-                final int finalConfiscationCount = confiscationCount;
-                interdictionMatrix.be().getCapability(ModCapabilities.FORTRON)
-                    .ifPresent(fortron -> fortron.extractFortron(finalConfiscationCount, false));
+                BlockEntity be = interdictionMatrix.be();
+                FortronStorage fortron = be.getLevel().getCapability(ModCapabilities.FORTRON, be.getBlockPos(), be.getBlockState(), be, null);
+                if (fortron != null) {
+                    fortron.extractFortron(confiscationCount, false);   
+                }
             }
         }
 

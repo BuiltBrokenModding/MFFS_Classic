@@ -83,8 +83,7 @@ public class FortronCapacitorBlockEntity extends ModularBlockEntity implements F
                 }
                 else if (stack.getItem() instanceof CoordLink coordLink) {
                     Optional.ofNullable(coordLink.getLink(stack))
-                        .map(linkPosition -> this.level.getBlockEntity(linkPosition))
-                        .flatMap(be -> getCapability(ModCapabilities.FORTRON).resolve())
+                        .map(linkPosition -> this.level.getCapability(ModCapabilities.FORTRON, linkPosition, null))
                         .ifPresent(fortron -> {
                             machines.add(this.fortronStorage);
                             machines.add(fortron);

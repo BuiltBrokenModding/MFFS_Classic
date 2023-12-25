@@ -5,9 +5,7 @@ import dev.su5ed.mffs.util.TransferMode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.network.NetworkEvent;
-
-import java.util.function.Supplier;
+import net.neoforged.neoforge.network.NetworkEvent;
 
 public record SwitchTransferModePacket(BlockPos pos, TransferMode mode) {
     public void encode(FriendlyByteBuf buf) {
@@ -21,8 +19,8 @@ public record SwitchTransferModePacket(BlockPos pos, TransferMode mode) {
         return new SwitchTransferModePacket(pos, enabled);
     }
 
-    public void processServerPacket(Supplier<NetworkEvent.Context> ctx) {
-        Level level = ctx.get().getSender().level();
+    public void processServerPacket(NetworkEvent.Context ctx) {
+        Level level = ctx.getSender().level();
         Network.findBlockEntity(ModObjects.FORTRON_CAPACITOR_BLOCK_ENTITY.get(), level, this.pos)
             .ifPresent(be -> be.setTransferMode(this.mode));
     }

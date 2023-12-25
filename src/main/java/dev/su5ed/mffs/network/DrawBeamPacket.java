@@ -3,14 +3,10 @@ package dev.su5ed.mffs.network;
 import dev.su5ed.mffs.render.particle.ParticleColor;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.network.NetworkEvent;
-
-import java.util.function.Supplier;
+import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.network.NetworkEvent;
 
 public record DrawBeamPacket(Vec3 target, Vec3 position, ParticleColor color, int lifetime) {
-
     public void encode(FriendlyByteBuf buf) {
         buf.writeDouble(this.target.x());
         buf.writeDouble(this.target.y());
@@ -32,7 +28,9 @@ public record DrawBeamPacket(Vec3 target, Vec3 position, ParticleColor color, in
         return new DrawBeamPacket(target, position, color, lifetime);
     }
 
-    public void processClientPacket(Supplier<NetworkEvent.Context> ctx) {
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> ClientPacketHandler.handleDrawBeamPacket(this));
+    public void processClientPacket(NetworkEvent.Context ctx) {
+        if (FMLEnvironment.dist.isClient()) {
+            ClientPacketHandler.handleDrawBeamPacket(this);
+        }
     }
 }

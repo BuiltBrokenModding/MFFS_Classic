@@ -2,9 +2,10 @@ package dev.su5ed.mffs.datagen;
 
 import dev.su5ed.mffs.setup.ModItems;
 import dev.su5ed.mffs.setup.ModTags;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
@@ -12,20 +13,20 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraftforge.common.Tags;
+import net.neoforged.neoforge.common.Tags;
 
-import java.util.function.Consumer;
+import java.util.concurrent.CompletableFuture;
 
 import static dev.su5ed.mffs.MFFSMod.location;
 
 public class RecipesGen extends RecipeProvider {
 
-    public RecipesGen(PackOutput output) {
-        super(output);
+    public RecipesGen(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+        super(output, lookupProvider);
     }
 
     @Override
-    protected void buildRecipes(Consumer<FinishedRecipe> finishedRecipeConsumer) {
+    protected void buildRecipes(RecipeOutput recipeOutput) {
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.STEEL_COMPOUND.get())
             .define('I', Tags.Items.INGOTS_IRON)
             .define('C', Items.COAL)
@@ -33,11 +34,11 @@ public class RecipesGen extends RecipeProvider {
             .pattern("CIC")
             .pattern(" C ")
             .unlockedBy("has_iron_ingot", has(Tags.Items.INGOTS_IRON))
-            .save(finishedRecipeConsumer, location("steel_compound"));
+            .save(recipeOutput, location("steel_compound"));
 
         SimpleCookingRecipeBuilder.smelting(Ingredient.of(ModItems.STEEL_COMPOUND.get()), RecipeCategory.MISC, ModItems.STEEL_INGOT.get(), 0.5F, 200)
             .unlockedBy("has_steel_compound", has(ModItems.STEEL_COMPOUND.get()))
-            .save(finishedRecipeConsumer, location("steel_ingot"));
+            .save(recipeOutput, location("steel_ingot"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.BATTERY.get())
             .define('I', Tags.Items.INGOTS_IRON)
@@ -48,7 +49,7 @@ public class RecipesGen extends RecipeProvider {
             .pattern("IRI")
             .pattern("IOI")
             .unlockedBy("has_iron_ingot", has(Tags.Items.INGOTS_IRON))
-            .save(finishedRecipeConsumer, location("battery"));
+            .save(recipeOutput, location("battery"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.FOCUS_MATRIX.get(), 9)
             .define('R', Tags.Items.DUSTS_REDSTONE)
@@ -58,7 +59,7 @@ public class RecipesGen extends RecipeProvider {
             .pattern("SDS")
             .pattern("RSR")
             .unlockedBy("has_steel_ingot", has(ModTags.INGOTS_STEEL))
-            .save(finishedRecipeConsumer, location("focus_matrix"));
+            .save(recipeOutput, location("focus_matrix"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.BLANK_CARD.get())
             .define('P', Items.PAPER)
@@ -67,21 +68,21 @@ public class RecipesGen extends RecipeProvider {
             .pattern("PSP")
             .pattern("PPP")
             .unlockedBy("has_steel_ingot", has(ModTags.INGOTS_STEEL))
-            .save(finishedRecipeConsumer, location("blank_card"));
+            .save(recipeOutput, location("blank_card"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.ID_CARD.get())
             .define('R', Tags.Items.DUSTS_REDSTONE)
             .define('C', ModItems.BLANK_CARD.get())
             .pattern("RCR")
             .unlockedBy("has_blank_card", has(ModItems.BLANK_CARD.get()))
-            .save(finishedRecipeConsumer, location("id_card"));
+            .save(recipeOutput, location("id_card"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.FREQUENCY_CARD.get())
             .define('G', Tags.Items.INGOTS_GOLD)
             .define('C', ModItems.BLANK_CARD.get())
             .pattern("GCG")
             .unlockedBy("has_blank_card", has(ModItems.BLANK_CARD.get()))
-            .save(finishedRecipeConsumer, location("frequency_card"));
+            .save(recipeOutput, location("frequency_card"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.COERCION_DERIVER_ITEM.get())
             .define('S', ModTags.INGOTS_STEEL)
@@ -91,7 +92,7 @@ public class RecipesGen extends RecipeProvider {
             .pattern("SFS")
             .pattern("SBS")
             .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
-            .save(finishedRecipeConsumer, location("coercion_deriver"));
+            .save(recipeOutput, location("coercion_deriver"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.FORTRON_CAPACITOR_ITEM.get())
             .define('S', ModTags.INGOTS_STEEL)
@@ -101,7 +102,7 @@ public class RecipesGen extends RecipeProvider {
             .pattern("FBF")
             .pattern("SFS")
             .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
-            .save(finishedRecipeConsumer, location("fortron_capacitor"));
+            .save(recipeOutput, location("fortron_capacitor"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.PROJECTOR_ITEM.get())
             .define('S', ModTags.INGOTS_STEEL)
@@ -112,7 +113,7 @@ public class RecipesGen extends RecipeProvider {
             .pattern("FFF")
             .pattern("SBS")
             .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
-            .save(finishedRecipeConsumer, location("projector"));
+            .save(recipeOutput, location("projector"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.BIOMETRIC_IDENTIFIER_ITEM.get())
             .define('F', ModItems.FOCUS_MATRIX.get())
@@ -122,7 +123,7 @@ public class RecipesGen extends RecipeProvider {
             .pattern("SCS")
             .pattern("FSF")
             .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
-            .save(finishedRecipeConsumer, location("biometric_identifier"));
+            .save(recipeOutput, location("biometric_identifier"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.INTERDICTION_MATRIX_ITEM.get())
             .define('S', ModItems.SHOCK_MODULE.get())
@@ -132,7 +133,7 @@ public class RecipesGen extends RecipeProvider {
             .pattern("FFF")
             .pattern("FEF")
             .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
-            .save(finishedRecipeConsumer, location("interdiction_matrix"));
+            .save(recipeOutput, location("interdiction_matrix"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.REMOTE_CONTROLLER_ITEM.get())
             .define('S', ModTags.INGOTS_STEEL)
@@ -142,7 +143,7 @@ public class RecipesGen extends RecipeProvider {
             .pattern("SBS")
             .pattern("SBS")
             .unlockedBy("has_battery", has(ModItems.BATTERY.get()))
-            .save(finishedRecipeConsumer, location("remote_controller"));
+            .save(recipeOutput, location("remote_controller"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.CUBE_MODE.get())
             .define('F', ModItems.FOCUS_MATRIX.get())
@@ -150,7 +151,7 @@ public class RecipesGen extends RecipeProvider {
             .pattern("FFF")
             .pattern("FFF")
             .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
-            .save(finishedRecipeConsumer, location("cube_mode"));
+            .save(recipeOutput, location("cube_mode"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.SPHERE_MODE.get())
             .define('F', ModItems.FOCUS_MATRIX.get())
@@ -158,7 +159,7 @@ public class RecipesGen extends RecipeProvider {
             .pattern("FFF")
             .pattern(" F ")
             .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
-            .save(finishedRecipeConsumer, location("sphere_mode"));
+            .save(recipeOutput, location("sphere_mode"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.TUBE_MODE.get())
             .define('F', ModItems.FOCUS_MATRIX.get())
@@ -166,7 +167,7 @@ public class RecipesGen extends RecipeProvider {
             .pattern("   ")
             .pattern("FFF")
             .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
-            .save(finishedRecipeConsumer, location("tube_mode"));
+            .save(recipeOutput, location("tube_mode"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.PYRAMID_MODE.get())
             .define('F', ModItems.FOCUS_MATRIX.get())
@@ -174,7 +175,7 @@ public class RecipesGen extends RecipeProvider {
             .pattern("FF ")
             .pattern("FFF")
             .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
-            .save(finishedRecipeConsumer, location("pyramid_mode"));
+            .save(recipeOutput, location("pyramid_mode"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.CYLINDER_MODE.get())
             .define('S', ModItems.SPHERE_MODE.get())
@@ -182,7 +183,7 @@ public class RecipesGen extends RecipeProvider {
             .pattern("S")
             .pattern("S")
             .unlockedBy("has_sphere_mode", has(ModItems.SPHERE_MODE.get()))
-            .save(finishedRecipeConsumer, location("cylinder_mode"));
+            .save(recipeOutput, location("cylinder_mode"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.CUSTOM_MODE.get())
             .define('F', ModItems.FOCUS_MATRIX.get())
@@ -194,20 +195,20 @@ public class RecipesGen extends RecipeProvider {
             .pattern("TFP")
             .pattern(" S ")
             .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
-            .save(finishedRecipeConsumer, location("custom_mode"));
+            .save(recipeOutput, location("custom_mode"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.SCALE_MODULE.get(), 2)
             .define('F', ModItems.FOCUS_MATRIX.get())
             .pattern("F F")
             .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
-            .save(finishedRecipeConsumer, location("scale_module"));
+            .save(recipeOutput, location("scale_module"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.TRANSLATION_MODULE.get(), 2)
             .define('F', ModItems.FOCUS_MATRIX.get())
             .define('S', ModItems.SCALE_MODULE.get())
             .pattern("FSF")
             .unlockedBy("has_scale_module", has(ModItems.SCALE_MODULE.get()))
-            .save(finishedRecipeConsumer, location("translation_module"));
+            .save(recipeOutput, location("translation_module"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.ROTATION_MODULE.get(), 4)
             .define('F', ModItems.FOCUS_MATRIX.get())
@@ -215,7 +216,7 @@ public class RecipesGen extends RecipeProvider {
             .pattern(" F ")
             .pattern("  F")
             .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
-            .save(finishedRecipeConsumer, location("rotation_module"));
+            .save(recipeOutput, location("rotation_module"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.SPEED_MODULE.get(), 2)
             .define('F', ModItems.FOCUS_MATRIX.get())
@@ -224,28 +225,28 @@ public class RecipesGen extends RecipeProvider {
             .pattern("RRR")
             .pattern("FFF")
             .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
-            .save(finishedRecipeConsumer, location("speed_module"));
+            .save(recipeOutput, location("speed_module"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.CAPACITY_MODULE.get(), 2)
             .define('F', ModItems.FOCUS_MATRIX.get())
             .define('B', ModItems.BATTERY.get())
             .pattern("FBF")
             .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
-            .save(finishedRecipeConsumer, location("capacity_module"));
+            .save(recipeOutput, location("capacity_module"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.SHOCK_MODULE.get())
             .define('F', ModItems.FOCUS_MATRIX.get())
             .define('D', Items.DIAMOND)
             .pattern("FDF")
             .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
-            .save(finishedRecipeConsumer, location("shock_module"));
+            .save(recipeOutput, location("shock_module"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.FUSION_MODULE.get())
             .define('F', ModItems.FOCUS_MATRIX.get())
             .define('S', ModItems.SHOCK_MODULE.get())
             .pattern("FSF")
             .unlockedBy("has_shock_module", has(ModItems.SHOCK_MODULE.get()))
-            .save(finishedRecipeConsumer, location("fusion_module"));
+            .save(recipeOutput, location("fusion_module"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.DOME_MODULE.get())
             .define('F', ModItems.FOCUS_MATRIX.get())
@@ -253,7 +254,7 @@ public class RecipesGen extends RecipeProvider {
             .pattern(" ")
             .pattern("F")
             .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
-            .save(finishedRecipeConsumer, location("dome_module"));
+            .save(recipeOutput, location("dome_module"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.CAMOUFLAGE_MODULE.get())
             .define('F', ModItems.FOCUS_MATRIX.get())
@@ -262,7 +263,7 @@ public class RecipesGen extends RecipeProvider {
             .pattern("FWF")
             .pattern("WFW")
             .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
-            .save(finishedRecipeConsumer, location("camouflage_module"));
+            .save(recipeOutput, location("camouflage_module"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.DISINTEGRATION_MODULE.get())
             .define('F', ModItems.FOCUS_MATRIX.get())
@@ -272,7 +273,7 @@ public class RecipesGen extends RecipeProvider {
             .pattern("FBF")
             .pattern(" P ")
             .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
-            .save(finishedRecipeConsumer, location("disintegration_module"));
+            .save(recipeOutput, location("disintegration_module"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.GLOW_MODULE.get(), 4)
             .define('F', ModItems.FOCUS_MATRIX.get())
@@ -281,7 +282,7 @@ public class RecipesGen extends RecipeProvider {
             .pattern("GFG")
             .pattern("GGG")
             .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
-            .save(finishedRecipeConsumer, location("glow_module"));
+            .save(recipeOutput, location("glow_module"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.SPONGE_MODULE.get())
             .define('F', ModItems.FOCUS_MATRIX.get())
@@ -290,7 +291,7 @@ public class RecipesGen extends RecipeProvider {
             .pattern("SFS")
             .pattern("SSS")
             .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
-            .save(finishedRecipeConsumer, location("sponge_module"));
+            .save(recipeOutput, location("sponge_module"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.STABILIZATION_MODULE.get())
             .define('F', ModItems.FOCUS_MATRIX.get())
@@ -302,7 +303,7 @@ public class RecipesGen extends RecipeProvider {
             .pattern("PSA")
             .pattern("FDF")
             .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
-            .save(finishedRecipeConsumer, location("stabilization_module"));
+            .save(recipeOutput, location("stabilization_module"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.COLLECTION_MODULE.get())
             .define('F', ModItems.FOCUS_MATRIX.get())
@@ -311,7 +312,7 @@ public class RecipesGen extends RecipeProvider {
             .pattern(" H ")
             .pattern("F F")
             .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
-            .save(finishedRecipeConsumer, location("collection_module"));
+            .save(recipeOutput, location("collection_module"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.INVERTER_MODULE.get())
             .define('F', ModItems.FOCUS_MATRIX.get())
@@ -320,7 +321,7 @@ public class RecipesGen extends RecipeProvider {
             .pattern("F")
             .pattern("L")
             .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
-            .save(finishedRecipeConsumer, location("inverter_module"));
+            .save(recipeOutput, location("inverter_module"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.SILENCE_MODULE.get())
             .define('F', ModItems.FOCUS_MATRIX.get())
@@ -329,14 +330,14 @@ public class RecipesGen extends RecipeProvider {
             .pattern("NFN")
             .pattern(" N ")
             .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
-            .save(finishedRecipeConsumer, location("silence_module"));
+            .save(recipeOutput, location("silence_module"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.WARN_MODULE.get())
             .define('F', ModItems.FOCUS_MATRIX.get())
             .define('N', Items.NOTE_BLOCK)
             .pattern("NFN")
             .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
-            .save(finishedRecipeConsumer, location("warn_module"));
+            .save(recipeOutput, location("warn_module"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.BLOCK_ACCESS_MODULE.get())
             .define('F', ModItems.FOCUS_MATRIX.get())
@@ -346,7 +347,7 @@ public class RecipesGen extends RecipeProvider {
             .pattern("IFI")
             .pattern(" C ")
             .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
-            .save(finishedRecipeConsumer, location("block_access_module"));
+            .save(recipeOutput, location("block_access_module"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.BLOCK_ALTER_MODULE.get())
             .define('M', ModItems.BLOCK_ACCESS_MODULE.get())
@@ -355,7 +356,7 @@ public class RecipesGen extends RecipeProvider {
             .pattern("GMG")
             .pattern(" G ")
             .unlockedBy("has_block_access_module", has(ModItems.BLOCK_ACCESS_MODULE.get()))
-            .save(finishedRecipeConsumer, location("block_alter_module"));
+            .save(recipeOutput, location("block_alter_module"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.ANTI_FRIENDLY_MODULE.get())
             .define('F', ModItems.FOCUS_MATRIX.get())
@@ -367,7 +368,7 @@ public class RecipesGen extends RecipeProvider {
             .pattern("PFL")
             .pattern(" S ")
             .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
-            .save(finishedRecipeConsumer, location("anti_friendly_module"));
+            .save(recipeOutput, location("anti_friendly_module"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.ANTI_HOSTILE_MODULE.get())
             .define('F', ModItems.FOCUS_MATRIX.get())
@@ -379,7 +380,7 @@ public class RecipesGen extends RecipeProvider {
             .pattern("PFB")
             .pattern(" G ")
             .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
-            .save(finishedRecipeConsumer, location("anti_hostile_module"));
+            .save(recipeOutput, location("anti_hostile_module"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.ANTI_PERSONNEL_MODULE.get())
             .define('F', ModItems.FOCUS_MATRIX.get())
@@ -387,7 +388,7 @@ public class RecipesGen extends RecipeProvider {
             .define('H', ModItems.ANTI_HOSTILE_MODULE.get())
             .pattern("RFH")
             .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
-            .save(finishedRecipeConsumer, location("anti_personnel_module"));
+            .save(recipeOutput, location("anti_personnel_module"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.ANTI_SPAWN_MODULE.get())
             .define('F', ModItems.ANTI_FRIENDLY_MODULE.get())
@@ -396,7 +397,7 @@ public class RecipesGen extends RecipeProvider {
             .pattern("F F")
             .pattern(" H ")
             .unlockedBy("has_anti_friendly_module", has(ModItems.ANTI_FRIENDLY_MODULE.get()))
-            .save(finishedRecipeConsumer, location("anti_spawn_module"));
+            .save(recipeOutput, location("anti_spawn_module"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.CONFISCATION_MODULE.get())
             .define('F', ModItems.FOCUS_MATRIX.get())
@@ -406,6 +407,6 @@ public class RecipesGen extends RecipeProvider {
             .pattern("EFE")
             .pattern("PEP")
             .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
-            .save(finishedRecipeConsumer, location("confiscation_module"));
+            .save(recipeOutput, location("confiscation_module"));
     }
 }

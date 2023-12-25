@@ -1,57 +1,62 @@
-import net.minecraftforge.gradle.userdev.tasks.JarJar
+import me.modmuss50.mpp.ReleaseType
 import java.time.LocalDateTime
 
 plugins {
     eclipse
     `maven-publish`
-    id("net.minecraftforge.gradle") version "[6.0,6.2)"
-    id("org.parchmentmc.librarian.forgegradle") version "1.+"
-    id("io.github.CDAGaming.cursegradle") version "1.6.+"
+    id("net.neoforged.gradle.userdev") version "7.0.+"
+    id("me.modmuss50.mod-publish-plugin") version "0.3.+"
     id("wtf.gofancy.git-changelog") version "1.1.+"
-    // Required to run mixin mods in dev
-    id("org.spongepowered.mixin") version "0.7-SNAPSHOT"
 }
 
 group = "dev.su5ed.mffs"
 version = changelog.getVersionFromTag()
 
-val versionMc: String by project
-val versionForge: String by project
 val curseForgeId: String by project
 val versionJei: String by project
 val versionTOP: String by project
 val versionPatchouli: String by project
-val publishReleaseType = System.getenv("PUBLISH_RELEASE_TYPE") ?: "beta"
-val changelogText = changelog.generateChangelog(1, true)
+val versionStreamex: String by project
+
+val minecraftVersion: String by project
+val minecraftVersionRange: String by project
+val neoVersion: String by project
+val neoVersionRange: String by project
+val loaderVersionRange: String by project
+val modId: String by project
+
+val CI: Provider<String> = providers.environmentVariable("CI")
 
 java.toolchain.languageVersion.set(JavaLanguageVersion.of(17))
 
-logger.lifecycle("\nConfigured version: $version")
-
+println("Configured version: $version, Java: ${System.getProperty("java.version")}, JVM: ${System.getProperty("java.vm.version")} (${System.getProperty("java.vendor")}), Arch: ${System.getProperty("os.arch")}")
 minecraft {
-    mappings("parchment", "2023.06.26-1.20.1")
-
-    accessTransformer(file("src/main/resources/META-INF/accesstransformer.cfg"))
+    accessTransformers.file("src/main/resources/META-INF/accesstransformer.cfg")
 
     runs {
-        create("client")
-        create("server")
-        create("gameTestServer")
+        configureEach {
+            systemProperty("forge.logging.markers", "REGISTRIES")
+            systemProperty("forge.logging.console.level", "debug")
 
-        create("data") {
-            args("--mod", "mffs", "--all", "--output", file("src/generated/resources/"), "--existing", file("src/main/resources/"))
+            modSource(project.sourceSets.main.get())
+            
+            dependencies { 
+                runtime("one.util:streamex:$versionStreamex")
+            }
         }
 
-        all {
-            workingDirectory(project.file("run"))
-            property("forge.logging.markers", "REGISTRIES")
-            property("forge.logging.console.level", "debug")
+        create("client") {
+            // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
+            systemProperty("forge.enabledGameTestNamespaces", modId)
+        }
 
-            mods {
-                create("mffs") {
-                    source(sourceSets.main.get())
-                }
-            }
+        create("server") {
+            systemProperty("forge.enabledGameTestNamespaces", modId)
+            programArgument("--nogui")
+        }
+
+        create("data") {
+            programArguments.addAll("--mod", modId, "--all", "--output", file("src/generated/resources/").absolutePath, "--existing", file("src/main/resources/").absolutePath)
         }
     }
 }
@@ -79,33 +84,19 @@ repositories {
 }
 
 dependencies {
-    minecraft(group = "net.minecraftforge", name = "forge", version = "$versionMc-$versionForge")
+    implementation(group = "net.neoforged", name = "neoforge", version = neoVersion)
 
-    minecraftLibrary(jarJar(group = "one.util", name = "streamex", version = "0.8.1")) { // Streams galore!
+    // TODO verify jarjar works
+    implementation(jarJar(group = "one.util", name = "streamex", version = versionStreamex)) { // Streams galore!
         jarJar.ranged(this, "[0.8.1, 0.9)")
     }
 
-    compileOnly(fg.deobf("mezz.jei:jei-$versionMc-common-api:$versionJei"))
-    compileOnly(fg.deobf("mezz.jei:jei-$versionMc-forge-api:$versionJei"))
-    compileOnly(fg.deobf(create(group = "mcjty.theoneprobe", name = "theoneprobe", version = versionTOP).apply { isTransitive = false }))
-
-    runtimeOnly(fg.deobf("mezz.jei:jei-$versionMc-forge:$versionJei"))
-    runtimeOnly(fg.deobf("vazkii.patchouli:Patchouli:$versionPatchouli"))
-}
-
-reobf {
-    create("jarJar")
+    compileOnly("mezz.jei:jei-1.20.1-common-api:$versionJei")
+    compileOnly("mezz.jei:jei-1.20.1-forge-api:$versionJei")
+    compileOnly(group = "mcjty.theoneprobe", name = "theoneprobe", version = versionTOP) { isTransitive = false }
 }
 
 tasks {
-    jar {
-        finalizedBy("reobfJar")
-    }
-
-    named<JarJar>("jarJar") {
-        finalizedBy("reobfJarJar")
-    }
-
     withType<Jar> {
         manifest {
             attributes(
@@ -125,18 +116,18 @@ tasks {
     }
 }
 
-curseforge {
-    apiKey = System.getenv("CURSEFORGE_TOKEN") ?: "UNKNOWN"
-    project {
-        id = curseForgeId
-        releaseType = publishReleaseType
-        changelogType = "markdown"
-        changelog = changelogText
-        mainArtifact(tasks.jarJar.get()) {
-            displayName = "MFFS $versionMc-${project.version}"
-        }
-        addGameVersion("Forge")
-        addGameVersion(versionMc)
+publishMods {
+    file.set(tasks.jarJar.flatMap { it.archiveFile })
+    changelog.set(provider { project.changelog.generateChangelog(1, true) })
+    type.set(providers.environmentVariable("PUBLISH_RELEASE_TYPE").map(ReleaseType::of).orElse(ReleaseType.STABLE))
+    modLoaders.add("forge")
+    dryRun.set(!CI.isPresent)
+
+    curseforge {
+        accessToken.set(providers.environmentVariable("CURSEFORGE_TOKEN"))
+        projectId.set(curseForgeId)
+        minecraftVersions.add(minecraftVersion)
+        displayName.set("MFFS $minecraftVersion-${project.version}")
     }
 }
 

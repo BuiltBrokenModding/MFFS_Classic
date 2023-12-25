@@ -1,43 +1,33 @@
 package dev.su5ed.mffs.util.loot;
 
-import com.google.gson.JsonObject;
-import dev.su5ed.mffs.setup.ModObjects;
-import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.advancements.critereon.ContextAwarePredicate;
-import net.minecraft.advancements.critereon.DeserializationContext;
+import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.util.ExtraCodecs;
+
+import java.util.Optional;
 
 public class FieldShapeTrigger extends SimpleCriterionTrigger<FieldShapeTrigger.TriggerInstance> {
-    private final ResourceLocation id;
-
-    public FieldShapeTrigger(ResourceLocation id) {
-        this.id = id;
-    }
-
     @Override
-    public ResourceLocation getId() {
-        return this.id;
-    }
-
-    @NotNull
-    public TriggerInstance createInstance(JsonObject json, ContextAwarePredicate predicate, DeserializationContext context) {
-        return new TriggerInstance(predicate);
+    public Codec<TriggerInstance> codec() {
+        return TriggerInstance.CODEC;
     }
 
     public void trigger(ServerPlayer player) {
         trigger(player, instance -> true);
     }
 
-    public static class TriggerInstance extends AbstractCriterionTriggerInstance {
-        public TriggerInstance(ContextAwarePredicate predicate) {
-            super(ModObjects.FIELD_SHAPE_TRIGGER.get().getId(), predicate);
-        }
+    public record TriggerInstance(Optional<ContextAwarePredicate> player) implements SimpleInstance {
+        public static final TriggerInstance INSTANCE = new TriggerInstance(Optional.empty());
+        public static final Codec<TriggerInstance> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            ExtraCodecs.strictOptionalField(EntityPredicate.ADVANCEMENT_CODEC, "player").forGetter(TriggerInstance::player)
+        ).apply(instance, TriggerInstance::new));
 
         public static TriggerInstance create() {
-            return new TriggerInstance(ContextAwarePredicate.ANY);
+            return new TriggerInstance(Optional.empty());
         }
     }
 }

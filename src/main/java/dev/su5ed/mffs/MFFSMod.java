@@ -4,6 +4,7 @@ import com.mojang.logging.LogUtils;
 import dev.su5ed.mffs.compat.MFFSProbeProvider;
 import dev.su5ed.mffs.item.IdentificationCardItem;
 import dev.su5ed.mffs.network.Network;
+import dev.su5ed.mffs.setup.ModAttachmentTypes;
 import dev.su5ed.mffs.setup.ModBlocks;
 import dev.su5ed.mffs.setup.ModCapabilities;
 import dev.su5ed.mffs.setup.ModFluids;
@@ -12,16 +13,15 @@ import dev.su5ed.mffs.setup.ModMenus;
 import dev.su5ed.mffs.setup.ModObjects;
 import dev.su5ed.mffs.setup.ModSounds;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.InterModComms;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.InterModComms;
+import net.neoforged.fml.ModList;
+import net.neoforged.fml.ModLoadingContext;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.config.ModConfig;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
+import net.neoforged.neoforge.common.NeoForge;
 import org.slf4j.Logger;
 
 @Mod(MFFSMod.MODID)
@@ -33,8 +33,7 @@ public final class MFFSMod {
 
     public static final Logger LOGGER = LogUtils.getLogger();
 
-    public MFFSMod() {
-        IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+    public MFFSMod(IEventBus bus) {
         bus.addListener(this::commonSetup);
         bus.addListener(this::enqueIMC);
         bus.addListener(ModCapabilities::registerCaps);
@@ -44,6 +43,7 @@ public final class MFFSMod {
         ModMenus.init(bus);
         ModFluids.init(bus);
         ModSounds.init(bus);
+        ModAttachmentTypes.init(bus);
 
         Network.registerPackets();
 
@@ -51,8 +51,8 @@ public final class MFFSMod {
         ctx.registerConfig(ModConfig.Type.CLIENT, MFFSConfig.CLIENT_SPEC);
         ctx.registerConfig(ModConfig.Type.COMMON, MFFSConfig.COMMON_SPEC);
 
-        MinecraftForge.EVENT_BUS.register(ForgeEventHandler.class);
-        MinecraftForge.EVENT_BUS.addListener(IdentificationCardItem::onLivingEntityInteract);
+        NeoForge.EVENT_BUS.register(ForgeEventHandler.class);
+        NeoForge.EVENT_BUS.addListener(IdentificationCardItem::onLivingEntityInteract);
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {

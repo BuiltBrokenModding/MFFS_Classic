@@ -2,7 +2,7 @@ package dev.su5ed.mffs.blockentity;
 
 import dev.su5ed.mffs.api.Activatable;
 import dev.su5ed.mffs.api.card.CoordLink;
-import dev.su5ed.mffs.api.fortron.FortronStorage;
+import dev.su5ed.mffs.api.card.FrequencyCard;
 import dev.su5ed.mffs.api.security.BiometricIdentifier;
 import dev.su5ed.mffs.api.security.BiometricIdentifierLink;
 import dev.su5ed.mffs.block.BaseEntityBlock;
@@ -14,19 +14,13 @@ import dev.su5ed.mffs.util.ModUtil;
 import dev.su5ed.mffs.util.TransferMode;
 import dev.su5ed.mffs.util.inventory.InventorySlot;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidType;
-import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.FluidType;
 import one.util.streamex.StreamEx;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
@@ -36,8 +30,6 @@ public abstract class FortronBlockEntity extends InventoryBlockEntity implements
     public final InventorySlot frequencySlot;
 
     public final FortronStorageImpl fortronStorage;
-    private final LazyOptional<FortronStorage> fortronCap;
-    private final LazyOptional<IFluidHandler> fluidCap;
 
     private boolean markSendFortron = true;
     private boolean active;
@@ -47,8 +39,6 @@ public abstract class FortronBlockEntity extends InventoryBlockEntity implements
         super(type, pos, state);
 
         this.fortronStorage = new FortronStorageImpl(this, getBaseFortronTankCapacity() * FluidType.BUCKET_VOLUME, this::setChanged);
-        this.fortronCap = LazyOptional.of(() -> this.fortronStorage);
-        this.fluidCap = LazyOptional.of(this.fortronStorage::getFortronTank);
         this.frequencySlot = addSlot("frequency", InventorySlot.Mode.BOTH, ModUtil::isCard, this::onFrequencySlotChanged);
     }
 
@@ -78,7 +68,10 @@ public abstract class FortronBlockEntity extends InventoryBlockEntity implements
     }
 
     protected void onFrequencySlotChanged(ItemStack stack) {
-        stack.getCapability(ModCapabilities.FREQUENCY_CARD).ifPresent(card -> card.setFrequency(this.fortronStorage.getFrequency()));
+        FrequencyCard card = stack.getCapability(ModCapabilities.FREQUENCY_CARD);
+        if (card != null) {
+            card.setFrequency(this.fortronStorage.getFrequency());
+        }
     }
 
     @Override
@@ -129,6 +122,7 @@ public abstract class FortronBlockEntity extends InventoryBlockEntity implements
             // Let remaining Fortron escape.
             Fortron.transferFortron(this.fortronStorage, FrequencyGrid.instance().get(this.level, this.worldPosition, 100, this.fortronStorage.getFrequency()), TransferMode.DRAIN, Integer.MAX_VALUE);
         }
+        this.level.invalidateCapabilities(this.worldPosition);
     }
 
     @Override
@@ -145,18 +139,6 @@ public abstract class FortronBlockEntity extends InventoryBlockEntity implements
 
         tag.put("fortronStorage", this.fortronStorage.serializeNBT());
         tag.putBoolean("active", this.active);
-    }
-
-    @NotNull
-    @Override
-    public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        if (cap == ModCapabilities.FORTRON) {
-            return this.fortronCap.cast();
-        }
-        if (cap == ForgeCapabilities.FLUID_HANDLER) {
-            return this.fluidCap.cast();
-        }
-        return super.getCapability(cap, side);
     }
 
     /**
@@ -176,12 +158,15 @@ public abstract class FortronBlockEntity extends InventoryBlockEntity implements
                 if (stack.getItem() instanceof CoordLink link) {
                     return Optional.ofNullable(link.getLink(stack))
                         .map(this.level::getBlockEntity)
-                        .flatMap(be -> be.getCapability(ModCapabilities.BIOMETRIC_IDENTIFIER).resolve());
+                        .map(be -> be.getLevel().getCapability(ModCapabilities.BIOMETRIC_IDENTIFIER, be.getBlockPos(), be.getBlockState(), be, null));
                 }
                 return Optional.empty();
             })
             .append(StreamEx.of(FrequencyGrid.instance().get(this.fortronStorage.getFrequency()))
-                .mapPartial(storage -> storage.getOwner().getCapability(ModCapabilities.BIOMETRIC_IDENTIFIER).resolve()))
+                .mapPartial(storage -> {
+                    BlockEntity be = storage.getOwner();
+                    return Optional.ofNullable(be.getLevel().getCapability(ModCapabilities.BIOMETRIC_IDENTIFIER, be.getBlockPos(), be.getBlockState(), be, null));
+                }))
             .toSet();
     }
 }

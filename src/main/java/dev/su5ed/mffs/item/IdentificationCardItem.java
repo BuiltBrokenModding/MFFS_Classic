@@ -6,7 +6,6 @@ import dev.su5ed.mffs.api.security.FieldPermission;
 import dev.su5ed.mffs.setup.ModCapabilities;
 import dev.su5ed.mffs.util.ModUtil;
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
@@ -23,12 +22,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.util.INBTSerializable;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import org.jetbrains.annotations.NotNull;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
@@ -42,29 +36,21 @@ public class IdentificationCardItem extends BaseItem {
         super(new ExtendedItemProperties(new Item.Properties().stacksTo(1)).description());
     }
 
-    @Nullable
-    @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
-        return new IdentificationCardCapability();
-    }
-
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
         if (player.isShiftKeyDown()) {
             ItemStack stack = player.getItemInHand(usedHand);
-            return stack.getCapability(ModCapabilities.IDENTIFICATION_CARD)
-                .map(card -> {
-                    if (!level.isClientSide) {
-                        if (card.getIdentity() != null) {
-                            card.setIdentity(null);
-                            player.displayClientMessage(ModUtil.translate("info", "identity_cleared"), true);
-                        } else {
-                            setCardIdentity(card, player, player.getGameProfile());
-                        }
-                    }
-                    return InteractionResultHolder.consume(player.getItemInHand(usedHand));
-                })
-                .orElseGet(() -> InteractionResultHolder.pass(stack));
+
+            IdentificationCard card = stack.getCapability(ModCapabilities.IDENTIFICATION_CARD);
+            if (!level.isClientSide) {
+                if (card.getIdentity() != null) {
+                    card.setIdentity(null);
+                    player.displayClientMessage(ModUtil.translate("info", "identity_cleared"), true);
+                } else {
+                    setCardIdentity(card, player, player.getGameProfile());
+                }
+            }
+            return InteractionResultHolder.consume(player.getItemInHand(usedHand));
         }
         return super.use(level, player, usedHand);
     }
@@ -74,14 +60,14 @@ public class IdentificationCardItem extends BaseItem {
         Player player = event.getEntity();
         Entity target = event.getTarget();
         if (player.isShiftKeyDown() && target instanceof Player targetPlayer) {
-            stack.getCapability(ModCapabilities.IDENTIFICATION_CARD)
-                .ifPresent(card -> {
-                    if (!player.level().isClientSide) {
-                        setCardIdentity(card, player, targetPlayer.getGameProfile());
-                    }
-                    event.setCanceled(true);
-                    event.setCancellationResult(InteractionResult.sidedSuccess(player.level().isClientSide));
-                });
+            IdentificationCard card = stack.getCapability(ModCapabilities.IDENTIFICATION_CARD);
+            if (card != null) {
+                if (!player.level().isClientSide) {
+                    setCardIdentity(card, player, targetPlayer.getGameProfile());
+                }
+                event.setCanceled(true);
+                event.setCancellationResult(InteractionResult.sidedSuccess(player.level().isClientSide));
+            }
         }
     }
 
@@ -94,7 +80,8 @@ public class IdentificationCardItem extends BaseItem {
     protected void appendHoverTextPre(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
         super.appendHoverTextPre(stack, level, tooltipComponents, isAdvanced);
 
-        stack.getCapability(ModCapabilities.IDENTIFICATION_CARD).ifPresent(card -> {
+        IdentificationCard card = stack.getCapability(ModCapabilities.IDENTIFICATION_CARD);
+        if (card != null) {
             GameProfile identity = card.getIdentity();
             if (identity != null) {
                 tooltipComponents.add(ModUtil.translate("info", "identity",
@@ -108,33 +95,10 @@ public class IdentificationCardItem extends BaseItem {
                 }
                 tooltipComponents.add(permsComponent.withStyle(ChatFormatting.DARK_GRAY));
             }
-        });
-    }
-
-    @Nullable
-    @Override
-    public CompoundTag getShareTag(ItemStack stack) {
-        CompoundTag tag = stack.getOrCreateTag();
-        INBTSerializable<CompoundTag> card = stack.getCapability(ModCapabilities.IDENTIFICATION_CARD).resolve().orElseThrow();
-        tag.put("card_capability", card.serializeNBT());
-        return tag;
-    }
-
-    @Override
-    public void readShareTag(ItemStack stack, @Nullable CompoundTag tag) {
-        super.readShareTag(stack, tag);
-
-        if (tag != null) {
-            stack.getCapability(ModCapabilities.IDENTIFICATION_CARD).ifPresent(card -> {
-                CompoundTag cardTag = tag.getCompound("card_capability");
-                card.deserializeNBT(cardTag);
-            });
         }
     }
 
-    public static class IdentificationCardCapability implements ICapabilityProvider, IdentificationCard {
-        private final LazyOptional<IdentificationCard> optional = LazyOptional.of(() -> this);
-
+    public static class IdentificationCardAttachment implements IdentificationCard {
         private GameProfile profile;
         private final Set<FieldPermission> permissions = new HashSet<>();
 
@@ -184,11 +148,6 @@ public class IdentificationCardItem extends BaseItem {
         public void copyTo(IdentificationCard other) {
             other.setIdentity(getIdentity());
             other.setPermissions(getPermissions());
-        }
-
-        @Override
-        public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, Direction side) {
-            return ModCapabilities.IDENTIFICATION_CARD.orEmpty(cap, this.optional);
         }
 
         @Override

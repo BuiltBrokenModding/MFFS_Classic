@@ -18,8 +18,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.network.PacketDistributor;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.network.PacketDistributor;
 import one.util.streamex.StreamEx;
 
 import java.util.Collection;
@@ -140,7 +140,7 @@ public final class Fortron {
         return StreamEx.of(FrequencyGrid.instance(level.isClientSide).get())
             .mapPartial(storage -> {
                 BlockEntity be = storage.getOwner();
-                return be.getLevel() == level ? be.getCapability(ModCapabilities.INTERDICTION_MATRIX)
+                return be.getLevel() == level ? Optional.ofNullable(level.getCapability(ModCapabilities.INTERDICTION_MATRIX, be.getBlockPos(), be.getBlockState(), be, null))
                     .filter(interdictionMatrix -> interdictionMatrix.isActive() && pos.closerThan(be.getBlockPos(), interdictionMatrix.getActionRange()))
                     : Optional.empty();
             })

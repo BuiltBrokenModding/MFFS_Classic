@@ -9,28 +9,25 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemHandlerHelper;
-import org.jetbrains.annotations.Nullable;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.ItemHandlerHelper;
 
-import javax.annotation.Nonnull;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public abstract class InventoryBlockEntity extends BaseBlockEntity {
     protected final InventorySlotItemHandler items;
-    private final LazyOptional<IItemHandler> itemCap;
 
     protected InventoryBlockEntity(BlockEntityType<? extends BaseBlockEntity> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
 
         this.items = new InventorySlotItemHandler(this::onInventoryChanged);
-        this.itemCap = LazyOptional.of(() -> this.items);
+    }
+
+    public InventorySlotItemHandler getItems() {
+        return this.items;
     }
 
     protected InventorySlot addSlot(String name, InventorySlot.Mode mode) {
@@ -58,9 +55,7 @@ public abstract class InventoryBlockEntity extends BaseBlockEntity {
         if (!this.level.isClientSide && !stack.isEmpty()) {
             ItemStack remainder = stack;
             for (Direction side : Direction.values()) {
-                IItemHandler handler = Optional.ofNullable(this.level.getBlockEntity(this.worldPosition.relative(side)))
-                    .flatMap(be -> be.getCapability(ForgeCapabilities.ITEM_HANDLER, side.getOpposite()).resolve())
-                    .orElse(null);
+                IItemHandler handler = this.level.getCapability(Capabilities.ItemHandler.BLOCK, this.worldPosition.relative(side), side.getOpposite());
                 if (handler != null) {
                     remainder = ItemHandlerHelper.insertItem(handler, stack, false);
                 }
@@ -71,15 +66,6 @@ public abstract class InventoryBlockEntity extends BaseBlockEntity {
             }
         }
         return false;
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (cap == ForgeCapabilities.ITEM_HANDLER) {
-            return this.itemCap.cast();
-        }
-        return super.getCapability(cap, side);
     }
 
     @Override
