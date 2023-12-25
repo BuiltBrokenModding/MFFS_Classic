@@ -68,7 +68,7 @@ public class CustomProjectorModeItem extends BaseItem {
                         data.join(id, level, serverPlayer, primary, secondary, getMode(tag) == Mode.ADDITIVE);
 
                         player.displayClientMessage(ModUtil.translate("item", "custom_mode.data_saved"), true);
-                        ModObjects.FIELD_SHAPE_TRIGGER.trigger(serverPlayer);
+                        ModObjects.FIELD_SHAPE_TRIGGER.get().trigger(serverPlayer);
                     } else {
                         player.displayClientMessage(ModUtil.translate("item", "custom_mode.too_far", distance), true);
                     }

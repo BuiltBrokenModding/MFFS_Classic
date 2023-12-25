@@ -19,7 +19,6 @@ import net.neoforged.fml.ModList;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
-import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import org.slf4j.Logger;
@@ -34,7 +33,6 @@ public final class MFFSMod {
     public static final Logger LOGGER = LogUtils.getLogger();
 
     public MFFSMod(IEventBus bus) {
-        bus.addListener(this::commonSetup);
         bus.addListener(this::enqueIMC);
         bus.addListener(ModCapabilities::registerCaps);
         ModBlocks.init(bus);
@@ -53,10 +51,6 @@ public final class MFFSMod {
 
         NeoForge.EVENT_BUS.register(ForgeEventHandler.class);
         NeoForge.EVENT_BUS.addListener(IdentificationCardItem::onLivingEntityInteract);
-    }
-
-    private void commonSetup(FMLCommonSetupEvent event) {
-        ModObjects.initCriteriaTriggers();
     }
 
     private void enqueIMC(InterModEnqueueEvent event) {

@@ -50,7 +50,7 @@ public class AdvancementsGen implements AdvancementProvider.AdvancementGenerator
         Advancement.Builder.advancement()
             .parent(projector)
             .display(ModItems.SHOCK_MODULE.get(), title("field_shock"), description("field_shock"), null, AdvancementType.GOAL, true, true, false)
-            .addCriterion("shocked", ModObjects.DAMAGE_TRIGGER.createCriterion(DamageSourceTrigger.TriggerInstance.killed(ModObjects.FIELD_SHOCK_TYPE)))
+            .addCriterion("shocked", ModObjects.DAMAGE_TRIGGER.get().createCriterion(DamageSourceTrigger.TriggerInstance.killed(ModObjects.FIELD_SHOCK_TYPE)))
             .save(saver, id("field_shock"));
         Advancement.Builder.advancement()
             .parent(projector)
@@ -65,16 +65,16 @@ public class AdvancementsGen implements AdvancementProvider.AdvancementGenerator
         Advancement.Builder.advancement()
             .parent(projector)
             .display(ModItems.CUSTOM_MODE.get(), title("field_shape"), description("field_shape"), null, AdvancementType.GOAL, true, true, false)
-            .addCriterion("create_field_shape", ModObjects.FIELD_SHAPE_TRIGGER.createCriterion(FieldShapeTrigger.TriggerInstance.INSTANCE))
+            .addCriterion("create_field_shape", ModObjects.FIELD_SHAPE_TRIGGER.get().createCriterion(FieldShapeTrigger.TriggerInstance.INSTANCE))
             .save(saver, id("field_shape"));
         Advancement.Builder.advancement()
             .parent(camouflage)
             .display(Items.ENDER_PEARL, title("custom_camouflage"), description("custom_camouflage"), null, AdvancementType.GOAL, true, true, false)
-            .addCriterion("use_custom_camouflage", ModObjects.MENU_INVENTORY_TRIGGER.createCriterion(MenuInventoryTrigger.TriggerInstance.create(ModMenus.PROJECTOR_MENU.get(), true, ModItems.CUSTOM_MODE, ModItems.CAMOUFLAGE_MODULE)))
+            .addCriterion("use_custom_camouflage", ModObjects.MENU_INVENTORY_TRIGGER.get().createCriterion(MenuInventoryTrigger.TriggerInstance.create(ModMenus.PROJECTOR_MENU.get(), true, ModItems.CUSTOM_MODE, ModItems.CAMOUFLAGE_MODULE)))
             .save(saver, id("custom_camouflage"));
 
         Advancement.Builder.advancement()
-            .addCriterion("guidebook", ModObjects.GUIDEBOOK_TRIGGER.createCriterion(GuideBookTrigger.TriggerInstance.INSTANCE))
+            .addCriterion("guidebook", ModObjects.GUIDEBOOK_TRIGGER.get().createCriterion(GuideBookTrigger.TriggerInstance.INSTANCE))
             .rewards(AdvancementRewards.Builder.loot(location("grant_book_on_first_join")))
             .save(saver, id("grant_book_on_first_join"));
     }

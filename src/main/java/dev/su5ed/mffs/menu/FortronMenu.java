@@ -79,7 +79,7 @@ public abstract class FortronMenu<T extends FortronBlockEntity & Activatable> ex
     public void triggerMenuAdvancement() {
         if (this.player instanceof ServerPlayer serverPlayer) {
             boolean active = this.blockEntity.isActive();
-            ModObjects.MENU_INVENTORY_TRIGGER.trigger(serverPlayer, active, this.itemHandler);
+            ModObjects.MENU_INVENTORY_TRIGGER.get().trigger(serverPlayer, active, this.itemHandler);
         }
     }
 

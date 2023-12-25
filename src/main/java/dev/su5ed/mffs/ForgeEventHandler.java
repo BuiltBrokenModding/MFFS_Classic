@@ -55,7 +55,7 @@ public class ForgeEventHandler {
     }
 
     @SubscribeEvent
-    public static void livingSpawnEvent(MobSpawnEvent event) {
+    public static void livingSpawnEvent(MobSpawnEvent.PositionCheck event) {
         InterdictionMatrix interdictionMatrix = Fortron.getNearestInterdictionMatrix(event.getEntity().level(), BlockPos.containing(event.getX(), event.getY(), event.getZ()));
         if (interdictionMatrix != null && interdictionMatrix.hasModule(ModModules.ANTI_SPAWN)) {
             event.setResult(Event.Result.DENY);
@@ -65,7 +65,7 @@ public class ForgeEventHandler {
     @SubscribeEvent
     public static void onPlayerJoinLevel(EntityJoinLevelEvent event) {
         if (event.getEntity() instanceof ServerPlayer serverPlayer && MFFSConfig.COMMON.giveGuidebookOnFirstJoin.get()) {
-            ModObjects.GUIDEBOOK_TRIGGER.trigger(serverPlayer);
+            ModObjects.GUIDEBOOK_TRIGGER.get().trigger(serverPlayer);
         }
     }
 

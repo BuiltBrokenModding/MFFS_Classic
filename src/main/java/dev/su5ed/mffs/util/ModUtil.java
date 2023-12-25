@@ -197,7 +197,7 @@ public final class ModUtil {
     public static void shockEntity(Entity entity, int damage) {
         entity.hurt(entity.level().damageSources().source(ModObjects.FIELD_SHOCK_TYPE), damage);
         if (entity instanceof ServerPlayer serverPlayer) {
-            ModObjects.DAMAGE_TRIGGER.trigger(serverPlayer, ModObjects.FIELD_SHOCK_TYPE);
+            ModObjects.DAMAGE_TRIGGER.get().trigger(serverPlayer, ModObjects.FIELD_SHOCK_TYPE);
         }
     }
 

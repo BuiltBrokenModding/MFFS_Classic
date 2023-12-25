@@ -14,7 +14,7 @@ import dev.su5ed.mffs.util.loot.DamageSourceTrigger;
 import dev.su5ed.mffs.util.loot.FieldShapeTrigger;
 import dev.su5ed.mffs.util.loot.GuideBookTrigger;
 import dev.su5ed.mffs.util.loot.MenuInventoryTrigger;
-import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.advancements.CriterionTrigger;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -33,6 +33,7 @@ import java.util.function.Supplier;
 public final class ModObjects {
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPES = DeferredRegister.create(BuiltInRegistries.BLOCK_ENTITY_TYPE, MFFSMod.MODID);
     private static final DeferredRegister<ParticleType<?>> PARTICLES = DeferredRegister.create(BuiltInRegistries.PARTICLE_TYPE, MFFSMod.MODID);
+    private static final DeferredRegister<CriterionTrigger<?>> CRITERION_TRIGGERS = DeferredRegister.create(BuiltInRegistries.TRIGGER_TYPES, MFFSMod.MODID);
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ProjectorBlockEntity>> PROJECTOR_BLOCK_ENTITY = blockEntity("projector", ProjectorBlockEntity::new, ModBlocks.PROJECTOR::get);
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CoercionDeriverBlockEntity>> COERCION_DERIVER_BLOCK_ENTITY = blockEntity("coercion_deriver", CoercionDeriverBlockEntity::new, ModBlocks.COERCION_DERIVER::get);
@@ -45,21 +46,15 @@ public final class ModObjects {
     public static final DeferredHolder<ParticleType<?>, ModParticleType<MovingHologramParticleOptions>> MOVING_HOLOGRAM_PARTICLE = PARTICLES.register("moving_hologram", () -> new ModParticleType<>(true, MovingHologramParticleOptions.DESERIALIZER, MovingHologramParticleOptions.CODEC));
 
     public static final ResourceKey<DamageType> FIELD_SHOCK_TYPE = ResourceKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(MFFSMod.MODID, "field_shock"));
-    public static final DamageSourceTrigger DAMAGE_TRIGGER = new DamageSourceTrigger();
-    public static final FieldShapeTrigger FIELD_SHAPE_TRIGGER = new FieldShapeTrigger();
-    public static final MenuInventoryTrigger MENU_INVENTORY_TRIGGER = new MenuInventoryTrigger();
-    public static final GuideBookTrigger GUIDEBOOK_TRIGGER = new GuideBookTrigger();
+    public static final DeferredHolder<CriterionTrigger<?>, DamageSourceTrigger> DAMAGE_TRIGGER = CRITERION_TRIGGERS.register("damage_source", DamageSourceTrigger::new);
+    public static final DeferredHolder<CriterionTrigger<?>, FieldShapeTrigger> FIELD_SHAPE_TRIGGER = CRITERION_TRIGGERS.register("field_shape", FieldShapeTrigger::new);
+    public static final DeferredHolder<CriterionTrigger<?>, MenuInventoryTrigger> MENU_INVENTORY_TRIGGER = CRITERION_TRIGGERS.register("menu_inventory", MenuInventoryTrigger::new);
+    public static final DeferredHolder<CriterionTrigger<?>, GuideBookTrigger> GUIDEBOOK_TRIGGER = CRITERION_TRIGGERS.register("guidebook", GuideBookTrigger::new);
 
     public static void init(IEventBus bus) {
         BLOCK_ENTITY_TYPES.register(bus);
         PARTICLES.register(bus);
-    }
-
-    public static void initCriteriaTriggers() {
-        CriteriaTriggers.register(MFFSMod.location("damage_source").toString(), DAMAGE_TRIGGER);
-        CriteriaTriggers.register(MFFSMod.location("field_shape").toString(), FIELD_SHAPE_TRIGGER);
-        CriteriaTriggers.register(MFFSMod.location("menu_inventory").toString(), MENU_INVENTORY_TRIGGER);
-        CriteriaTriggers.register(MFFSMod.location("guidebook").toString(), GUIDEBOOK_TRIGGER);
+        CRITERION_TRIGGERS.register(bus);
     }
 
     private static <T extends BlockEntity> DeferredHolder<BlockEntityType<?>, BlockEntityType<T>> blockEntity(String name, BlockEntityType.BlockEntitySupplier<T> factory, Supplier<Block> block) {

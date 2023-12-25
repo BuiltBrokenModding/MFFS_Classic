@@ -1,4 +1,0 @@
-{
-  "setBlockEventHook": "META-INF/asm/setBlockEventHook.js",
-  "resizeDisplayHook": "META-INF/asm/resizeDisplayHook.js"
-}
