@@ -2,7 +2,6 @@ import me.modmuss50.mpp.ReleaseType
 import java.time.LocalDateTime
 
 plugins {
-    eclipse
     `maven-publish`
     id("net.neoforged.gradle.userdev") version "7.0.+"
     id("me.modmuss50.mod-publish-plugin") version "0.3.+"
@@ -83,7 +82,6 @@ repositories {
 dependencies {
     implementation(group = "net.neoforged", name = "neoforge", version = neoVersion)
 
-    // TODO verify jarjar works
     implementation(jarJar(group = "one.util", name = "streamex", version = versionStreamex)) { // Streams galore!
         jarJar.ranged(this, "[0.8.1, 0.9)")
     }
@@ -117,7 +115,7 @@ publishMods {
     file.set(tasks.jarJar.flatMap { it.archiveFile })
     changelog.set(provider { project.changelog.generateChangelog(1, true) })
     type.set(providers.environmentVariable("PUBLISH_RELEASE_TYPE").map(ReleaseType::of).orElse(ReleaseType.STABLE))
-    modLoaders.add("forge")
+    modLoaders.add("neoforge")
     dryRun.set(!CI.isPresent)
 
     curseforge {
