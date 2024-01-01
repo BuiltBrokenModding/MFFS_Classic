@@ -14,6 +14,7 @@ import net.neoforged.neoforge.network.registration.IPayloadRegistrar;
 import org.slf4j.Logger;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 public final class Network {
     private static final String PROTOCOL_VERSION = "1";
@@ -33,11 +34,15 @@ public final class Network {
         registrar.play(SetItemInSlotPacket.ID, SetItemInSlotPacket::new, handler -> handler.server(mainThreadHandler(SetItemInSlotPacket::handle)));
         registrar.play(StructureDataRequestPacket.ID, StructureDataRequestPacket::new, handler -> handler.server(mainThreadHandler(StructureDataRequestPacket::handle)));
 
-        registrar.play(UpdateBlockEntityPacket.ID, UpdateBlockEntityPacket::new, handler -> handler.client(mainThreadHandler(ClientPacketHandler::handleBlockEntityUpdatePacket)));
-        registrar.play(SetStructureShapePacket.ID, SetStructureShapePacket::new, handler -> handler.client(mainThreadHandler(ClientPacketHandler::handleSetStructureShapePacket)));
-        registrar.play(DrawBeamPacket.ID, DrawBeamPacket::new, handler -> handler.client(mainThreadHandler(ClientPacketHandler::handleDrawBeamPacket)));
-        registrar.play(UpdateAnimationSpeed.ID, UpdateAnimationSpeed::new, handler -> handler.client(mainThreadHandler(ClientPacketHandler::handleUpdateAnimationSpeedPacket)));
-        registrar.play(DrawHologramPacket.ID, DrawHologramPacket::new, handler -> handler.client(mainThreadHandler(ClientPacketHandler::handleDrawHologramPacket)));
+        registrar.play(UpdateBlockEntityPacket.ID, UpdateBlockEntityPacket::new, handler -> handler.client(mainThreadHandler(() -> ClientPacketHandler::handleBlockEntityUpdatePacket)));
+        registrar.play(SetStructureShapePacket.ID, SetStructureShapePacket::new, handler -> handler.client(mainThreadHandler(() -> ClientPacketHandler::handleSetStructureShapePacket)));
+        registrar.play(DrawBeamPacket.ID, DrawBeamPacket::new, handler -> handler.client(mainThreadHandler(() -> ClientPacketHandler::handleDrawBeamPacket)));
+        registrar.play(UpdateAnimationSpeed.ID, UpdateAnimationSpeed::new, handler -> handler.client(mainThreadHandler(() -> ClientPacketHandler::handleUpdateAnimationSpeedPacket)));
+        registrar.play(DrawHologramPacket.ID, DrawHologramPacket::new, handler -> handler.client(mainThreadHandler(() -> ClientPacketHandler::handleDrawHologramPacket)));
+    }
+
+    private static <T extends CustomPacketPayload> IPlayPayloadHandler<T> mainThreadHandler(Supplier<IPlayPayloadHandler<T>> supplier) {
+        return mainThreadHandler((payload, context) -> supplier.get().handle(payload, context));
     }
 
     private static <T extends CustomPacketPayload> IPlayPayloadHandler<T> mainThreadHandler(IPlayPayloadHandler<T> handler) {

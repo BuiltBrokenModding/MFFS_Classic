@@ -92,6 +92,14 @@ dependencies {
 }
 
 tasks {
+    jar {
+        archiveClassifier.set("slim")
+    }
+    
+    this.jarJar {
+        archiveClassifier.set("")
+    }
+    
     withType<Jar> {
         manifest {
             attributes(
