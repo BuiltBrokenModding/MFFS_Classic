@@ -5,7 +5,6 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.su5ed.mffs.MFFSMod;
-import dev.su5ed.mffs.network.Network;
 import dev.su5ed.mffs.network.SetStructureShapePacket;
 import dev.su5ed.mffs.util.ModUtil;
 import net.minecraft.core.BlockPos;
@@ -93,7 +92,7 @@ public class CustomStructureSavedData extends SavedData {
     }
 
     private static void sendToClient(ResourceKey<Level> key, String id, VoxelShape shape, ServerPlayer player) {
-        Network.INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), new SetStructureShapePacket(key, id, shape));
+        PacketDistributor.PLAYER.with(player).send(new SetStructureShapePacket(key, id, shape));
     }
 
     private static BlockPos normalizeAxis(BlockPos min, BlockPos max) {

@@ -1,27 +1,34 @@
 package dev.su5ed.mffs.network;
 
 import dev.su5ed.mffs.blockentity.ProjectorBlockEntity;
+import dev.su5ed.mffs.render.CustomProjectorModeClientHandler;
 import dev.su5ed.mffs.render.particle.BeamParticleOptions;
 import dev.su5ed.mffs.render.particle.MovingHologramParticleOptions;
 import dev.su5ed.mffs.render.particle.ParticleColor;
 import dev.su5ed.mffs.setup.ModObjects;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 
+@SuppressWarnings("unused")
 public final class ClientPacketHandler {
 
-    public static void handleDrawBeamPacket(DrawBeamPacket packet) {
+    public static void handleDrawBeamPacket(DrawBeamPacket packet, PlayPayloadContext ctx) {
         Minecraft minecraft = Minecraft.getInstance();
         Vec3 pos = packet.position();
         minecraft.level.addParticle(new BeamParticleOptions(packet.target(), packet.color(), packet.lifetime()), pos.x(), pos.y(), pos.z(), 0, 0, 0);
     }
 
-    public static void handleUpdateAnimationSpeedPacket(UpdateAnimationSpeed packet) {
+    public static void handleSetStructureShapePacket(SetStructureShapePacket packet, PlayPayloadContext ctx) {
+        CustomProjectorModeClientHandler.setShape(packet.level(), packet.structId(), packet.shape());
+    }
+
+    public static void handleUpdateAnimationSpeedPacket(UpdateAnimationSpeed packet, PlayPayloadContext ctx) {
         Network.findBlockEntity(ProjectorBlockEntity.class, Minecraft.getInstance().level, packet.pos())
             .ifPresent(be -> be.setClientAnimationSpeed(packet.animationSpeed()));
     }
 
-    public static void handleDrawHologramPacket(DrawHologramPacket packet) {
+    public static void handleDrawHologramPacket(DrawHologramPacket packet, PlayPayloadContext ctx) {
         Minecraft minecraft = Minecraft.getInstance();
         DrawHologramPacket.Type type = packet.type();
         Vec3 pos = packet.pos().add(0.5, 0.5, 0.5);
@@ -36,7 +43,7 @@ public final class ClientPacketHandler {
         }
     }
 
-    public static void handleBlockEntityUpdatePacket(UpdateBlockEntityPacket packet) {
+    public static void handleBlockEntityUpdatePacket(UpdateBlockEntityPacket packet, PlayPayloadContext ctx) {
         Minecraft minecraft = Minecraft.getInstance();
         minecraft.level.getBlockEntity(packet.pos(), ModObjects.FORCE_FIELD_BLOCK_ENTITY.get())
             .ifPresent(be -> be.handleCustomUpdateTag(packet.data()));

@@ -4,7 +4,6 @@ import dev.su5ed.mffs.api.Projector;
 import dev.su5ed.mffs.api.module.ModuleType;
 import dev.su5ed.mffs.blockentity.ProjectorBlockEntity;
 import dev.su5ed.mffs.network.DrawHologramPacket;
-import dev.su5ed.mffs.network.Network;
 import dev.su5ed.mffs.setup.ModModules;
 import dev.su5ed.mffs.setup.ModTags;
 import dev.su5ed.mffs.util.ModUtil;
@@ -62,7 +61,7 @@ public class DisintegrationModule extends BaseModule {
         BlockState state = level.getBlockState(position);
         Vec3 pos = Vec3.atLowerCornerOf(projector.be().getBlockPos());
         Vec3 target = Vec3.atLowerCornerOf(position);
-        Network.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(position)), new DrawHologramPacket(pos, target, DrawHologramPacket.Type.DESTROY));
+        PacketDistributor.TRACKING_CHUNK.with(level.getChunkAt(position)).send(new DrawHologramPacket(pos, target, DrawHologramPacket.Type.DESTROY));
 
         projector.schedule(39, () -> {
             if (projector.hasModule(ModModules.COLLECTION)) {

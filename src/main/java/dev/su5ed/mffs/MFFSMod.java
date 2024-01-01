@@ -35,6 +35,7 @@ public final class MFFSMod {
     public MFFSMod(IEventBus bus) {
         bus.addListener(this::enqueIMC);
         bus.addListener(ModCapabilities::registerCaps);
+        bus.addListener(Network::registerPackets);
         ModBlocks.init(bus);
         ModItems.init(bus);
         ModObjects.init(bus);
@@ -42,8 +43,6 @@ public final class MFFSMod {
         ModFluids.init(bus);
         ModSounds.init(bus);
         ModAttachmentTypes.init(bus);
-
-        Network.registerPackets();
 
         ModLoadingContext ctx = ModLoadingContext.get();
         ctx.registerConfig(ModConfig.Type.CLIENT, MFFSConfig.CLIENT_SPEC);

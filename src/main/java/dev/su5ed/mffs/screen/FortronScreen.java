@@ -1,7 +1,6 @@
 package dev.su5ed.mffs.screen;
 
 import dev.su5ed.mffs.menu.FortronMenu;
-import dev.su5ed.mffs.network.Network;
 import dev.su5ed.mffs.network.ToggleModePacket;
 import dev.su5ed.mffs.network.UpdateFrequencyPacket;
 import dev.su5ed.mffs.util.ModUtil;
@@ -10,6 +9,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 public abstract class FortronScreen<T extends FortronMenu<?>> extends BaseScreen<T> {
     protected IntIntPair frequencyBoxPos = IntIntPair.of(0, 0);
@@ -28,7 +28,7 @@ public abstract class FortronScreen<T extends FortronMenu<?>> extends BaseScreen
         super.init();
 
         addRenderableWidget(new ToggleButton(this.width / 2 - 82, this.height / 2 - 104, this.menu.blockEntity::isActive,
-            () -> Network.INSTANCE.sendToServer(new ToggleModePacket(this.menu.blockEntity.getBlockPos(), !this.menu.blockEntity.isActive()))));
+            () -> PacketDistributor.SERVER.noArg().send(new ToggleModePacket(this.menu.blockEntity.getBlockPos(), !this.menu.blockEntity.isActive()))));
 
         this.frequency = new NumericEditBox(this.font, this.leftPos + this.frequencyBoxPos.leftInt(), this.topPos + this.frequencyBoxPos.rightInt(), 50, 12, ModUtil.translate("screen", "frequency"));
         this.frequency.setCanLoseFocus(true);
@@ -49,8 +49,6 @@ public abstract class FortronScreen<T extends FortronMenu<?>> extends BaseScreen
         this.frequency.setResponder(this::onFrequencyChanged);
     }
 
-    // TODO Test edit box tick
-
     @Override
     public void renderFg(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         this.frequency.render(guiGraphics, mouseX, mouseY, partialTick);
@@ -65,6 +63,6 @@ public abstract class FortronScreen<T extends FortronMenu<?>> extends BaseScreen
 
     private void onFrequencyChanged(String str) {
         int frequency = str.isEmpty() ? 0 : Integer.parseInt(str);
-        Network.INSTANCE.sendToServer(new UpdateFrequencyPacket(this.menu.blockEntity.getBlockPos(), frequency));
+        PacketDistributor.SERVER.noArg().send(new UpdateFrequencyPacket(this.menu.blockEntity.getBlockPos(), frequency));
     }
 }

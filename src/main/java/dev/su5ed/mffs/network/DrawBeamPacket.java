@@ -1,13 +1,26 @@
 package dev.su5ed.mffs.network;
 
+import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.render.particle.ParticleColor;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.fml.loading.FMLEnvironment;
-import net.neoforged.neoforge.network.NetworkEvent;
 
-public record DrawBeamPacket(Vec3 target, Vec3 position, ParticleColor color, int lifetime) {
-    public void encode(FriendlyByteBuf buf) {
+public record DrawBeamPacket(Vec3 target, Vec3 position, ParticleColor color, int lifetime) implements CustomPacketPayload {
+    public static final ResourceLocation ID = MFFSMod.location("draw_beam");
+
+    public DrawBeamPacket(FriendlyByteBuf buf) {
+        this(
+            new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble()),
+            new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble()),
+            buf.readEnum(ParticleColor.class),
+            buf.readInt()
+        );
+    }
+
+    @Override
+    public void write(FriendlyByteBuf buf) {
         buf.writeDouble(this.target.x());
         buf.writeDouble(this.target.y());
         buf.writeDouble(this.target.z());
@@ -20,17 +33,8 @@ public record DrawBeamPacket(Vec3 target, Vec3 position, ParticleColor color, in
         buf.writeInt(this.lifetime);
     }
 
-    public static DrawBeamPacket decode(FriendlyByteBuf buf) {
-        Vec3 target = new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble());
-        Vec3 position = new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble());
-        ParticleColor color = buf.readEnum(ParticleColor.class);
-        int lifetime = buf.readInt();
-        return new DrawBeamPacket(target, position, color, lifetime);
-    }
-
-    public void processClientPacket(NetworkEvent.Context ctx) {
-        if (FMLEnvironment.dist.isClient()) {
-            ClientPacketHandler.handleDrawBeamPacket(this);
-        }
+    @Override
+    public ResourceLocation id() {
+        return ID;
     }
 }

@@ -1,10 +1,9 @@
 package dev.su5ed.mffs.blockentity;
 
-import dev.su5ed.mffs.network.Network;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
@@ -14,7 +13,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.neoforged.neoforge.network.NetworkHooks;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.List;
@@ -44,7 +42,7 @@ public abstract class BaseBlockEntity extends BlockEntity implements MenuProvide
 
     public InteractionResult use(Player player, InteractionHand hand, BlockHitResult hit) {
         if (!this.level.isClientSide) {
-            NetworkHooks.openScreen((ServerPlayer) player, this, this.worldPosition);
+            player.openMenu(this, this.worldPosition);
         }
         return InteractionResult.SUCCESS;
     }
@@ -87,7 +85,7 @@ public abstract class BaseBlockEntity extends BlockEntity implements MenuProvide
 
     protected void saveTag(CompoundTag tag) {}
 
-    public <T> void sendToChunk(T msg) {
-        Network.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> this.level.getChunkAt(this.worldPosition)), msg);
+    public <T extends CustomPacketPayload> void sendToChunk(T msg) {
+        PacketDistributor.TRACKING_CHUNK.with(this.level.getChunkAt(this.worldPosition)).send(msg);
     }
 }

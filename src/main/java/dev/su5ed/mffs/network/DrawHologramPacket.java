@@ -1,12 +1,24 @@
 package dev.su5ed.mffs.network;
 
+import dev.su5ed.mffs.MFFSMod;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.fml.loading.FMLEnvironment;
-import net.neoforged.neoforge.network.NetworkEvent;
 
-public record DrawHologramPacket(Vec3 pos, Vec3 target, Type type) {
-    public void encode(FriendlyByteBuf buf) {
+public record DrawHologramPacket(Vec3 pos, Vec3 target, Type type) implements CustomPacketPayload {
+    public static final ResourceLocation ID = MFFSMod.location("draw_hologram");
+
+    public DrawHologramPacket(FriendlyByteBuf buf) {
+        this(
+            new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble()),
+            new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble()),
+            buf.readEnum(Type.class)
+        );
+    }
+
+    @Override
+    public void write(FriendlyByteBuf buf) {
         buf.writeDouble(this.pos.x());
         buf.writeDouble(this.pos.y());
         buf.writeDouble(this.pos.z());
@@ -18,17 +30,9 @@ public record DrawHologramPacket(Vec3 pos, Vec3 target, Type type) {
         buf.writeEnum(this.type);
     }
 
-    public static DrawHologramPacket decode(FriendlyByteBuf buf) {
-        Vec3 pos = new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble());
-        Vec3 target = new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble());
-        Type type = buf.readEnum(Type.class);
-        return new DrawHologramPacket(pos, target, type);
-    }
-
-    public void processClientPacket(NetworkEvent.Context ctx) {
-        if (FMLEnvironment.dist.isClient()) {
-            ClientPacketHandler.handleDrawHologramPacket(this);
-        }
+    @Override
+    public ResourceLocation id() {
+        return ID;
     }
 
     public enum Type {

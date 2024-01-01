@@ -3,7 +3,6 @@ package dev.su5ed.mffs.screen;
 import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.api.security.FieldPermission;
 import dev.su5ed.mffs.menu.BiometricIdentifierMenu;
-import dev.su5ed.mffs.network.Network;
 import dev.su5ed.mffs.network.ToggleFieldPermissionPacket;
 import dev.su5ed.mffs.util.ModUtil;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
@@ -12,6 +11,7 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,6 +66,6 @@ public class BiometricIdentifierScreen extends FortronScreen<BiometricIdentifier
     }
 
     public void togglePermission(FieldPermission permission, boolean value) {
-        Network.INSTANCE.sendToServer(new ToggleFieldPermissionPacket(this.menu.blockEntity.getBlockPos(), permission, value));
+        PacketDistributor.SERVER.noArg().send(new ToggleFieldPermissionPacket(this.menu.blockEntity.getBlockPos(), permission, value));
     }
 }

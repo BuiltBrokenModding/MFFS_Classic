@@ -1,6 +1,5 @@
 package dev.su5ed.mffs.compat;
 
-import dev.su5ed.mffs.network.Network;
 import dev.su5ed.mffs.network.SetItemInSlotPacket;
 import dev.su5ed.mffs.screen.BaseScreen;
 import dev.su5ed.mffs.util.inventory.SlotInventoryFilter;
@@ -9,6 +8,7 @@ import mezz.jei.api.ingredients.ITypedIngredient;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.network.PacketDistributor;
 import one.util.streamex.EntryStream;
 
 import java.util.List;
@@ -37,7 +37,7 @@ public class BasicGhostIngredientHandler<T extends BaseScreen<?>> implements IGh
         @Override
         public void accept(I ingredient) {
             this.slot.set((ItemStack) ingredient);
-            Network.INSTANCE.sendToServer(new SetItemInSlotPacket(this.slotId, (ItemStack) ingredient));
+            PacketDistributor.SERVER.noArg().send(new SetItemInSlotPacket(this.slotId, (ItemStack) ingredient));
         }
     }
 }

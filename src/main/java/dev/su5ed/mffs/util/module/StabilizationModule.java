@@ -3,7 +3,6 @@ package dev.su5ed.mffs.util.module;
 import dev.su5ed.mffs.api.Projector;
 import dev.su5ed.mffs.api.module.ModuleType;
 import dev.su5ed.mffs.network.DrawHologramPacket;
-import dev.su5ed.mffs.network.Network;
 import dev.su5ed.mffs.setup.ModModules;
 import dev.su5ed.mffs.setup.ModTags;
 import dev.su5ed.mffs.util.ModUtil;
@@ -54,7 +53,7 @@ public class StabilizationModule extends BaseModule {
                                 handler.extractItem(i, 1, false);
                                 Vec3 start = Vec3.atLowerCornerOf(pos);
                                 Vec3 target = Vec3.atLowerCornerOf(position);
-                                Network.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(position)), new DrawHologramPacket(start, target, DrawHologramPacket.Type.CONSTRUCT));
+                                PacketDistributor.TRACKING_CHUNK.with(level.getChunkAt(position)).send(new DrawHologramPacket(start, target, DrawHologramPacket.Type.CONSTRUCT));
 
                                 return this.blockCount++ >= projector.getModuleCount(ModModules.SPEED) / 3 ? ProjectAction.INTERRUPT : ProjectAction.SKIP;
                             }

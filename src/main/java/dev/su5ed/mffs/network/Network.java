@@ -1,102 +1,52 @@
 package dev.su5ed.mffs.network;
 
+import com.mojang.logging.LogUtils;
 import dev.su5ed.mffs.MFFSMod;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.neoforge.capabilities.BlockCapability;
-import net.neoforged.neoforge.network.NetworkRegistry;
-import net.neoforged.neoforge.network.PlayNetworkDirection;
-import net.neoforged.neoforge.network.simple.SimpleChannel;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
+import net.neoforged.neoforge.network.handling.IPlayPayloadHandler;
+import net.neoforged.neoforge.network.registration.IPayloadRegistrar;
+import org.slf4j.Logger;
 
 import java.util.Optional;
 
 public final class Network {
     private static final String PROTOCOL_VERSION = "1";
+    private static final Logger LOGGER = LogUtils.getLogger();
 
-    public static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(
-        new ResourceLocation(MFFSMod.MODID, "main"),
-        () -> PROTOCOL_VERSION,
-        PROTOCOL_VERSION::equals,
-        PROTOCOL_VERSION::equals
-    );
+    public static void registerPackets(RegisterPayloadHandlerEvent event) {
+        IPayloadRegistrar registrar = event.registrar(MFFSMod.MODID)
+            .versioned(PROTOCOL_VERSION);
 
-    public static void registerPackets() {
-        int id = 0;
+        registrar.play(ToggleModePacket.ID, ToggleModePacket::new, handler -> handler.server(mainThreadHandler(ToggleModePacket::handle)));
+        registrar.play(UpdateFrequencyPacket.ID, UpdateFrequencyPacket::new, handler -> handler.server(mainThreadHandler(UpdateFrequencyPacket::handle)));
+        registrar.play(SwitchEnergyModePacket.ID, SwitchEnergyModePacket::new, handler -> handler.server(mainThreadHandler(SwitchEnergyModePacket::handle)));
+        registrar.play(SwitchTransferModePacket.ID, SwitchTransferModePacket::new, handler -> handler.server(mainThreadHandler(SwitchTransferModePacket::handle)));
+        registrar.play(InitialDataRequestPacket.ID, InitialDataRequestPacket::new, handler -> handler.server(mainThreadHandler(InitialDataRequestPacket::handle)));
+        registrar.play(ToggleFieldPermissionPacket.ID, ToggleFieldPermissionPacket::new, handler -> handler.server(mainThreadHandler(ToggleFieldPermissionPacket::handle)));
+        registrar.play(SwitchConfiscationModePacket.ID, SwitchConfiscationModePacket::new, handler -> handler.server(mainThreadHandler(SwitchConfiscationModePacket::handle)));
+        registrar.play(SetItemInSlotPacket.ID, SetItemInSlotPacket::new, handler -> handler.server(mainThreadHandler(SetItemInSlotPacket::handle)));
+        registrar.play(StructureDataRequestPacket.ID, StructureDataRequestPacket::new, handler -> handler.server(mainThreadHandler(StructureDataRequestPacket::handle)));
 
-        INSTANCE.messageBuilder(ToggleModePacket.class, id++, PlayNetworkDirection.PLAY_TO_SERVER)
-            .encoder(ToggleModePacket::encode)
-            .decoder(ToggleModePacket::decode)
-            .consumerMainThread(ToggleModePacket::processServerPacket)
-            .add();
-        INSTANCE.messageBuilder(UpdateFrequencyPacket.class, id++, PlayNetworkDirection.PLAY_TO_SERVER)
-            .encoder(UpdateFrequencyPacket::encode)
-            .decoder(UpdateFrequencyPacket::decode)
-            .consumerMainThread(UpdateFrequencyPacket::processServerPacket)
-            .add();
-        INSTANCE.messageBuilder(SwitchEnergyModePacket.class, id++, PlayNetworkDirection.PLAY_TO_SERVER)
-            .encoder(SwitchEnergyModePacket::encode)
-            .decoder(SwitchEnergyModePacket::decode)
-            .consumerMainThread(SwitchEnergyModePacket::processServerPacket)
-            .add();
-        INSTANCE.messageBuilder(SwitchTransferModePacket.class, id++, PlayNetworkDirection.PLAY_TO_SERVER)
-            .encoder(SwitchTransferModePacket::encode)
-            .decoder(SwitchTransferModePacket::decode)
-            .consumerMainThread(SwitchTransferModePacket::processServerPacket)
-            .add();
-        INSTANCE.messageBuilder(InitialDataRequestPacket.class, id++, PlayNetworkDirection.PLAY_TO_SERVER)
-            .encoder(InitialDataRequestPacket::encode)
-            .decoder(InitialDataRequestPacket::decode)
-            .consumerMainThread(InitialDataRequestPacket::processPacket)
-            .add();
-        INSTANCE.messageBuilder(ToggleFieldPermissionPacket.class, id++, PlayNetworkDirection.PLAY_TO_SERVER)
-            .encoder(ToggleFieldPermissionPacket::encode)
-            .decoder(ToggleFieldPermissionPacket::decode)
-            .consumerMainThread(ToggleFieldPermissionPacket::processServerPacket)
-            .add();
-        INSTANCE.messageBuilder(SwitchConfiscationModePacket.class, id++, PlayNetworkDirection.PLAY_TO_SERVER)
-            .encoder(SwitchConfiscationModePacket::encode)
-            .decoder(SwitchConfiscationModePacket::decode)
-            .consumerMainThread(SwitchConfiscationModePacket::processServerPacket)
-            .add();
-        INSTANCE.messageBuilder(SetItemInSlotPacket.class, id++, PlayNetworkDirection.PLAY_TO_SERVER)
-            .encoder(SetItemInSlotPacket::encode)
-            .decoder(SetItemInSlotPacket::decode)
-            .consumerMainThread(SetItemInSlotPacket::processServerPacket)
-            .add();
-        INSTANCE.messageBuilder(StructureDataRequestPacket.class, id++, PlayNetworkDirection.PLAY_TO_SERVER)
-            .encoder(StructureDataRequestPacket::encode)
-            .decoder(StructureDataRequestPacket::decode)
-            .consumerMainThread(StructureDataRequestPacket::processServerPacket)
-            .add();
+        registrar.play(UpdateBlockEntityPacket.ID, UpdateBlockEntityPacket::new, handler -> handler.client(mainThreadHandler(ClientPacketHandler::handleBlockEntityUpdatePacket)));
+        registrar.play(SetStructureShapePacket.ID, SetStructureShapePacket::new, handler -> handler.client(mainThreadHandler(ClientPacketHandler::handleSetStructureShapePacket)));
+        registrar.play(DrawBeamPacket.ID, DrawBeamPacket::new, handler -> handler.client(mainThreadHandler(ClientPacketHandler::handleDrawBeamPacket)));
+        registrar.play(UpdateAnimationSpeed.ID, UpdateAnimationSpeed::new, handler -> handler.client(mainThreadHandler(ClientPacketHandler::handleUpdateAnimationSpeedPacket)));
+        registrar.play(DrawHologramPacket.ID, DrawHologramPacket::new, handler -> handler.client(mainThreadHandler(ClientPacketHandler::handleDrawHologramPacket)));
+    }
 
-        INSTANCE.messageBuilder(DrawBeamPacket.class, id++, PlayNetworkDirection.PLAY_TO_CLIENT)
-            .encoder(DrawBeamPacket::encode)
-            .decoder(DrawBeamPacket::decode)
-            .consumerMainThread(DrawBeamPacket::processClientPacket)
-            .add();
-        INSTANCE.messageBuilder(UpdateAnimationSpeed.class, id++, PlayNetworkDirection.PLAY_TO_CLIENT)
-            .encoder(UpdateAnimationSpeed::encode)
-            .decoder(UpdateAnimationSpeed::decode)
-            .consumerMainThread(UpdateAnimationSpeed::processClientPacket)
-            .add();
-        INSTANCE.messageBuilder(DrawHologramPacket.class, id++, PlayNetworkDirection.PLAY_TO_CLIENT)
-            .encoder(DrawHologramPacket::encode)
-            .decoder(DrawHologramPacket::decode)
-            .consumerMainThread(DrawHologramPacket::processClientPacket)
-            .add();
-        INSTANCE.messageBuilder(UpdateBlockEntityPacket.class, id++, PlayNetworkDirection.PLAY_TO_CLIENT)
-            .encoder(UpdateBlockEntityPacket::encode)
-            .decoder(UpdateBlockEntityPacket::decode)
-            .consumerMainThread(UpdateBlockEntityPacket::processClientPacket)
-            .add();
-        INSTANCE.messageBuilder(SetStructureShapePacket.class, id++, PlayNetworkDirection.PLAY_TO_CLIENT)
-            .encoder(SetStructureShapePacket::encode)
-            .decoder(SetStructureShapePacket::decode)
-            .consumerMainThread(SetStructureShapePacket::processClientPacket)
-            .add();
+    private static <T extends CustomPacketPayload> IPlayPayloadHandler<T> mainThreadHandler(IPlayPayloadHandler<T> handler) {
+        return (payload, context) -> context.workHandler()
+            .submitAsync(() -> handler.handle(payload, context))
+            .exceptionally(thr -> {
+                LOGGER.error("Error handling payload", thr);
+                return null;
+            });
     }
 
     public static <T extends BlockEntity> Optional<T> findBlockEntity(BlockEntityType<T> type, Level level, BlockPos pos) {

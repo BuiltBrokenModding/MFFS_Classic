@@ -14,7 +14,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -31,7 +30,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -75,7 +73,7 @@ public class RemoteControllerItem extends BaseItem implements CoordLink {
                     double requiredEnergy = ModUtil.distance(player.blockPosition(), pos) * (FluidType.BUCKET_VOLUME / 100.0);
                     int frequency = Objects.requireNonNull(level.getCapability(ModCapabilities.FORTRON, be.getBlockPos(), be.getBlockState(), be, null)).getFrequency();
                     if (drawEnergy(level, player.blockPosition(), player.position().add(0, player.getEyeHeight() - 0.2, 0), frequency, (int) requiredEnergy)) {
-                        NetworkHooks.openScreen((ServerPlayer) player, new RemoteMenuProvider(menuProvider), pos);
+                        player.openMenu(new RemoteMenuProvider(menuProvider), pos);
                         return InteractionResultHolder.success(stack);
                     }
 

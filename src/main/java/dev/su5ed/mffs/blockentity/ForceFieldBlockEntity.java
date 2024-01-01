@@ -3,7 +3,6 @@ package dev.su5ed.mffs.blockentity;
 import dev.su5ed.mffs.api.ForceFieldBlock;
 import dev.su5ed.mffs.api.Projector;
 import dev.su5ed.mffs.network.InitialDataRequestPacket;
-import dev.su5ed.mffs.network.Network;
 import dev.su5ed.mffs.render.BlockEntityRenderDelegate;
 import dev.su5ed.mffs.setup.ModCapabilities;
 import dev.su5ed.mffs.setup.ModModules;
@@ -16,6 +15,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.data.ModelData;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.Optional;
 
@@ -52,7 +52,7 @@ public class ForceFieldBlockEntity extends BlockEntity {
 
         if (this.level.isClientSide) {
             InitialDataRequestPacket packet = new InitialDataRequestPacket(this.worldPosition);
-            Network.INSTANCE.sendToServer(packet);
+            PacketDistributor.SERVER.noArg().send(packet);
             if (this.camouflage != null) {
                 BlockEntityRenderDelegate.INSTANCE.putDelegateFor(this, this.camouflage);
             }

@@ -1,26 +1,27 @@
 package dev.su5ed.mffs.network;
 
+import dev.su5ed.mffs.MFFSMod;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.neoforged.fml.loading.FMLEnvironment;
-import net.neoforged.neoforge.network.NetworkEvent;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 
-public record UpdateBlockEntityPacket(BlockPos pos, CompoundTag data) {
-    public void encode(FriendlyByteBuf buf) {
+public record UpdateBlockEntityPacket(BlockPos pos, CompoundTag data) implements CustomPacketPayload {
+    public static final ResourceLocation ID = MFFSMod.location("update_block");
+
+    public UpdateBlockEntityPacket(FriendlyByteBuf buf) {
+        this(buf.readBlockPos(), buf.readNbt());
+    }
+
+    @Override
+    public void write(FriendlyByteBuf buf) {
         buf.writeBlockPos(this.pos);
         buf.writeNbt(this.data);
     }
 
-    public static UpdateBlockEntityPacket decode(FriendlyByteBuf buf) {
-        BlockPos pos = buf.readBlockPos();
-        CompoundTag data = buf.readNbt();
-        return new UpdateBlockEntityPacket(pos, data);
-    }
-
-    public void processClientPacket(NetworkEvent.Context ctx) {
-        if (FMLEnvironment.dist.isClient()) {
-            ClientPacketHandler.handleBlockEntityUpdatePacket(this);
-        }
+    @Override
+    public ResourceLocation id() {
+        return ID;
     }
 }

@@ -3,7 +3,6 @@ package dev.su5ed.mffs.screen;
 import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.api.security.InterdictionMatrix;
 import dev.su5ed.mffs.menu.InterdictionMatrixMenu;
-import dev.su5ed.mffs.network.Network;
 import dev.su5ed.mffs.network.SwitchConfiscationModePacket;
 import dev.su5ed.mffs.util.ModUtil;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
@@ -12,6 +11,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 public class InterdictionMatrixScreen extends FortronScreen<InterdictionMatrixMenu> {
     public static final ResourceLocation BACKGROUND = new ResourceLocation(MFFSMod.MODID, "textures/gui/interdiction_matrix.png");
@@ -34,7 +34,7 @@ public class InterdictionMatrixScreen extends FortronScreen<InterdictionMatrixMe
             button -> {
                 InterdictionMatrix.ConfiscationMode mode = this.menu.blockEntity.getConfiscationMode().next();
                 this.menu.blockEntity.setConfiscationMode(mode);
-                Network.INSTANCE.sendToServer(new SwitchConfiscationModePacket(this.menu.blockEntity.getBlockPos(), mode));
+                PacketDistributor.SERVER.noArg().send(new SwitchConfiscationModePacket(this.menu.blockEntity.getBlockPos(), mode));
             }
         ));
     }

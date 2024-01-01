@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.menu.FortronCapacitorMenu;
-import dev.su5ed.mffs.network.Network;
 import dev.su5ed.mffs.network.SwitchTransferModePacket;
 import dev.su5ed.mffs.util.ModUtil;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
@@ -12,6 +11,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 public class FortronCapacitorScreen extends FortronScreen<FortronCapacitorMenu> {
     public static final ResourceLocation BACKGROUND = new ResourceLocation(MFFSMod.MODID, "textures/gui/fortron_capacitor.png");
@@ -30,7 +30,7 @@ public class FortronCapacitorScreen extends FortronScreen<FortronCapacitorMenu> 
         super.init();
 
         addRenderableWidget(new IconCycleButton<>(this.width / 2 + 15, this.height / 2 - 37, 18, 18, 0, 0, 18, this.menu.blockEntity::getTransferMode,
-            value -> Network.INSTANCE.sendToServer(new SwitchTransferModePacket(this.menu.blockEntity.getBlockPos(), value.next()))));
+            value -> PacketDistributor.SERVER.noArg().send(new SwitchTransferModePacket(this.menu.blockEntity.getBlockPos(), value.next()))));
     }
 
     @Override

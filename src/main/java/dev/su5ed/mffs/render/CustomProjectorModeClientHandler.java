@@ -3,7 +3,6 @@ package dev.su5ed.mffs.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.item.CustomProjectorModeItem;
-import dev.su5ed.mffs.network.Network;
 import dev.su5ed.mffs.network.StructureDataRequestPacket;
 import dev.su5ed.mffs.setup.ModItems;
 import net.minecraft.client.Minecraft;
@@ -20,6 +19,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 import one.util.streamex.StreamEx;
 
 import java.util.HashMap;
@@ -37,7 +37,7 @@ public final class CustomProjectorModeClientHandler {
         ResourceKey<Level> key = level.dimension();
         Map<String, VoxelShape> map = STRUCTURE_SHAPES.get(key);
         if (map == null || !map.containsKey(id)) {
-            Network.INSTANCE.sendToServer(new StructureDataRequestPacket(id));
+            PacketDistributor.SERVER.noArg().send(new StructureDataRequestPacket(id));
             CustomProjectorModeClientHandler.setShape(key, id, null);
             return null;
         }
