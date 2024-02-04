@@ -24,6 +24,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.neoforged.neoforge.energy.IEnergyStorage;
@@ -43,7 +44,7 @@ public class MFFSProbeProvider implements IBlockDisplayOverride, IProbeInfoProvi
     public boolean overrideStandardInfo(ProbeMode mode, IProbeInfo info, Player player, Level level, BlockState blockState, IProbeHitData data) {
         BlockPos pos = data.getPos();
         // Override info for camouflaged blocks
-        if (level.getExistingBlockEntity(pos) instanceof ForceFieldBlockEntity forceField) {
+        if (level.getChunkAt(pos).getBlockEntity(pos, LevelChunk.EntityCreationType.CHECK) instanceof ForceFieldBlockEntity forceField) {
             BlockState camo = forceField.getCamouflage();
             if (camo != null) {
                 HitResult mouseOver = new BlockHitResult(data.getHitVec(), data.getSideHit(), pos, false);
@@ -62,7 +63,7 @@ public class MFFSProbeProvider implements IBlockDisplayOverride, IProbeInfoProvi
 
     @Override
     public void addProbeInfo(ProbeMode mode, IProbeInfo info, Player player, Level level, BlockState blockState, IProbeHitData data) {
-        BlockEntity be = level.getExistingBlockEntity(data.getPos());
+        BlockEntity be = level.getChunkAt(data.getPos()).getBlockEntity(data.getPos(), LevelChunk.EntityCreationType.CHECK);
         if (be != null) {
             if (be instanceof ElectricTileEntity electric) {
                 // Special handling for FE as we don't want to expose the cap on the null side, but still show TOP info 

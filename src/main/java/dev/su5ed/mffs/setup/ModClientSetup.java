@@ -1,26 +1,11 @@
 package dev.su5ed.mffs.setup;
 
 import dev.su5ed.mffs.block.ForceFieldBlockImpl;
-import dev.su5ed.mffs.render.BiometricIdentifierRenderer;
-import dev.su5ed.mffs.render.CoercionDeriverRenderer;
-import dev.su5ed.mffs.render.ForceFieldBlockEntityRenderer;
-import dev.su5ed.mffs.render.LazyRendererFactory;
-import dev.su5ed.mffs.render.ProjectorModeRenderer;
-import dev.su5ed.mffs.render.ProjectorRenderer;
-import dev.su5ed.mffs.render.RenderPostProcessor;
-import dev.su5ed.mffs.render.model.CoercionDeriverTopModel;
-import dev.su5ed.mffs.render.model.ForceCubeModel;
-import dev.su5ed.mffs.render.model.ForceFieldBlockModelLoader;
-import dev.su5ed.mffs.render.model.ForceTubeModel;
-import dev.su5ed.mffs.render.model.ProjectorRotorModel;
+import dev.su5ed.mffs.render.*;
+import dev.su5ed.mffs.render.model.*;
 import dev.su5ed.mffs.render.particle.BeamParticleProvider;
 import dev.su5ed.mffs.render.particle.MovingHologramParticleProvider;
-import dev.su5ed.mffs.screen.BiometricIdentifierScreen;
-import dev.su5ed.mffs.screen.CoercionDeriverScreen;
-import dev.su5ed.mffs.screen.FortronCapacitorScreen;
-import dev.su5ed.mffs.screen.InterdictionMatrixScreen;
-import dev.su5ed.mffs.screen.ProjectorScreen;
-import net.minecraft.client.gui.screens.MenuScreens;
+import dev.su5ed.mffs.screen.*;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -33,11 +18,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod.EventBusSubscriber;
 import net.neoforged.fml.common.Mod.EventBusSubscriber.Bus;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.neoforge.client.event.EntityRenderersEvent;
-import net.neoforged.neoforge.client.event.ModelEvent;
-import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
-import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
-import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
+import net.neoforged.neoforge.client.event.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -70,15 +51,18 @@ public final class ModClientSetup {
     @SubscribeEvent
     public static void clientSetup(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
-            MenuScreens.register(ModMenus.COERCION_DERIVER_MENU.get(), CoercionDeriverScreen::new);
-            MenuScreens.register(ModMenus.FORTRON_CAPACITOR_MENU.get(), FortronCapacitorScreen::new);
-            MenuScreens.register(ModMenus.PROJECTOR_MENU.get(), ProjectorScreen::new);
-            MenuScreens.register(ModMenus.BIOMETRIC_IDENTIFIER_MENU.get(), BiometricIdentifierScreen::new);
-            MenuScreens.register(ModMenus.INTERDICTION_MATRIX_MENU.get(), InterdictionMatrixScreen::new);
-
             registerLazyRenderers();
             RenderPostProcessor.initRenderTarget();
         });
+    }
+
+    @SubscribeEvent
+    public static void registerScreens(RegisterMenuScreensEvent event) {
+        event.register(ModMenus.COERCION_DERIVER_MENU.get(), CoercionDeriverScreen::new);
+        event.register(ModMenus.FORTRON_CAPACITOR_MENU.get(), FortronCapacitorScreen::new);
+        event.register(ModMenus.PROJECTOR_MENU.get(), ProjectorScreen::new);
+        event.register(ModMenus.BIOMETRIC_IDENTIFIER_MENU.get(), BiometricIdentifierScreen::new);
+        event.register(ModMenus.INTERDICTION_MATRIX_MENU.get(), InterdictionMatrixScreen::new);
     }
 
     @SubscribeEvent
