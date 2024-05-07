@@ -7,8 +7,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -19,9 +17,9 @@ public class InterdictionMatrixModuleItem extends ModuleItem<InterdictionMatrixM
     }
 
     @Override
-    protected void appendHoverTextPre(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+    protected void appendHoverTextPre(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
         tooltipComponents.add(ModBlocks.INTERDICTION_MATRIX.get().getName().withStyle(ChatFormatting.DARK_RED));
 
-        super.appendHoverTextPre(stack, level, tooltipComponents, isAdvanced);
+        super.appendHoverTextPre(stack, context, tooltipComponents, isAdvanced);
     }
 }

@@ -34,18 +34,13 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod.EventBusSubscriber;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
-import net.neoforged.neoforge.event.TickEvent;
 import one.util.streamex.EntryStream;
 import one.util.streamex.StreamEx;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
 
 /**
@@ -60,10 +55,8 @@ public final class RenderTickHandler {
     }
 
     @SubscribeEvent
-    public static void onTick(TickEvent.ClientTickEvent event) {
-        if (event.phase == TickEvent.Phase.START) {
-            transparentRenderers.clear();
-        }
+    public static void onTick(ClientTickEvent.Pre event) {
+        transparentRenderers.clear();
     }
 
     @SubscribeEvent
@@ -86,7 +79,7 @@ public final class RenderTickHandler {
             // Render
             Consumer<TransparentRenderInfo> consumer = info -> info.render(poseStack, bufferSource, ticks, partialTicks);
             if (transparentRenderers.size() == 1) {
-                //If we only have one render type we don't need to bother calculating any distances
+                //If we only have one render holoType we don't need to bother calculating any distances
                 EntryStream.of(transparentRenderers)
                     .mapKeyValue(TransparentRenderInfo::new)
                     .forEach(consumer);
@@ -121,10 +114,10 @@ public final class RenderTickHandler {
         }
 
         private void render(PoseStack poseStack, MultiBufferSource.BufferSource bufferSource, int ticks, float partialTicks) {
-            //Batch all renders for a single render type into a single buffer addition
+            //Batch all renders for a single render holoType into a single buffer addition
             VertexConsumer buffer = bufferSource.getBuffer(this.renderType);
             for (LazyRenderer renderer : this.renders) {
-                //Note: We don't bother sorting renders in a specific render type as we assume the render type has sortOnUpload as true
+                //Note: We don't bother sorting renders in a specific render holoType as we assume the render holoType has sortOnUpload as true
                 renderer.render(poseStack, buffer, ticks, partialTicks);
             }
             bufferSource.endBatch(this.renderType);

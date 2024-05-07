@@ -8,6 +8,7 @@ import dev.su5ed.mffs.setup.ModCapabilities;
 import dev.su5ed.mffs.setup.ModModules;
 import dev.su5ed.mffs.setup.ModObjects;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -52,7 +53,7 @@ public class ForceFieldBlockEntity extends BlockEntity {
 
         if (this.level.isClientSide) {
             InitialDataRequestPacket packet = new InitialDataRequestPacket(this.worldPosition);
-            PacketDistributor.SERVER.noArg().send(packet);
+            PacketDistributor.sendToServer(packet);
             if (this.camouflage != null) {
                 BlockEntityRenderDelegate.INSTANCE.putDelegateFor(this, this.camouflage);
             }
@@ -82,9 +83,9 @@ public class ForceFieldBlockEntity extends BlockEntity {
     }
 
     // Manual handling of update tags so that we send data when the BE is first created, rather than only on world load
-    public CompoundTag getCustomUpdateTag() {
+    public CompoundTag getCustomUpdateTag(HolderLookup.Provider provider) {
         CompoundTag tag = new CompoundTag();
-        saveAdditional(tag);
+        saveAdditional(tag, provider);
         if (this.projector != null) {
             tag.put("projector", NbtUtils.writeBlockPos(this.projector));
         }
@@ -93,10 +94,10 @@ public class ForceFieldBlockEntity extends BlockEntity {
         return tag;
     }
 
-    public void handleCustomUpdateTag(CompoundTag tag) {
-        super.handleUpdateTag(tag);
-        load(tag);
-        this.projector = tag.contains("projector") ? NbtUtils.readBlockPos(tag.getCompound("projector")) : null;
+    public void handleCustomUpdateTag(CompoundTag tag, HolderLookup.Provider provider) {
+        super.handleUpdateTag(tag, provider);
+        loadAdditional(tag, provider);
+        this.projector = NbtUtils.readBlockPos(tag, "projector").orElse(null);
         this.clientBlockLight = tag.getInt("clientBlockLight");
 
         updateRenderClient();
@@ -107,8 +108,8 @@ public class ForceFieldBlockEntity extends BlockEntity {
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag) {
-        super.saveAdditional(tag);
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider) {
+        super.saveAdditional(tag, provider);
 
         if (this.projector != null) {
             tag.put("projector", NbtUtils.writeBlockPos(this.projector));
@@ -119,12 +120,11 @@ public class ForceFieldBlockEntity extends BlockEntity {
     }
 
     @Override
-    public void load(CompoundTag tag) {
-        super.load(tag);
+    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
+        super.loadAdditional(tag, provider);
 
-        if (tag.contains("projector")) {
-            this.projector = NbtUtils.readBlockPos(tag.getCompound("projector"));
-        }
+        NbtUtils.readBlockPos(tag, "projector")
+            .ifPresent(p -> this.projector = p);
         if (tag.contains("camouflage")) {
             this.camouflage = NbtUtils.readBlockState(this.level.holderLookup(Registries.BLOCK), tag.getCompound("camouflage"));
         }

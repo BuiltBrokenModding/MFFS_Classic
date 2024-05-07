@@ -20,13 +20,13 @@ config="mffs.mixins.json"
 [[dependencies.mffs]]
     modId="neoforge"
     type="required"
-    versionRange="[20.4.72-beta, 20.5)"
+    versionRange="[20.6-beta, 21)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.mffs]]
     modId="minecraft"
     type="required"
-    versionRange="[1.20.4,1.21)"
+    versionRange="[1.20.6,1.21)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.mffs]]

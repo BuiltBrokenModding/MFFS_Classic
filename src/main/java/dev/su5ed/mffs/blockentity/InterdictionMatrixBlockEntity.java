@@ -14,6 +14,7 @@ import dev.su5ed.mffs.util.ModUtil;
 import dev.su5ed.mffs.util.inventory.InventorySlot;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
@@ -146,15 +147,15 @@ public class InterdictionMatrixBlockEntity extends ModularBlockEntity implements
     }
 
     @Override
-    protected void loadCommonTag(CompoundTag tag) {
-        super.loadCommonTag(tag);
+    protected void loadCommonTag(CompoundTag tag, HolderLookup.Provider provider) {
+        super.loadCommonTag(tag, provider);
 
         this.confiscationMode = ConfiscationMode.valueOf(tag.getString("confiscationMode"));
     }
 
     @Override
-    protected void saveCommonTag(CompoundTag tag) {
-        super.saveCommonTag(tag);
+    protected void saveCommonTag(CompoundTag tag, HolderLookup.Provider provider) {
+        super.saveCommonTag(tag, provider);
 
         tag.putString("confiscationMode", this.confiscationMode.name());
     }

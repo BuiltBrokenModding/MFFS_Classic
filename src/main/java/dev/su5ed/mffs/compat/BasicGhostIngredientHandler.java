@@ -37,7 +37,7 @@ public class BasicGhostIngredientHandler<T extends BaseScreen<?>> implements IGh
         @Override
         public void accept(I ingredient) {
             this.slot.set((ItemStack) ingredient);
-            PacketDistributor.SERVER.noArg().send(new SetItemInSlotPacket(this.slotId, (ItemStack) ingredient));
+            PacketDistributor.sendToServer(new SetItemInSlotPacket(this.slotId, (ItemStack) ingredient));
         }
     }
 }

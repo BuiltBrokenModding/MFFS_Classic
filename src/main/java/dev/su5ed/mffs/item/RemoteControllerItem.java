@@ -6,13 +6,12 @@ import dev.su5ed.mffs.api.security.FieldPermission;
 import dev.su5ed.mffs.menu.FortronMenu;
 import dev.su5ed.mffs.render.particle.ParticleColor;
 import dev.su5ed.mffs.setup.ModCapabilities;
+import dev.su5ed.mffs.setup.ModDataComponentTypes;
 import dev.su5ed.mffs.util.Fortron;
 import dev.su5ed.mffs.util.FrequencyGrid;
 import dev.su5ed.mffs.util.ModUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -85,29 +84,28 @@ public class RemoteControllerItem extends BaseItem implements CoordLink {
     }
 
     @Override
-    public void appendHoverTextPre(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
-        BlockPos pos = getLink(stack);
-        if (level != null && pos != null) {
-            BlockEntity be = level.getBlockEntity(pos);
-            if (be != null && level.getCapability(ModCapabilities.FORTRON, be.getBlockPos(), be.getBlockState(), be, null) != null) {
-                tooltipComponents.add(ModUtil.translate("info", "link",
-                    be.getBlockState().getBlock().getName().withStyle(ChatFormatting.GREEN),
-                    Component.literal(pos.toShortString()).withStyle(ChatFormatting.GRAY)).withStyle(ChatFormatting.DARK_GRAY));
-            }
-        }
+    public void appendHoverTextPre(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+        // TODO Store name in link?
+//        BlockPos pos = getLink(stack);
+//        if (level != null && pos != null) {
+//            BlockEntity be = level.getBlockEntity(pos);
+//            if (be != null && level.getCapability(ModCapabilities.FORTRON, be.getBlockPos(), be.getBlockState(), be, null) != null) {
+//                tooltipComponents.add(ModUtil.translate("info", "link",
+//                    be.getBlockState().getBlock().getName().withStyle(ChatFormatting.GREEN),
+//                    Component.literal(pos.toShortString()).withStyle(ChatFormatting.GRAY)).withStyle(ChatFormatting.DARK_GRAY));
+//            }
+//        }
     }
 
     @Nullable
     @Override
     public BlockPos getLink(ItemStack stack) {
-        CompoundTag tag = stack.getOrCreateTag();
-        return NbtUtils.readBlockPos(tag.getCompound("link"));
+        return stack.get(ModDataComponentTypes.REMOTE_LINK_POS);
     }
 
     @Override
     public void setLink(ItemStack stack, BlockPos pos) {
-        CompoundTag tag = stack.getOrCreateTag();
-        tag.put("link", NbtUtils.writeBlockPos(pos));
+        stack.set(ModDataComponentTypes.REMOTE_LINK_POS, pos);
     }
 
     private boolean drawEnergy(Level level, BlockPos pos, Vec3 target, int frequency, int energy) {

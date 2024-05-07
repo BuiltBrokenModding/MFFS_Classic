@@ -12,11 +12,10 @@ import dev.su5ed.mffs.api.security.InterdictionMatrix;
 import dev.su5ed.mffs.blockentity.ElectricTileEntity;
 import dev.su5ed.mffs.blockentity.FortronBlockEntity;
 import dev.su5ed.mffs.blockentity.InventoryBlockEntity;
-import dev.su5ed.mffs.item.BatteryItem;
-import dev.su5ed.mffs.item.CustomProjectorModeItem;
-import dev.su5ed.mffs.item.ModuleItem;
-import dev.su5ed.mffs.item.ProjectorModeItem;
+import dev.su5ed.mffs.item.*;
 import dev.su5ed.mffs.util.ItemEnergyStorage;
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.Capabilities;
@@ -24,6 +23,8 @@ import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import one.util.streamex.StreamEx;
+
+import java.util.function.Supplier;
 
 public final class ModCapabilities {
     // BlockEntity caps
@@ -69,8 +70,8 @@ public final class ModCapabilities {
             BatteryItem batteryItem = (BatteryItem) stack.getItem();
             return new ItemEnergyStorage(stack, batteryItem.getCapacity(), batteryItem.getMaxTransfer());
         }, ModItems.BATTERY);
-        event.registerItem(FREQUENCY_CARD, (stack, unused) -> stack.getData(ModAttachmentTypes.FREQUENCY_CARD_DATE), ModItems.FREQUENCY_CARD);
-        event.registerItem(IDENTIFICATION_CARD, (stack, unused) -> stack.getData(ModAttachmentTypes.IDENTIFICATION_CARD_DATA), ModItems.ID_CARD);
+        event.registerItem(FREQUENCY_CARD, (stack, unused) -> getOrSetDefault(stack, ModDataComponentTypes.FREQUENCY_CARD_DATA, FrequencyCardItem.FrequencyCardAttachment::new), ModItems.FREQUENCY_CARD);
+        event.registerItem(IDENTIFICATION_CARD, (stack, unused) -> getOrSetDefault(stack, ModDataComponentTypes.IDENTIFICATION_CARD_DATA, IdentificationCardItem.IdentificationCardAttachment::new), ModItems.ID_CARD);
         event.registerItem(
             PROJECTOR_MODE,
             (stack, unused) -> ((ProjectorModeItem) stack.getItem()).getProjectorMode(),
@@ -78,12 +79,19 @@ public final class ModCapabilities {
         );
         event.registerItem(PROJECTOR_MODE, (stack, unused) -> ((CustomProjectorModeItem) stack.getItem()).new CustomProjectorModeCapability(stack), ModItems.CUSTOM_MODE);
         event.registerItem(MODULE_TYPE,
-            (stack, unused) -> ((ModuleItem) stack.getItem()).getModule(),
+            (stack, unused) -> ((ModuleItem<?>) stack.getItem()).getModule(),
             StreamEx.of(ModItems.ITEMS.getEntries())
                 .map(DeferredHolder::get)
                 .select(ModuleItem.class)
                 .toArray(ModuleItem[]::new)
         );
+    }
+
+    private static <T> T getOrSetDefault(ItemStack stack, Supplier<DataComponentType<T>> type, Supplier<T> defaultValue) {
+        if (!stack.has(type)) {
+            stack.set(type, defaultValue.get());
+        }
+        return stack.get(type);
     }
 
     private ModCapabilities() {}

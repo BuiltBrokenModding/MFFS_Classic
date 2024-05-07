@@ -14,17 +14,11 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ClickType;
-import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.minecraft.world.inventory.ContainerListener;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 import net.neoforged.neoforge.items.SlotItemHandler;
 import net.neoforged.neoforge.items.wrapper.InvWrapper;
 import org.apache.commons.lang3.function.TriFunction;
@@ -97,7 +91,7 @@ public abstract class FortronMenu<T extends FortronBlockEntity & Activatable> ex
             if (slot instanceof SlotInventoryFilter && clickType == ClickType.PICKUP) {
                 ItemStack stack = getCarried();
                 if (button == 0) {
-                    slot.set(ItemHandlerHelper.copyStackWithSize(stack, 1));
+                    slot.set(stack.copyWithCount(1));
                 } else {
                     slot.set(ItemStack.EMPTY);
                 }

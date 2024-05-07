@@ -8,29 +8,29 @@ import dev.su5ed.mffs.render.particle.ParticleColor;
 import dev.su5ed.mffs.setup.ModObjects;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 @SuppressWarnings("unused")
 public final class ClientPacketHandler {
 
-    public static void handleDrawBeamPacket(DrawBeamPacket packet, PlayPayloadContext ctx) {
+    public static void handleDrawBeamPacket(DrawBeamPacket packet, IPayloadContext ctx) {
         Minecraft minecraft = Minecraft.getInstance();
         Vec3 pos = packet.position();
         minecraft.level.addParticle(new BeamParticleOptions(packet.target(), packet.color(), packet.lifetime()), pos.x(), pos.y(), pos.z(), 0, 0, 0);
     }
 
-    public static void handleSetStructureShapePacket(SetStructureShapePacket packet, PlayPayloadContext ctx) {
-        CustomProjectorModeClientHandler.setShape(packet.level(), packet.structId(), packet.shape());
+    public static void handleSetStructureShapePacket(SetStructureShapePacket packet, IPayloadContext ctx) {
+        CustomProjectorModeClientHandler.setShape(packet.level(), packet.structId(), packet.shape().orElse(null));
     }
 
-    public static void handleUpdateAnimationSpeedPacket(UpdateAnimationSpeed packet, PlayPayloadContext ctx) {
+    public static void handleUpdateAnimationSpeedPacket(UpdateAnimationSpeed packet, IPayloadContext ctx) {
         Network.findBlockEntity(ProjectorBlockEntity.class, Minecraft.getInstance().level, packet.pos())
             .ifPresent(be -> be.setClientAnimationSpeed(packet.animationSpeed()));
     }
 
-    public static void handleDrawHologramPacket(DrawHologramPacket packet, PlayPayloadContext ctx) {
+    public static void handleDrawHologramPacket(DrawHologramPacket packet, IPayloadContext ctx) {
         Minecraft minecraft = Minecraft.getInstance();
-        DrawHologramPacket.Type type = packet.type();
+        DrawHologramPacket.Type type = packet.holoType();
         Vec3 pos = packet.pos().add(0.5, 0.5, 0.5);
         Vec3 target = packet.target();
         Vec3 targetCenter = packet.target().add(0.5, 0.5, 0.5);
@@ -43,10 +43,10 @@ public final class ClientPacketHandler {
         }
     }
 
-    public static void handleBlockEntityUpdatePacket(UpdateBlockEntityPacket packet, PlayPayloadContext ctx) {
+    public static void handleBlockEntityUpdatePacket(UpdateBlockEntityPacket packet, IPayloadContext ctx) {
         Minecraft minecraft = Minecraft.getInstance();
         minecraft.level.getBlockEntity(packet.pos(), ModObjects.FORCE_FIELD_BLOCK_ENTITY.get())
-            .ifPresent(be -> be.handleCustomUpdateTag(packet.data()));
+            .ifPresent(be -> be.handleCustomUpdateTag(packet.data(), be.getLevel().registryAccess()));
     }
 
     private ClientPacketHandler() {}

@@ -217,12 +217,12 @@ public final class BlockHighlighter {
 
         buffer.vertex(entry.pose(), (float) start.x, (float) start.y, (float) start.z)
             .color(red, green, blue, alpha)
-            .normal(entry.normal(), (float) normal.x, (float) normal.y, (float) normal.z)
+            .normal(entry, (float) normal.x, (float) normal.y, (float) normal.z)
             .endVertex();
 
         buffer.vertex(entry.pose(), (float) end.x, (float) end.y, (float) end.z)
             .color(red, green, blue, alpha)
-            .normal(entry.normal(), (float) normal.x, (float) normal.y, (float) normal.z)
+            .normal(entry, (float) normal.x, (float) normal.y, (float) normal.z)
             .endVertex();
     }
 

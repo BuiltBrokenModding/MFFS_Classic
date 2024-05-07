@@ -2,6 +2,7 @@ package dev.su5ed.mffs.util;
 
 import dev.su5ed.mffs.api.fortron.FortronStorage;
 import dev.su5ed.mffs.setup.ModFluids;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -63,16 +64,16 @@ public class FortronStorageImpl implements FortronStorage {
     }
 
     @Override
-    public CompoundTag serializeNBT() {
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag tag = new CompoundTag();
-        tag.put("fortronTank", this.fortronTank.writeToNBT(new CompoundTag()));
+        tag.put("fortronTank", this.fortronTank.writeToNBT(provider, new CompoundTag()));
         tag.putInt("frequency", this.frequency);
         return tag;
     }
 
     @Override
-    public void deserializeNBT(CompoundTag nbt) {
-        this.fortronTank.readFromNBT(nbt.getCompound("fortronTank"));
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
+        this.fortronTank.readFromNBT(provider, nbt.getCompound("fortronTank"));
         this.frequency = nbt.getInt("frequency");
     }
 

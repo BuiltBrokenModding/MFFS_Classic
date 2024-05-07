@@ -3,7 +3,6 @@ package dev.su5ed.mffs.block;
 import dev.su5ed.mffs.blockentity.BaseBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -46,10 +45,10 @@ public class BaseEntityBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
         return getBlockEntity(level, pos)
-            .map(be -> be.use(player, hand, hit))
-            .orElseGet(() -> super.use(state, level, pos, player, hand, hit));
+            .map(be -> be.useWithoutItem(state, level, pos, player, hit))
+            .orElseGet(() -> super.useWithoutItem(state, level, pos, player, hit));
     }
 
     // Credit: Mekanism

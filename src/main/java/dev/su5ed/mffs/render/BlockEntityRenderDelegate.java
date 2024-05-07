@@ -27,7 +27,7 @@ public final class BlockEntityRenderDelegate {
         if (this.renderDelegates.containsKey(originalBlockEntity)) {
             DelegateRendererInfo delegateInfo = this.renderDelegates.get(originalBlockEntity);
 
-            //the original be already has a delegate block entity of the same type, just update the state instead of creating a whole new be and renderer
+            //the original be already has a delegate block entity of the same holoType, just update the state instead of creating a whole new be and renderer
             if (delegateInfo.delegateBlockEntity.getBlockState().is(delegateState.getBlock())) {
                 delegateInfo.delegateBlockEntity.setBlockState(delegateState);
                 return;

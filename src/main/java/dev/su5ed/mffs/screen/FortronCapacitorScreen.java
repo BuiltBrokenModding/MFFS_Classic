@@ -30,7 +30,7 @@ public class FortronCapacitorScreen extends FortronScreen<FortronCapacitorMenu> 
         super.init();
 
         addRenderableWidget(new IconCycleButton<>(this.width / 2 + 15, this.height / 2 - 37, 18, 18, 0, 0, 18, this.menu.blockEntity::getTransferMode,
-            value -> PacketDistributor.SERVER.noArg().send(new SwitchTransferModePacket(this.menu.blockEntity.getBlockPos(), value.next()))));
+            value -> PacketDistributor.sendToServer(new SwitchTransferModePacket(this.menu.blockEntity.getBlockPos(), value.next()))));
     }
 
     @Override

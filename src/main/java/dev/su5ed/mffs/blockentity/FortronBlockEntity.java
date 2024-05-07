@@ -14,6 +14,7 @@ import dev.su5ed.mffs.util.ModUtil;
 import dev.su5ed.mffs.util.TransferMode;
 import dev.su5ed.mffs.util.inventory.InventorySlot;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -126,18 +127,18 @@ public abstract class FortronBlockEntity extends InventoryBlockEntity implements
     }
 
     @Override
-    protected void loadCommonTag(CompoundTag tag) {
-        super.loadCommonTag(tag);
+    protected void loadCommonTag(CompoundTag tag, HolderLookup.Provider provider) {
+        super.loadCommonTag(tag, provider);
 
-        this.fortronStorage.deserializeNBT(tag.getCompound("fortronStorage"));
+        this.fortronStorage.deserializeNBT(provider, tag.getCompound("fortronStorage"));
         this.active = tag.getBoolean("active");
     }
 
     @Override
-    protected void saveCommonTag(CompoundTag tag) {
-        super.saveCommonTag(tag);
+    protected void saveCommonTag(CompoundTag tag, HolderLookup.Provider provider) {
+        super.saveCommonTag(tag, provider);
 
-        tag.put("fortronStorage", this.fortronStorage.serializeNBT());
+        tag.put("fortronStorage", this.fortronStorage.serializeNBT(provider));
         tag.putBoolean("active", this.active);
     }
 

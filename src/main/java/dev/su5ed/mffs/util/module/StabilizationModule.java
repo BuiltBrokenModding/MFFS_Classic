@@ -8,6 +8,7 @@ import dev.su5ed.mffs.setup.ModTags;
 import dev.su5ed.mffs.util.ModUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -53,7 +54,7 @@ public class StabilizationModule extends BaseModule {
                                 handler.extractItem(i, 1, false);
                                 Vec3 start = Vec3.atLowerCornerOf(pos);
                                 Vec3 target = Vec3.atLowerCornerOf(position);
-                                PacketDistributor.TRACKING_CHUNK.with(level.getChunkAt(position)).send(new DrawHologramPacket(start, target, DrawHologramPacket.Type.CONSTRUCT));
+                                PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(position).getPos(), new DrawHologramPacket(start, target, DrawHologramPacket.Type.CONSTRUCT));
 
                                 return this.blockCount++ >= projector.getModuleCount(ModModules.SPEED) / 3 ? ProjectAction.INTERRUPT : ProjectAction.SKIP;
                             }

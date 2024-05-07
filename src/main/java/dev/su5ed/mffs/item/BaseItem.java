@@ -9,8 +9,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.function.Function;
@@ -25,13 +23,13 @@ public class BaseItem extends Item {
         this.description = properties.description != null ? Suppliers.memoize(() -> properties.description.apply(this)) : null;
     }
     
-    protected void appendHoverTextPre(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {}
+    protected void appendHoverTextPre(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced) {}
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
-        super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+        super.appendHoverText(stack, context, tooltipComponents, isAdvanced);
 
-        appendHoverTextPre(stack, level, tooltipComponents, isAdvanced);
+        appendHoverTextPre(stack, context, tooltipComponents, isAdvanced);
         if (this.description != null) {
             if (ModClientSetup.hasShiftDown()) {
                 tooltipComponents.add(this.description.get());

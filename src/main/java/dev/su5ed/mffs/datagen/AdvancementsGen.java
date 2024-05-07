@@ -14,7 +14,9 @@ import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.AdvancementType;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.common.data.AdvancementProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
@@ -75,7 +77,7 @@ public class AdvancementsGen implements AdvancementProvider.AdvancementGenerator
 
         Advancement.Builder.advancement()
             .addCriterion("guidebook", ModObjects.GUIDEBOOK_TRIGGER.get().createCriterion(GuideBookTrigger.TriggerInstance.INSTANCE))
-            .rewards(AdvancementRewards.Builder.loot(location("grant_book_on_first_join")))
+            .rewards(AdvancementRewards.Builder.loot(ResourceKey.create(Registries.LOOT_TABLE, location("grant_book_on_first_join"))))
             .save(saver, id("grant_book_on_first_join"));
     }
 

@@ -9,9 +9,13 @@ import dev.su5ed.mffs.network.SetStructureShapePacket;
 import dev.su5ed.mffs.util.ModUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
@@ -42,7 +46,17 @@ public class CustomStructureSavedData extends SavedData {
         Codec.DOUBLE.fieldOf("maxY").forGetter(a -> a.maxY),
         Codec.DOUBLE.fieldOf("maxZ").forGetter(a -> a.maxZ)
     ).apply(instance, AABB::new));
+    public static final StreamCodec<FriendlyByteBuf, AABB> AABB_STREAM_CODEC = StreamCodec.composite(
+        ByteBufCodecs.DOUBLE, a -> a.minX,
+        ByteBufCodecs.DOUBLE, a -> a.minY,
+        ByteBufCodecs.DOUBLE, a -> a.minZ,
+        ByteBufCodecs.DOUBLE, a -> a.maxX,
+        ByteBufCodecs.DOUBLE, a -> a.maxY,
+        ByteBufCodecs.DOUBLE, a -> a.maxZ,
+        AABB::new
+    );
     public static final Codec<VoxelShape> VOXEL_SHAPE_CODEC = AABB_CODEC.listOf().xmap(CustomStructureSavedData::shapeFromAABBs, VoxelShape::toAabbs);
+    public static final StreamCodec<FriendlyByteBuf, VoxelShape> VOXEL_SHAPE_STREAM_CODEC = AABB_STREAM_CODEC.apply(ByteBufCodecs.list()).map(CustomStructureSavedData::shapeFromAABBs, VoxelShape::toAabbs);
     public static final Codec<Map<String, Structure>> CODEC = Codec.unboundedMap(Codec.STRING, Structure.CODEC);
 
     private final Map<String, Structure> structures = new HashMap<>();
@@ -92,7 +106,7 @@ public class CustomStructureSavedData extends SavedData {
     }
 
     private static void sendToClient(ResourceKey<Level> key, String id, VoxelShape shape, ServerPlayer player) {
-        PacketDistributor.PLAYER.with(player).send(new SetStructureShapePacket(key, id, shape));
+        PacketDistributor.sendToPlayer(player, new SetStructureShapePacket(key, id, shape));
     }
 
     private static BlockPos normalizeAxis(BlockPos min, BlockPos max) {
@@ -118,12 +132,12 @@ public class CustomStructureSavedData extends SavedData {
 
     public void load(CompoundTag tag) {
         Tag structuresTag = tag.get("structures");
-        this.structures.putAll(CODEC.decode(NbtOps.INSTANCE, structuresTag).getOrThrow(false, s -> {}).getFirst());
+        this.structures.putAll(CODEC.decode(NbtOps.INSTANCE, structuresTag).getOrThrow().getFirst());
     }
 
     @Override
-    public CompoundTag save(CompoundTag tag) {
-        Tag structuresTag = CODEC.encodeStart(NbtOps.INSTANCE, this.structures).getOrThrow(false, s -> {});
+    public CompoundTag save(CompoundTag tag, HolderLookup.Provider provider) {
+        Tag structuresTag = CODEC.encodeStart(NbtOps.INSTANCE, this.structures).getOrThrow();
         tag.put("structures", structuresTag);
         return tag;
     }

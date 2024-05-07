@@ -8,9 +8,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.neoforge.capabilities.BlockCapability;
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
-import net.neoforged.neoforge.network.handling.IPlayPayloadHandler;
-import net.neoforged.neoforge.network.registration.IPayloadRegistrar;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.handling.IPayloadHandler;
+import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import org.slf4j.Logger;
 
 import java.util.Optional;
@@ -20,34 +20,33 @@ public final class Network {
     private static final String PROTOCOL_VERSION = "1";
     private static final Logger LOGGER = LogUtils.getLogger();
 
-    public static void registerPackets(RegisterPayloadHandlerEvent event) {
-        IPayloadRegistrar registrar = event.registrar(MFFSMod.MODID)
+    public static void registerPackets(RegisterPayloadHandlersEvent event) {
+        PayloadRegistrar registrar = event.registrar(MFFSMod.MODID)
             .versioned(PROTOCOL_VERSION);
 
-        registrar.play(ToggleModePacket.ID, ToggleModePacket::new, handler -> handler.server(mainThreadHandler(ToggleModePacket::handle)));
-        registrar.play(UpdateFrequencyPacket.ID, UpdateFrequencyPacket::new, handler -> handler.server(mainThreadHandler(UpdateFrequencyPacket::handle)));
-        registrar.play(SwitchEnergyModePacket.ID, SwitchEnergyModePacket::new, handler -> handler.server(mainThreadHandler(SwitchEnergyModePacket::handle)));
-        registrar.play(SwitchTransferModePacket.ID, SwitchTransferModePacket::new, handler -> handler.server(mainThreadHandler(SwitchTransferModePacket::handle)));
-        registrar.play(InitialDataRequestPacket.ID, InitialDataRequestPacket::new, handler -> handler.server(mainThreadHandler(InitialDataRequestPacket::handle)));
-        registrar.play(ToggleFieldPermissionPacket.ID, ToggleFieldPermissionPacket::new, handler -> handler.server(mainThreadHandler(ToggleFieldPermissionPacket::handle)));
-        registrar.play(SwitchConfiscationModePacket.ID, SwitchConfiscationModePacket::new, handler -> handler.server(mainThreadHandler(SwitchConfiscationModePacket::handle)));
-        registrar.play(SetItemInSlotPacket.ID, SetItemInSlotPacket::new, handler -> handler.server(mainThreadHandler(SetItemInSlotPacket::handle)));
-        registrar.play(StructureDataRequestPacket.ID, StructureDataRequestPacket::new, handler -> handler.server(mainThreadHandler(StructureDataRequestPacket::handle)));
+        registrar.playToServer(ToggleModePacket.TYPE, ToggleModePacket.STREAM_CODEC, mainThreadHandler(ToggleModePacket::handle));
+        registrar.playToServer(UpdateFrequencyPacket.TYPE, UpdateFrequencyPacket.STREAM_CODEC, mainThreadHandler(UpdateFrequencyPacket::handle));
+        registrar.playToServer(SwitchEnergyModePacket.TYPE, SwitchEnergyModePacket.STREAM_CODEC, mainThreadHandler(SwitchEnergyModePacket::handle));
+        registrar.playToServer(SwitchTransferModePacket.TYPE, SwitchTransferModePacket.STREAM_CODEC, mainThreadHandler(SwitchTransferModePacket::handle));
+        registrar.playToServer(InitialDataRequestPacket.TYPE, InitialDataRequestPacket.STREAM_CODEC, mainThreadHandler(InitialDataRequestPacket::handle));
+        registrar.playToServer(ToggleFieldPermissionPacket.TYPE, ToggleFieldPermissionPacket.STREAM_CODEC, mainThreadHandler(ToggleFieldPermissionPacket::handle));
+        registrar.playToServer(SwitchConfiscationModePacket.TYPE, SwitchConfiscationModePacket.STREAM_CODEC, mainThreadHandler(SwitchConfiscationModePacket::handle));
+        registrar.playToServer(SetItemInSlotPacket.TYPE, SetItemInSlotPacket.STREAM_CODEC, mainThreadHandler(SetItemInSlotPacket::handle));
+        registrar.playToServer(StructureDataRequestPacket.TYPE, StructureDataRequestPacket.STREAM_CODEC, mainThreadHandler(StructureDataRequestPacket::handle));
 
-        registrar.play(UpdateBlockEntityPacket.ID, UpdateBlockEntityPacket::new, handler -> handler.client(mainThreadHandler(() -> ClientPacketHandler::handleBlockEntityUpdatePacket)));
-        registrar.play(SetStructureShapePacket.ID, SetStructureShapePacket::new, handler -> handler.client(mainThreadHandler(() -> ClientPacketHandler::handleSetStructureShapePacket)));
-        registrar.play(DrawBeamPacket.ID, DrawBeamPacket::new, handler -> handler.client(mainThreadHandler(() -> ClientPacketHandler::handleDrawBeamPacket)));
-        registrar.play(UpdateAnimationSpeed.ID, UpdateAnimationSpeed::new, handler -> handler.client(mainThreadHandler(() -> ClientPacketHandler::handleUpdateAnimationSpeedPacket)));
-        registrar.play(DrawHologramPacket.ID, DrawHologramPacket::new, handler -> handler.client(mainThreadHandler(() -> ClientPacketHandler::handleDrawHologramPacket)));
+        registrar.playToClient(UpdateBlockEntityPacket.TYPE, UpdateBlockEntityPacket.STREAM_CODEC, mainThreadHandler(() -> ClientPacketHandler::handleBlockEntityUpdatePacket));
+        registrar.playToClient(SetStructureShapePacket.TYPE, SetStructureShapePacket.STREAM_CODEC, mainThreadHandler(() -> ClientPacketHandler::handleSetStructureShapePacket));
+        registrar.playToClient(DrawBeamPacket.TYPE, DrawBeamPacket.STREAM_CODEC, mainThreadHandler(() -> ClientPacketHandler::handleDrawBeamPacket));
+        registrar.playToClient(UpdateAnimationSpeed.TYPE, UpdateAnimationSpeed.STREAM_CODEC, mainThreadHandler(() -> ClientPacketHandler::handleUpdateAnimationSpeedPacket));
+        registrar.playToClient(DrawHologramPacket.TYPE, DrawHologramPacket.STREAM_CODEC, mainThreadHandler(() -> ClientPacketHandler::handleDrawHologramPacket));
     }
 
-    private static <T extends CustomPacketPayload> IPlayPayloadHandler<T> mainThreadHandler(Supplier<IPlayPayloadHandler<T>> supplier) {
+    private static <T extends CustomPacketPayload> IPayloadHandler<T> mainThreadHandler(Supplier<IPayloadHandler<T>> supplier) {
         return mainThreadHandler((payload, context) -> supplier.get().handle(payload, context));
     }
 
-    private static <T extends CustomPacketPayload> IPlayPayloadHandler<T> mainThreadHandler(IPlayPayloadHandler<T> handler) {
-        return (payload, context) -> context.workHandler()
-            .submitAsync(() -> handler.handle(payload, context))
+    private static <T extends CustomPacketPayload> IPayloadHandler<T> mainThreadHandler(IPayloadHandler<T> handler) {
+        return (payload, context) -> context.enqueueWork(() -> handler.handle(payload, context))
             .exceptionally(thr -> {
                 LOGGER.error("Error handling payload", thr);
                 return null;
@@ -71,5 +70,6 @@ public final class Network {
         return level.isLoaded(pos) ? Optional.ofNullable(level.getBlockEntity(pos)) : Optional.empty();
     }
 
-    private Network() {}
+    private Network() {
+    }
 }

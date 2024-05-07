@@ -7,8 +7,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.Nullable;
 
 import java.text.DecimalFormat;
 import java.util.List;
@@ -28,8 +26,8 @@ public class ModuleItem<T extends Module> extends BaseItem {
     }
 
     @Override
-    protected void appendHoverTextPre(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
-        super.appendHoverTextPre(stack, level, tooltipComponents, isAdvanced);
+    protected void appendHoverTextPre(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+        super.appendHoverTextPre(stack, context, tooltipComponents, isAdvanced);
 
         tooltipComponents.add(ModUtil.translate("info", "fortron_usage", Component.literal(FORTRON_COST_FORMAT.format(this.module.getFortronCost(1) * 20)).withStyle(ChatFormatting.GRAY))
             .withStyle(ChatFormatting.DARK_GRAY));

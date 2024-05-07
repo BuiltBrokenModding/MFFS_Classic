@@ -1,5 +1,6 @@
 package dev.su5ed.mffs.util;
 
+import dev.su5ed.mffs.setup.ModDataComponentTypes;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 
@@ -15,7 +16,7 @@ public class ItemEnergyStorage implements IEnergyStorage {
     }
 
     private void setEnergyStored(int energy) {
-        this.stack.getOrCreateTag().putInt("energy", energy);
+        this.stack.set(ModDataComponentTypes.ENERGY, energy);
     }
 
     @Override
@@ -46,7 +47,7 @@ public class ItemEnergyStorage implements IEnergyStorage {
 
     @Override
     public int getEnergyStored() {
-        return this.stack.getOrCreateTag().getInt("energy");
+        return this.stack.getOrDefault(ModDataComponentTypes.ENERGY, 0);
     }
 
     @Override

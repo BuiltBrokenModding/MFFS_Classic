@@ -1,18 +1,16 @@
 package dev.su5ed.mffs.item;
 
 import com.mojang.authlib.GameProfile;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.su5ed.mffs.api.card.IdentificationCard;
 import dev.su5ed.mffs.api.security.FieldPermission;
 import dev.su5ed.mffs.setup.ModCapabilities;
 import dev.su5ed.mffs.util.ModUtil;
 import net.minecraft.ChatFormatting;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.NbtUtils;
-import net.minecraft.nbt.StringTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -25,10 +23,7 @@ import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class IdentificationCardItem extends BaseItem {
 
@@ -77,8 +72,8 @@ public class IdentificationCardItem extends BaseItem {
     }
 
     @Override
-    protected void appendHoverTextPre(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
-        super.appendHoverTextPre(stack, level, tooltipComponents, isAdvanced);
+    protected void appendHoverTextPre(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+        super.appendHoverTextPre(stack, context, tooltipComponents, isAdvanced);
 
         IdentificationCard card = stack.getCapability(ModCapabilities.IDENTIFICATION_CARD);
         if (card != null) {
@@ -89,7 +84,7 @@ public class IdentificationCardItem extends BaseItem {
             }
             List<FieldPermission> perms = List.copyOf(card.getPermissions());
             if (!perms.isEmpty()) {
-                MutableComponent permsComponent = ModUtil.translate(perms.get(0));
+                MutableComponent permsComponent = ModUtil.translate(perms.getFirst());
                 for (int i = 1; i < perms.size(); i++) {
                     permsComponent.append(", ").append(ModUtil.translate(perms.get(i)));
                 }
@@ -99,8 +94,20 @@ public class IdentificationCardItem extends BaseItem {
     }
 
     public static class IdentificationCardAttachment implements IdentificationCard {
+        public static final Codec<IdentificationCardAttachment> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            ExtraCodecs.GAME_PROFILE.optionalFieldOf("profile", null).forGetter(IdentificationCardAttachment::getIdentity),
+            ModUtil.FIELD_PERMISSION_CODEC.listOf().optionalFieldOf("permissions", new ArrayList<>()).xmap(Set::copyOf, List::copyOf).forGetter(i -> i.permissions)
+        ).apply(instance, IdentificationCardAttachment::new));
+
         private GameProfile profile;
         private final Set<FieldPermission> permissions = new HashSet<>();
+
+        public IdentificationCardAttachment() {}
+
+        private IdentificationCardAttachment(GameProfile profile, Set<FieldPermission> permissions) {
+            this.profile = profile;
+            this.permissions.addAll(permissions);
+        }
 
         @Override
         public boolean hasPermission(FieldPermission permission) {
@@ -148,34 +155,6 @@ public class IdentificationCardItem extends BaseItem {
         public void copyTo(IdentificationCard other) {
             other.setIdentity(getIdentity());
             other.setPermissions(getPermissions());
-        }
-
-        @Override
-        public CompoundTag serializeNBT() {
-            CompoundTag tag = new CompoundTag();
-            if (this.profile != null) {
-                tag.put("profile", NbtUtils.writeGameProfile(new CompoundTag(), this.profile));
-                ListTag permissionsTag = new ListTag();
-                for (FieldPermission permission : this.permissions) {
-                    permissionsTag.add(StringTag.valueOf(permission.name()));
-                }
-                tag.put("permissions", permissionsTag);
-            }
-            return tag;
-        }
-
-        @Override
-        public void deserializeNBT(CompoundTag tag) {
-            if (tag.contains("profile")) {
-                this.profile = NbtUtils.readGameProfile(tag.getCompound("profile"));
-                ListTag permissionsTag = tag.getList("permissions", Tag.TAG_STRING);
-                for (Tag permTag : permissionsTag) {
-                    FieldPermission permission = ModUtil.getEnumConstantSafely(FieldPermission.class, permTag.getAsString());
-                    if (permission != null) {
-                        this.permissions.add(permission);
-                    }
-                }
-            }
         }
     }
 }

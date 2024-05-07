@@ -61,7 +61,7 @@ public class DisintegrationModule extends BaseModule {
         BlockState state = level.getBlockState(position);
         Vec3 pos = Vec3.atLowerCornerOf(projector.be().getBlockPos());
         Vec3 target = Vec3.atLowerCornerOf(position);
-        PacketDistributor.TRACKING_CHUNK.with(level.getChunkAt(position)).send(new DrawHologramPacket(pos, target, DrawHologramPacket.Type.DESTROY));
+        PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(position).getPos(), new DrawHologramPacket(pos, target, DrawHologramPacket.Type.DESTROY));
 
         projector.schedule(39, () -> {
             if (projector.hasModule(ModModules.COLLECTION)) {

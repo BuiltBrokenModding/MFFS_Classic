@@ -4,19 +4,12 @@ import com.mojang.logging.LogUtils;
 import dev.su5ed.mffs.compat.MFFSProbeProvider;
 import dev.su5ed.mffs.item.IdentificationCardItem;
 import dev.su5ed.mffs.network.Network;
-import dev.su5ed.mffs.setup.ModAttachmentTypes;
-import dev.su5ed.mffs.setup.ModBlocks;
-import dev.su5ed.mffs.setup.ModCapabilities;
-import dev.su5ed.mffs.setup.ModFluids;
-import dev.su5ed.mffs.setup.ModItems;
-import dev.su5ed.mffs.setup.ModMenus;
-import dev.su5ed.mffs.setup.ModObjects;
-import dev.su5ed.mffs.setup.ModSounds;
+import dev.su5ed.mffs.setup.*;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.InterModComms;
+import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.ModList;
-import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
@@ -32,7 +25,7 @@ public final class MFFSMod {
 
     public static final Logger LOGGER = LogUtils.getLogger();
 
-    public MFFSMod(IEventBus bus) {
+    public MFFSMod(IEventBus bus, ModContainer container) {
         bus.addListener(this::enqueIMC);
         bus.addListener(ModCapabilities::registerCaps);
         bus.addListener(Network::registerPackets);
@@ -42,11 +35,10 @@ public final class MFFSMod {
         ModMenus.init(bus);
         ModFluids.init(bus);
         ModSounds.init(bus);
-        ModAttachmentTypes.init(bus);
+        ModDataComponentTypes.init(bus);
 
-        ModLoadingContext ctx = ModLoadingContext.get();
-        ctx.registerConfig(ModConfig.Type.CLIENT, MFFSConfig.CLIENT_SPEC);
-        ctx.registerConfig(ModConfig.Type.COMMON, MFFSConfig.COMMON_SPEC);
+        container.registerConfig(ModConfig.Type.CLIENT, MFFSConfig.CLIENT_SPEC);
+        container.registerConfig(ModConfig.Type.COMMON, MFFSConfig.COMMON_SPEC);
 
         NeoForge.EVENT_BUS.register(ForgeEventHandler.class);
         NeoForge.EVENT_BUS.addListener(IdentificationCardItem::onLivingEntityInteract);

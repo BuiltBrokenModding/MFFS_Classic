@@ -9,13 +9,17 @@ import dev.su5ed.mffs.util.ModUtil;
 import dev.su5ed.mffs.util.inventory.InventorySlot;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
@@ -147,16 +151,16 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity {
     }
 
     @Override
-    protected void saveTag(CompoundTag tag) {
-        super.saveTag(tag);
+    protected void saveTag(CompoundTag tag, HolderLookup.Provider provider) {
+        super.saveTag(tag, provider);
 
         tag.putInt("processTime", this.processTime);
         tag.putString("energyMode", this.energyMode.name());
     }
 
     @Override
-    protected void loadTag(CompoundTag tag) {
-        super.loadTag(tag);
+    protected void loadTag(CompoundTag tag, HolderLookup.Provider provider) {
+        super.loadTag(tag, provider);
 
         this.processTime = tag.getInt("processTime");
         this.energyMode = EnergyMode.valueOf(tag.getString("energyMode"));
@@ -177,6 +181,7 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity {
         INTEGRATE;  // FORT -> FE
 
         private static final EnergyMode[] VALUES = values();
+        public static final StreamCodec<FriendlyByteBuf, EnergyMode> STREAM_CODEC = NeoForgeStreamCodecs.enumCodec(EnergyMode.class);
 
         public EnergyMode next() {
             return VALUES[(ordinal() + 1) % VALUES.length];

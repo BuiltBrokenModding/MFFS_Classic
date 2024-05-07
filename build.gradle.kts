@@ -3,8 +3,8 @@ import java.time.LocalDateTime
 
 plugins {
     `maven-publish`
-    id("net.neoforged.gradle.userdev") version "7.0.+"
-    id("me.modmuss50.mod-publish-plugin") version "0.3.+"
+    id("net.neoforged.gradle.userdev") version "7.0.120"
+    id("me.modmuss50.mod-publish-plugin") version "0.5.+"
     id("wtf.gofancy.git-changelog") version "1.1.+"
 }
 
@@ -23,7 +23,7 @@ val modId: String by project
 
 val CI: Provider<String> = providers.environmentVariable("CI")
 
-java.toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+java.toolchain.languageVersion.set(JavaLanguageVersion.of(21))
 
 println("Configured version: $version, Java: ${System.getProperty("java.version")}, JVM: ${System.getProperty("java.vm.version")} (${System.getProperty("java.vendor")}), Arch: ${System.getProperty("os.arch")}")
 minecraft {
@@ -82,9 +82,7 @@ repositories {
 dependencies {
     implementation(group = "net.neoforged", name = "neoforge", version = neoVersion)
 
-    implementation(jarJar(group = "one.util", name = "streamex", version = versionStreamex)) { // Streams galore!
-        jarJar.ranged(this, "[0.8.1, 0.9)")
-    }
+    implementation(jarJar(group = "one.util", name = "streamex", version = versionStreamex))
 
     compileOnly("mezz.jei:jei-1.20.1-common-api:$versionJei")
     compileOnly("mezz.jei:jei-1.20.1-forge-api:$versionJei")

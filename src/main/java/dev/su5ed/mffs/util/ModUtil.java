@@ -1,15 +1,21 @@
 package dev.su5ed.mffs.util;
 
+import com.mojang.serialization.Codec;
 import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.api.module.Module;
 import dev.su5ed.mffs.api.module.ModuleType;
 import dev.su5ed.mffs.api.security.FieldPermission;
+import dev.su5ed.mffs.api.security.InterdictionMatrix;
 import dev.su5ed.mffs.setup.ModCapabilities;
 import dev.su5ed.mffs.setup.ModObjects;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.inventory.Slot;
@@ -23,13 +29,41 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.fluids.IFluidBlock;
+import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Locale;
 
 public final class ModUtil {
-    
+    public static final Codec<FieldPermission> FIELD_PERMISSION_CODEC = Codec.STRING.xmap(FieldPermission::valueOf, FieldPermission::name);
+    public static final StreamCodec<FriendlyByteBuf, FieldPermission> FIELD_PERMISSION_STREAM_CODEC = NeoForgeStreamCodecs.enumCodec(FieldPermission.class);
+    public static final StreamCodec<FriendlyByteBuf, InterdictionMatrix.ConfiscationMode> CONFISCATION_MODE_STREAM_CODEC = NeoForgeStreamCodecs.enumCodec(InterdictionMatrix.ConfiscationMode.class);
+    public static final StreamCodec<FriendlyByteBuf, Vec3> VEC3_STREAM_CODEC = StreamCodec.composite(
+        ByteBufCodecs.DOUBLE, Vec3::x,
+        ByteBufCodecs.DOUBLE, Vec3::y,
+        ByteBufCodecs.DOUBLE, Vec3::z,
+        Vec3::new
+    );
+
+    public static <B extends ByteBuf, V> StreamCodec.CodecOperation<B, V, @Nullable V> nullable() {
+        return codec -> new StreamCodec<>() {
+            @Nullable
+            public V decode(B buf) {
+                return buf.readBoolean() ? codec.decode(buf) : null;
+            }
+
+            public void encode(B buf, @Nullable V value) {
+                if (value != null) {
+                    buf.writeBoolean(true);
+                    codec.encode(buf, value);
+                } else {
+                    buf.writeBoolean(false);
+                }
+            }
+        };
+    }
+
     public static Vec3 rotateByAngleExact(Vec3 pos, double yaw, double pitch, double roll) {
         double yawRadians = Math.toRadians(yaw);
         double pitchRadians = Math.toRadians(pitch);
@@ -53,7 +87,7 @@ public final class ModUtil {
             while (!stack.isEmpty() && i < slots.size()) {
                 Slot slot = slots.get(i);
                 ItemStack slotStack = slot.getItem();
-                if (!slotStack.isEmpty() && ItemStack.isSameItemSameTags(stack, slotStack)) {
+                if (!slotStack.isEmpty() && ItemStack.isSameItemSameComponents(stack, slotStack)) {
                     int total = stack.getCount() + slotStack.getCount();
                     int maxCount = Math.min(slot.getMaxStackSize(), stack.getMaxStackSize());
 
@@ -148,12 +182,12 @@ public final class ModUtil {
     }
 
     public static boolean isModule(ItemStack stack, Module.Category category) {
-        ModuleType<?> moduleType =  stack.getCapability(ModCapabilities.MODULE_TYPE);
+        ModuleType<?> moduleType = stack.getCapability(ModCapabilities.MODULE_TYPE);
         return moduleType != null && moduleType.getCategories().contains(category);
     }
 
     public static boolean isModule(ItemStack stack, ModuleType<?> module) {
-        ModuleType<?> moduleType =  stack.getCapability(ModCapabilities.MODULE_TYPE);
+        ModuleType<?> moduleType = stack.getCapability(ModCapabilities.MODULE_TYPE);
         return moduleType == module;
     }
 
@@ -207,5 +241,6 @@ public final class ModUtil {
         NeoForge.EVENT_BUS.post(event);
     }
 
-    private ModUtil() {}
+    private ModUtil() {
+    }
 }

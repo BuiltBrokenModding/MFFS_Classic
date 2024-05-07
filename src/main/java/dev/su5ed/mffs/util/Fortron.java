@@ -12,6 +12,7 @@ import dev.su5ed.mffs.setup.ModFluids;
 import dev.su5ed.mffs.setup.ModModules;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -116,7 +117,7 @@ public final class Fortron {
 
     public static void renderClientBeam(Level level, Vec3 target, Vec3 position, BlockPos chunkPos, ParticleColor color, int lifetime) {
         DrawBeamPacket packet = new DrawBeamPacket(target, position, color, lifetime);
-        PacketDistributor.TRACKING_CHUNK.with(level.getChunkAt(chunkPos)).send(packet);
+        PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(chunkPos).getPos(), packet);
     }
 
     public static boolean hasPermission(Level level, BlockPos pos, FieldPermission permission, Player player) {

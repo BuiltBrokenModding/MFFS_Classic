@@ -14,6 +14,7 @@ import dev.su5ed.mffs.util.ModUtil;
 import dev.su5ed.mffs.util.TransferMode;
 import dev.su5ed.mffs.util.inventory.InventorySlot;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -23,11 +24,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 public class FortronCapacitorBlockEntity extends ModularBlockEntity implements FortronCapacitor, MenuProvider {
     public final InventorySlot secondaryCard;
@@ -116,14 +113,14 @@ public class FortronCapacitorBlockEntity extends ModularBlockEntity implements F
     }
 
     @Override
-    protected void saveCommonTag(CompoundTag tag) {
-        super.saveCommonTag(tag);
+    protected void saveCommonTag(CompoundTag tag, HolderLookup.Provider provider) {
+        super.saveCommonTag(tag, provider);
         tag.putString("transferMode", this.transferMode.name());
     }
 
     @Override
-    protected void loadCommonTag(CompoundTag tag) {
-        super.loadCommonTag(tag);
+    protected void loadCommonTag(CompoundTag tag, HolderLookup.Provider provider) {
+        super.loadCommonTag(tag, provider);
         this.transferMode = TransferMode.valueOf(tag.getString("transferMode"));
     }
 

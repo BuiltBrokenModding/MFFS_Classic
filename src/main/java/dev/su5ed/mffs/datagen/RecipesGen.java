@@ -4,11 +4,7 @@ import dev.su5ed.mffs.setup.ModItems;
 import dev.su5ed.mffs.setup.ModTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.recipes.RecipeCategory;
-import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.data.recipes.RecipeProvider;
-import net.minecraft.data.recipes.ShapedRecipeBuilder;
-import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
+import net.minecraft.data.recipes.*;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -362,7 +358,7 @@ public class RecipesGen extends RecipeProvider {
             .define('F', ModItems.FOCUS_MATRIX.get())
             .define('W', ItemTags.WOOL)
             .define('P', Items.COOKED_PORKCHOP)
-            .define('L', Tags.Items.LEATHER)
+            .define('L', Tags.Items.LEATHERS)
             .define('S', Tags.Items.SLIMEBALLS)
             .pattern(" W ")
             .pattern("PFL")

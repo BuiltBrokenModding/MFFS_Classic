@@ -61,7 +61,7 @@ public final class RenderPostProcessor {
                 postProcessPass.close();
             }
             try {
-                postProcessPass = new PostPass(minecraft.getResourceManager(), MFFSMod.MODID + ":glitch_blit", glitchRenderTarget, mainRenderTarget);
+                postProcessPass = new PostPass(minecraft.getResourceManager(), MFFSMod.MODID + ":glitch_blit", glitchRenderTarget, mainRenderTarget, false);
                 postProcessPass.setOrthoMatrix(shaderOrthoMatrix);
             } catch (Exception e) {
                 throw new RuntimeException(e);

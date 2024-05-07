@@ -8,7 +8,6 @@ import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.damagesource.DamageType;
 
 import java.util.Optional;
@@ -31,7 +30,7 @@ public class DamageSourceTrigger extends SimpleCriterionTrigger<DamageSourceTrig
 
     public record TriggerInstance(Optional<ContextAwarePredicate> player, ResourceKey<DamageType> damageType, boolean killed) implements SimpleInstance {
         public static final Codec<TriggerInstance> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            ExtraCodecs.strictOptionalField(EntityPredicate.ADVANCEMENT_CODEC, "player").forGetter(TriggerInstance::player),
+            EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(TriggerInstance::player),
             ResourceKey.codec(Registries.DAMAGE_TYPE).fieldOf("damageType").forGetter(TriggerInstance::damageType),
             Codec.BOOL.fieldOf("killed").forGetter(TriggerInstance::killed)
         ).apply(instance, TriggerInstance::new));

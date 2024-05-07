@@ -16,18 +16,14 @@ import dev.su5ed.mffs.api.module.ProjectorMode;
 import dev.su5ed.mffs.item.CustomProjectorModeItem;
 import dev.su5ed.mffs.menu.ProjectorMenu;
 import dev.su5ed.mffs.network.UpdateAnimationSpeed;
-import dev.su5ed.mffs.setup.ModBlocks;
-import dev.su5ed.mffs.setup.ModCapabilities;
-import dev.su5ed.mffs.setup.ModModules;
-import dev.su5ed.mffs.setup.ModObjects;
-import dev.su5ed.mffs.setup.ModSounds;
-import dev.su5ed.mffs.setup.ModTags;
+import dev.su5ed.mffs.setup.*;
 import dev.su5ed.mffs.util.ModUtil;
 import dev.su5ed.mffs.util.ObjectCache;
 import dev.su5ed.mffs.util.SetBlockEvent;
 import dev.su5ed.mffs.util.inventory.InventorySlot;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Inventory;
@@ -46,16 +42,7 @@ import one.util.streamex.IntStreamEx;
 import one.util.streamex.StreamEx;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -116,7 +103,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
         int speed = 4;
         int fortronCost = getFortronCost();
         if (isActive() && getMode().isPresent() && this.fortronStorage.extractFortron(fortronCost, true) >= fortronCost) {
-            speed *= fortronCost / 8.0f;
+            speed *= fortronCost / 8.0F;
         }
         return Math.min(120, speed);
     }
@@ -238,15 +225,15 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
     }
 
     @Override
-    public CompoundTag getUpdateTag() {
-        CompoundTag tag = super.getUpdateTag();
+    public CompoundTag getUpdateTag(HolderLookup.Provider provider) {
+        CompoundTag tag = super.getUpdateTag(provider);
         tag.putInt("animationSpeed", computeAnimationSpeed());
         return tag;
     }
 
     @Override
-    public void handleUpdateTag(CompoundTag tag) {
-        super.handleUpdateTag(tag);
+    public void handleUpdateTag(CompoundTag tag, HolderLookup.Provider provider) {
+        super.handleUpdateTag(tag, provider);
         this.clientAnimationSpeed = tag.getInt("animationSpeed");
     }
 

@@ -34,7 +34,7 @@ public class InterdictionMatrixScreen extends FortronScreen<InterdictionMatrixMe
             button -> {
                 InterdictionMatrix.ConfiscationMode mode = this.menu.blockEntity.getConfiscationMode().next();
                 this.menu.blockEntity.setConfiscationMode(mode);
-                PacketDistributor.SERVER.noArg().send(new SwitchConfiscationModePacket(this.menu.blockEntity.getBlockPos(), mode));
+                PacketDistributor.sendToServer(new SwitchConfiscationModePacket(this.menu.blockEntity.getBlockPos(), mode));
             }
         ));
     }

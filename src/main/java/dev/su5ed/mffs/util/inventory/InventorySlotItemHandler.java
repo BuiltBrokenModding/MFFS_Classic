@@ -1,5 +1,6 @@
 package dev.su5ed.mffs.util.inventory;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.util.INBTSerializable;
@@ -88,22 +89,22 @@ public class InventorySlotItemHandler implements IItemHandler, IItemHandlerModif
     }
 
     @Override
-    public CompoundTag serializeNBT() {
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag nbt = new CompoundTag();
         this.slots.forEach(slot -> {
             CompoundTag tag = new CompoundTag();
-            slot.getItem().save(tag);
+            slot.getItem().save(provider, tag);
             nbt.put(slot.getName(), tag);
         });
         return nbt;
     }
 
     @Override
-    public void deserializeNBT(CompoundTag nbt) {
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
         this.slots.forEach(slot -> {
             if (nbt.contains(slot.getName())) {
                 CompoundTag tag = nbt.getCompound(slot.getName());
-                slot.setItem(ItemStack.of(tag), false);
+                slot.setItem(ItemStack.parse(provider, tag).orElse(ItemStack.EMPTY), false);
             }
         });
     }

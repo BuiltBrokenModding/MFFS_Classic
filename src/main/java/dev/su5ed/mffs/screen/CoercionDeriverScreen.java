@@ -36,7 +36,7 @@ public class CoercionDeriverScreen extends FortronScreen<CoercionDeriverMenu> {
             button -> {
                 EnergyMode mode = this.menu.blockEntity.getEnergyMode().next();
                 this.menu.blockEntity.setEnergyMode(mode);
-                PacketDistributor.SERVER.noArg().send(new SwitchEnergyModePacket(this.menu.blockEntity.getBlockPos(), mode));
+                PacketDistributor.sendToServer(new SwitchEnergyModePacket(this.menu.blockEntity.getBlockPos(), mode));
             })
         );
     }

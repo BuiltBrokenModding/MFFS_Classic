@@ -4,6 +4,7 @@ import dev.su5ed.mffs.util.inventory.InventorySlot;
 import dev.su5ed.mffs.util.inventory.InventorySlotItemHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
@@ -69,16 +70,16 @@ public abstract class InventoryBlockEntity extends BaseBlockEntity {
     }
 
     @Override
-    protected void saveCommonTag(CompoundTag tag) {
-        super.saveCommonTag(tag);
+    protected void saveCommonTag(CompoundTag tag, HolderLookup.Provider provider) {
+        super.saveCommonTag(tag, provider);
 
-        tag.put("items", this.items.serializeNBT());
+        tag.put("items", this.items.serializeNBT(provider));
     }
 
     @Override
-    protected void loadCommonTag(CompoundTag tag) {
-        super.loadCommonTag(tag);
+    protected void loadCommonTag(CompoundTag tag, HolderLookup.Provider provider) {
+        super.loadCommonTag(tag, provider);
 
-        this.items.deserializeNBT(tag.getCompound("items"));
+        this.items.deserializeNBT(provider, tag.getCompound("items"));
     }
 }

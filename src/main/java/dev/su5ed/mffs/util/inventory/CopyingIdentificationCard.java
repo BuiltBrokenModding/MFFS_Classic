@@ -3,7 +3,6 @@ package dev.su5ed.mffs.util.inventory;
 import com.mojang.authlib.GameProfile;
 import dev.su5ed.mffs.api.card.IdentificationCard;
 import dev.su5ed.mffs.api.security.FieldPermission;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.Nullable;
 
@@ -66,15 +65,5 @@ public class CopyingIdentificationCard implements IdentificationCard {
     @Override
     public void copyTo(IdentificationCard other) {
         this.card.copyTo(other);
-    }
-
-    @Override
-    public CompoundTag serializeNBT() {
-        return this.card.serializeNBT();
-    }
-
-    @Override
-    public void deserializeNBT(CompoundTag nbt) {
-        this.card.deserializeNBT(nbt);
     }
 }

@@ -5,6 +5,7 @@ import dev.su5ed.mffs.util.CustomEnergyStorage;
 import dev.su5ed.mffs.util.SidedEnergyWrapper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -89,16 +90,16 @@ public abstract class ElectricTileEntity extends ModularBlockEntity {
     }
 
     @Override
-    protected void saveTag(CompoundTag tag) {
-        super.saveTag(tag);
+    protected void saveTag(CompoundTag tag, HolderLookup.Provider provider) {
+        super.saveTag(tag, provider);
 
-        tag.put("energy", this.energy.serializeNBT());
+        tag.put("energy", this.energy.serializeNBT(provider));
     }
 
     @Override
-    protected void loadTag(CompoundTag tag) {
-        super.loadTag(tag);
+    protected void loadTag(CompoundTag tag, HolderLookup.Provider provider) {
+        super.loadTag(tag, provider);
 
-        this.energy.deserializeNBT(tag.get("energy"));
+        this.energy.deserializeNBT(provider, tag.get("energy"));
     }
 }

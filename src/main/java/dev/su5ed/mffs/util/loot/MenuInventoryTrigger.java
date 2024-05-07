@@ -3,22 +3,19 @@ package dev.su5ed.mffs.util.loot;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.advancements.critereon.ContextAwarePredicate;
-import net.minecraft.advancements.critereon.EntityPredicate;
-import net.minecraft.advancements.critereon.ItemPredicate;
-import net.minecraft.advancements.critereon.MinMaxBounds;
-import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
+import net.minecraft.advancements.critereon.*;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
+import net.minecraft.core.component.DataComponentPredicate;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandler;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -36,7 +33,7 @@ public class MenuInventoryTrigger extends SimpleCriterionTrigger<MenuInventoryTr
             List<ItemPredicate> list = new ObjectArrayList<>(instance.items);
             for (int i = 0; i < itemHandler.getSlots(); i++) {
                 ItemStack stackInSlot = itemHandler.getStackInSlot(i);
-                list.removeIf(predicate -> predicate.matches(stackInSlot));
+                list.removeIf(predicate -> predicate.test(stackInSlot));
             }
             return list.isEmpty();
         });
@@ -44,7 +41,7 @@ public class MenuInventoryTrigger extends SimpleCriterionTrigger<MenuInventoryTr
 
     public record TriggerInstance(Optional<ContextAwarePredicate> player, MenuType<?> menuType, boolean active, List<ItemPredicate> items) implements SimpleInstance {
         public static final Codec<TriggerInstance> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            ExtraCodecs.strictOptionalField(EntityPredicate.ADVANCEMENT_CODEC, "player").forGetter(TriggerInstance::player),
+            EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(TriggerInstance::player),
             BuiltInRegistries.MENU.byNameCodec().fieldOf("menuType").forGetter(TriggerInstance::menuType),
             Codec.BOOL.fieldOf("active").forGetter(TriggerInstance::active),
             ItemPredicate.CODEC.listOf().fieldOf("items").forGetter(TriggerInstance::items)
@@ -53,7 +50,7 @@ public class MenuInventoryTrigger extends SimpleCriterionTrigger<MenuInventoryTr
         @SafeVarargs
         public static TriggerInstance create(MenuType<?> menuType, boolean active, Holder<Item>... items) {
             List<ItemPredicate> predicates = Stream.of(items)
-                .map(holder -> new ItemPredicate(Optional.empty(), Optional.of(HolderSet.direct(holder)), MinMaxBounds.Ints.ANY, MinMaxBounds.Ints.ANY, List.of(), List.of(), Optional.empty(), Optional.empty()))
+                .map(holder -> new ItemPredicate(Optional.of(HolderSet.direct(holder)), MinMaxBounds.Ints.ANY, DataComponentPredicate.EMPTY, Map.of()))
                 .toList();
             return new TriggerInstance(Optional.empty(), menuType, active, predicates);
         }

@@ -9,8 +9,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod.EventBusSubscriber;
-import net.neoforged.fml.common.Mod.EventBusSubscriber.Bus;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.data.AdvancementProvider;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
 import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
@@ -21,7 +20,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
-@EventBusSubscriber(modid = MFFSMod.MODID, bus = Bus.MOD)
+@EventBusSubscriber(modid = MFFSMod.MODID, bus = EventBusSubscriber.Bus.MOD)
 public final class ModDataGen {
 
     @SubscribeEvent
@@ -43,7 +42,7 @@ public final class ModDataGen {
         generator.addProvider(event.includeServer(), new LootTableProvider(output, Set.of(), List.of(
             new LootTableProvider.SubProviderEntry(LootTableGen.ModBlockLoot::new, LootContextParamSets.BLOCK),
             new LootTableProvider.SubProviderEntry(LootTableGen.ModItemLoot::new, LootContextParamSets.EMPTY)
-        )));
+        ), registries));
         generator.addProvider(event.includeServer(), new AdvancementProvider(output, registries, helper, List.of(new AdvancementsGen())));
         generator.addProvider(event.includeServer(), new DamageTypeTagsGen(output, registries, helper));
         generator.addProvider(true, PackMetadataGen.create(output));

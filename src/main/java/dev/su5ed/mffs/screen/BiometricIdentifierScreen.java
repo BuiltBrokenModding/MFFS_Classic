@@ -66,6 +66,6 @@ public class BiometricIdentifierScreen extends FortronScreen<BiometricIdentifier
     }
 
     public void togglePermission(FieldPermission permission, boolean value) {
-        PacketDistributor.SERVER.noArg().send(new ToggleFieldPermissionPacket(this.menu.blockEntity.getBlockPos(), permission, value));
+        PacketDistributor.sendToServer(new ToggleFieldPermissionPacket(this.menu.blockEntity.getBlockPos(), permission, value));
     }
 }

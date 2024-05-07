@@ -1,9 +1,9 @@
 package dev.su5ed.mffs.util.inventory;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.util.INBTSerializable;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -67,7 +67,7 @@ public class InventorySlot implements INBTSerializable<CompoundTag> {
                 this.content.setCount(total);
             }
             int remainder = this.content.getCount() + stack.getCount() - this.content.getMaxStackSize();
-            ItemStack result = remainder > 0 ? ItemHandlerHelper.copyStackWithSize(stack, remainder) : ItemStack.EMPTY;
+            ItemStack result = remainder > 0 ? stack.copyWithCount(remainder) : ItemStack.EMPTY;
             onChanged(true);
             return result;
         }
@@ -85,7 +85,7 @@ public class InventorySlot implements INBTSerializable<CompoundTag> {
                 onChanged(true);
                 return stack;
             }
-            return ItemHandlerHelper.copyStackWithSize(this.content, Math.min(amount, this.content.getCount()));
+            return this.content.copyWithCount(Math.min(amount, this.content.getCount()));
         }
         return ItemStack.EMPTY;
     }
@@ -98,19 +98,19 @@ public class InventorySlot implements INBTSerializable<CompoundTag> {
     }
 
     private boolean canAdd(ItemStack stack) {
-        return accepts(stack) && (this.content.isEmpty() || ItemHandlerHelper.canItemStacksStack(this.content, stack));
+        return accepts(stack) && (this.content.isEmpty() || ItemStack.isSameItemSameComponents(this.content, stack));
     }
 
     @Override
-    public CompoundTag serializeNBT() {
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag tag = new CompoundTag();
-        this.content.save(tag);
+        this.content.save(provider, tag);
         return tag;
     }
 
     @Override
-    public void deserializeNBT(CompoundTag nbt) {
-        this.content = ItemStack.of(nbt);
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
+        this.content = ItemStack.parse(provider, nbt).orElse(ItemStack.EMPTY);
     }
 
     public enum Mode {

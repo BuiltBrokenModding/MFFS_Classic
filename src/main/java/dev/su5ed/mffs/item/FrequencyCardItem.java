@@ -6,7 +6,10 @@ import dev.su5ed.mffs.api.card.FrequencyCard;
 import dev.su5ed.mffs.setup.ModCapabilities;
 import dev.su5ed.mffs.util.ModUtil;
 import net.minecraft.ChatFormatting;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -16,7 +19,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Objects;
@@ -65,8 +67,8 @@ public class FrequencyCardItem extends BaseItem {
     }
 
     @Override
-    public void appendHoverTextPre(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
-        super.appendHoverTextPre(stack, level, tooltipComponents, isAdvanced);
+    public void appendHoverTextPre(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+        super.appendHoverTextPre(stack, context, tooltipComponents, isAdvanced);
 
         FrequencyCard card = stack.getCapability(ModCapabilities.FREQUENCY_CARD);
         if (card != null) {
@@ -79,6 +81,11 @@ public class FrequencyCardItem extends BaseItem {
         public static final Codec<FrequencyCardAttachment> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.INT.fieldOf("frequency").forGetter(FrequencyCardAttachment::getFrequency)
         ).apply(instance, FrequencyCardAttachment::new));
+        public static final StreamCodec<FriendlyByteBuf, FrequencyCardAttachment> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.INT,
+            FrequencyCardAttachment::getFrequency,
+            FrequencyCardAttachment::new
+        );
 
         private int frequency;
 
