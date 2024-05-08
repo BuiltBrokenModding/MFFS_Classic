@@ -17,6 +17,7 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import dev.su5ed.mffs.util.ModUtil;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -49,8 +50,7 @@ public final class BlockHighlighter {
     }
 
     public static void highlightArea(PoseStack pose, Vec3 cameraPos, BlockPos from, BlockPos to) {
-        BlockPos normalFrom = ModUtil.normalize(from, to);
-        AABB area = AABB.encapsulatingFullBlocks(normalFrom, ModUtil.normalize(to, normalFrom));
+        AABB area = AABB.encapsulatingFullBlocks(from, to);
         VoxelShape shape = Shapes.create(area);
         highlightArea(pose, cameraPos, shape, null);
     }

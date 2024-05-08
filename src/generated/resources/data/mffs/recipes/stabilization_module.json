@@ -6,7 +6,7 @@
       "item": "minecraft:diamond_axe"
     },
     "D": {
-      "tag": "forge:gems/diamond"
+      "tag": "c:gems/diamond"
     },
     "F": {
       "item": "mffs:focus_matrix"
@@ -24,6 +24,7 @@
     "FDF"
   ],
   "result": {
-    "item": "mffs:stabilization_module"
+    "count": 1,
+    "id": "mffs:stabilization_module"
   }
 }

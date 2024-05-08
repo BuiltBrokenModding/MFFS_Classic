@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mffs:block_access_module"
-            ]
+            "items": "mffs:block_access_module"
           }
         ]
       },

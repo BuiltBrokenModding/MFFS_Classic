@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mffs:steel_compound"
-            ]
+            "items": "mffs:steel_compound"
           }
         ]
       },

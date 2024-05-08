@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mffs:anti_friendly_module"
-            ]
+            "items": "mffs:anti_friendly_module"
           }
         ]
       },

@@ -6,7 +6,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.network.SetStructureShapePacket;
-import dev.su5ed.mffs.util.ModUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -37,7 +36,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 public class CustomStructureSavedData extends SavedData {
-    public static final String NAME = MFFSMod.MODID + ":custom_structures";
+    public static final String NAME = MFFSMod.MODID + "_custom_structures";
     public static final Codec<AABB> AABB_CODEC = RecordCodecBuilder.create(instance -> instance.group(
         Codec.DOUBLE.fieldOf("minX").forGetter(a -> a.minX),
         Codec.DOUBLE.fieldOf("minY").forGetter(a -> a.minY),
@@ -78,8 +77,7 @@ public class CustomStructureSavedData extends SavedData {
     public void join(String id, Level level, ServerPlayer serverPlayer, BlockPos min, BlockPos max, boolean add) {
         Structure structure = getOrCreate(id);
         BooleanOp op = add ? BooleanOp.OR : BooleanOp.ONLY_FIRST;
-        BlockPos normalFrom = ModUtil.normalize(min, max);
-        VoxelShape normalShape = Shapes.joinUnoptimized(structure.normalShape, Shapes.create(AABB.encapsulatingFullBlocks(normalFrom, ModUtil.normalize(max, normalFrom))), op);
+        VoxelShape normalShape = Shapes.joinUnoptimized(structure.normalShape, Shapes.create(AABB.encapsulatingFullBlocks(min, max)), op);
         VoxelShape shape = Shapes.joinUnoptimized(structure.shape, Shapes.create(AABB.encapsulatingFullBlocks(min, normalizeAxis(min, max))), op);
 
         AABB area = AABB.encapsulatingFullBlocks(min, max);

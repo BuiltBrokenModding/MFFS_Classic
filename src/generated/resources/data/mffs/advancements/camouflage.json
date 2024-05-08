@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mffs:camouflage_module"
-            ]
+            "items": "mffs:camouflage_module"
           }
         ]
       },
@@ -19,7 +17,8 @@
       "translate": "advancements.mffs.camouflage.description"
     },
     "icon": {
-      "item": "mffs:camouflage_module"
+      "count": 1,
+      "id": "mffs:camouflage_module"
     },
     "title": {
       "translate": "advancements.mffs.camouflage.title"

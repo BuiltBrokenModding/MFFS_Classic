@@ -6,13 +6,13 @@
       "item": "mffs:focus_matrix"
     },
     "L": {
-      "tag": "forge:leather"
+      "tag": "c:leathers"
     },
     "P": {
       "item": "minecraft:cooked_porkchop"
     },
     "S": {
-      "tag": "forge:slimeballs"
+      "tag": "c:slimeballs"
     },
     "W": {
       "tag": "minecraft:wool"
@@ -24,6 +24,7 @@
     " S "
   ],
   "result": {
-    "item": "mffs:anti_friendly_module"
+    "count": 1,
+    "id": "mffs:anti_friendly_module"
   }
 }

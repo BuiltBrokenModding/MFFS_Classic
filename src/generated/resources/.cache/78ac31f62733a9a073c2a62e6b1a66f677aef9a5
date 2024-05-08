@@ -1,2 +1,3 @@
-// 1.20.4	2023-12-25T10:17:23.8180199	Tags for minecraft:damage_type mod id mffs
+// 1.20.6	2024-05-07T14:51:56.8708905	Tags for minecraft:damage_type mod id mffs
 80a05ce2adbd150bccb8f4772fb34c931e8e0efc data/minecraft/tags/damage_type/bypasses_armor.json
+80a05ce2adbd150bccb8f4772fb34c931e8e0efc data/neoforge/tags/damage_type/is_technical.json

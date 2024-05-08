@@ -6,10 +6,10 @@
       "item": "mffs:battery"
     },
     "R": {
-      "tag": "forge:dusts/redstone"
+      "tag": "c:dusts/redstone"
     },
     "S": {
-      "tag": "forge:ingots/steel"
+      "tag": "c:ingots/steel"
     }
   },
   "pattern": [
@@ -18,6 +18,7 @@
     "SBS"
   ],
   "result": {
-    "item": "mffs:remote_controller"
+    "count": 1,
+    "id": "mffs:remote_controller"
   }
 }

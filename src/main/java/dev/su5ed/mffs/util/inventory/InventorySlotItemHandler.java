@@ -92,9 +92,7 @@ public class InventorySlotItemHandler implements IItemHandler, IItemHandlerModif
     public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag nbt = new CompoundTag();
         this.slots.forEach(slot -> {
-            CompoundTag tag = new CompoundTag();
-            slot.getItem().save(provider, tag);
-            nbt.put(slot.getName(), tag);
+            nbt.put(slot.getName(), slot.getItem().saveOptional(provider));
         });
         return nbt;
     }
@@ -104,7 +102,7 @@ public class InventorySlotItemHandler implements IItemHandler, IItemHandlerModif
         this.slots.forEach(slot -> {
             if (nbt.contains(slot.getName())) {
                 CompoundTag tag = nbt.getCompound(slot.getName());
-                slot.setItem(ItemStack.parse(provider, tag).orElse(ItemStack.EMPTY), false);
+                slot.setItem(ItemStack.parseOptional(provider, tag), false);
             }
         });
     }

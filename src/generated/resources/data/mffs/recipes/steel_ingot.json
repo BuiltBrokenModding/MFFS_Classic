@@ -6,5 +6,8 @@
   "ingredient": {
     "item": "mffs:steel_compound"
   },
-  "result": "mffs:steel_ingot"
+  "result": {
+    "count": 1,
+    "id": "mffs:steel_ingot"
+  }
 }

@@ -6,14 +6,10 @@
         "active": true,
         "items": [
           {
-            "items": [
-              "mffs:custom_mode"
-            ]
+            "items": "mffs:custom_mode"
           },
           {
-            "items": [
-              "mffs:camouflage_module"
-            ]
+            "items": "mffs:camouflage_module"
           }
         ],
         "menuType": "mffs:projector"
@@ -27,7 +23,8 @@
     },
     "frame": "goal",
     "icon": {
-      "item": "minecraft:ender_pearl"
+      "count": 1,
+      "id": "minecraft:ender_pearl"
     },
     "title": {
       "translate": "advancements.mffs.custom_camouflage.title"

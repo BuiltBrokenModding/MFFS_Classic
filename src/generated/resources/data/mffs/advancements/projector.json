@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mffs:projector"
-            ]
+            "items": "mffs:projector"
           }
         ]
       },
@@ -19,7 +17,8 @@
       "translate": "advancements.mffs.projector.description"
     },
     "icon": {
-      "item": "mffs:projector"
+      "count": 1,
+      "id": "mffs:projector"
     },
     "title": {
       "translate": "advancements.mffs.projector.title"

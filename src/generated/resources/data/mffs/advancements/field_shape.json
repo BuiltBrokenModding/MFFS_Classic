@@ -11,7 +11,8 @@
     },
     "frame": "goal",
     "icon": {
-      "item": "mffs:custom_mode"
+      "count": 1,
+      "id": "mffs:custom_mode"
     },
     "title": {
       "translate": "advancements.mffs.field_shape.title"

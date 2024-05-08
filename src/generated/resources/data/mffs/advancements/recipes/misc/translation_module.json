@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mffs:scale_module"
-            ]
+            "items": "mffs:scale_module"
           }
         ]
       },

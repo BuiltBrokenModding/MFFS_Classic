@@ -83,7 +83,7 @@ public class CustomProjectorModeItem extends BaseItem {
 
             if (player.isShiftKeyDown()) {
                 CustomStructureSavedData data = getOrCreateData(serverLevel);
-                if (coords.canBuild()) {
+                if (coords != null && coords.canBuild()) {
                     BlockPos primary = coords.primary();
                     BlockPos secondary = coords.secondary();
                     int distance = MFFSConfig.COMMON.maxCustomModeScale.get();
@@ -106,7 +106,7 @@ public class CustomProjectorModeItem extends BaseItem {
                     player.displayClientMessage(ModUtil.translate("item", "custom_mode.clear"), true);
                     return InteractionResultHolder.success(stack);
                 }
-            } else if (coords.selectSecondary()) {
+            } else if (coords != null && coords.selectSecondary()) {
                 HitResult result = player.pick(player.blockInteractionRange(), 0, true);
                 if (result instanceof BlockHitResult blockHitResult) {
                     stack.set(ModDataComponentTypes.STRUCTURE_COORDS, new StructureCoords(coords.primary(), blockHitResult.getBlockPos()));
@@ -129,10 +129,10 @@ public class CustomProjectorModeItem extends BaseItem {
             BlockPos pos = context.getClickedPos();
             Player player = context.getPlayer();
             StructureCoords coords = stack.get(ModDataComponentTypes.STRUCTURE_COORDS);
-            if (coords.selectPrimary()) {
+            if (coords == null || coords.selectPrimary()) {
                 stack.set(ModDataComponentTypes.STRUCTURE_COORDS, new StructureCoords(pos, null));
                 selectBlock(player, "primary_point", ChatFormatting.GREEN);
-            } else {
+            } else if (coords != null) {
                 stack.set(ModDataComponentTypes.STRUCTURE_COORDS, new StructureCoords(coords.primary(), pos));
                 selectBlock(player, "secondary_point", ChatFormatting.GOLD);
             }
@@ -147,14 +147,14 @@ public class CustomProjectorModeItem extends BaseItem {
 
     @Override
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
-        Mode mode = stack.get(ModDataComponentTypes.STRUCTURE_MODE);
+        Mode mode = getMode(stack);
         tooltipComponents.add(ModUtil.translate("item", "custom_mode.mode", mode.getName().withStyle(ChatFormatting.GRAY)).withStyle(ChatFormatting.DARK_GRAY));
         String id = stack.get(ModDataComponentTypes.PATTERN_ID);
-        if (!id.isEmpty()) {
+        if (id != null) {
             tooltipComponents.add(ModUtil.translate("item", "custom_mode.pattern_id", Component.literal(id).withStyle(ChatFormatting.GRAY)).withStyle(ChatFormatting.DARK_GRAY));
         }
         StructureCoords coords = stack.get(ModDataComponentTypes.STRUCTURE_COORDS);
-        if (coords.primary() != null) {
+        if (coords != null && coords.primary() != null) {
             tooltipComponents.add(ModUtil.translate("item", "custom_mode.set_primary_point",
                 Component.literal(coords.primary().toShortString()).withStyle(ChatFormatting.GRAY)).withStyle(ChatFormatting.DARK_GRAY));
 

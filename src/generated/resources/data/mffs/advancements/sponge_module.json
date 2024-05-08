@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mffs:sponge_module"
-            ]
+            "items": "mffs:sponge_module"
           }
         ]
       },
@@ -19,7 +17,8 @@
       "translate": "advancements.mffs.sponge_module.description"
     },
     "icon": {
-      "item": "mffs:sponge_module"
+      "count": 1,
+      "id": "mffs:sponge_module"
     },
     "title": {
       "translate": "advancements.mffs.sponge_module.title"

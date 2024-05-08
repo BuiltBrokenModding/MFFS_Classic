@@ -3,16 +3,16 @@
   "category": "misc",
   "key": {
     "C": {
-      "tag": "forge:ingots/copper"
+      "tag": "c:ingots/copper"
     },
     "I": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:ingots/iron"
     },
     "O": {
       "item": "minecraft:coal"
     },
     "R": {
-      "tag": "forge:dusts/redstone"
+      "tag": "c:dusts/redstone"
     }
   },
   "pattern": [
@@ -21,6 +21,7 @@
     "IOI"
   ],
   "result": {
-    "item": "mffs:battery"
+    "count": 1,
+    "id": "mffs:battery"
   }
 }

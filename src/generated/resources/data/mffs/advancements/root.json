@@ -4,9 +4,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mffs:steel_compound"
-            ]
+            "items": "mffs:steel_compound"
           }
         ]
       },
@@ -20,7 +18,8 @@
       "translate": "advancements.mffs.root.description"
     },
     "icon": {
-      "item": "mffs:coercion_deriver"
+      "count": 1,
+      "id": "mffs:coercion_deriver"
     },
     "show_toast": false,
     "title": {

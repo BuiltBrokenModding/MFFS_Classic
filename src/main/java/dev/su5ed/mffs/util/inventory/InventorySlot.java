@@ -104,13 +104,13 @@ public class InventorySlot implements INBTSerializable<CompoundTag> {
     @Override
     public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag tag = new CompoundTag();
-        this.content.save(provider, tag);
+        tag.put("item", this.content.saveOptional(provider));
         return tag;
     }
 
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
-        this.content = ItemStack.parse(provider, nbt).orElse(ItemStack.EMPTY);
+        this.content = ItemStack.parseOptional(provider, nbt.getCompound("item"));
     }
 
     public enum Mode {

@@ -1,10 +1,10 @@
 {
   "pack": {
     "description": "MFFS resources",
-    "pack_format": 26,
+    "pack_format": 41,
     "supported_formats": [
-      22,
-      26
+      32,
+      41
     ]
   }
 }

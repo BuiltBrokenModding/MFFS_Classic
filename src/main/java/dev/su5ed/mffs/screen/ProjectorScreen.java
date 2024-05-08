@@ -30,7 +30,7 @@ public class ProjectorScreen extends FortronScreen<ProjectorMenu> {
         drawWithTooltip(guiGraphics, 8, 110, GuiColors.DARK_GREY, "fortron", this.menu.blockEntity.fortronStorage.getStoredFortron(), this.menu.blockEntity.fortronStorage.getFortronCapacity());
         int cost = this.menu.getClientFortronCost() * 20;
         if (cost > 0) {
-            guiGraphics.drawString(this.font, ModUtil.translate("screen", "fortron_cost", '-', cost).withStyle(ChatFormatting.DARK_RED), 117, 121, GuiColors.DARK_GREY, false);
+            guiGraphics.drawString(this.font, ModUtil.translate("screen", "fortron_cost", "-", cost).withStyle(ChatFormatting.DARK_RED), 117, 121, GuiColors.DARK_GREY, false);
         }
     }
 }

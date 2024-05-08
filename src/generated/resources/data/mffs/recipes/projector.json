@@ -6,13 +6,13 @@
       "item": "mffs:battery"
     },
     "D": {
-      "tag": "forge:gems/diamond"
+      "tag": "c:gems/diamond"
     },
     "F": {
       "item": "mffs:focus_matrix"
     },
     "S": {
-      "tag": "forge:ingots/steel"
+      "tag": "c:ingots/steel"
     }
   },
   "pattern": [
@@ -21,6 +21,7 @@
     "SBS"
   ],
   "result": {
-    "item": "mffs:projector"
+    "count": 1,
+    "id": "mffs:projector"
   }
 }

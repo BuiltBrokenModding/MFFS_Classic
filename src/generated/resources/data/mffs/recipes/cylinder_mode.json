@@ -12,6 +12,7 @@
     "S"
   ],
   "result": {
-    "item": "mffs:cylinder_mode"
+    "count": 1,
+    "id": "mffs:cylinder_mode"
   }
 }

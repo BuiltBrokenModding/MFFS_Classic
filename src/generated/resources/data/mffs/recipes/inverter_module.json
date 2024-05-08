@@ -6,7 +6,7 @@
       "item": "mffs:focus_matrix"
     },
     "L": {
-      "tag": "forge:storage_blocks/lapis"
+      "tag": "c:storage_blocks/lapis"
     }
   },
   "pattern": [
@@ -15,6 +15,7 @@
     "L"
   ],
   "result": {
-    "item": "mffs:inverter_module"
+    "count": 1,
+    "id": "mffs:inverter_module"
   }
 }

@@ -24,6 +24,7 @@
     " G "
   ],
   "result": {
-    "item": "mffs:anti_hostile_module"
+    "count": 1,
+    "id": "mffs:anti_hostile_module"
   }
 }

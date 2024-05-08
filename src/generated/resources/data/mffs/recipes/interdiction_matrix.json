@@ -18,6 +18,7 @@
     "FEF"
   ],
   "result": {
-    "item": "mffs:interdiction_matrix"
+    "count": 1,
+    "id": "mffs:interdiction_matrix"
   }
 }

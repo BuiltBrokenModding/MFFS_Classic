@@ -1,5 +1,6 @@
 package dev.su5ed.mffs.setup;
 
+import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.block.ForceFieldBlockImpl;
 import dev.su5ed.mffs.render.*;
 import dev.su5ed.mffs.render.model.*;
@@ -23,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-@EventBusSubscriber(value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = MFFSMod.MODID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
 public final class ModClientSetup {
     private static final Map<Item, LazyRendererFactory> LAZY_RENDERERS = new HashMap<>();
 

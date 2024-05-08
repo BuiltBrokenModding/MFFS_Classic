@@ -77,7 +77,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
         super(ModObjects.PROJECTOR_BLOCK_ENTITY.get(), pos, state, 50);
 
         this.secondaryCard = addSlot("secondaryCard", InventorySlot.Mode.BOTH, ModUtil::isCard);
-        this.projectorModeSlot = addSlot("projectorMode", InventorySlot.Mode.BOTH, ModUtil::isProjectorMode, stack -> destroyField());
+        this.projectorModeSlot = addSlot("projectorMode", InventorySlot.Mode.BOTH, ModUtil::isProjectorMode, this::onModeChanged);
         this.fieldModuleSlots = StreamEx.of(Direction.values())
             .flatMap(side -> IntStreamEx.range(2)
                 .mapToEntry(i -> side, i -> addSlot("field_module_" + side.getName() + "_" + i, InventorySlot.Mode.BOTH, stack -> ModUtil.isModule(stack, Module.Category.FIELD), stack -> destroyField())))
@@ -405,6 +405,11 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
         boolean canProject = (state.isAir() || state.liquid() || state.is(ModTags.FORCEFIELD_REPLACEABLE) || hasModule(ModModules.DISINTEGRATION) && state.getDestroySpeed(this.level, pos) != -1)
             && !state.is(ModBlocks.FORCE_FIELD.get()) && !pos.equals(this.worldPosition);
         return Pair.of(state, canProject);
+    }
+
+    private void onModeChanged(ItemStack stack) {
+        this.level.getLightEngine().checkBlock(this.worldPosition);
+        destroyField();
     }
 
     @Override

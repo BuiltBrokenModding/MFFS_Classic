@@ -6,13 +6,14 @@
       "item": "mffs:blank_card"
     },
     "G": {
-      "tag": "forge:ingots/gold"
+      "tag": "c:ingots/gold"
     }
   },
   "pattern": [
     "GCG"
   ],
   "result": {
-    "item": "mffs:frequency_card"
+    "count": 1,
+    "id": "mffs:frequency_card"
   }
 }

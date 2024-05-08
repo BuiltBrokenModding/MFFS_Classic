@@ -1,15 +1,11 @@
 package dev.su5ed.mffs.item;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.su5ed.mffs.api.card.FrequencyCard;
 import dev.su5ed.mffs.setup.ModCapabilities;
+import dev.su5ed.mffs.setup.ModDataComponentTypes;
 import dev.su5ed.mffs.util.ModUtil;
 import net.minecraft.ChatFormatting;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -77,32 +73,15 @@ public class FrequencyCardItem extends BaseItem {
         }
     }
 
-    public static class FrequencyCardAttachment implements FrequencyCard {
-        public static final Codec<FrequencyCardAttachment> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.INT.fieldOf("frequency").forGetter(FrequencyCardAttachment::getFrequency)
-        ).apply(instance, FrequencyCardAttachment::new));
-        public static final StreamCodec<FriendlyByteBuf, FrequencyCardAttachment> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.INT,
-            FrequencyCardAttachment::getFrequency,
-            FrequencyCardAttachment::new
-        );
-
-        private int frequency;
-
-        public FrequencyCardAttachment() {}
-
-        private FrequencyCardAttachment(int frequency) {
-            this.frequency = frequency;
-        }
-
+    public record FrequencyCardHandler(ItemStack stack) implements FrequencyCard {
         @Override
         public int getFrequency() {
-            return this.frequency;
+            return this.stack.getOrDefault(ModDataComponentTypes.CARD_FREQUENCY, 0);
         }
 
         @Override
         public void setFrequency(int frequency) {
-            this.frequency = frequency;
+            this.stack.set(ModDataComponentTypes.CARD_FREQUENCY, frequency);
         }
     }
 }

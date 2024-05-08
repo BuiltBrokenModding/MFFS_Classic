@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "mffs:steel_ingot"
-            ]
+            "items": "mffs:steel_ingot"
           }
         ]
       },
@@ -19,7 +17,8 @@
       "translate": "advancements.mffs.smelt_steel.description"
     },
     "icon": {
-      "item": "mffs:steel_ingot"
+      "count": 1,
+      "id": "mffs:steel_ingot"
     },
     "title": {
       "translate": "advancements.mffs.smelt_steel.title"

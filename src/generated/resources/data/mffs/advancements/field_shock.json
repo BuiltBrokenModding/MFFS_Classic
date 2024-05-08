@@ -15,7 +15,8 @@
     },
     "frame": "goal",
     "icon": {
-      "item": "mffs:shock_module"
+      "count": 1,
+      "id": "mffs:shock_module"
     },
     "title": {
       "translate": "advancements.mffs.field_shock.title"
