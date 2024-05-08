@@ -49,6 +49,7 @@ public class ForceFieldBlockImpl extends Block implements ForceFieldBlock, Entit
     @Override
     public boolean propagatesSkylightDown(BlockState state, BlockGetter level, BlockPos pos) {
         return getCamouflageBlock(level, pos)
+            .filter(this::preventStackOverflow)
             .map(block -> block.propagatesSkylightDown(level, pos))
             .orElse(true);
     }
@@ -56,6 +57,7 @@ public class ForceFieldBlockImpl extends Block implements ForceFieldBlock, Entit
     @Override
     public float getShadeBrightness(BlockState state, BlockGetter level, BlockPos pos) {
         return getCamouflageBlock(level, pos)
+            .filter(this::preventStackOverflow)
             .map(block -> block.getShadeBrightness(level, pos))
             .orElse(1.0F);
     }
@@ -63,6 +65,7 @@ public class ForceFieldBlockImpl extends Block implements ForceFieldBlock, Entit
     @Override
     public boolean hidesNeighborFace(BlockGetter level, BlockPos pos, BlockState state, BlockState neighborState, Direction side) {
         return getCamouflageBlock(level, pos)
+            .filter(this::preventStackOverflow)
             .flatMap(block -> getCamouflageBlock(level, pos.relative(side))
                 .map(neighbor -> block.skipRendering(neighbor, side)))
             .orElseGet(() -> neighborState.is(this));
@@ -71,6 +74,7 @@ public class ForceFieldBlockImpl extends Block implements ForceFieldBlock, Entit
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         return getCamouflageBlock(level, pos)
+            .filter(this::preventStackOverflow)
             .map(block -> block.getShape(level, pos))
             .orElseGet(() -> super.getShape(state, level, pos, context));
     }
@@ -78,6 +82,7 @@ public class ForceFieldBlockImpl extends Block implements ForceFieldBlock, Entit
     @Override
     public VoxelShape getVisualShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         return getCamouflageBlock(level, pos)
+            .filter(this::preventStackOverflow)
             .map(block -> block.getVisualShape(level, pos, context))
             .orElseGet(Shapes::empty);
     }
@@ -85,6 +90,7 @@ public class ForceFieldBlockImpl extends Block implements ForceFieldBlock, Entit
     @Override
     public VoxelShape getOcclusionShape(BlockState state, BlockGetter level, BlockPos pos) {
         return getCamouflageBlock(level, pos)
+            .filter(this::preventStackOverflow)
             .map(block -> block.getOcclusionShape(level, pos))
             .orElseGet(() -> super.getOcclusionShape(state, level, pos));
     }
@@ -153,6 +159,10 @@ public class ForceFieldBlockImpl extends Block implements ForceFieldBlock, Entit
 
     private boolean isSneaking(Entity entity) {
         return entity.isShiftKeyDown() || CreateTrainCompat.isTrainPassenger(entity);
+    }
+
+    private boolean preventStackOverflow(BlockState state) {
+        return !state.is(this);
     }
 
     @Nullable

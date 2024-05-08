@@ -126,7 +126,7 @@ public class ForceFieldBlockEntity extends BlockEntity {
         NbtUtils.readBlockPos(tag, "projector")
             .ifPresent(p -> this.projector = p);
         if (tag.contains("camouflage")) {
-            this.camouflage = NbtUtils.readBlockState(this.level.holderLookup(Registries.BLOCK), tag.getCompound("camouflage"));
+            this.camouflage = NbtUtils.readBlockState(provider.lookupOrThrow(Registries.BLOCK), tag.getCompound("camouflage"));
         }
     }
 

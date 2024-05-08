@@ -12,6 +12,7 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.api.distmarker.Dist;
@@ -94,16 +95,17 @@ public final class ModClientSetup {
 
     @SubscribeEvent
     public static void registerBlockColor(RegisterColorHandlersEvent.Block event) {
+        Block forceFieldBlock = ModBlocks.FORCE_FIELD.get();
         event.register((state, level, pos, tintIndex) -> {
             BlockEntity be = level.getBlockEntity(pos);
             if (be != null) {
                 BlockState camo = be.getModelData().get(ForceFieldBlockImpl.CAMOUFLAGE_BLOCK);
-                if (camo != null) {
+                if (camo != null && !camo.is(forceFieldBlock)) {
                     return event.getBlockColors().getColor(camo, level, pos, tintIndex);
                 }
             }
             return 3473151;
-        }, ModBlocks.FORCE_FIELD.get());
+        }, forceFieldBlock);
     }
 
     @SubscribeEvent

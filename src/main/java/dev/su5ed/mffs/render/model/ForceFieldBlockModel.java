@@ -88,6 +88,12 @@ public class ForceFieldBlockModel implements IDynamicBakedModel {
 
     private Pair<BakedModel, BlockState> getCamouflageModel(BlockState state, ModelData data) {
         BlockState camoState = data.get(ForceFieldBlock.CAMOUFLAGE_BLOCK);
-        return camoState != null ? Pair.of(this.cache.getUnchecked(camoState), camoState) : Pair.of(this.defaultModel, state);
+        if (camoState != null) {
+            BakedModel model = this.cache.getUnchecked(camoState); 
+            if (model != this) {
+                return Pair.of(model, camoState);
+            }
+        }
+        return Pair.of(this.defaultModel, state);
     }
 }
