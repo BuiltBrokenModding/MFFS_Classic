@@ -12,6 +12,7 @@ group = "dev.su5ed.mffs"
 version = changelog.getVersionFromTag()
 
 val curseForgeId: String by project
+val modrinthId: String by project
 val versionJei: String by project
 val versionTOP: String by project
 val versionPatchouli: String by project
@@ -127,6 +128,12 @@ publishMods {
     curseforge {
         accessToken.set(providers.environmentVariable("CURSEFORGE_TOKEN"))
         projectId.set(curseForgeId)
+        minecraftVersions.add(minecraftVersion)
+        displayName.set("MFFS $minecraftVersion-${project.version}")
+    }
+    modrinth {
+        accessToken.set(providers.environmentVariable("MODRINTH_TOKEN"))
+        projectId.set(modrinthId)
         minecraftVersions.add(minecraftVersion)
         displayName.set("MFFS $minecraftVersion-${project.version}")
     }
