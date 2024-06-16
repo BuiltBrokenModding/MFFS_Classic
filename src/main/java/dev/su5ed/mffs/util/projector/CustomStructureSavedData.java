@@ -33,7 +33,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 public class CustomStructureSavedData extends SavedData {
-    public static final String NAME = MFFSMod.MODID + ":custom_structures";
+    public static final String NAME = MFFSMod.MODID + "_custom_structures";
     public static final Codec<AABB> AABB_CODEC = RecordCodecBuilder.create(instance -> instance.group(
         Codec.DOUBLE.fieldOf("minX").forGetter(a -> a.minX),
         Codec.DOUBLE.fieldOf("minY").forGetter(a -> a.minY),
