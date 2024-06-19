@@ -4,47 +4,32 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 
 public record TranslucentVertexConsumer(VertexConsumer wrapped, int alpha) implements VertexConsumer {
     @Override
-    public VertexConsumer vertex(double x, double y, double z) {
-        return wrapped.vertex(x, y, z);
+    public VertexConsumer addVertex(float v, float v1, float v2) {
+        return this.wrapped.addVertex(v, v1, v2);
     }
 
     @Override
-    public VertexConsumer color(int red, int green, int blue, int alpha) {
-        return wrapped.color(red, green, blue, alpha * this.alpha / 0xFF);
+    public VertexConsumer setColor(int red, int green, int blue, int alpha) {
+        return this.wrapped.setColor(red, green, blue, alpha * this.alpha / 0xFF);
     }
 
     @Override
-    public VertexConsumer uv(float u, float v) {
-        return wrapped.uv(u, v);
+    public VertexConsumer setUv(float v, float v1) {
+        return this.wrapped.setUv(v, v1);
     }
 
     @Override
-    public VertexConsumer overlayCoords(int u, int v) {
-        return wrapped.overlayCoords(u, v);
+    public VertexConsumer setUv1(int i, int i1) {
+        return this.wrapped.setUv1(i, i1);
     }
 
     @Override
-    public VertexConsumer uv2(int u, int v) {
-        return wrapped.uv2(u, v);
+    public VertexConsumer setUv2(int i, int i1) {
+        return this.wrapped.setUv2(i, i1);
     }
 
     @Override
-    public VertexConsumer normal(float x, float y, float z) {
-        return wrapped.normal(x, y, z);
-    }
-
-    @Override
-    public void endVertex() {
-        wrapped.endVertex();
-    }
-
-    @Override
-    public void defaultColor(int r, int g, int b, int a) {
-        wrapped.defaultColor(r, g, b, a);
-    }
-
-    @Override
-    public void unsetDefaultColor() {
-        wrapped.unsetDefaultColor();
+    public VertexConsumer setNormal(float v, float v1, float v2) {
+        return this.wrapped.setNormal(v, v1, v2);
     }
 }

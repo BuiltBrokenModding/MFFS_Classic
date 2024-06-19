@@ -28,6 +28,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.su5ed.mffs.MFFSMod;
 import net.minecraft.client.Camera;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -66,7 +67,7 @@ public final class RenderTickHandler {
             Camera camera = event.getCamera();
             PoseStack poseStack = event.getPoseStack();
             int ticks = event.getRenderTick();
-            float partialTicks = event.getPartialTick();
+            DeltaTracker partialTicks = event.getPartialTick();
             MultiBufferSource.BufferSource bufferSource = minecraft.renderBuffers().bufferSource();
 
             RenderPostProcessor.prepareRender();
@@ -77,7 +78,7 @@ public final class RenderTickHandler {
             poseStack.translate(-camPos.x, -camPos.y, -camPos.z);
 
             // Render
-            Consumer<TransparentRenderInfo> consumer = info -> info.render(poseStack, bufferSource, ticks, partialTicks);
+            Consumer<TransparentRenderInfo> consumer = info -> info.render(poseStack, bufferSource, ticks, partialTicks.getGameTimeDeltaPartialTick(false));
             if (transparentRenderers.size() == 1) {
                 //If we only have one render holoType we don't need to bother calculating any distances
                 EntryStream.of(transparentRenderers)

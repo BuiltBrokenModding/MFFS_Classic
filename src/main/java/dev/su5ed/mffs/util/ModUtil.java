@@ -28,7 +28,6 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.fluids.IFluidBlock;
 import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 import org.jetbrains.annotations.Nullable;
 
@@ -166,7 +165,7 @@ public final class ModUtil {
     }
 
     public static boolean isLiquidBlock(Block block) {
-        return block instanceof LiquidBlock || block instanceof IFluidBlock;
+        return block instanceof LiquidBlock;
     }
 
     public static boolean isCard(ItemStack stack) {

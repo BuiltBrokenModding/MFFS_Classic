@@ -25,8 +25,8 @@ import org.joml.Matrix4f;
 import java.util.function.Function;
 
 public class ProjectorRenderer implements BlockEntityRenderer<ProjectorBlockEntity> {
-    public static final ResourceLocation PROJECTOR_OFF_TEXTURE = new ResourceLocation(MFFSMod.MODID, "textures/model/projector_off.png");
-    public static final ResourceLocation PROJECTOR_ON_TEXTURE = new ResourceLocation(MFFSMod.MODID, "textures/model/projector_on.png");
+    public static final ResourceLocation PROJECTOR_OFF_TEXTURE = MFFSMod.location("textures/model/projector_off.png");
+    public static final ResourceLocation PROJECTOR_ON_TEXTURE = MFFSMod.location("textures/model/projector_on.png");
 
     private final ModelPart rotor;
     private final Function<ModelLayerLocation, ModelPart> modelPartCache;
@@ -87,17 +87,17 @@ public class ProjectorRenderer implements BlockEntityRenderer<ProjectorBlockEnti
             float width = 2.0F;
             Matrix4f mat = poseStack.last().pose();
 
-            buffer.vertex(mat, 0, 0, 0).color(72, 198, 255, 255).endVertex();
-            buffer.vertex(mat, -0.866F * width, height, -0.5F * width).color(0, 0, 0, 0).endVertex();
-            buffer.vertex(mat, 0.866F * width, height, -0.5F * width).color(0, 0, 0, 0).endVertex();
+            buffer.addVertex(mat, 0, 0, 0).setColor(72, 198, 255, 255);
+            buffer.addVertex(mat, -0.866F * width, height, -0.5F * width).setColor(0, 0, 0, 0);
+            buffer.addVertex(mat, 0.866F * width, height, -0.5F * width).setColor(0, 0, 0, 0);
 
-            buffer.vertex(mat, 0, 0, 0).color(72, 198, 255, 255).endVertex();
-            buffer.vertex(mat, 0.866F * width, height, -0.5F * width).color(0, 0, 0, 0).endVertex();
-            buffer.vertex(mat, 0.0F, height, width).color(0, 0, 0, 0).endVertex();
+            buffer.addVertex(mat, 0, 0, 0).setColor(72, 198, 255, 255);
+            buffer.addVertex(mat, 0.866F * width, height, -0.5F * width).setColor(0, 0, 0, 0);
+            buffer.addVertex(mat, 0.0F, height, width).setColor(0, 0, 0, 0);
 
-            buffer.vertex(mat, 0, 0, 0).color(72, 198, 255, 255).endVertex();
-            buffer.vertex(mat, 0.0F, height, width).color(0, 0, 0, 0).endVertex();
-            buffer.vertex(mat, -0.866F * width, height, -0.5F * width).color(0, 0, 0, 0).endVertex();
+            buffer.addVertex(mat, 0, 0, 0).setColor(72, 198, 255, 255);
+            buffer.addVertex(mat, 0.0F, height, width).setColor(0, 0, 0, 0);
+            buffer.addVertex(mat, -0.866F * width, height, -0.5F * width).setColor(0, 0, 0, 0);
 
             poseStack.popPose();
         }

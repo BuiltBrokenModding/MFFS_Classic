@@ -14,7 +14,6 @@ import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -40,7 +39,7 @@ public final class ModObjects {
     public static final DeferredHolder<ParticleType<?>, ModParticleType<BeamParticleOptions>> BEAM_PARTICLE = PARTICLES.register("beam", () -> new ModParticleType<>(true, BeamParticleOptions.CODEC.fieldOf("options"), BeamParticleOptions.STREAM_CODEC));
     public static final DeferredHolder<ParticleType<?>, ModParticleType<MovingHologramParticleOptions>> MOVING_HOLOGRAM_PARTICLE = PARTICLES.register("moving_hologram", () -> new ModParticleType<>(true, MovingHologramParticleOptions.CODEC.fieldOf("options"), MovingHologramParticleOptions.STREAM_CODEC));
 
-    public static final ResourceKey<DamageType> FIELD_SHOCK_TYPE = ResourceKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(MFFSMod.MODID, "field_shock"));
+    public static final ResourceKey<DamageType> FIELD_SHOCK_TYPE = ResourceKey.create(Registries.DAMAGE_TYPE, MFFSMod.location("field_shock"));
     public static final DeferredHolder<CriterionTrigger<?>, DamageSourceTrigger> DAMAGE_TRIGGER = CRITERION_TRIGGERS.register("damage_source", DamageSourceTrigger::new);
     public static final DeferredHolder<CriterionTrigger<?>, FieldShapeTrigger> FIELD_SHAPE_TRIGGER = CRITERION_TRIGGERS.register("field_shape", FieldShapeTrigger::new);
     public static final DeferredHolder<CriterionTrigger<?>, MenuInventoryTrigger> MENU_INVENTORY_TRIGGER = CRITERION_TRIGGERS.register("menu_inventory", MenuInventoryTrigger::new);

@@ -9,15 +9,9 @@ package dev.su5ed.mffs.render;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
-import dev.su5ed.mffs.util.ModUtil;
+import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Vec3i;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -57,7 +51,6 @@ public final class BlockHighlighter {
 
     public static void highlightArea(PoseStack pose, Vec3 cameraPos, VoxelShape shape, @Nullable Color fillColor) {
         Tesselator tessellator = Tesselator.getInstance();
-        BufferBuilder buffer = tessellator.getBuilder();
 
         // Setup rendering
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
@@ -72,9 +65,9 @@ public final class BlockHighlighter {
         pose.translate(-cameraPos.x, -cameraPos.y, -cameraPos.z);
         // Allow glass and other translucent/transparent objects to render properly
         if (fillColor != null) {
-            drawOutlineBoxes(tessellator, pose, buffer, fillColor, shape);
+            drawOutlineBoxes(tessellator, pose, fillColor, shape);
         }
-        drawOutlineLines(tessellator, pose, buffer, OUTLINE_COLOR, shape);
+        drawOutlineLines(tessellator, pose, OUTLINE_COLOR, shape);
         pose.popPose();
 
         RenderSystem.depthMask(true);
@@ -85,10 +78,10 @@ public final class BlockHighlighter {
     /**
      * Draws boxes for an outline. Depth and blending should be set before this is called.
      */
-    private static void drawOutlineBoxes(Tesselator tessellator, PoseStack matrices, BufferBuilder buffer, Color color, VoxelShape outline) {
+    private static void drawOutlineBoxes(Tesselator tessellator, PoseStack matrices, Color color, VoxelShape outline) {
         PoseStack.Pose entry = matrices.last();
 
-        buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+        BufferBuilder buffer = tessellator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
         // Divide into each edge and draw all of them
         outline.forAllBoxes((minX, minY, minZ, maxX, maxY, maxZ) -> {
             // Fix Z fighting
@@ -100,20 +93,20 @@ public final class BlockHighlighter {
             maxZ += .001;
             drawBox(entry, buffer, (float) minX, (float) minY, (float) minZ, (float) maxX, (float) maxY, (float) maxZ, color);
         });
-        tessellator.end();
+        BufferUploader.drawWithShader(buffer.buildOrThrow());
     }
 
     /**
      * Renders an outline, sets shader and smooth lines.
      * Before calling blend and depth should be set
      */
-    private static void drawOutlineLines(Tesselator tessellator, PoseStack matrices, BufferBuilder buffer, Color color, VoxelShape outline) {
+    private static void drawOutlineLines(Tesselator tessellator, PoseStack matrices, Color color, VoxelShape outline) {
         GL11.glEnable(GL11.GL_LINE_SMOOTH);
         RenderSystem.setShader(GameRenderer::getRendertypeLinesShader);
         RenderSystem.lineWidth(OUTLINE_WIDTH);
 
-        buffer.begin(VertexFormat.Mode.LINES, DefaultVertexFormat.POSITION_COLOR_NORMAL);
-        drawOutlineLine(tessellator, matrices.last(), buffer, color, outline);
+        BufferBuilder buffer = tessellator.begin(VertexFormat.Mode.LINES, DefaultVertexFormat.POSITION_COLOR_NORMAL);
+        drawOutlineLine(matrices.last(), buffer, color, outline);
 
         // Revert some changes
         GL11.glDisable(GL11.GL_LINE_SMOOTH);
@@ -122,7 +115,7 @@ public final class BlockHighlighter {
     /**
      * Draws an outline. Setup should be done before this method is called.
      */
-    private static void drawOutlineLine(Tesselator tessellator, PoseStack.Pose entry, BufferBuilder buffer, Color color, VoxelShape outline) {
+    private static void drawOutlineLine(PoseStack.Pose entry, BufferBuilder buffer, Color color, VoxelShape outline) {
         outline.forAllEdges((minX, minY, minZ, maxX, maxY, maxZ) -> {
             // Fix Z fighting
             minX -= .001;
@@ -133,7 +126,7 @@ public final class BlockHighlighter {
             maxZ += .001;
             drawLine(entry, buffer, new Vector3d(minX, minY, minZ), new Vector3d(maxX, maxY, maxZ), color);
         });
-        tessellator.end();
+        BufferUploader.drawWithShader(buffer.buildOrThrow());
     }
 
     private static void drawBox(PoseStack.Pose entry, BufferBuilder buffer, float minX, float minY, float minZ, float maxX, float maxY, float maxZ, Color color) {
@@ -145,40 +138,40 @@ public final class BlockHighlighter {
         float a = color.alpha();
 
         // West
-        buffer.vertex(position, minX, minY, minZ).color(r, g, b, a).endVertex();
-        buffer.vertex(position, minX, minY, maxZ).color(r, g, b, a).endVertex();
-        buffer.vertex(position, minX, maxY, maxZ).color(r, g, b, a).endVertex();
-        buffer.vertex(position, minX, maxY, minZ).color(r, g, b, a).endVertex();
+        buffer.addVertex(position, minX, minY, minZ).setColor(r, g, b, a);
+        buffer.addVertex(position, minX, minY, maxZ).setColor(r, g, b, a);
+        buffer.addVertex(position, minX, maxY, maxZ).setColor(r, g, b, a);
+        buffer.addVertex(position, minX, maxY, minZ).setColor(r, g, b, a);
 
         // East
-        buffer.vertex(position, maxX, minY, maxZ).color(r, g, b, a).endVertex();
-        buffer.vertex(position, maxX, minY, minZ).color(r, g, b, a).endVertex();
-        buffer.vertex(position, maxX, maxY, minZ).color(r, g, b, a).endVertex();
-        buffer.vertex(position, maxX, maxY, maxZ).color(r, g, b, a).endVertex();
+        buffer.addVertex(position, maxX, minY, maxZ).setColor(r, g, b, a);
+        buffer.addVertex(position, maxX, minY, minZ).setColor(r, g, b, a);
+        buffer.addVertex(position, maxX, maxY, minZ).setColor(r, g, b, a);
+        buffer.addVertex(position, maxX, maxY, maxZ).setColor(r, g, b, a);
 
         // North
-        buffer.vertex(position, maxX, minY, minZ).color(r, g, b, a).endVertex();
-        buffer.vertex(position, minX, minY, minZ).color(r, g, b, a).endVertex();
-        buffer.vertex(position, minX, maxY, minZ).color(r, g, b, a).endVertex();
-        buffer.vertex(position, maxX, maxY, minZ).color(r, g, b, a).endVertex();
+        buffer.addVertex(position, maxX, minY, minZ).setColor(r, g, b, a);
+        buffer.addVertex(position, minX, minY, minZ).setColor(r, g, b, a);
+        buffer.addVertex(position, minX, maxY, minZ).setColor(r, g, b, a);
+        buffer.addVertex(position, maxX, maxY, minZ).setColor(r, g, b, a);
 
         // South
-        buffer.vertex(position, minX, minY, maxZ).color(r, g, b, a).endVertex();
-        buffer.vertex(position, maxX, minY, maxZ).color(r, g, b, a).endVertex();
-        buffer.vertex(position, maxX, maxY, maxZ).color(r, g, b, a).endVertex();
-        buffer.vertex(position, minX, maxY, maxZ).color(r, g, b, a).endVertex();
+        buffer.addVertex(position, minX, minY, maxZ).setColor(r, g, b, a);
+        buffer.addVertex(position, maxX, minY, maxZ).setColor(r, g, b, a);
+        buffer.addVertex(position, maxX, maxY, maxZ).setColor(r, g, b, a);
+        buffer.addVertex(position, minX, maxY, maxZ).setColor(r, g, b, a);
 
         // Top
-        buffer.vertex(position, minX, maxY, maxZ).color(r, g, b, a).endVertex();
-        buffer.vertex(position, maxX, maxY, maxZ).color(r, g, b, a).endVertex();
-        buffer.vertex(position, maxX, maxY, minZ).color(r, g, b, a).endVertex();
-        buffer.vertex(position, minX, maxY, minZ).color(r, g, b, a).endVertex();
+        buffer.addVertex(position, minX, maxY, maxZ).setColor(r, g, b, a);
+        buffer.addVertex(position, maxX, maxY, maxZ).setColor(r, g, b, a);
+        buffer.addVertex(position, maxX, maxY, minZ).setColor(r, g, b, a);
+        buffer.addVertex(position, minX, maxY, minZ).setColor(r, g, b, a);
 
         // Bottom
-        buffer.vertex(position, maxX, minY, maxZ).color(r, g, b, a).endVertex();
-        buffer.vertex(position, minX, minY, maxZ).color(r, g, b, a).endVertex();
-        buffer.vertex(position, minX, minY, minZ).color(r, g, b, a).endVertex();
-        buffer.vertex(position, maxX, minY, minZ).color(r, g, b, a).endVertex();
+        buffer.addVertex(position, maxX, minY, maxZ).setColor(r, g, b, a);
+        buffer.addVertex(position, minX, minY, maxZ).setColor(r, g, b, a);
+        buffer.addVertex(position, minX, minY, minZ).setColor(r, g, b, a);
+        buffer.addVertex(position, maxX, minY, minZ).setColor(r, g, b, a);
     }
 
     /**
@@ -215,15 +208,13 @@ public final class BlockHighlighter {
         float blue = color.blue();
         float alpha = color.alpha();
 
-        buffer.vertex(entry.pose(), (float) start.x, (float) start.y, (float) start.z)
-            .color(red, green, blue, alpha)
-            .normal(entry, (float) normal.x, (float) normal.y, (float) normal.z)
-            .endVertex();
+        buffer.addVertex(entry.pose(), (float) start.x, (float) start.y, (float) start.z)
+            .setColor(red, green, blue, alpha)
+            .setNormal(entry, (float) normal.x, (float) normal.y, (float) normal.z);
 
-        buffer.vertex(entry.pose(), (float) end.x, (float) end.y, (float) end.z)
-            .color(red, green, blue, alpha)
-            .normal(entry, (float) normal.x, (float) normal.y, (float) normal.z)
-            .endVertex();
+        buffer.addVertex(entry.pose(), (float) end.x, (float) end.y, (float) end.z)
+            .setColor(red, green, blue, alpha)
+            .setNormal(entry, (float) normal.x, (float) normal.y, (float) normal.z);
     }
 
     public record Color(float red, float green, float blue, float alpha) {

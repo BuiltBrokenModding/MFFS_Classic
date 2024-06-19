@@ -28,8 +28,8 @@ final class LootTableGen {
             .<Block>map(Supplier::get)
             .toList();
 
-        protected ModBlockLoot() {
-            super(Collections.emptySet(), FeatureFlags.REGISTRY.allFlags());
+        public ModBlockLoot(HolderLookup.Provider provider) {
+            super(Collections.emptySet(), FeatureFlags.REGISTRY.allFlags(), provider);
         }
 
         @Override
@@ -47,9 +47,9 @@ final class LootTableGen {
         }
     }
 
-    public static class ModItemLoot implements LootTableSubProvider {
+    public record ModItemLoot(HolderLookup.Provider provider) implements LootTableSubProvider {
         @Override
-        public void generate(HolderLookup.Provider provider, BiConsumer<ResourceKey<LootTable>, LootTable.Builder> consumer) {
+        public void generate(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> consumer) {
             // TODO
 //            Item book = BuiltInRegistries.ITEM.get(new ResourceLocation("patchouli", "guide_book"));
 //            CompoundTag tag = new CompoundTag();

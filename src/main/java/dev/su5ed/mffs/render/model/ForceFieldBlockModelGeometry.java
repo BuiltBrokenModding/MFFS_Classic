@@ -20,8 +20,8 @@ public class ForceFieldBlockModelGeometry implements IUnbakedGeometry<ForceField
     }
 
     @Override
-    public BakedModel bake(IGeometryBakingContext context, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState, ItemOverrides overrides, ResourceLocation modelLocation) {
-        BakedModel defaultModel = baker.bake(this.defaultModel, modelState, spriteGetter);
+    public BakedModel bake(IGeometryBakingContext context, ModelBaker modelBaker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState, ItemOverrides itemOverrides) {
+        BakedModel defaultModel = modelBaker.bake(this.defaultModel, modelState, spriteGetter);
         return new ForceFieldBlockModel(defaultModel);
     }
 }

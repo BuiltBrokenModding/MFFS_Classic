@@ -14,7 +14,7 @@ public class ForceFieldBlockModelLoader implements IGeometryLoader<ForceFieldBlo
 
     @Override
     public ForceFieldBlockModelGeometry read(JsonObject json, JsonDeserializationContext deserializationContext) throws JsonParseException {
-        ResourceLocation defaultModel = new ResourceLocation(json.get("default_model").getAsString());
+        ResourceLocation defaultModel = ResourceLocation.parse(json.get("default_model").getAsString());
         return new ForceFieldBlockModelGeometry(defaultModel);
     }
 }

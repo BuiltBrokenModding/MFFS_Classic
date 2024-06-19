@@ -11,7 +11,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
-import net.neoforged.neoforge.fluids.IFluidBlock;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -38,7 +37,7 @@ public class SpongeModule extends BaseModule {
                 BlockState state = projector.getCachedBlockState(pos);
                 Block block = state.getBlock();
                 FluidState fluidState = state.getFluidState();
-                if ((block instanceof LiquidBlock || block instanceof IFluidBlock) && !fluidState.isEmpty()) {
+                if (block instanceof LiquidBlock && !fluidState.isEmpty()) {
                     this.removingBlocks.add(pos);
                     if (fluidState.isSource()) {
                         count++;

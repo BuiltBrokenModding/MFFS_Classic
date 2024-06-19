@@ -2,12 +2,7 @@ package dev.su5ed.mffs.render.particle;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.vertex.*;
 import dev.su5ed.mffs.setup.ModBlocks;
 import dev.su5ed.mffs.util.TranslucentVertexConsumer;
 import net.minecraft.client.Camera;
@@ -28,6 +23,7 @@ import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.model.data.ModelData;
+import org.jetbrains.annotations.Nullable;
 
 public class MovingHologramParticle extends Particle {
 
@@ -88,8 +84,9 @@ public class MovingHologramParticle extends Particle {
     public static class HoloParticleRenderType implements ParticleRenderType {
         public static final HoloParticleRenderType INSTANCE = new HoloParticleRenderType();
 
+        @Nullable
         @Override
-        public void begin(BufferBuilder builder, TextureManager textureManager) {
+        public BufferBuilder begin(Tesselator tesselator, TextureManager textureManager) {
             RenderSystem.enableDepthTest();
             RenderSystem.depthMask(true);
             Minecraft.getInstance().gameRenderer.lightTexture().turnOnLightLayer();
@@ -98,12 +95,7 @@ public class MovingHologramParticle extends Particle {
             RenderSystem.enableBlend();
             RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 
-            builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.BLOCK);
-        }
-
-        @Override
-        public void end(Tesselator tesselator) {
-            tesselator.end();
+            return tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.BLOCK);
         }
     }
 }

@@ -16,7 +16,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 public class CoercionDeriverScreen extends FortronScreen<CoercionDeriverMenu> {
-    public static final ResourceLocation BACKGROUND = new ResourceLocation(MFFSMod.MODID, "textures/gui/coercion_deriver.png");
+    public static final ResourceLocation BACKGROUND = MFFSMod.location("textures/gui/coercion_deriver.png");
 
     public CoercionDeriverScreen(CoercionDeriverMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title, BACKGROUND);

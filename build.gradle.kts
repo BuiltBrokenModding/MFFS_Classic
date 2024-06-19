@@ -3,7 +3,7 @@ import java.time.LocalDateTime
 
 plugins {
     `maven-publish`
-    id("net.neoforged.gradle.userdev") version "7.0.120"
+    id("net.neoforged.gradle.userdev") version "7.0.145"
     id("me.modmuss50.mod-publish-plugin") version "0.5.+"
     id("wtf.gofancy.git-changelog") version "1.1.+"
 }

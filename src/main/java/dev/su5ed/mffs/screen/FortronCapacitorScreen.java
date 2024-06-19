@@ -14,7 +14,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 public class FortronCapacitorScreen extends FortronScreen<FortronCapacitorMenu> {
-    public static final ResourceLocation BACKGROUND = new ResourceLocation(MFFSMod.MODID, "textures/gui/fortron_capacitor.png");
+    public static final ResourceLocation BACKGROUND = MFFSMod.location("textures/gui/fortron_capacitor.png");
 
     public FortronCapacitorScreen(FortronCapacitorMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title, BACKGROUND);

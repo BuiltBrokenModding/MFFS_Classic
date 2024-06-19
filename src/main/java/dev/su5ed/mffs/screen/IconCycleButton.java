@@ -12,7 +12,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class IconCycleButton<T extends Enum<T>> extends AbstractButton {
-    public static final ResourceLocation GUI_BUTTONS = new ResourceLocation(MFFSMod.MODID, "textures/gui/buttons.png");
+    public static final ResourceLocation GUI_BUTTONS = MFFSMod.location("textures/gui/buttons.png");
 
     private final ResourceLocation image;
     private final int imageU;

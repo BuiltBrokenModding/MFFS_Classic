@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
@@ -68,10 +69,10 @@ public class ModRenderType extends RenderType {
 
     public static final Function<ResourceLocation, RenderType> POS_COL_TEX_TRANSLUCENT_UNCULLED_QUAD = Util.memoize(location -> create(
         "mffs:standard_translucent_quad",
-        DefaultVertexFormat.POSITION_COLOR_TEX, VertexFormat.Mode.QUADS,
+        DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.QUADS,
         256, true, true,
         RenderType.CompositeState.builder()
-            .setShaderState(POSITION_COLOR_TEX_SHADER)
+            .setShaderState(new ShaderStateShard(GameRenderer::getPositionTexColorShader))
             .setTextureState(new RenderStateShard.TextureStateShard(location, false, false))
             .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
             .setOutputState(TRANSLUCENT_TARGET)

@@ -14,8 +14,8 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 
 public class CoercionDeriverRenderer implements BlockEntityRenderer<FortronBlockEntity> {
-    public static final ResourceLocation COERCION_DERIVER_OFF_TEXTURE = new ResourceLocation(MFFSMod.MODID, "textures/model/coercion_deriver_off.png");
-    public static final ResourceLocation COERCION_DERIVER_ON_TEXTURE = new ResourceLocation(MFFSMod.MODID, "textures/model/coercion_deriver_on.png");
+    public static final ResourceLocation COERCION_DERIVER_OFF_TEXTURE = MFFSMod.location("textures/model/coercion_deriver_off.png");
+    public static final ResourceLocation COERCION_DERIVER_ON_TEXTURE = MFFSMod.location("textures/model/coercion_deriver_on.png");
 
     private final ModelPart top;
 

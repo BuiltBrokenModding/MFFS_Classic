@@ -11,7 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.function.DoubleSupplier;
 
 public class FortronChargeWidget extends AbstractWidget {
-    public static final ResourceLocation COMPONENTS = new ResourceLocation(MFFSMod.MODID, "textures/gui/components.png");
+    public static final ResourceLocation COMPONENTS = MFFSMod.location("textures/gui/components.png");
 
     private final DoubleSupplier scale;
 

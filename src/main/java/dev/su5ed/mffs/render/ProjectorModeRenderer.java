@@ -17,6 +17,7 @@ import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.util.FastColor;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
@@ -118,7 +119,7 @@ public final class ProjectorModeRenderer {
 
             poseStack.pushPose();
             hoverObject(poseStack, ticks, scale, this.centerPos);
-            this.model.render(poseStack, buffer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 1, 1, 1, Math.min(alpha, 1));
+            this.model.render(poseStack, buffer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, FastColor.ARGB32.colorFromFloat(Math.min(alpha, 1), 1, 1, 1));
             poseStack.popPose();
         }
     }
@@ -141,7 +142,7 @@ public final class ProjectorModeRenderer {
 
                     Vec3 vec = new Vec3(Math.sin(theta) * Math.cos(phi), Math.cos(theta), Math.sin(theta) * Math.sin(phi)).multiply(radius, radius, radius);
                     poseStack.translate(vec.x, vec.y, vec.z);
-                    this.model.render(poseStack, buffer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 1, 1, 1, Math.min(alpha, 1) / 5f);
+                    this.model.render(poseStack, buffer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, FastColor.ARGB32.colorFromFloat(Math.min(alpha, 1) / 5f, 1, 1, 1));
                     poseStack.translate(-vec.x, -vec.y, -vec.z);
                 }
             }
@@ -165,29 +166,29 @@ public final class ProjectorModeRenderer {
             Vector3f translation = new Vector3f(0, -0.4F, 0);
             Matrix4f mat = poseStack.last().pose();
 
-            buffer.vertex(mat, translation.x(), translation.y(), translation.z()).uv(0, 0).endVertex();
-            buffer.vertex(mat, -width + translation.x(), height + translation.y(), -width + translation.z()).uv(-uvMaxX, -uvMaxY).endVertex();
-            buffer.vertex(mat, -width + translation.x(), height + translation.y(), width + translation.z()).uv(-uvMaxX, uvMaxY).endVertex();
+            buffer.addVertex(mat, translation.x(), translation.y(), translation.z()).setUv(0, 0);
+            buffer.addVertex(mat, -width + translation.x(), height + translation.y(), -width + translation.z()).setUv(-uvMaxX, -uvMaxY);
+            buffer.addVertex(mat, -width + translation.x(), height + translation.y(), width + translation.z()).setUv(-uvMaxX, uvMaxY);
 
-            buffer.vertex(mat, translation.x(), translation.y(), translation.z()).uv(0, 0).endVertex();
-            buffer.vertex(mat, -width + translation.x(), height + translation.y(), width + translation.z()).uv(-uvMaxX, uvMaxY).endVertex();
-            buffer.vertex(mat, width + translation.x(), height + translation.y(), width + translation.z()).uv(uvMaxX, uvMaxY).endVertex();
+            buffer.addVertex(mat, translation.x(), translation.y(), translation.z()).setUv(0, 0);
+            buffer.addVertex(mat, -width + translation.x(), height + translation.y(), width + translation.z()).setUv(-uvMaxX, uvMaxY);
+            buffer.addVertex(mat, width + translation.x(), height + translation.y(), width + translation.z()).setUv(uvMaxX, uvMaxY);
 
-            buffer.vertex(mat, translation.x(), translation.y(), translation.z()).uv(0, 0).endVertex();
-            buffer.vertex(mat, width + translation.x(), height + translation.y(), width + translation.z()).uv(uvMaxX, uvMaxY).endVertex();
-            buffer.vertex(mat, width + translation.x(), height + translation.y(), -width + translation.z()).uv(uvMaxX, -uvMaxY).endVertex();
+            buffer.addVertex(mat, translation.x(), translation.y(), translation.z()).setUv(0, 0);
+            buffer.addVertex(mat, width + translation.x(), height + translation.y(), width + translation.z()).setUv(uvMaxX, uvMaxY);
+            buffer.addVertex(mat, width + translation.x(), height + translation.y(), -width + translation.z()).setUv(uvMaxX, -uvMaxY);
 
-            buffer.vertex(mat, translation.x(), translation.y(), translation.z()).uv(0, 0).endVertex();
-            buffer.vertex(mat, width + translation.x(), height + translation.y(), -width + translation.z()).uv(uvMaxX, -uvMaxY).endVertex();
-            buffer.vertex(mat, -width + translation.x(), height + translation.y(), -width + translation.z()).uv(-uvMaxX, -uvMaxY).endVertex();
+            buffer.addVertex(mat, translation.x(), translation.y(), translation.z()).setUv(0, 0);
+            buffer.addVertex(mat, width + translation.x(), height + translation.y(), -width + translation.z()).setUv(uvMaxX, -uvMaxY);
+            buffer.addVertex(mat, -width + translation.x(), height + translation.y(), -width + translation.z()).setUv(-uvMaxX, -uvMaxY);
 
-            buffer.vertex(mat, -width + translation.x(), height + translation.y(), -width + translation.z()).uv(-uvMaxX, -uvMaxY).endVertex();
-            buffer.vertex(mat, -width + translation.x(), height + translation.y(), width + translation.z()).uv(-uvMaxX, uvMaxY).endVertex();
-            buffer.vertex(mat, width + translation.x(), height + translation.y(), width + translation.z()).uv(uvMaxX, uvMaxY).endVertex();
+            buffer.addVertex(mat, -width + translation.x(), height + translation.y(), -width + translation.z()).setUv(-uvMaxX, -uvMaxY);
+            buffer.addVertex(mat, -width + translation.x(), height + translation.y(), width + translation.z()).setUv(-uvMaxX, uvMaxY);
+            buffer.addVertex(mat, width + translation.x(), height + translation.y(), width + translation.z()).setUv(uvMaxX, uvMaxY);
 
-            buffer.vertex(mat, width + translation.x(), height + translation.y(), width + translation.z()).uv(uvMaxX, uvMaxY).endVertex();
-            buffer.vertex(mat, width + translation.x(), height + translation.y(), -width + translation.z()).uv(uvMaxX, -uvMaxY).endVertex();
-            buffer.vertex(mat, -width + translation.x(), height + translation.y(), -width + translation.z()).uv(-uvMaxX, -uvMaxY).endVertex();
+            buffer.addVertex(mat, width + translation.x(), height + translation.y(), width + translation.z()).setUv(uvMaxX, uvMaxY);
+            buffer.addVertex(mat, width + translation.x(), height + translation.y(), -width + translation.z()).setUv(uvMaxX, -uvMaxY);
+            buffer.addVertex(mat, -width + translation.x(), height + translation.y(), -width + translation.z()).setUv(-uvMaxX, -uvMaxY);
 
             poseStack.popPose();
         }
@@ -213,7 +214,7 @@ public final class ProjectorModeRenderer {
                             if (i % 2 == 0) {
                                 Vec3 vector = new Vec3(renderX, renderY, renderZ);
                                 poseStack.translate(vector.x, vector.y, vector.z);
-                                this.model.render(poseStack, buffer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 1, 1, 1, Math.min(alpha, 1));
+                                this.model.render(poseStack, buffer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, FastColor.ARGB32.colorFromFloat(Math.min(alpha, 1), 1, 1, 1));
                                 poseStack.translate(-vector.x, -vector.y, -vector.z);
                             }
                             i++;

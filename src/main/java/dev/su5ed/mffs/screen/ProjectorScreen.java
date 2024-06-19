@@ -11,7 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
 public class ProjectorScreen extends FortronScreen<ProjectorMenu> {
-    public static final ResourceLocation BACKGROUND = new ResourceLocation(MFFSMod.MODID, "textures/gui/projector.png");
+    public static final ResourceLocation BACKGROUND = MFFSMod.location("textures/gui/projector.png");
 
     public ProjectorScreen(ProjectorMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title, BACKGROUND);

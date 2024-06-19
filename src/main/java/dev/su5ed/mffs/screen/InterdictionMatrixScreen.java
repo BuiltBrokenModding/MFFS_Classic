@@ -14,7 +14,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 public class InterdictionMatrixScreen extends FortronScreen<InterdictionMatrixMenu> {
-    public static final ResourceLocation BACKGROUND = new ResourceLocation(MFFSMod.MODID, "textures/gui/interdiction_matrix.png");
+    public static final ResourceLocation BACKGROUND = MFFSMod.location("textures/gui/interdiction_matrix.png");
 
     public InterdictionMatrixScreen(InterdictionMatrixMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title, BACKGROUND);

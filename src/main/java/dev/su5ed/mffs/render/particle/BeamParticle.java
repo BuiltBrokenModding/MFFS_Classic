@@ -2,11 +2,7 @@ package dev.su5ed.mffs.render.particle;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
 import dev.su5ed.mffs.MFFSMod;
 import net.minecraft.client.Camera;
@@ -19,11 +15,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 public class BeamParticle extends Particle {
-    private static final ResourceLocation FORTRON_TEXTURE = new ResourceLocation(MFFSMod.MODID, "textures/particle/fortron.png");
+    private static final ResourceLocation FORTRON_TEXTURE = ResourceLocation.fromNamespaceAndPath(MFFSMod.MODID, "textures/particle/fortron.png");
     private static final int ROTATION_SPEED = 20;
     private static final boolean PULSE = true;
 
@@ -119,10 +116,10 @@ public class BeamParticle extends Particle {
 
             mat.rotate(Axis.YP.rotationDegrees(60));
 
-            buffer.vertex(mat, vectors[0].x(), vectors[0].y(), vectors[0].z()).uv(u1, v1).color(this.rCol, this.gCol, this.bCol, opacity).uv2(brightness).endVertex();
-            buffer.vertex(mat, vectors[1].x(), vectors[1].y(), vectors[1].z()).uv(u1, v0).color(this.rCol, this.gCol, this.bCol, opacity).uv2(brightness).endVertex();
-            buffer.vertex(mat, vectors[2].x(), vectors[2].y(), vectors[2].z()).uv(u0, v0).color(this.rCol, this.gCol, this.bCol, opacity).uv2(brightness).endVertex();
-            buffer.vertex(mat, vectors[3].x(), vectors[3].y(), vectors[3].z()).uv(u0, v1).color(this.rCol, this.gCol, this.bCol, opacity).uv2(brightness).endVertex();
+            buffer.addVertex(mat, vectors[0].x(), vectors[0].y(), vectors[0].z()).setUv(u1, v1).setColor(this.rCol, this.gCol, this.bCol, opacity).setLight(brightness);
+            buffer.addVertex(mat, vectors[1].x(), vectors[1].y(), vectors[1].z()).setUv(u1, v0).setColor(this.rCol, this.gCol, this.bCol, opacity).setLight(brightness);
+            buffer.addVertex(mat, vectors[2].x(), vectors[2].y(), vectors[2].z()).setUv(u0, v0).setColor(this.rCol, this.gCol, this.bCol, opacity).setLight(brightness);
+            buffer.addVertex(mat, vectors[3].x(), vectors[3].y(), vectors[3].z()).setUv(u0, v1).setColor(this.rCol, this.gCol, this.bCol, opacity).setLight(brightness);
         }
 
         this.prevSize = size;
@@ -136,8 +133,9 @@ public class BeamParticle extends Particle {
     public static class BeamParticleRenderType implements ParticleRenderType {
         public static final BeamParticleRenderType INSTANCE = new BeamParticleRenderType();
 
+        @Nullable
         @Override
-        public void begin(BufferBuilder builder, TextureManager textureManager) {
+        public BufferBuilder begin(Tesselator tesselator, TextureManager textureManager) {
             RenderSystem.enableBlend();
             RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
 
@@ -146,12 +144,7 @@ public class BeamParticle extends Particle {
 
             RenderSystem.setShaderTexture(0, FORTRON_TEXTURE);
 
-            builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.PARTICLE);
-        }
-
-        @Override
-        public void end(Tesselator tesselator) {
-            tesselator.end();
+            return tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.PARTICLE);
         }
     }
 }

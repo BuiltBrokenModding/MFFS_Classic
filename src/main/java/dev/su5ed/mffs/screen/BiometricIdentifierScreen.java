@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BiometricIdentifierScreen extends FortronScreen<BiometricIdentifierMenu> {
-    public static final ResourceLocation BACKGROUND = new ResourceLocation(MFFSMod.MODID, "textures/gui/biometric_identifier.png");
+    public static final ResourceLocation BACKGROUND = MFFSMod.location("textures/gui/biometric_identifier.png");
 
     private final List<AbstractWidget> permissionButtons = new ArrayList<>();
 

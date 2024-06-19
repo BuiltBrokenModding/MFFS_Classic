@@ -126,13 +126,12 @@ public final class RenderPostProcessor {
         RenderSystem.enableBlend();
         RenderSystem.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 
-        BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
-        bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION);
-        bufferbuilder.vertex(0.0D, 0.0D, farPlane).endVertex();
-        bufferbuilder.vertex(width, 0.0D, farPlane).endVertex();
-        bufferbuilder.vertex(width, height, farPlane).endVertex();
-        bufferbuilder.vertex(0.0D, height, farPlane).endVertex();
-        BufferUploader.draw(bufferbuilder.end());
+        BufferBuilder bufferbuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION);
+        bufferbuilder.addVertex(0.0F, 0.0F, farPlane);
+        bufferbuilder.addVertex(width, 0.0F, farPlane);
+        bufferbuilder.addVertex(width, height, farPlane);
+        bufferbuilder.addVertex(0.0F, height, farPlane);
+        BufferUploader.draw(bufferbuilder.buildOrThrow());
 
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
         RenderSystem.disableDepthTest();

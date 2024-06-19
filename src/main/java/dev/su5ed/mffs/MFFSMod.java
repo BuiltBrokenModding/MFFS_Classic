@@ -51,6 +51,6 @@ public final class MFFSMod {
     }
 
     public static ResourceLocation location(String path) {
-        return new ResourceLocation(MODID, path);
+        return ResourceLocation.fromNamespaceAndPath(MODID, path);
     }
 }

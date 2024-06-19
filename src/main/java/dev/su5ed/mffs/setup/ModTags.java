@@ -23,7 +23,7 @@ public final class ModTags {
     }
 
     private static TagKey<Item> cItemTag(String name) {
-        return ItemTags.create(new ResourceLocation("c", name));
+        return ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", name));
     }
 
     private static TagKey<Block> blockTag(String name) {

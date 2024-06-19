@@ -19,7 +19,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import org.joml.Matrix4f;
 
 public class BiometricIdentifierRenderer implements BlockEntityRenderer<BiometricIdentifierBlockEntity> {
-    public static final ResourceLocation HOLO_SCREEN_TEXTURE = new ResourceLocation(MFFSMod.MODID, "model/holo_screen");
+    public static final ResourceLocation HOLO_SCREEN_TEXTURE = ResourceLocation.fromNamespaceAndPath(MFFSMod.MODID, "model/holo_screen");
     private static final RenderType RENDER_TYPE = ModRenderType.POS_COL_TEX_TRANSLUCENT_UNCULLED_QUAD.apply(InventoryMenu.BLOCK_ATLAS);
     
     public BiometricIdentifierRenderer(BlockEntityRendererProvider.Context context) {}
@@ -42,10 +42,10 @@ public class BiometricIdentifierRenderer implements BlockEntityRenderer<Biometri
             Matrix4f mat = poseStack.last().pose();
             VertexConsumer screenConsumer = bufferSource.getBuffer(RENDER_TYPE);
             TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(HOLO_SCREEN_TEXTURE);
-            screenConsumer.vertex(mat, 0.0F, 1.0F, 1.0F).color(1.0F, 1.0F, 1.0F, alpha).uv(sprite.getU0(), sprite.getV1()).endVertex();
-            screenConsumer.vertex(mat, 1.0F, 1.0F, 1.0F).color(1.0F, 1.0F, 1.0F, alpha).uv(sprite.getU1(), sprite.getV1()).endVertex();
-            screenConsumer.vertex(mat, 1.0F, 1.0F, 0.0F).color(1.0F, 1.0F, 1.0F, alpha).uv(sprite.getU1(), sprite.getV0()).endVertex();
-            screenConsumer.vertex(mat, 0.0F, 1.0F, 0.0F).color(1.0F, 1.0F, 1.0F, alpha).uv(sprite.getU0(), sprite.getV0()).endVertex();
+            screenConsumer.addVertex(mat, 0.0F, 1.0F, 1.0F).setColor(1.0F, 1.0F, 1.0F, alpha).setUv(sprite.getU0(), sprite.getV1());
+            screenConsumer.addVertex(mat, 1.0F, 1.0F, 1.0F).setColor(1.0F, 1.0F, 1.0F, alpha).setUv(sprite.getU1(), sprite.getV1());
+            screenConsumer.addVertex(mat, 1.0F, 1.0F, 0.0F).setColor(1.0F, 1.0F, 1.0F, alpha).setUv(sprite.getU1(), sprite.getV0());
+            screenConsumer.addVertex(mat, 0.0F, 1.0F, 0.0F).setColor(1.0F, 1.0F, 1.0F, alpha).setUv(sprite.getU0(), sprite.getV0());
             poseStack.popPose();
         }
     }
