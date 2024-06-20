@@ -58,6 +58,12 @@ public class ForceFieldBlockModel implements IDynamicBakedModel {
     }
 
     @Override
+    public TextureAtlasSprite getParticleIcon(ModelData data) {
+        Pair<BakedModel, BlockState> model = getCamouflageModel(null, data);
+        return model.getFirst().getParticleIcon(data);
+    }
+
+    @Override
     public TextureAtlasSprite getParticleIcon() {
         return this.defaultModel.getParticleIcon();
     }
