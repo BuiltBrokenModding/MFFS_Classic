@@ -36,8 +36,8 @@ minecraft {
             systemProperty("forge.logging.console.level", "debug")
 
             modSource(project.sourceSets.main.get())
-            
-            dependencies { 
+
+            dependencies {
                 runtime("one.util:streamex:$versionStreamex")
             }
         }
@@ -53,7 +53,15 @@ minecraft {
         }
 
         create("data") {
-            programArguments.addAll("--mod", modId, "--all", "--output", file("src/generated/resources/").absolutePath, "--existing", file("src/main/resources/").absolutePath)
+            programArguments.addAll(
+                "--mod",
+                modId,
+                "--all",
+                "--output",
+                file("src/generated/resources/").absolutePath,
+                "--existing",
+                file("src/main/resources/").absolutePath
+            )
         }
     }
 }
@@ -85,8 +93,12 @@ dependencies {
 
     implementation(jarJar(group = "one.util", name = "streamex", version = versionStreamex))
 
-    compileOnly("mezz.jei:jei-1.20.1-common-api:$versionJei")
-    compileOnly("mezz.jei:jei-1.20.1-forge-api:$versionJei")
+    // compile against the JEI API but do not include it at runtime     
+    compileOnly("mezz.jei:jei-$minecraftVersion-common-api:$versionJei")
+    compileOnly("mezz.jei:jei-$minecraftVersion-neoforge-api:$versionJei")
+    // at runtime, use the full JEI jar for NeoForge
+    runtimeOnly("mezz.jei:jei-$minecraftVersion-neoforge:$versionJei")
+
     compileOnly(group = "mcjty.theoneprobe", name = "theoneprobe", version = versionTOP) { isTransitive = false }
 }
 
@@ -94,11 +106,11 @@ tasks {
     jar {
         archiveClassifier.set("slim")
     }
-    
+
     this.jarJar {
         archiveClassifier.set("")
     }
-    
+
     withType<Jar> {
         manifest {
             attributes(
@@ -111,10 +123,6 @@ tasks {
                 "Implementation-Timestamp" to LocalDateTime.now()
             )
         }
-    }
-
-    withType<JavaCompile> {
-        options.encoding = "UTF-8"
     }
 }
 
