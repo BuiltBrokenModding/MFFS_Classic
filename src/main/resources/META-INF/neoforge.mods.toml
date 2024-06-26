@@ -32,6 +32,6 @@ config="mffs.mixins.json"
 [[dependencies.mffs]]
     modId="theoneprobe"
     type="optional"
-    versionRange="[1.21_neo-12.0.0-1, )"
+    versionRange="[1.21_neo-12.0.0, )"
     ordering="NONE"
     side="BOTH"

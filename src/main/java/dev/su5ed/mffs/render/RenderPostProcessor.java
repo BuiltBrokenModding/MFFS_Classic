@@ -112,7 +112,7 @@ public final class RenderPostProcessor {
         pass.inTarget.unbindWrite();
         RenderSystem.viewport(0, 0, (int) width, (int) height);
         effect.setSampler("DiffuseSampler", pass.inTarget::getColorTextureId);
-        effect.setSampler("NoiseSampler", () -> minecraft.textureManager.getTexture(NOISE_SEED).getId());
+        effect.setSampler("NoiseSampler", () -> minecraft.getTextureManager().getTexture(NOISE_SEED).getId());
         effect.setSampler("DepthSampler", pass.inTarget::getDepthTextureId);
         effect.safeGetUniform("ProjMat").set(shaderOrthoMatrix);
         effect.safeGetUniform("InSize").set((float) pass.inTarget.width, (float) pass.inTarget.height);
