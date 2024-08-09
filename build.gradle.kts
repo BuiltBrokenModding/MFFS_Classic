@@ -110,14 +110,6 @@ dependencies {
 }
 
 tasks {
-    jar {
-        archiveClassifier.set("slim")
-    }
-
-//    this.jarJar {
-//        archiveClassifier.set("")
-//    }
-
     withType<Jar> {
         manifest {
             attributes(
@@ -134,7 +126,7 @@ tasks {
 }
 
 publishMods {
-//    file.set(tasks.jarJar.flatMap { it.archiveFile })
+    file.set(tasks.jar.flatMap { it.archiveFile })
     changelog.set(provider { project.changelog.generateChangelog(1, true) })
     type.set(providers.environmentVariable("PUBLISH_RELEASE_TYPE").map(ReleaseType::of).orElse(ReleaseType.STABLE))
     modLoaders.add("neoforge")
