@@ -3,7 +3,7 @@ import java.time.LocalDateTime
 
 plugins {
     `maven-publish`
-    id("net.neoforged.gradle.userdev") version "7.0.145"
+    id("net.neoforged.moddev") version "2.0.1-beta"
     id("me.modmuss50.mod-publish-plugin") version "0.5.+"
     id("wtf.gofancy.git-changelog") version "1.1.+"
 }
@@ -18,8 +18,9 @@ val versionTOP: String by project
 val versionPatchouli: String by project
 val versionStreamex: String by project
 
-val minecraftVersion: String by project
+val versionMc: String by project
 val neoVersion: String by project
+val parchmentVersion: String by project
 val modId: String by project
 
 val CI: Provider<String> = providers.environmentVariable("CI")
@@ -27,32 +28,35 @@ val CI: Provider<String> = providers.environmentVariable("CI")
 java.toolchain.languageVersion.set(JavaLanguageVersion.of(21))
 
 println("Configured version: $version, Java: ${System.getProperty("java.version")}, JVM: ${System.getProperty("java.vm.version")} (${System.getProperty("java.vendor")}), Arch: ${System.getProperty("os.arch")}")
-minecraft {
-    accessTransformers.file("src/main/resources/META-INF/accesstransformer.cfg")
-
+neoForge {
+    version = neoVersion
+    accessTransformers {
+        from(project.file("src/main/resources/META-INF/accesstransformer.cfg"))
+    }
+    parchment {
+        mappingsVersion = parchmentVersion
+        minecraftVersion = versionMc
+    }
     runs {
         configureEach {
             systemProperty("forge.logging.markers", "REGISTRIES")
             systemProperty("forge.logging.console.level", "debug")
-
-            modSource(project.sourceSets.main.get())
-
-            dependencies {
-                runtime("one.util:streamex:$versionStreamex")
-            }
         }
 
         create("client") {
+            client()
             // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
             systemProperty("forge.enabledGameTestNamespaces", modId)
         }
 
         create("server") {
+            server()
             systemProperty("forge.enabledGameTestNamespaces", modId)
             programArgument("--nogui")
         }
 
         create("data") {
+            data()
             programArguments.addAll(
                 "--mod",
                 modId,
@@ -62,6 +66,11 @@ minecraft {
                 "--existing",
                 file("src/main/resources/").absolutePath
             )
+        }
+    }
+    mods { 
+        create("mffs") {
+            sourceSet(sourceSets.main.get())
         }
     }
 }
@@ -89,15 +98,13 @@ repositories {
 }
 
 dependencies {
-    implementation(group = "net.neoforged", name = "neoforge", version = neoVersion)
-
-    implementation(jarJar(group = "one.util", name = "streamex", version = versionStreamex))
+    additionalRuntimeClasspath(implementation(jarJar(group = "one.util", name = "streamex", version = versionStreamex))!!)
 
     // compile against the JEI API but do not include it at runtime     
-    compileOnly("mezz.jei:jei-$minecraftVersion-common-api:$versionJei")
-    compileOnly("mezz.jei:jei-$minecraftVersion-neoforge-api:$versionJei")
+    compileOnly("mezz.jei:jei-$versionMc-common-api:$versionJei")
+    compileOnly("mezz.jei:jei-$versionMc-neoforge-api:$versionJei")
     // at runtime, use the full JEI jar for NeoForge
-    runtimeOnly("mezz.jei:jei-$minecraftVersion-neoforge:$versionJei")
+    runtimeOnly("mezz.jei:jei-$versionMc-neoforge:$versionJei")
 
     compileOnly(group = "mcjty.theoneprobe", name = "theoneprobe", version = versionTOP) { isTransitive = false }
 }
@@ -107,9 +114,9 @@ tasks {
         archiveClassifier.set("slim")
     }
 
-    this.jarJar {
-        archiveClassifier.set("")
-    }
+//    this.jarJar {
+//        archiveClassifier.set("")
+//    }
 
     withType<Jar> {
         manifest {
@@ -127,7 +134,7 @@ tasks {
 }
 
 publishMods {
-    file.set(tasks.jarJar.flatMap { it.archiveFile })
+//    file.set(tasks.jarJar.flatMap { it.archiveFile })
     changelog.set(provider { project.changelog.generateChangelog(1, true) })
     type.set(providers.environmentVariable("PUBLISH_RELEASE_TYPE").map(ReleaseType::of).orElse(ReleaseType.STABLE))
     modLoaders.add("neoforge")
@@ -136,14 +143,14 @@ publishMods {
     curseforge {
         accessToken.set(providers.environmentVariable("CURSEFORGE_TOKEN"))
         projectId.set(curseForgeId)
-        minecraftVersions.add(minecraftVersion)
-        displayName.set("MFFS $minecraftVersion-${project.version}")
+        minecraftVersions.add(versionMc)
+        displayName.set("MFFS $versionMc-${project.version}")
     }
     modrinth {
         accessToken.set(providers.environmentVariable("MODRINTH_TOKEN"))
         projectId.set(modrinthId)
-        minecraftVersions.add(minecraftVersion)
-        displayName.set("MFFS $minecraftVersion-${project.version}")
+        minecraftVersions.add(versionMc)
+        displayName.set("MFFS $versionMc-${project.version}")
     }
 }
 

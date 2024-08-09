@@ -34,7 +34,7 @@ public class ModRenderType extends RenderType {
     public static final Function<ResourceLocation, RenderType> STANDARD_TRANSLUCENT_ENTITY = Util.memoize(location -> create(
         "mffs:standard_translucent_entity",
         DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS,
-        256, true, true,
+        256, false, true,
         RenderType.CompositeState.builder()
             .setShaderState(RENDERTYPE_EYES_SHADER)
             .setTextureState(new RenderStateShard.TextureStateShard(location, false, false))
@@ -46,7 +46,7 @@ public class ModRenderType extends RenderType {
     public static final RenderType STANDARD_TRANSLUCENT_TRIANGLE = create(
         "mffs:standard_translucent_triangle",
         DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.TRIANGLES,
-        256, true, true,
+        256, false, true,
         RenderType.CompositeState.builder()
             .setShaderState(POSITION_COLOR_SHADER)
             .setTransparencyState(LIGHTNING_TRANSPARENCY)
@@ -57,7 +57,7 @@ public class ModRenderType extends RenderType {
     public static final Function<ResourceLocation, RenderType> POS_TEX_TRANSLUCENT_UNCULLED_TRIANGLE = Util.memoize(location -> create(
         "mffs:standard_translucent_triangle_fan",
         DefaultVertexFormat.POSITION_TEX, VertexFormat.Mode.TRIANGLES,
-        256, true, true,
+        256, false, true,
         RenderType.CompositeState.builder()
             .setShaderState(POSITION_TEX_SHADER)
             .setTextureState(new RenderStateShard.TextureStateShard(location, false, false))
@@ -70,7 +70,7 @@ public class ModRenderType extends RenderType {
     public static final Function<ResourceLocation, RenderType> POS_COL_TEX_TRANSLUCENT_UNCULLED_QUAD = Util.memoize(location -> create(
         "mffs:standard_translucent_quad",
         DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.QUADS,
-        256, true, true,
+        256, false, true,
         RenderType.CompositeState.builder()
             .setShaderState(new ShaderStateShard(GameRenderer::getPositionTexColorShader))
             .setTextureState(new RenderStateShard.TextureStateShard(location, false, false))
