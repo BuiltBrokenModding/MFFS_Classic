@@ -1,0 +1,26 @@
+---
+title: Interdiction Matrix
+id: mffs:interdiction_matrix
+type: block
+---
+
+The Interdiction Matrix is a member of the MFFS family of machines.
+
+It imposes restrictions on players or entities present in the space around it. For example, it can be configured to
+automatically kill mobs or players that move into its area of effect, or to prevent unauthorised players from tampering
+with other machines.
+
+## Operation
+
+The space around an Interdiction Matrix is split up into two logical regions: **Action** and **Warning**.
+
+The action region radiates out from the Matrix itself by the same number of blocks as there are Scale Modules installed.
+By default, the warning region continues from the edge of the action region (as a concentric sphere) by an additional
+3 blocks.
+
+When a player moves into the warning area of an Interdiction Matrix, it will send an alert message to say they have just
+entered its scanning range. If a player does not wish to experience first-hand which modules the Matrix has installed,
+they should not proceed closer.
+
+With no modules installed, an Interdiction Matrix doesn't really do anything. With modules installed, it can serve as a
+powerful defense system.
