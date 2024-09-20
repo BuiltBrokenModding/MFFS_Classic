@@ -6,6 +6,7 @@ plugins {
     id("net.neoforged.moddev") version "2.0.1-beta"
     id("me.modmuss50.mod-publish-plugin") version "0.5.+"
     id("wtf.gofancy.git-changelog") version "1.1.+"
+    id("org.sinytra.wiki.toolkit") version "0.1.9"
 }
 
 group = "dev.su5ed.mffs"
@@ -75,6 +76,15 @@ neoForge {
     }
 }
 
+wiki {
+    docs {
+        register("mffs") {             
+            exportedAssetNamespaces.add("mffs")
+            root = file("docs/mffs")
+        }
+    }
+}
+
 sourceSets.main {
     resources {
         srcDir("src/generated/resources")
@@ -107,6 +117,7 @@ dependencies {
     runtimeOnly("mezz.jei:jei-$versionMc-neoforge:$versionJei")
 
     compileOnly(group = "mcjty.theoneprobe", name = "theoneprobe", version = versionTOP) { isTransitive = false }
+    runtimeOnly("org.sinytra:item-asset-export-neoforge:1.0.2+1.21")
 }
 
 tasks {

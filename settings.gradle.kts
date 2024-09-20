@@ -9,6 +9,7 @@ pluginManagement {
             name = "Gofancy"
             url = uri("https://maven.gofancy.wtf/releases")
         }
+        mavenLocal()
     }
 }
 plugins {
