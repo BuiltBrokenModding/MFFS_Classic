@@ -5,6 +5,10 @@
       "namespace": "mffs",
       "source": "model",
       "prefix": "model/"
+    },
+    {
+      "type": "single",
+      "resource": "mffs:fluid/fortron"
     }
   ]
 }
