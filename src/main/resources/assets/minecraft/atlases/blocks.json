@@ -1,7 +1,8 @@
 {
   "sources": [
     {
-      "type": "directory",
+      "type": "neoforge:namespaced_directory",
+      "namespace": "mffs",
       "source": "model",
       "prefix": "model/"
     }

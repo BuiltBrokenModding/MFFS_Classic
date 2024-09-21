@@ -20,7 +20,7 @@ config="mffs.mixins.json"
 [[dependencies.mffs]]
     modId="neoforge"
     type="required"
-    versionRange="[21.0-beta, 22)"
+    versionRange="[21.1.29, 22)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.mffs]]
