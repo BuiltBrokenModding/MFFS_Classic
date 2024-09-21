@@ -10,6 +10,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.FluidState;
 
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ import java.util.List;
 
 public class SpongeModule extends BaseModule {
     private final List<BlockPos> removingBlocks = new ArrayList<>();
+    private final List<BlockPos> unWaterLoggingBlocks = new ArrayList<>();
 
     public SpongeModule(ModuleType<?> type, ItemStack stack) {
         super(type, stack);
@@ -43,6 +45,9 @@ public class SpongeModule extends BaseModule {
                         count++;
                     }
                 }
+                if (state.hasProperty(BlockStateProperties.WATERLOGGED)) {
+                    this.unWaterLoggingBlocks.add(pos);
+                }
             }
         }
     }
@@ -53,6 +58,13 @@ public class SpongeModule extends BaseModule {
         for (BlockPos pos : this.removingBlocks) {
             level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
         }
+        for (BlockPos pos : this.unWaterLoggingBlocks) {
+            BlockState state = level.getBlockState(pos);
+            if (state.hasProperty(BlockStateProperties.WATERLOGGED)) {
+                level.setBlockAndUpdate(pos, state.setValue(BlockStateProperties.WATERLOGGED, false));
+            }
+        }
         this.removingBlocks.clear();
+        this.unWaterLoggingBlocks.clear();
     }
 }
