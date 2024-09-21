@@ -93,7 +93,10 @@ public final class BlockHighlighter {
             maxZ += .001;
             drawBox(entry, buffer, (float) minX, (float) minY, (float) minZ, (float) maxX, (float) maxY, (float) maxZ, color);
         });
-        BufferUploader.drawWithShader(buffer.buildOrThrow());
+        MeshData data = buffer.build();
+        if (data != null) {
+            BufferUploader.drawWithShader(data);
+        }
     }
 
     /**
@@ -126,7 +129,10 @@ public final class BlockHighlighter {
             maxZ += .001;
             drawLine(entry, buffer, new Vector3d(minX, minY, minZ), new Vector3d(maxX, maxY, maxZ), color);
         });
-        BufferUploader.drawWithShader(buffer.buildOrThrow());
+        MeshData data = buffer.build();
+        if (data != null) {
+            BufferUploader.drawWithShader(data);
+        }
     }
 
     private static void drawBox(PoseStack.Pose entry, BufferBuilder buffer, float minX, float minY, float minZ, float maxX, float maxY, float maxZ, Color color) {
