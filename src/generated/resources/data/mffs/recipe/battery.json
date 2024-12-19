@@ -9,7 +9,7 @@
       "tag": "c:ingots/iron"
     },
     "O": {
-      "item": "minecraft:coal"
+      "tag": "minecraft:coals"
     },
     "R": {
       "tag": "c:dusts/redstone"

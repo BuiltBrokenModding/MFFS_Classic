@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "C": {
-      "item": "minecraft:coal"
+      "tag": "minecraft:coals"
     },
     "I": {
       "tag": "c:ingots/iron"

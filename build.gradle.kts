@@ -6,7 +6,7 @@ plugins {
     id("net.neoforged.moddev") version "2.0.1-beta"
     id("me.modmuss50.mod-publish-plugin") version "0.5.+"
     id("wtf.gofancy.git-changelog") version "1.1.+"
-    id("org.sinytra.wiki.toolkit") version "0.1.9"
+    id("org.moddedmc.wiki.toolkit") version "0.2.4"
 }
 
 group = "dev.su5ed.mffs"

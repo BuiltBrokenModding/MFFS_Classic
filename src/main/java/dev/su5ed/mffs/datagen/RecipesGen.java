@@ -25,7 +25,7 @@ public class RecipesGen extends RecipeProvider {
     protected void buildRecipes(RecipeOutput recipeOutput) {
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.STEEL_COMPOUND.get())
             .define('I', Tags.Items.INGOTS_IRON)
-            .define('C', Items.COAL)
+            .define('C', ItemTags.COALS)
             .pattern(" C ")
             .pattern("CIC")
             .pattern(" C ")
@@ -40,7 +40,7 @@ public class RecipesGen extends RecipeProvider {
             .define('I', Tags.Items.INGOTS_IRON)
             .define('C', Tags.Items.INGOTS_COPPER)
             .define('R', Tags.Items.DUSTS_REDSTONE)
-            .define('O', Items.COAL)
+            .define('O', ItemTags.COALS)
             .pattern(" C ")
             .pattern("IRI")
             .pattern("IOI")
