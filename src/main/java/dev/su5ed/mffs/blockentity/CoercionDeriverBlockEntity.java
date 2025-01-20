@@ -24,7 +24,7 @@ import java.util.Locale;
 import java.util.Set;
 
 public class CoercionDeriverBlockEntity extends ElectricTileEntity {
-    private static final int DEFAULT_FE_CAPACITY = 1500000;
+    private static final int DEFAULT_FE_CAPACITY = 1_500_000;
 
     public final InventorySlot batterySlot;
     public final InventorySlot fuelSlot;
