@@ -41,7 +41,7 @@ public abstract class ElectricTileEntity extends ModularBlockEntity {
     /**
      * Charges electric item.
      */
-    public void charge(ItemStack stack) {
+    public void chargeItemFromSelf(ItemStack stack) {
         stack.getCapability(ForgeCapabilities.ENERGY)
             .ifPresent(energy -> this.energy.extractEnergy(energy.receiveEnergy(this.energy.getEnergyStored(), false), false));
     }
@@ -49,12 +49,12 @@ public abstract class ElectricTileEntity extends ModularBlockEntity {
     /**
      * Discharges electric item.
      */
-    public void discharge(ItemStack stack) {
+    public void dischargeItemIntoSelf(ItemStack stack) {
         stack.getCapability(ForgeCapabilities.ENERGY)
             .ifPresent(energy -> this.energy.receiveEnergy(energy.extractEnergy(this.energy.getRequestedEnergy(), false), false));
     }
 
-    protected long receiveEnergy() {
+    protected long outputEnergyToNearbyTiles() {
         long totalUsed = 0;
         for (Direction direction : getEnergyOutputSides()) {
             if (this.energy.getEnergyStored() > 0) {
