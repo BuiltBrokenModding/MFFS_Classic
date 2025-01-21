@@ -34,6 +34,8 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity {
     private int processTime;
     private EnergyMode energyMode = EnergyMode.DERIVE;
 
+    public int fortronProducedLastTick = 0;
+
     public CoercionDeriverBlockEntity(BlockPos pos, BlockState state) {
         super(ModObjects.COERCION_DERIVER_BLOCK_ENTITY.get(), pos, state, DEFAULT_FE_CAPACITY);
 
@@ -89,6 +91,9 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity {
     public void tickServer() {
         super.tickServer();
 
+        // Reset last tick values
+        fortronProducedLastTick = 0;
+
         if (isActive()) {
             if (isInversed() && MFFSConfig.COMMON.enableElectricity.get()) {
                 convertFortronIntoEnergy();
@@ -116,7 +121,7 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity {
 
     private void produceFortron() {
         final int fortronOutput = calculateFortronProduction();
-        final int fortronStored = this.fortronStorage.insertFortron(fortronOutput, false);
+        final int fortronStored = fortronProducedLastTick = this.fortronStorage.insertFortron(fortronOutput, false);
         final int asEnergy = fortronStored * MFFSConfig.COMMON.coercionDriverFePerFortron.get();
         this.energy.extractEnergy(asEnergy, false);
     }

@@ -22,7 +22,7 @@ import java.util.Optional;
 import java.util.Set;
 
 public abstract class ElectricTileEntity extends ModularBlockEntity {
-    protected final CustomEnergyStorage energy;
+    public final CustomEnergyStorage energy;
     private final Map<Direction, LazyOptional<IEnergyStorage>> sidedEnergyCap;
 
     protected ElectricTileEntity(BlockEntityType<? extends BaseBlockEntity> type, BlockPos pos, BlockState state, int capacity) {
