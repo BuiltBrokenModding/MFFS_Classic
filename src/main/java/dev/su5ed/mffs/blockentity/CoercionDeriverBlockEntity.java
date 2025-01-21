@@ -160,7 +160,7 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity {
     public int getMaxFortronProducedPerTick() {
         if (isActive()) {
             final int perTick = MFFSConfig.COMMON.coercionDriverFortronPerTick.get();
-            final int speedBonus = perTick * getModuleCount(ModModules.SPEED);
+            final int speedBonus = MFFSConfig.COMMON.coercionDriverFortronPerTickSpeedModule.get() * getModuleCount(ModModules.SPEED);
             final int production = perTick + speedBonus;
             final double catMultiplier = this.hasFuel() ? Math.max(MFFSConfig.COMMON.catalystMultiplier.get(), 0) : 0;
             return production + (int)Math.floor(production * catMultiplier);
