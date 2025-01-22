@@ -24,7 +24,7 @@ import java.util.Locale;
 import java.util.Set;
 
 public class CoercionDeriverBlockEntity extends ElectricTileEntity {
-    private static final int DEFAULT_FE_CAPACITY = 1500000;
+    private static final int DEFAULT_FE_CAPACITY = 1_500_000;
 
     public final InventorySlot batterySlot;
     public final InventorySlot fuelSlot;
@@ -34,13 +34,15 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity {
     private int processTime;
     private EnergyMode energyMode = EnergyMode.DERIVE;
 
+    public int fortronProducedLastTick = 0;
+
     public CoercionDeriverBlockEntity(BlockPos pos, BlockState state) {
         super(ModObjects.COERCION_DERIVER_BLOCK_ENTITY.get(), pos, state, DEFAULT_FE_CAPACITY);
 
         this.batterySlot = addSlot("battery", InventorySlot.Mode.BOTH, stack -> stack.getCapability(ForgeCapabilities.ENERGY).isPresent());
         this.fuelSlot = addSlot("fuel", InventorySlot.Mode.BOTH, stack -> stack.is(ModTags.FORTRON_FUEL));
         this.upgradeSlots = createUpgradeSlots(3);
-        this.energy.setMaxTransfer(getMaxTransferRate());
+        this.energy.setMaxTransfer(getMaxFETransferRate());
     }
 
     public EnergyMode getEnergyMode() {
@@ -51,8 +53,8 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity {
         this.energyMode = energyMode;
     }
 
-    public int getMaxTransferRate() {
-        return (int) (DEFAULT_FE_CAPACITY + DEFAULT_FE_CAPACITY * (getModuleCount(ModModules.SPEED) / 8.0F));
+    public int getMaxFETransferRate() {
+        return (int) (DEFAULT_FE_CAPACITY + DEFAULT_FE_CAPACITY * (getModuleCount(ModModules.SPEED) / 8.0F)); //TODO config
     }
 
     public boolean isInversed() {
@@ -67,13 +69,9 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity {
         this.processTime = processTime;
     }
 
-    private double getEnergyConversionRatio() {
-        return MFFSConfig.COMMON.energyConversionRatio.get();
-    }
-
     @Override
     public int getBaseFortronTankCapacity() {
-        return 30;
+        return 30; //TODO config
     }
 
     @Override
@@ -86,52 +84,91 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity {
     protected void onInventoryChanged() {
         super.onInventoryChanged();
 
-        this.energy.setMaxTransfer(getMaxTransferRate());
+        this.energy.setMaxTransfer(getMaxFETransferRate());
     }
 
     @Override
     public void tickServer() {
         super.tickServer();
 
+        // Reset last tick values
+        fortronProducedLastTick = 0;
+
         if (isActive()) {
             if (isInversed() && MFFSConfig.COMMON.enableElectricity.get()) {
-                if (this.energy.getEnergyStored() < this.energy.getMaxEnergyStored()) {
-                    int withdrawnElectricity = (int) (this.fortronStorage.extractFortron(getProductionRate() / 20, false) / getEnergyConversionRatio());
-                    // Inject electricity from Fortron.
-                    this.energy.receiveEnergy((int) (withdrawnElectricity * MFFSConfig.COMMON.backConversionEnergyLoss.get()), true);
-                }
-
-                charge(this.batterySlot.getItem());
-                receiveEnergy();
+                convertFortronIntoEnergy();
+                chargeItemFromSelf(this.batterySlot.getItem());
+                outputEnergyToNearbyTiles();
             } else if (this.fortronStorage.getStoredFortron() < this.fortronStorage.getFortronCapacity()) {
-                // Convert Electricity to Fortron
-                discharge(this.batterySlot.getItem());
+                dischargeItemIntoSelf(this.batterySlot.getItem()); //TODO shouldn't this be disabled with enableElectricity flag
 
-                int production = getProductionRate();
-                if (this.energy.canExtract(production) || !MFFSConfig.COMMON.enableElectricity.get() && hasFuel()) {
-                    // Fill Fortron
-                    this.energy.extractEnergy(production, false);
-                    this.fortronStorage.insertFortron(production, false);
-
-                    // Use fuel
-                    // TODO Fuel display
-                    if (this.processTime == 0 && hasFuel()) {
-                        this.fuelSlot.getItem().shrink(1);
-                        this.processTime = MFFSConfig.COMMON.catalystBurnTime.get() * Math.max(getModuleCount(ModModules.SCALE) / 20, 1);
-                    }
-                    this.processTime = Math.max(--this.processTime, 0);
+                if (this.energy.canExtract(MFFSConfig.COMMON.coercionDriverFePerFortron.get()) || !MFFSConfig.COMMON.enableElectricity.get() && hasFuel()) {
+                    produceFortron();
+                    consumeFuel();
                 }
             }
         }
     }
 
+    private void consumeFuel() {
+        // TODO Fuel display
+        if (this.processTime == 0 && hasFuel()) {
+            this.fuelSlot.getItem().shrink(1);
+            this.processTime = MFFSConfig.COMMON.catalystBurnTime.get() * Math.max(getModuleCount(ModModules.SCALE) / 20, 1); //TODO why 20
+        }
+        this.processTime = Math.max(--this.processTime, 0);
+    }
+
+    private void produceFortron() {
+        final int fortronOutput = calculateFortronProduction();
+        final int fortronStored = fortronProducedLastTick = this.fortronStorage.insertFortron(fortronOutput, false);
+        final int asEnergy = fortronStored * MFFSConfig.COMMON.coercionDriverFePerFortron.get();
+        this.energy.extractEnergy(asEnergy, false);
+    }
+
     /**
-     * @return The Fortron production rate per tick!
+     * Predicted fortron to be produced next energy tick
+     *
+     * @return fortron(ml)
      */
-    public int getProductionRate() {
+    public int calculateFortronProduction() {
+        final int spaceLeft = this.fortronStorage.getFortronCapacity() - this.fortronStorage.getStoredFortron();
+        final int maxFortronFromEnergy = this.energy.getEnergyStored() / MFFSConfig.COMMON.coercionDriverFePerFortron.get();
+        return Math.min(maxFortronFromEnergy, Math.min(getMaxFortronProducedPerTick(), spaceLeft));
+    }
+
+    private void convertFortronIntoEnergy() {
+        final int energyPerFortron = MFFSConfig.COMMON.coercionDriverFePerFortron.get() - MFFSConfig.COMMON.coercionDriverFortronToFeLoss.get();
+
+        // Only run if we can withdraw at least 1 fortron
+        if (this.energy.getEnergyStored() + energyPerFortron < this.energy.getMaxEnergyStored()) {
+            //Calculate upper limits per tick
+            final int maxFortronOut = this.fortronStorage.extractFortron(getMaxFortronProducedPerTick(), true);
+            final int maxEnergyOut = maxFortronOut * energyPerFortron;
+
+            //Calculate amount of energy that can actually be moved
+            final int maxEnergyReceived = this.energy.receiveEnergy(maxEnergyOut, true);
+
+            // Calculate actual values to move, round down to avoid material loss
+            final int fortronToRemove = (int)Math.floor(maxEnergyReceived / (float)energyPerFortron);
+
+            // Apply values
+            this.energy.receiveEnergy(this.fortronStorage.extractFortron(fortronToRemove, false) * energyPerFortron, false);
+        }
+    }
+
+    /**
+     * Upper limit on fortron produced per tick
+     *
+     * @return fortron(ml) per tick
+     */
+    public int getMaxFortronProducedPerTick() {
         if (isActive()) {
-            int production = (int) (getMaxTransferRate() / 20F * getEnergyConversionRatio());
-            return this.processTime > 0 ? (int) (production * MFFSConfig.COMMON.catalystMultiplier.get()) : production;
+            final int perTick = MFFSConfig.COMMON.coercionDriverFortronPerTick.get();
+            final int speedBonus = MFFSConfig.COMMON.coercionDriverFortronPerTickSpeedModule.get() * getModuleCount(ModModules.SPEED);
+            final int production = perTick + speedBonus;
+            final double catMultiplier = this.hasFuel() ? Math.max(MFFSConfig.COMMON.catalystMultiplier.get(), 0) : 0;
+            return production + (int)Math.floor(production * catMultiplier);
         }
         return 0;
     }

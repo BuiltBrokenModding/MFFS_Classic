@@ -29,6 +29,8 @@ import java.util.List;
 import java.util.Locale;
 
 public final class ModUtil {
+
+    public static final Integer TICKS_PER_SECOND = 20;
     
     public static Vec3 rotateByAngleExact(Vec3 pos, double yaw, double pitch, double roll) {
         double yawRadians = Math.toRadians(yaw);

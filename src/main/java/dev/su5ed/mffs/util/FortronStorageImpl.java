@@ -53,13 +53,13 @@ public class FortronStorageImpl implements FortronStorage {
     }
 
     @Override
-    public int extractFortron(int joules, boolean simulate) {
-        return this.fortronTank.drain(joules, simulate ? IFluidHandler.FluidAction.SIMULATE : IFluidHandler.FluidAction.EXECUTE).getAmount();
+    public int extractFortron(int ml, boolean simulate) {
+        return this.fortronTank.drain(ml, simulate ? IFluidHandler.FluidAction.SIMULATE : IFluidHandler.FluidAction.EXECUTE).getAmount();
     }
 
     @Override
-    public int insertFortron(int joules, boolean simulate) {
-        return this.fortronTank.fill(Fortron.getFortron(joules), simulate ? IFluidHandler.FluidAction.SIMULATE : IFluidHandler.FluidAction.EXECUTE);
+    public int insertFortron(int ml, boolean simulate) {
+        return this.fortronTank.fill(Fortron.getFortron(ml), simulate ? IFluidHandler.FluidAction.SIMULATE : IFluidHandler.FluidAction.EXECUTE);
     }
 
     @Override
