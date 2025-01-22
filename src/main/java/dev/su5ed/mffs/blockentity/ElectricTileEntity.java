@@ -22,7 +22,7 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 public abstract class ElectricTileEntity extends ModularBlockEntity {
-    protected final CustomEnergyStorage energy;
+    public final CustomEnergyStorage energy;
     private final Map<Direction, Supplier<IEnergyStorage>> sidedEnergyCap;
 
     protected ElectricTileEntity(BlockEntityType<? extends BaseBlockEntity> type, BlockPos pos, BlockState state, int capacity) {
@@ -47,7 +47,7 @@ public abstract class ElectricTileEntity extends ModularBlockEntity {
     /**
      * Charges electric item.
      */
-    public void charge(ItemStack stack) {
+    public void chargeItemFromSelf(ItemStack stack) {
         IEnergyStorage energy = stack.getCapability(Capabilities.EnergyStorage.ITEM);
         if (energy != null) {
             this.energy.extractEnergy(energy.receiveEnergy(this.energy.getEnergyStored(), false), false);
@@ -57,14 +57,14 @@ public abstract class ElectricTileEntity extends ModularBlockEntity {
     /**
      * Discharges electric item.
      */
-    public void discharge(ItemStack stack) {
+    public void dischargeItemIntoSelf(ItemStack stack) {
         IEnergyStorage energy = stack.getCapability(Capabilities.EnergyStorage.ITEM);
         if (energy != null) {
             this.energy.receiveEnergy(energy.extractEnergy(this.energy.getRequestedEnergy(), false), false);
         }
     }
 
-    protected long receiveEnergy() {
+    protected long outputEnergyToNearbyTiles() {
         long totalUsed = 0;
         for (Direction direction : getEnergyOutputSides()) {
             if (this.energy.getEnergyStored() > 0) {

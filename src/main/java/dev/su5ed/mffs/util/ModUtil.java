@@ -44,6 +44,7 @@ public final class ModUtil {
         ByteBufCodecs.DOUBLE, Vec3::z,
         Vec3::new
     );
+    public static final Integer TICKS_PER_SECOND = 20;
 
     public static <B extends ByteBuf, V> StreamCodec.CodecOperation<B, V, @Nullable V> nullable() {
         return codec -> new StreamCodec<>() {

@@ -57,7 +57,8 @@ public class CoercionDeriverScreen extends FortronScreen<CoercionDeriverMenu> {
         int energy = this.menu.blockEntity.fortronStorage.getStoredFortron();
         guiGraphics.drawString(this.font, ModUtil.translate("screen", "fortron.short", energy), 8, 105, GuiColors.DARK_GREY, false);
         boolean inversed = this.menu.blockEntity.isInversed();
-        guiGraphics.drawString(this.font, ModUtil.translate("screen", "fortron_cost", inversed ? "-" : "+", this.menu.blockEntity.getProductionRate() * 20)
+        int displayFortron = this.menu.blockEntity.fortronProducedLastTick * ModUtil.TICKS_PER_SECOND;
+        guiGraphics.drawString(this.font, ModUtil.translate("screen", "fortron_cost", inversed ? "-" : "+", displayFortron)
             .withStyle(inversed ? ChatFormatting.DARK_RED : ChatFormatting.DARK_GREEN), 114, 117, GuiColors.DARK_GREY, false);
     }
 }
