@@ -1,3 +1,4 @@
+import me.modmuss50.mpp.ReleaseType
 import net.minecraftforge.gradle.userdev.tasks.JarJar
 import java.time.LocalDateTime
 
@@ -6,8 +7,8 @@ plugins {
     `maven-publish`
     id("net.minecraftforge.gradle") version "[6.0,6.2)"
     id("org.parchmentmc.librarian.forgegradle") version "1.+"
-    id("io.github.CDAGaming.cursegradle") version "1.6.+"
     id("wtf.gofancy.git-changelog") version "1.1.+"
+    id("me.modmuss50.mod-publish-plugin") version "0.5.+"
     // Required to run mixin mods in dev
     id("org.spongepowered.mixin") version "0.7-SNAPSHOT"
 }
@@ -18,11 +19,14 @@ version = changelog.getVersionFromTag()
 val versionMc: String by project
 val versionForge: String by project
 val curseForgeId: String by project
+val modrinthId: String by project
 val versionJei: String by project
 val versionTOP: String by project
 val versionPatchouli: String by project
 val publishReleaseType = System.getenv("PUBLISH_RELEASE_TYPE") ?: "beta"
 val changelogText = changelog.generateChangelog(1, true)
+
+val CI: Provider<String> = providers.environmentVariable("CI")
 
 java.toolchain.languageVersion.set(JavaLanguageVersion.of(17))
 
@@ -125,18 +129,24 @@ tasks {
     }
 }
 
-curseforge {
-    apiKey = System.getenv("CURSEFORGE_TOKEN") ?: "UNKNOWN"
-    project {
-        id = curseForgeId
-        releaseType = publishReleaseType
-        changelogType = "markdown"
-        changelog = changelogText
-        mainArtifact(tasks.jarJar.get()) {
-            displayName = "MFFS $versionMc-${project.version}"
-        }
-        addGameVersion("Forge")
-        addGameVersion(versionMc)
+publishMods {
+    file.set(tasks.jarJar.flatMap { it.archiveFile })
+    changelog.set(provider { project.changelog.generateChangelog(1, true) })
+    type.set(providers.environmentVariable("PUBLISH_RELEASE_TYPE").map(ReleaseType::of).orElse(ReleaseType.STABLE))
+    modLoaders.add("forge")
+    dryRun.set(!CI.isPresent)
+
+    curseforge {
+        accessToken.set(providers.environmentVariable("CURSEFORGE_TOKEN"))
+        projectId.set(curseForgeId)
+        minecraftVersions.add(versionMc)
+        displayName.set("MFFS $versionMc-${project.version}")
+    }
+    modrinth {
+        accessToken.set(providers.environmentVariable("MODRINTH_TOKEN"))
+        projectId.set(modrinthId)
+        minecraftVersions.add(versionMc)
+        displayName.set("MFFS $versionMc-${project.version}")
     }
 }
 
