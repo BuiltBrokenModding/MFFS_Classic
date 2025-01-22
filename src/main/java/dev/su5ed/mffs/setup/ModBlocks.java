@@ -1,11 +1,7 @@
 package dev.su5ed.mffs.setup;
 
 import dev.su5ed.mffs.MFFSMod;
-import dev.su5ed.mffs.block.BaseEntityBlock;
-import dev.su5ed.mffs.block.BiometricIdentifierBlock;
-import dev.su5ed.mffs.block.CoercionDeriverBlock;
-import dev.su5ed.mffs.block.ForceFieldBlockImpl;
-import dev.su5ed.mffs.block.ProjectorBlock;
+import dev.su5ed.mffs.block.*;
 import dev.su5ed.mffs.blockentity.BaseBlockEntity;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -25,7 +21,7 @@ public final class ModBlocks {
 
     public static final DeferredBlock<ProjectorBlock> PROJECTOR = block("projector", ProjectorBlock::new);
     public static final DeferredBlock<CoercionDeriverBlock> COERCION_DERIVER = block("coercion_deriver", CoercionDeriverBlock::new);
-    public static final DeferredBlock<BaseEntityBlock> FORTRON_CAPACITOR = baseEntityBlock("fortron_capacitor", () -> ModObjects.FORTRON_CAPACITOR_BLOCK_ENTITY);
+    public static final DeferredBlock<FortronCapacitorBlock> FORTRON_CAPACITOR = block("fortron_capacitor", FortronCapacitorBlock::new);
     public static final DeferredBlock<ForceFieldBlockImpl> FORCE_FIELD = BLOCKS.register("force_field", ForceFieldBlockImpl::new);
     public static final DeferredBlock<BiometricIdentifierBlock> BIOMETRIC_IDENTIFIER = block("biometric_identifier", BiometricIdentifierBlock::new);
     public static final DeferredBlock<BaseEntityBlock> INTERDICTION_MATRIX = baseEntityBlock("interdiction_matrix", () -> ModObjects.INTERDICTION_MATRIX_BLOCK_ENTITY);
