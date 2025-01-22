@@ -153,7 +153,7 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity {
             final int fortronToRemove = (int)Math.floor(maxEnergyReceived / (float)energyPerFortron);
 
             // Apply values
-            this.energy.receiveEnergy(this.fortronStorage.extractFortron(fortronToRemove, true) * energyPerFortron, true);
+            this.energy.receiveEnergy(this.fortronStorage.extractFortron(fortronToRemove, false) * energyPerFortron, false);
         }
     }
 
