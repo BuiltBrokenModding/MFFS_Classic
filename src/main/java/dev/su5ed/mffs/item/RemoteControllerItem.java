@@ -15,7 +15,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -38,8 +37,8 @@ import java.util.Objects;
 
 public class RemoteControllerItem extends BaseItem implements CoordLink {
 
-    public RemoteControllerItem() {
-        super(new ExtendedItemProperties(new Item.Properties().stacksTo(1)).description());
+    public RemoteControllerItem(Properties properties) {
+        super(new ExtendedItemProperties(properties.stacksTo(1)).description());
     }
 
     @Override
@@ -60,7 +59,7 @@ public class RemoteControllerItem extends BaseItem implements CoordLink {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
+    public InteractionResult use(Level level, Player player, InteractionHand usedHand) {
         ItemStack stack = player.getItemInHand(usedHand);
         if (!level.isClientSide && !player.isShiftKeyDown()) {
             BlockPos pos = getLink(stack);
@@ -73,14 +72,14 @@ public class RemoteControllerItem extends BaseItem implements CoordLink {
                     int frequency = Objects.requireNonNull(level.getCapability(ModCapabilities.FORTRON, be.getBlockPos(), be.getBlockState(), be, null)).getFrequency();
                     if (drawEnergy(level, player.blockPosition(), player.position().add(0, player.getEyeHeight() - 0.2, 0), frequency, (int) requiredEnergy)) {
                         player.openMenu(new RemoteMenuProvider(menuProvider), pos);
-                        return InteractionResultHolder.success(stack);
+                        return InteractionResult.SUCCESS;
                     }
 
                     player.displayClientMessage(ModUtil.translate("info", "cannot_harness", Math.round(requiredEnergy)).withStyle(ChatFormatting.RED), true);
                 }
             }
         }
-        return InteractionResultHolder.pass(stack);
+        return InteractionResult.PASS;
     }
 
     @Override

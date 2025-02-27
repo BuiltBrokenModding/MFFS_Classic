@@ -1,7 +1,5 @@
 package dev.su5ed.mffs.render.model;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.su5ed.mffs.MFFSMod;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -16,12 +14,8 @@ import net.minecraft.client.renderer.RenderType;
 public class ProjectorRotorModel extends Model {
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(MFFSMod.location("projector_rotor"), "main");
 
-    private final ModelPart root;
-
     public ProjectorRotorModel(ModelPart root) {
-        super(RenderType::entityTranslucent);
-
-        this.root = root.getChild("root");
+        super(root.getChild("root"), RenderType::entityTranslucent);
     }
 
     public static LayerDefinition createBodyLayer() {
@@ -87,10 +81,5 @@ public class ProjectorRotorModel extends Model {
             PartPose.offset(0.0F, -8.0F, 0.0F));
 
         return LayerDefinition.create(meshdefinition, 128, 64);
-    }
-
-    @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int i, int i1, int i2) {
-        this.root.render(poseStack, vertexConsumer, i, i1, i2);
     }
 }

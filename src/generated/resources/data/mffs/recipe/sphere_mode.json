@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "F": {
-      "item": "mffs:focus_matrix"
-    }
+    "F": "mffs:focus_matrix"
   },
   "pattern": [
     " F ",

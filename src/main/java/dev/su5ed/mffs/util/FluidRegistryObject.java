@@ -11,13 +11,19 @@ public class FluidRegistryObject {
     private final Supplier<FluidType> fluidType;
     private final Supplier<Fluid> sourceFluid;
     private final Supplier<Fluid> flowingFluid;
+    private final ModFluidType.FluidRenderInfo properties;
 
     public FluidRegistryObject(ModFluidType.FluidProperties properties) {
+        this.properties = properties.build();
         this.fluidType = Suppliers.memoize(() -> new ModFluidType(properties));
 
         BaseFlowingFluid.Properties fluidProperties = new BaseFlowingFluid.Properties(this.fluidType, this::getSourceFluid, this::getFlowingFluid);
         this.sourceFluid = Suppliers.memoize(() -> new BaseFlowingFluid.Source(fluidProperties));
         this.flowingFluid = Suppliers.memoize(() -> new BaseFlowingFluid.Flowing(fluidProperties));
+    }
+
+    public ModFluidType.FluidRenderInfo getProperties() {
+        return this.properties;
     }
 
     public Supplier<FluidType> fluidType() {

@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "P": {
-      "item": "minecraft:paper"
-    },
-    "S": {
-      "tag": "c:ingots/steel"
-    }
+    "P": "minecraft:paper",
+    "S": "#c:ingots/steel"
   },
   "pattern": [
     "PPP",

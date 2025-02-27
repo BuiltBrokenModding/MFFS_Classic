@@ -16,12 +16,12 @@ public class BatteryItem extends Item {
     private final int capacity;
     private final int maxTransfer;
 
-    public BatteryItem() {
-        this(100000, 1000);
+    public BatteryItem(Properties properties) {
+        this(properties, 100000, 1000);
     }
 
-    public BatteryItem(int capacity, int maxTransfer) {
-        super(new Item.Properties().stacksTo(1));
+    public BatteryItem(Properties properties, int capacity, int maxTransfer) {
+        super(properties.stacksTo(1));
 
         this.capacity = capacity;
         this.maxTransfer = maxTransfer;

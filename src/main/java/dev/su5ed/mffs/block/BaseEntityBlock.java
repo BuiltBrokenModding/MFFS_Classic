@@ -34,7 +34,7 @@ import static dev.su5ed.mffs.MFFSMod.location;
 
 public class BaseEntityBlock extends Block implements EntityBlock {
     public static final ResourceLocation CONTENT_KEY = location("content");
-    public static final Property<Boolean> ACTIVE = BooleanProperty.create("active");
+    public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 
     private final Supplier<? extends BlockEntityType<? extends BaseBlockEntity>> provider;
 

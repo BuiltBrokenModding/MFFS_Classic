@@ -52,7 +52,7 @@ public final class ModObjects {
     }
 
     private static <T extends BlockEntity> DeferredHolder<BlockEntityType<?>, BlockEntityType<T>> blockEntity(String name, BlockEntityType.BlockEntitySupplier<T> factory, Supplier<Block> block) {
-        return BLOCK_ENTITY_TYPES.register(name, () -> BlockEntityType.Builder.of(factory, block.get()).build(null));
+        return BLOCK_ENTITY_TYPES.register(name, () -> new BlockEntityType<>(factory, block.get()));
     }
 
     private ModObjects() {}

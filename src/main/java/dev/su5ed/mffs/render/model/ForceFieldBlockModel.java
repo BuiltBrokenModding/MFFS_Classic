@@ -8,7 +8,6 @@ import dev.su5ed.mffs.api.ForceFieldBlock;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
@@ -53,11 +52,6 @@ public class ForceFieldBlockModel implements IDynamicBakedModel {
     }
 
     @Override
-    public boolean isCustomRenderer() {
-        return false;
-    }
-
-    @Override
     public TextureAtlasSprite getParticleIcon(ModelData data) {
         Pair<BakedModel, BlockState> model = getCamouflageModel(null, data);
         return model.getFirst().getParticleIcon(data);
@@ -68,12 +62,6 @@ public class ForceFieldBlockModel implements IDynamicBakedModel {
         return this.defaultModel.getParticleIcon();
     }
 
-    @Override
-    public ItemOverrides getOverrides() {
-        return ItemOverrides.EMPTY;
-    }
-
-    @SuppressWarnings("deprecation")
     @Override
     public ItemTransforms getTransforms() {
         return ItemTransforms.NO_TRANSFORMS;

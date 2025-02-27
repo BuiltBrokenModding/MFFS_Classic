@@ -3,12 +3,15 @@ package dev.su5ed.mffs.render;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import dev.su5ed.mffs.MFFSMod;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.CoreShaders;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.TriState;
 
 import java.util.function.Function;
 
@@ -37,7 +40,7 @@ public class ModRenderType extends RenderType {
         256, false, true,
         RenderType.CompositeState.builder()
             .setShaderState(RENDERTYPE_EYES_SHADER)
-            .setTextureState(new RenderStateShard.TextureStateShard(location, false, false))
+            .setTextureState(new RenderStateShard.TextureStateShard(location, TriState.FALSE, false))
             .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
             .setOutputState(GLITCH_TARGET)
             .createCompositeState(true)
@@ -60,7 +63,7 @@ public class ModRenderType extends RenderType {
         256, false, true,
         RenderType.CompositeState.builder()
             .setShaderState(POSITION_TEX_SHADER)
-            .setTextureState(new RenderStateShard.TextureStateShard(location, false, false))
+            .setTextureState(new RenderStateShard.TextureStateShard(location, TriState.FALSE, false))
             .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
             .setOutputState(GLITCH_TARGET)
             .setCullState(NO_CULL)
@@ -72,12 +75,41 @@ public class ModRenderType extends RenderType {
         DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.QUADS,
         256, false, true,
         RenderType.CompositeState.builder()
-            .setShaderState(new ShaderStateShard(GameRenderer::getPositionTexColorShader))
-            .setTextureState(new RenderStateShard.TextureStateShard(location, false, false))
+            .setShaderState(new ShaderStateShard(CoreShaders.POSITION_TEX_COLOR))
+            .setTextureState(new RenderStateShard.TextureStateShard(location, TriState.FALSE, false))
             .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
             .setOutputState(TRANSLUCENT_TARGET)
             .createCompositeState(true)
     ));
+
+    public static final RenderType PARTICLE_HOLO = create(
+        "mffs:particle_holo",
+        DefaultVertexFormat.BLOCK, VertexFormat.Mode.QUADS,
+        256, false, true,
+        RenderType.CompositeState.builder()
+            .setLightmapState(RenderStateShard.LIGHTMAP)
+            .setDepthTestState(RenderStateShard.LEQUAL_DEPTH_TEST)
+            .setShaderState(RENDERTYPE_TRANSLUCENT_SHADER)
+            .setTextureState(new RenderStateShard.TextureStateShard(TextureAtlas.LOCATION_BLOCKS, TriState.FALSE, false))
+            .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+            .setOutputState(PARTICLES_TARGET)
+            .createCompositeState(true)
+    );
+
+    public static final RenderType PARTICLE_BEAM = create(
+        "mffs:particle_beam",
+        DefaultVertexFormat.PARTICLE, VertexFormat.Mode.QUADS,
+        1536, false, false,
+        RenderType.CompositeState.builder()
+            .setShaderState(PARTICLE_SHADER)
+            .setTextureState(new RenderStateShard.TextureStateShard(ResourceLocation.fromNamespaceAndPath(MFFSMod.MODID, "textures/particle/fortron.png"), TriState.FALSE, false))
+            .setTransparencyState(LIGHTNING_TRANSPARENCY)
+            .setCullState(NO_CULL)
+            .setDepthTestState(LEQUAL_DEPTH_TEST)
+            .setOutputState(TRANSLUCENT_TARGET_NO_DEPTH_MASK)
+            .setLightmapState(LIGHTMAP)
+            .createCompositeState(false)
+    );
 
     private ModRenderType(String name, VertexFormat format, VertexFormat.Mode mode, int bufferSize, boolean affectsCrumbling, boolean sortOnUpload, Runnable setupState, Runnable clearState) {
         super(name, format, mode, bufferSize, affectsCrumbling, sortOnUpload, setupState, clearState);

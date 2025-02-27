@@ -5,8 +5,10 @@ import dev.su5ed.mffs.MFFSMod;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ARGB;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -38,20 +40,14 @@ public class IconCycleButton<T extends Enum<T>> extends AbstractButton {
 
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        if (this.isHovered) {
-            guiGraphics.setColor(0.85F, 0.85F, 0.85F, this.alpha);
-        }
-        else {
-            guiGraphics.setColor(1.0F, 1.0F, 1.0F, this.alpha);
-        }
-
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.enableDepthTest();
 
+        int color = this.isHovered ? ARGB.colorFromFloat(this.alpha, 0.85F, 0.85F, 0.85F) : ARGB.white(this.alpha);
         int vOffset = this.imageV + this.value.get().ordinal() * this.yStep;
-        guiGraphics.blit(this.image, getX(), getY(), this.imageU, vOffset, this.width, this.height);
-        guiGraphics.blit(this.image, getX() + this.width / 2, getY(), 200 - this.width / 2, vOffset, this.width / 2, this.height);
+        guiGraphics.blit(RenderType::guiTextured, this.image, getX(), getY(), this.imageU, vOffset, this.width, this.height, 256, 256, color);
+        guiGraphics.blit(RenderType::guiTextured, this.image, getX() + this.width / 2, getY(), 200 - this.width / 2, vOffset, this.width / 2, this.height, 256, 256, color);
     }
 
     @Override

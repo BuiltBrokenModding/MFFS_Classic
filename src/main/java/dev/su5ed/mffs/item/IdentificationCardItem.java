@@ -11,10 +11,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
@@ -28,12 +26,12 @@ import java.util.Set;
 
 public class IdentificationCardItem extends BaseItem {
 
-    public IdentificationCardItem() {
-        super(new ExtendedItemProperties(new Item.Properties().stacksTo(1)).description());
+    public IdentificationCardItem(Properties properties) {
+        super(new ExtendedItemProperties(properties.stacksTo(1)).description());
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
+    public InteractionResult use(Level level, Player player, InteractionHand usedHand) {
         if (player.isShiftKeyDown()) {
             ItemStack stack = player.getItemInHand(usedHand);
 
@@ -46,7 +44,7 @@ public class IdentificationCardItem extends BaseItem {
                     setCardIdentity(card, player, player.getGameProfile());
                 }
             }
-            return InteractionResultHolder.consume(player.getItemInHand(usedHand));
+            return InteractionResult.CONSUME;
         }
         return super.use(level, player, usedHand);
     }
@@ -62,7 +60,7 @@ public class IdentificationCardItem extends BaseItem {
                     setCardIdentity(card, player, targetPlayer.getGameProfile());
                 }
                 event.setCanceled(true);
-                event.setCancellationResult(InteractionResult.sidedSuccess(player.level().isClientSide));
+                event.setCancellationResult(InteractionResult.SUCCESS);
             }
         }
     }

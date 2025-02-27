@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "C": {
-      "item": "mffs:blank_card"
-    },
-    "F": {
-      "item": "mffs:focus_matrix"
-    },
-    "S": {
-      "tag": "c:ingots/steel"
-    }
+    "C": "mffs:blank_card",
+    "F": "mffs:focus_matrix",
+    "S": "#c:ingots/steel"
   },
   "pattern": [
     "FSF",

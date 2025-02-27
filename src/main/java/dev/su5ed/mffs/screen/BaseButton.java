@@ -5,8 +5,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ARGB;
 
 public abstract class BaseButton extends AbstractButton {
     private final Runnable onPress;
@@ -24,10 +26,8 @@ public abstract class BaseButton extends AbstractButton {
         RenderSystem.defaultBlendFunc();
         RenderSystem.enableDepthTest();
 
-        guiGraphics.setColor(1.0F, 1.0F, 1.0F, this.alpha);
         ResourceLocation widgetsLocation = SPRITES.get(this.active, this.isHovered());
-        guiGraphics.blitSprite(widgetsLocation, getX(), getY(), this.width, this.height);
-        guiGraphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
+        guiGraphics.blitSprite(RenderType::guiTextured, widgetsLocation, getX(), getY(), this.width, this.height, ARGB.white(this.alpha));
 
         renderFg(guiGraphics, minecraft, mouseX, mouseY, partialTick);
     }

@@ -1,26 +1,19 @@
 package dev.su5ed.mffs.render.particle;
 
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import dev.su5ed.mffs.MFFSMod;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 public class BeamParticle extends Particle {
-    private static final ResourceLocation FORTRON_TEXTURE = ResourceLocation.fromNamespaceAndPath(MFFSMod.MODID, "textures/particle/fortron.png");
     private static final int ROTATION_SPEED = 20;
     private static final boolean PULSE = true;
 
@@ -127,24 +120,6 @@ public class BeamParticle extends Particle {
 
     @Override
     public ParticleRenderType getRenderType() {
-        return BeamParticleRenderType.INSTANCE;
-    }
-
-    public static class BeamParticleRenderType implements ParticleRenderType {
-        public static final BeamParticleRenderType INSTANCE = new BeamParticleRenderType();
-
-        @Nullable
-        @Override
-        public BufferBuilder begin(Tesselator tesselator, TextureManager textureManager) {
-            RenderSystem.enableBlend();
-            RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
-
-            RenderSystem.disableCull();
-            RenderSystem.depthMask(false);
-
-            RenderSystem.setShaderTexture(0, FORTRON_TEXTURE);
-
-            return tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.PARTICLE);
-        }
+        return ModParticleRenderType.BEAM;
     }
 }

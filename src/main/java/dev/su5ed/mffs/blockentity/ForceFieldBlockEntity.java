@@ -2,6 +2,7 @@ package dev.su5ed.mffs.blockentity;
 
 import dev.su5ed.mffs.api.ForceFieldBlock;
 import dev.su5ed.mffs.api.Projector;
+import dev.su5ed.mffs.block.ForceFieldBlockImpl;
 import dev.su5ed.mffs.network.InitialDataRequestPacket;
 import dev.su5ed.mffs.render.BlockEntityRenderDelegate;
 import dev.su5ed.mffs.setup.ModCapabilities;
@@ -44,7 +45,13 @@ public class ForceFieldBlockEntity extends BlockEntity {
 
     public void setCamouflage(BlockState camouflage) {
         this.camouflage = camouflage;
-        setChanged();
+        this.level.setBlock(
+            worldPosition,
+            getBlockState()
+                .setValue(ForceFieldBlockImpl.PROPAGATES_SKYLIGHT, camouflage.propagatesSkylightDown())
+                .setValue(ForceFieldBlockImpl.SOLID, !camouflage.getOcclusionShape().isEmpty()),
+            Block.UPDATE_ALL
+        );
     }
 
     @Override

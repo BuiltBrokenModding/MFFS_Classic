@@ -1,18 +1,14 @@
 package dev.su5ed.mffs.render.model;
 
-import net.minecraft.client.renderer.block.model.ItemOverrides;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.block.model.TextureSlots;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.client.model.geometry.IGeometryBakingContext;
-import net.neoforged.neoforge.client.model.geometry.IUnbakedGeometry;
 
-import java.util.function.Function;
-
-public class ForceFieldBlockModelGeometry implements IUnbakedGeometry<ForceFieldBlockModelGeometry> {
+public class ForceFieldBlockModelGeometry implements UnbakedModel {
     private final ResourceLocation defaultModel;
 
     public ForceFieldBlockModelGeometry(ResourceLocation defaultModel) {
@@ -20,8 +16,13 @@ public class ForceFieldBlockModelGeometry implements IUnbakedGeometry<ForceField
     }
 
     @Override
-    public BakedModel bake(IGeometryBakingContext context, ModelBaker modelBaker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState, ItemOverrides itemOverrides) {
-        BakedModel defaultModel = modelBaker.bake(this.defaultModel, modelState, spriteGetter);
+    public BakedModel bake(TextureSlots textureSlots, ModelBaker baker, ModelState modelState, boolean hasAmbientOcclusion, boolean useBlockLight, ItemTransforms transforms) {
+        BakedModel defaultModel = baker.bake(this.defaultModel, modelState);
         return new ForceFieldBlockModel(defaultModel);
+    }
+
+    @Override
+    public void resolveDependencies(Resolver resolver) {
+        resolver.resolve(this.defaultModel);
     }
 }

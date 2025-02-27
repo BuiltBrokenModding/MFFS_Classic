@@ -4,8 +4,8 @@
         "srcrgb": "srcalpha",
         "dstrgb": "1-srcalpha"
     },
-    "vertex": "blit",
-    "fragment": "mffs:glitch_blit",
+    "vertex": "minecraft:post/blit",
+    "fragment": "mffs:post/glitch_blit",
     "attributes": [ "Position" ],
     "samplers": [
         { "name": "DiffuseSampler" },

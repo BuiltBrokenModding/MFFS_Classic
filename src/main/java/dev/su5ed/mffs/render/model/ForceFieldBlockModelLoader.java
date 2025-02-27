@@ -4,11 +4,11 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.client.model.geometry.IGeometryLoader;
+import net.neoforged.neoforge.client.model.UnbakedModelLoader;
 
 import static dev.su5ed.mffs.MFFSMod.location;
 
-public class ForceFieldBlockModelLoader implements IGeometryLoader<ForceFieldBlockModelGeometry> {
+public class ForceFieldBlockModelLoader implements UnbakedModelLoader<ForceFieldBlockModelGeometry> {
     public static final ResourceLocation NAME = location("force_field");
     public static final ResourceLocation DEFAULT_MODEL = location("block/force_field_default");
 

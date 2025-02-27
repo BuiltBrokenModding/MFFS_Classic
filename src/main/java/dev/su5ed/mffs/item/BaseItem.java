@@ -50,6 +50,10 @@ public class BaseItem extends Item {
             this.properties = properties;
         }
 
+        public Properties getProperties() {
+            return this.properties;
+        }
+
         public ExtendedItemProperties description() {
             this.description = item -> {
                 String name = BuiltInRegistries.ITEM.getKey(item).getPath();

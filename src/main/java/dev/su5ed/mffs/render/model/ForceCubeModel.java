@@ -1,7 +1,5 @@
 package dev.su5ed.mffs.render.model;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.su5ed.mffs.render.ModRenderType;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -22,12 +20,8 @@ public class ForceCubeModel extends Model {
     public static final ResourceLocation CORE_TEXTURE = location("textures/model/force_cube.png");
     public static final RenderType RENDER_TYPE = ModRenderType.STANDARD_TRANSLUCENT_ENTITY.apply(CORE_TEXTURE);
 
-    private final ModelPart root;
-
     public ForceCubeModel(ModelPart root) {
-        super(ModRenderType.STANDARD_TRANSLUCENT_ENTITY);
-
-        this.root = root.getChild("root");
+        super(root.getChild("root"), ModRenderType.STANDARD_TRANSLUCENT_ENTITY);
     }
 
     public static LayerDefinition createBodyLayer() {
@@ -41,10 +35,5 @@ public class ForceCubeModel extends Model {
             PartPose.offset(0.0F, 0.0F, 0.0F));
 
         return LayerDefinition.create(meshdefinition, 64, 32);
-    }
-
-    @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int i, int i1, int i2) {
-        this.root.render(poseStack, vertexConsumer, i, i1, i2);
     }
 }

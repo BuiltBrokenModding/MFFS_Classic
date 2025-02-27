@@ -1,63 +1,22 @@
 package dev.su5ed.mffs.util;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
-import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.FluidType;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.function.Consumer;
 
 public class ModFluidType extends FluidType {
-    private final ResourceLocation stillTexture;
-    private final ResourceLocation flowingTexture;
-    private final ResourceLocation overlayTexture;
-    private final ResourceLocation renderOverlayTexture;
-    private final int tintColor;
-
     public ModFluidType(FluidProperties properties) {
         super(properties.properties);
-
-        this.stillTexture = properties.stillTexture;
-        this.flowingTexture = properties.flowingTexture;
-        this.overlayTexture = properties.overlayTexture;
-        this.renderOverlayTexture = properties.renderOverlayTexture;
-        this.tintColor = properties.tintColor;
     }
-
-    @Override
-    public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
-        consumer.accept(new IClientFluidTypeExtensions() {
-            @Override
-            public ResourceLocation getStillTexture() {
-                return stillTexture;
-            }
-
-            @Override
-            public ResourceLocation getFlowingTexture() {
-                return flowingTexture;
-            }
-
-            @Nullable
-            @Override
-            public ResourceLocation getOverlayTexture() {
-                return overlayTexture;
-            }
-
-            @Nullable
-            @Override
-            public ResourceLocation getRenderOverlayTexture(Minecraft mc) {
-                return renderOverlayTexture;
-            }
-
-            @Override
-            public int getTintColor() {
-                return tintColor;
-            }
-        });
-    }
+    
+    public record FluidRenderInfo(
+        ResourceLocation stillTexture,
+        ResourceLocation flowingTexture,
+        ResourceLocation overlayTexture,
+        ResourceLocation renderOverlayTexture,
+        int tintColor
+    ) {}
 
     public static class FluidProperties {
         private final Properties properties;
@@ -117,6 +76,10 @@ public class ModFluidType extends FluidType {
         public FluidProperties tintColor(int tintColor) {
             this.tintColor = tintColor;
             return this;
+        }
+
+        public FluidRenderInfo build() {
+            return new FluidRenderInfo(stillTexture, flowingTexture, overlayTexture, renderOverlayTexture, tintColor);
         }
     }
 }

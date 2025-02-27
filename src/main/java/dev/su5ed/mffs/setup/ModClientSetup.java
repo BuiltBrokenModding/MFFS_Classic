@@ -1,5 +1,6 @@
 package dev.su5ed.mffs.setup;
 
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.block.ForceFieldBlockImpl;
 import dev.su5ed.mffs.render.*;
@@ -7,9 +8,14 @@ import dev.su5ed.mffs.render.model.*;
 import dev.su5ed.mffs.render.particle.BeamParticleProvider;
 import dev.su5ed.mffs.render.particle.MovingHologramParticleProvider;
 import dev.su5ed.mffs.screen.*;
+import dev.su5ed.mffs.util.ModFluidType;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.renderer.ShaderDefines;
+import net.minecraft.client.renderer.ShaderProgram;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -20,10 +26,15 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.*;
+import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+
+import static dev.su5ed.mffs.MFFSMod.location;
 
 @EventBusSubscriber(modid = MFFSMod.MODID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
 public final class ModClientSetup {
@@ -89,7 +100,7 @@ public final class ModClientSetup {
     }
 
     @SubscribeEvent
-    public static void registerGeometryLoaders(ModelEvent.RegisterGeometryLoaders event) {
+    public static void registerGeometryLoaders(ModelEvent.RegisterLoaders event) {
         event.register(ForceFieldBlockModelLoader.NAME, new ForceFieldBlockModelLoader());
     }
 
@@ -109,8 +120,46 @@ public final class ModClientSetup {
     }
 
     @SubscribeEvent
-    public static void onResourceReload(RegisterClientReloadListenersEvent event) {
-        event.registerReloadListener((ResourceManagerReloadListener) resourceManager -> RenderPostProcessor.reloadPostProcessPass());
+    public static void onRegisterReloadListeners(AddClientReloadListenersEvent event) {
+        event.addListener(location("post_process"), (ResourceManagerReloadListener) resourceManager -> RenderPostProcessor.reloadPostProcessPass());
+    }
+
+    @SubscribeEvent
+    public static void registerClientExtensions(RegisterClientExtensionsEvent event) {
+        ModFluidType.FluidRenderInfo properties = ModFluids.FORTRON.getProperties();
+        event.registerFluidType(new IClientFluidTypeExtensions() {
+            @Override
+            public ResourceLocation getStillTexture() {
+                return properties.stillTexture();
+            }
+
+            @Override
+            public ResourceLocation getFlowingTexture() {
+                return properties.flowingTexture();
+            }
+
+            @Nullable
+            @Override
+            public ResourceLocation getOverlayTexture() {
+                return properties.overlayTexture();
+            }
+
+            @Nullable
+            @Override
+            public ResourceLocation getRenderOverlayTexture(Minecraft mc) {
+                return properties.renderOverlayTexture();
+            }
+
+            @Override
+            public int getTintColor() {
+                return properties.tintColor();
+            }
+        }, ModFluids.FORTRON_FLUID_TYPE);
+    }
+
+    @SubscribeEvent
+    public static void registerShaders(RegisterShadersEvent event) {
+        event.registerShader(new ShaderProgram(MFFSMod.location("post/glitch_blit"), DefaultVertexFormat.NEW_ENTITY, ShaderDefines.EMPTY));
     }
 
     private ModClientSetup() {}

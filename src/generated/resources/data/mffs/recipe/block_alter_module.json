@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "G": {
-      "tag": "c:storage_blocks/gold"
-    },
-    "M": {
-      "item": "mffs:block_access_module"
-    }
+    "G": "#c:storage_blocks/gold",
+    "M": "mffs:block_access_module"
   },
   "pattern": [
     " G ",

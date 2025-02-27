@@ -5,8 +5,10 @@ import dev.su5ed.mffs.MFFSMod;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ARGB;
 
 import java.util.function.DoubleSupplier;
 
@@ -29,8 +31,7 @@ public class FortronChargeWidget extends AbstractWidget {
 
         double scale = this.scale.getAsDouble();
         if (scale > 0) {
-            guiGraphics.setColor(1.0F, 1.0F, 1.0F, this.alpha);
-            guiGraphics.blit(COMPONENTS, getX(), getY(), 54, 11, (int) (scale * this.width), this.height);
+            guiGraphics.blit(RenderType::guiTextured, COMPONENTS, getX(), getY(), 54, 11, (int) (scale * this.width), this.height, 256, 256, ARGB.white(this.alpha));
         }
     }
 

@@ -7,15 +7,13 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.DamageTypeTagsProvider;
 import net.minecraft.tags.DamageTypeTags;
 import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
 
 public class DamageTypeTagsGen extends DamageTypeTagsProvider {
     
-    public DamageTypeTagsGen(PackOutput output, CompletableFuture<HolderLookup.Provider> registries, @Nullable ExistingFileHelper existingFileHelper) {
-        super(output, registries, MFFSMod.MODID, existingFileHelper);
+    public DamageTypeTagsGen(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
+        super(output, registries, MFFSMod.MODID);
     }
 
     @Override

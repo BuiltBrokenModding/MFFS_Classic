@@ -3,18 +3,16 @@ package dev.su5ed.mffs.render.model;
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.client.model.generators.CustomLoaderBuilder;
-import net.neoforged.neoforge.client.model.generators.ModelBuilder;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.client.model.generators.template.CustomLoaderBuilder;
 
-public class ForceFieldBlockModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBuilder<T> {
+public class ForceFieldBlockModelBuilder extends CustomLoaderBuilder {
     private ResourceLocation defaultModel;
 
-    public ForceFieldBlockModelBuilder(T parent, ExistingFileHelper existingFileHelper) {
-        super(ForceFieldBlockModelLoader.NAME, parent, existingFileHelper, false);
+    public ForceFieldBlockModelBuilder() {
+        super(ForceFieldBlockModelLoader.NAME, false);
     }
 
-    public ForceFieldBlockModelBuilder<T> setDefaultModel(ResourceLocation defaultModel) {
+    public ForceFieldBlockModelBuilder setDefaultModel(ResourceLocation defaultModel) {
         this.defaultModel = defaultModel;
         return this;
     }
@@ -27,5 +25,12 @@ public class ForceFieldBlockModelBuilder<T extends ModelBuilder<T>> extends Cust
         json.addProperty("default_model", this.defaultModel.toString());
 
         return json;
+    }
+
+    @Override
+    protected CustomLoaderBuilder copyInternal() {
+        ForceFieldBlockModelBuilder copy = new ForceFieldBlockModelBuilder();
+        copy.defaultModel = defaultModel;
+        return copy;
     }
 }

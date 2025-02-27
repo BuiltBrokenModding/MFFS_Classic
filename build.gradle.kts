@@ -3,7 +3,7 @@ import java.time.LocalDateTime
 
 plugins {
     `maven-publish`
-    id("net.neoforged.moddev") version "2.0.75"
+    id("net.neoforged.moddev") version "2.0.78"
     id("me.modmuss50.mod-publish-plugin") version "0.5.+"
     id("wtf.gofancy.git-changelog") version "1.1.+"
     id("org.moddedmc.wiki.toolkit") version "0.2.4"
@@ -58,7 +58,7 @@ neoForge {
         }
 
         create("data") {
-            data()
+            clientData()
             programArguments.addAll(
                 "--mod",
                 modId,
@@ -115,10 +115,10 @@ dependencies {
     compileOnly("mezz.jei:jei-1.21-common-api:$versionJei")
     compileOnly("mezz.jei:jei-1.21-neoforge-api:$versionJei")
     // at runtime, use the full JEI jar for NeoForge
-    runtimeOnly("mezz.jei:jei-1.21-neoforge:$versionJei")
+//    runtimeOnly("mezz.jei:jei-1.21-neoforge:$versionJei")
 
     compileOnly(group = "mcjty.theoneprobe", name = "theoneprobe", version = versionTOP) { isTransitive = false }
-    runtimeOnly("org.sinytra:item-asset-export-neoforge:1.0.2+1.21")
+//    runtimeOnly("org.sinytra:item-asset-export-neoforge:1.0.2+1.21")
 }
 
 tasks {
@@ -130,8 +130,7 @@ tasks {
                 "Specification-Version" to project.version,
                 "Implementation-Title" to project.name,
                 "Implementation-Version" to project.version,
-                "Implementation-Vendor" to "Su5eD",
-                "Implementation-Timestamp" to LocalDateTime.now()
+                "Implementation-Vendor" to "Su5eD"
             )
         }
     }

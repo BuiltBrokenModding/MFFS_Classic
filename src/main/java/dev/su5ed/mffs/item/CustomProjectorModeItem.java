@@ -20,7 +20,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -44,8 +43,8 @@ import java.util.Set;
 public class CustomProjectorModeItem extends BaseItem {
     private CustomStructureSavedData structureManager;
 
-    public CustomProjectorModeItem() {
-        super(new ExtendedItemProperties(new Item.Properties().stacksTo(1)));
+    public CustomProjectorModeItem(Properties properties) {
+        super(new ExtendedItemProperties(properties.stacksTo(1)));
     }
 
     public record StructureCoords(@Nullable BlockPos primary, @Nullable BlockPos secondary) {
@@ -76,7 +75,7 @@ public class CustomProjectorModeItem extends BaseItem {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
+    public InteractionResult use(Level level, Player player, InteractionHand usedHand) {
         if (level instanceof ServerLevel serverLevel && player instanceof ServerPlayer serverPlayer) {
             ItemStack stack = player.getItemInHand(usedHand);
             StructureCoords coords = stack.get(ModDataComponentTypes.STRUCTURE_COORDS);
@@ -98,25 +97,25 @@ public class CustomProjectorModeItem extends BaseItem {
                     } else {
                         player.displayClientMessage(ModUtil.translate("item", "custom_mode.too_far", distance), true);
                     }
-                    return InteractionResultHolder.success(stack);
+                    return InteractionResult.SUCCESS;
                 } else if (stack.has(ModDataComponentTypes.PATTERN_ID)) {
                     String id = stack.get(ModDataComponentTypes.PATTERN_ID);
                     data.clear(level, serverPlayer, id);
                     stack.remove(ModDataComponentTypes.PATTERN_ID);
                     player.displayClientMessage(ModUtil.translate("item", "custom_mode.clear"), true);
-                    return InteractionResultHolder.success(stack);
+                    return InteractionResult.SUCCESS;
                 }
             } else if (coords != null && coords.selectSecondary()) {
                 HitResult result = player.pick(player.blockInteractionRange(), 0, true);
                 if (result instanceof BlockHitResult blockHitResult) {
                     stack.set(ModDataComponentTypes.STRUCTURE_COORDS, new StructureCoords(coords.primary(), blockHitResult.getBlockPos()));
                     selectBlock(player, "secondary_point", ChatFormatting.GOLD);
-                    return InteractionResultHolder.success(stack);
+                    return InteractionResult.SUCCESS;
                 }
             } else {
                 Mode mode = setMode(stack, getMode(stack).next());
                 player.displayClientMessage(ModUtil.translate("item", "custom_mode.changed_mode", mode.getName().withStyle(ChatFormatting.GREEN)), true);
-                return InteractionResultHolder.consume(stack);
+                return InteractionResult.CONSUME;
             }
         }
         return super.use(level, player, usedHand);
