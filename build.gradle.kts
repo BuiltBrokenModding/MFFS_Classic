@@ -1,10 +1,9 @@
 import me.modmuss50.mpp.ReleaseType
-import java.time.LocalDateTime
 
 plugins {
     `maven-publish`
     id("net.neoforged.moddev") version "2.0.78"
-    id("me.modmuss50.mod-publish-plugin") version "0.5.+"
+    id("me.modmuss50.mod-publish-plugin") version "0.8.+"
     id("wtf.gofancy.git-changelog") version "1.1.+"
     id("org.moddedmc.wiki.toolkit") version "0.2.4"
 }
@@ -48,12 +47,12 @@ neoForge {
         create("client") {
             client()
             // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
-            systemProperty("forge.enabledGameTestNamespaces", modId)
+            systemProperty("neoforge.enabledGameTestNamespaces", modId)
         }
 
         create("server") {
             server()
-            systemProperty("forge.enabledGameTestNamespaces", modId)
+            systemProperty("neoforge.enabledGameTestNamespaces", modId)
             programArgument("--nogui")
         }
 
