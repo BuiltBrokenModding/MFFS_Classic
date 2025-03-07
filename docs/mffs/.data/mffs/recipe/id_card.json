@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "mffs:blank_card"
+    },
+    "R": {
+      "tag": "c:dusts/redstone"
+    }
+  },
+  "pattern": [
+    "RCR"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mffs:id_card"
+  }
+}

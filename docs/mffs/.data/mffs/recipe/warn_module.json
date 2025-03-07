@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "F": {
+      "item": "mffs:focus_matrix"
+    },
+    "N": {
+      "item": "minecraft:note_block"
+    }
+  },
+  "pattern": [
+    "NFN"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mffs:warn_module"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "mffs:battery"
+    },
+    "F": {
+      "item": "mffs:focus_matrix"
+    }
+  },
+  "pattern": [
+    "FBF"
+  ],
+  "result": {
+    "count": 2,
+    "id": "mffs:capacity_module"
+  }
+}

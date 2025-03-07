@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "F": {
+      "item": "mffs:focus_matrix"
+    },
+    "L": {
+      "tag": "c:leathers"
+    },
+    "P": {
+      "item": "minecraft:cooked_porkchop"
+    },
+    "S": {
+      "tag": "c:slimeballs"
+    },
+    "W": {
+      "tag": "minecraft:wool"
+    }
+  },
+  "pattern": [
+    " W ",
+    "PFL",
+    " S "
+  ],
+  "result": {
+    "count": 1,
+    "id": "mffs:anti_friendly_module"
+  }
+}

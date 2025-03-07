@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "minecraft:diamond_axe"
+    },
+    "D": {
+      "tag": "c:gems/diamond"
+    },
+    "F": {
+      "item": "mffs:focus_matrix"
+    },
+    "P": {
+      "item": "minecraft:diamond_pickaxe"
+    },
+    "S": {
+      "item": "minecraft:diamond_shovel"
+    }
+  },
+  "pattern": [
+    "FDF",
+    "PSA",
+    "FDF"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mffs:stabilization_module"
+  }
+}

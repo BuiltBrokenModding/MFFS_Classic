@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "mffs:battery"
+    },
+    "R": {
+      "tag": "c:dusts/redstone"
+    },
+    "S": {
+      "tag": "c:ingots/steel"
+    }
+  },
+  "pattern": [
+    " R ",
+    "SBS",
+    "SBS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mffs:remote_controller"
+  }
+}
