@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "E": {
+      "item": "minecraft:ender_eye"
+    },
+    "F": {
+      "item": "mffs:focus_matrix"
+    },
+    "P": {
+      "item": "minecraft:ender_pearl"
+    }
+  },
+  "pattern": [
+    "PEP",
+    "EFE",
+    "PEP"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mffs:confiscation_module"
+  }
+}

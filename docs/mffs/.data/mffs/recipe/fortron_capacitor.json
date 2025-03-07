@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "mffs:battery"
+    },
+    "F": {
+      "item": "mffs:focus_matrix"
+    },
+    "S": {
+      "tag": "c:ingots/steel"
+    }
+  },
+  "pattern": [
+    "SFS",
+    "FBF",
+    "SFS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mffs:fortron_capacitor"
+  }
+}

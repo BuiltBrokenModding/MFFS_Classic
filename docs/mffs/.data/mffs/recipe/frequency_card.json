@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "mffs:blank_card"
+    },
+    "G": {
+      "tag": "c:ingots/gold"
+    }
+  },
+  "pattern": [
+    "GCG"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mffs:frequency_card"
+  }
+}

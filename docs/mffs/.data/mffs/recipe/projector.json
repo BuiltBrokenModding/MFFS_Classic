@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "mffs:battery"
+    },
+    "D": {
+      "tag": "c:gems/diamond"
+    },
+    "F": {
+      "item": "mffs:focus_matrix"
+    },
+    "S": {
+      "tag": "c:ingots/steel"
+    }
+  },
+  "pattern": [
+    " D ",
+    "FFF",
+    "SBS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mffs:projector"
+  }
+}

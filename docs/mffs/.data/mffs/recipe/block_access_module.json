@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "tag": "c:chests/wooden"
+    },
+    "F": {
+      "item": "mffs:focus_matrix"
+    },
+    "I": {
+      "tag": "c:storage_blocks/iron"
+    }
+  },
+  "pattern": [
+    " C ",
+    "IFI",
+    " C "
+  ],
+  "result": {
+    "count": 1,
+    "id": "mffs:block_access_module"
+  }
+}

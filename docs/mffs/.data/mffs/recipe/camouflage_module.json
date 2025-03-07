@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "F": {
+      "item": "mffs:focus_matrix"
+    },
+    "W": {
+      "tag": "minecraft:wool"
+    }
+  },
+  "pattern": [
+    "WFW",
+    "FWF",
+    "WFW"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mffs:camouflage_module"
+  }
+}
