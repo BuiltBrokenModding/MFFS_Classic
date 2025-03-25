@@ -14,15 +14,17 @@ public class InventorySlot implements INBTSerializable<CompoundTag> {
     private final Mode mode;
     private final Predicate<ItemStack> filter;
     private final Consumer<ItemStack> onChanged;
+    private final boolean virtual;
 
     private ItemStack content = ItemStack.EMPTY;
 
-    public InventorySlot(InventorySlotItemHandler parent, String name, Mode mode, Predicate<ItemStack> filter, Consumer<ItemStack> onChanged) {
+    public InventorySlot(InventorySlotItemHandler parent, String name, Mode mode, Predicate<ItemStack> filter, Consumer<ItemStack> onChanged, boolean virtual) {
         this.parent = parent;
         this.name = name;
         this.mode = mode;
         this.filter = filter;
         this.onChanged = onChanged;
+        this.virtual = virtual;
     }
 
     public String getName() {
@@ -43,6 +45,10 @@ public class InventorySlot implements INBTSerializable<CompoundTag> {
 
     public ItemStack getItem() {
         return this.content;
+    }
+
+    public boolean isVirtual() {
+        return this.virtual;
     }
 
     public void setItem(ItemStack stack) {

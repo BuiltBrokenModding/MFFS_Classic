@@ -45,7 +45,12 @@ public abstract class InventoryBlockEntity extends BaseBlockEntity {
         return this.items.addSlot(name, mode, filter, onChanged);
     }
 
-    protected void onInventoryChanged() {}
+    protected InventorySlot addVirtualSlot(String name) {
+        return this.items.addSlot(name, InventorySlot.Mode.NONE, stack -> true, stack -> {}, true);
+    }
+
+    protected void onInventoryChanged() {
+    }
 
     @Override
     public void provideAdditionalDrops(List<? super ItemStack> drops) {
