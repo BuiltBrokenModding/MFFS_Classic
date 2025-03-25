@@ -28,7 +28,11 @@ public class InventorySlotItemHandler implements IItemHandler, IItemHandlerModif
     }
 
     public InventorySlot addSlot(String name, InventorySlot.Mode mode, Predicate<ItemStack> filter, Consumer<ItemStack> onChanged) {
-        InventorySlot slot = new InventorySlot(this, name, mode, filter, onChanged);
+        return addSlot(name, mode, filter, onChanged, false);
+    }
+
+    public InventorySlot addSlot(String name, InventorySlot.Mode mode, Predicate<ItemStack> filter, Consumer<ItemStack> onChanged, boolean virtual) {
+        InventorySlot slot = new InventorySlot(this, name, mode, filter, onChanged, virtual);
         this.slots.add(slot);
         return slot;
     }
@@ -39,6 +43,7 @@ public class InventorySlotItemHandler implements IItemHandler, IItemHandlerModif
 
     public Collection<ItemStack> getAllItems() {
         return StreamEx.of(this.slots)
+            .remove(InventorySlot::isVirtual)
             .map(InventorySlot::getItem)
             .remove(ItemStack::isEmpty)
             .toList();
