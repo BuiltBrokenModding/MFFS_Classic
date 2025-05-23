@@ -2,21 +2,11 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "F": {
-      "item": "mffs:focus_matrix"
-    },
-    "L": {
-      "tag": "c:leathers"
-    },
-    "P": {
-      "item": "minecraft:cooked_porkchop"
-    },
-    "S": {
-      "tag": "c:slimeballs"
-    },
-    "W": {
-      "tag": "minecraft:wool"
-    }
+    "F": "mffs:focus_matrix",
+    "L": "#c:leathers",
+    "P": "minecraft:cooked_porkchop",
+    "S": "#c:slime_balls",
+    "W": "#minecraft:wool"
   },
   "pattern": [
     " W ",
