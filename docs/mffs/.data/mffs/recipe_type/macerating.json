@@ -1,0 +1,10 @@
+{
+  "background": "mffs:gui/macerating",
+  "inputSlots": {
+    "in": {"x": 16, "y": 16},
+    "fuel": {"x": 52, "y": 16}
+  },
+  "outputSlots": {
+    "out": {"x": 204, "y": 52}
+  }
+}
