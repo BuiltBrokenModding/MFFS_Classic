@@ -1,5 +1,6 @@
 {
     "id": "mffs",
+    "modid": "mffs",
     "platforms": {
         "modrinth": "mffs",
         "curseforge": "mffs"
