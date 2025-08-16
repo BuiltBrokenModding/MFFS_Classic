@@ -5,7 +5,7 @@ plugins {
     id("net.neoforged.moddev") version "2.0.107"
     id("me.modmuss50.mod-publish-plugin") version "0.8.+"
     id("wtf.gofancy.git-changelog") version "1.1.+"
-    id("org.moddedmc.wiki.toolkit") version "0.2.4"
+    id("org.moddedmc.wiki.toolkit") version "0.3.1"
 }
 
 group = "dev.su5ed.mffs"
@@ -77,9 +77,11 @@ neoForge {
 }
 
 wiki {
+    origin {
+        branch = "deploy/staging"
+    }
     docs {
         register("mffs") {             
-            exportedAssetNamespaces.add("mffs")
             root = file("docs/mffs")
         }
     }
