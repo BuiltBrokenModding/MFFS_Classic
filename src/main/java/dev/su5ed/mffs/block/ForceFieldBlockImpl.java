@@ -15,6 +15,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.InsideBlockEffectApplier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -158,8 +159,8 @@ public class ForceFieldBlockImpl extends Block implements ForceFieldBlock, Entit
     }
 
     @Override
-    public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
-        super.entityInside(state, level, pos, entity);
+    public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity, InsideBlockEffectApplier effectApplier) {
+        super.entityInside(state, level, pos, entity, effectApplier);
 
         getProjector(level, pos)
             .ifPresent(projector -> {
@@ -170,8 +171,8 @@ public class ForceFieldBlockImpl extends Block implements ForceFieldBlock, Entit
                 }
                 if (!entity.level().isClientSide && entity.distanceToSqr(new Vec3(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5)) < Mth.square(0.7)) {
                     if (entity instanceof LivingEntity living && (!(entity instanceof Player player) || !player.isCreative())) {
-                        living.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 4 * 20, 3));
-                        living.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 20, 1));
+                        living.addEffect(new MobEffectInstance(MobEffects.NAUSEA, 4 * 20, 3));
+                        living.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 20, 1));
                     }
                     BiometricIdentifier identifier = projector.getBiometricIdentifier();
                     if (!(entity instanceof Player player) || !isSneaking(entity) || !player.isCreative() && (identifier == null || !identifier.isAccessGranted(player, FieldPermission.WARP))) {

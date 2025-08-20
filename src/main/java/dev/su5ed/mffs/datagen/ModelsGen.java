@@ -2,13 +2,12 @@ package dev.su5ed.mffs.datagen;
 
 import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.block.ProjectorBlock;
-import dev.su5ed.mffs.render.model.ForceFieldBlockModelBuilder;
-import dev.su5ed.mffs.render.model.ForceFieldBlockModelLoader;
 import dev.su5ed.mffs.setup.ModBlocks;
 import dev.su5ed.mffs.setup.ModItems;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.ModelProvider;
+import net.minecraft.client.data.models.MultiVariant;
 import net.minecraft.client.data.models.blockstates.MultiVariantGenerator;
 import net.minecraft.client.data.models.model.*;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -16,10 +15,10 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.neoforged.neoforge.client.model.generators.template.ExtendedModelTemplate;
 
 import static dev.su5ed.mffs.MFFSMod.location;
-import static net.minecraft.client.data.models.BlockModelGenerators.*;
+import static net.minecraft.client.data.models.BlockModelGenerators.createBooleanModelDispatch;
+import static net.minecraft.client.data.models.BlockModelGenerators.plainVariant;
 
 public class ModelsGen extends ModelProvider {
 
@@ -42,13 +41,9 @@ public class ModelsGen extends ModelProvider {
         itemModels.itemModelOutput.accept(ModBlocks.INTERDICTION_MATRIX.asItem(),
             ItemModelUtils.plainModel(location("block/interdiction_matrix")));
 
-        ExtendedModelTemplate template = ModelTemplates.CUBE_ALL.extend()
-            .customLoader(ForceFieldBlockModelBuilder::new, loader ->
-                loader.setDefaultModel(ForceFieldBlockModelLoader.DEFAULT_MODEL))
-            .build();
-        TexturedModel texturedModel = TexturedModel.CUBE.get(ModBlocks.FORCE_FIELD.get());
-        blockModels.blockStateOutput.accept(
-            createSimpleBlock(ModBlocks.FORCE_FIELD.get(), template.create(ModBlocks.FORCE_FIELD.get(), texturedModel.getMapping(), blockModels.modelOutput))
+        blockModels.createTrivialBlock(ModBlocks.FORCE_FIELD.get(), TexturedModel.CUBE.updateTemplate(t -> t.extend()
+            .renderType("translucent")
+            .build())
         );
 
         // Items
@@ -107,10 +102,13 @@ public class ModelsGen extends ModelProvider {
         ResourceLocation inactiveLocation = ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "block/" + id.getPath());
         ResourceLocation activeLocation = inactiveLocation.withSuffix("_active");
 
-        MultiVariantGenerator gen = MultiVariantGenerator.multiVariant(block)
-            .with(createBooleanModelDispatch(ProjectorBlock.ACTIVE, activeLocation, inactiveLocation));
+        MultiVariant plain = plainVariant(inactiveLocation);
+        MultiVariant active = plainVariant(activeLocation);
+
+        MultiVariantGenerator gen = MultiVariantGenerator.dispatch(block)
+            .with(createBooleanModelDispatch(ProjectorBlock.ACTIVE, active, plain));
         if (block.defaultBlockState().hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
-            gen.with(createHorizontalFacingDispatch());
+            gen.with(BlockModelGenerators.ROTATION_HORIZONTAL_FACING);
         }
 
         blockModels.blockStateOutput.accept(gen);

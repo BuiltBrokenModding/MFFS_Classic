@@ -8,6 +8,7 @@ import mezz.jei.api.ingredients.ITypedIngredient;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.network.PacketDistributor;
 import one.util.streamex.EntryStream;
 
@@ -37,7 +38,7 @@ public class BasicGhostIngredientHandler<T extends BaseScreen<?>> implements IGh
         @Override
         public void accept(I ingredient) {
             this.slot.set((ItemStack) ingredient);
-            PacketDistributor.sendToServer(new SetItemInSlotPacket(this.slotId, (ItemStack) ingredient));
+            ClientPacketDistributor.sendToServer(new SetItemInSlotPacket(this.slotId, (ItemStack) ingredient));
         }
     }
 }

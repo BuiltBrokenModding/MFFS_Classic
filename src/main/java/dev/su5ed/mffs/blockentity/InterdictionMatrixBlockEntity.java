@@ -14,8 +14,6 @@ import dev.su5ed.mffs.util.ModUtil;
 import dev.su5ed.mffs.util.inventory.InventorySlot;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
@@ -24,6 +22,8 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import one.util.streamex.IntStreamEx;
 import one.util.streamex.StreamEx;
@@ -147,17 +147,19 @@ public class InterdictionMatrixBlockEntity extends ModularBlockEntity implements
     }
 
     @Override
-    protected void loadCommonTag(CompoundTag tag, HolderLookup.Provider provider) {
-        super.loadCommonTag(tag, provider);
+    protected void loadCommonTag(ValueInput input) {
+        super.loadCommonTag(input);
 
-        this.confiscationMode = ConfiscationMode.valueOf(tag.getString("confiscationMode"));
+        input.getString("confiscationMode")
+            .map(ConfiscationMode::valueOf)
+            .ifPresent(m -> this.confiscationMode = m);
     }
 
     @Override
-    protected void saveCommonTag(CompoundTag tag, HolderLookup.Provider provider) {
-        super.saveCommonTag(tag, provider);
+    protected void saveCommonTag(ValueOutput output) {
+        super.saveCommonTag(output);
 
-        tag.putString("confiscationMode", this.confiscationMode.name());
+        output.putString("confiscationMode", this.confiscationMode.name());
     }
 
     @Nullable

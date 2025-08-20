@@ -9,8 +9,6 @@ import dev.su5ed.mffs.util.ModUtil;
 import dev.su5ed.mffs.util.inventory.InventorySlot;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.codec.StreamCodec;
@@ -18,6 +16,8 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 import org.jetbrains.annotations.Nullable;
@@ -188,19 +188,19 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity {
     }
 
     @Override
-    protected void saveTag(CompoundTag tag, HolderLookup.Provider provider) {
-        super.saveTag(tag, provider);
+    protected void saveTag(ValueOutput output) {
+        super.saveTag(output);
 
-        tag.putInt("processTime", this.processTime);
-        tag.putString("energyMode", this.energyMode.name());
+        output.putInt("processTime", this.processTime);
+        output.putString("energyMode", this.energyMode.name());
     }
 
     @Override
-    protected void loadTag(CompoundTag tag, HolderLookup.Provider provider) {
-        super.loadTag(tag, provider);
+    protected void loadTag(ValueInput input) {
+        super.loadTag(input);
 
-        this.processTime = tag.getInt("processTime");
-        this.energyMode = EnergyMode.valueOf(tag.getString("energyMode"));
+        this.processTime = input.getInt("processTime").orElse(0);
+        this.energyMode = input.getString("energyMode").map(EnergyMode::valueOf).orElse(EnergyMode.DERIVE);
     }
 
     @Override

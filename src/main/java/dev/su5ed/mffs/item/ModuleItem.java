@@ -7,9 +7,10 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 
 import java.text.DecimalFormat;
-import java.util.List;
+import java.util.function.Consumer;
 
 public class ModuleItem<T extends Module> extends BaseItem {
     private static final DecimalFormat FORTRON_COST_FORMAT = new DecimalFormat("#.##");
@@ -26,10 +27,10 @@ public class ModuleItem<T extends Module> extends BaseItem {
     }
 
     @Override
-    protected void appendHoverTextPre(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
-        super.appendHoverTextPre(stack, context, tooltipComponents, isAdvanced);
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
+        super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
 
-        tooltipComponents.add(ModUtil.translate("info", "fortron_usage", Component.literal(FORTRON_COST_FORMAT.format(this.module.getFortronCost(1) * 20)).withStyle(ChatFormatting.GRAY))
+        tooltipAdder.accept(ModUtil.translate("info", "fortron_usage", Component.literal(FORTRON_COST_FORMAT.format(this.module.getFortronCost(1) * 20)).withStyle(ChatFormatting.GRAY))
             .withStyle(ChatFormatting.DARK_GRAY));
     }
 }

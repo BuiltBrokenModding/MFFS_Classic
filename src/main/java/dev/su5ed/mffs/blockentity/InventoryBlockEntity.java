@@ -4,12 +4,12 @@ import dev.su5ed.mffs.util.inventory.InventorySlot;
 import dev.su5ed.mffs.util.inventory.InventorySlotItemHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
@@ -75,16 +75,16 @@ public abstract class InventoryBlockEntity extends BaseBlockEntity {
     }
 
     @Override
-    protected void saveCommonTag(CompoundTag tag, HolderLookup.Provider provider) {
-        super.saveCommonTag(tag, provider);
+    protected void saveCommonTag(ValueOutput output) {
+        super.saveCommonTag(output);
 
-        tag.put("items", this.items.serializeNBT(provider));
+        output.putChild("items", this.items);
     }
 
     @Override
-    protected void loadCommonTag(CompoundTag tag, HolderLookup.Provider provider) {
-        super.loadCommonTag(tag, provider);
+    protected void loadCommonTag(ValueInput input) {
+        super.loadCommonTag(input);
 
-        this.items.deserializeNBT(provider, tag.getCompound("items"));
+        input.child("items").ifPresent(this.items::deserialize);
     }
 }

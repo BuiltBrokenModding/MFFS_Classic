@@ -1,6 +1,5 @@
 package dev.su5ed.mffs.setup;
 
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.block.ForceFieldBlockImpl;
 import dev.su5ed.mffs.render.*;
@@ -13,8 +12,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.renderer.ShaderDefines;
-import net.minecraft.client.renderer.ShaderProgram;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.world.item.Item;
@@ -36,7 +33,7 @@ import java.util.function.Function;
 
 import static dev.su5ed.mffs.MFFSMod.location;
 
-@EventBusSubscriber(modid = MFFSMod.MODID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = MFFSMod.MODID, value = Dist.CLIENT)
 public final class ModClientSetup {
     private static final Map<Item, LazyRendererFactory> LAZY_RENDERERS = new HashMap<>();
 
@@ -100,11 +97,6 @@ public final class ModClientSetup {
     }
 
     @SubscribeEvent
-    public static void registerGeometryLoaders(ModelEvent.RegisterLoaders event) {
-        event.register(ForceFieldBlockModelLoader.NAME, new ForceFieldBlockModelLoader());
-    }
-
-    @SubscribeEvent
     public static void registerBlockColor(RegisterColorHandlersEvent.Block event) {
         Block forceFieldBlock = ModBlocks.FORCE_FIELD.get();
         event.register((state, level, pos, tintIndex) -> {
@@ -156,11 +148,26 @@ public final class ModClientSetup {
             }
         }, ModFluids.FORTRON_FLUID_TYPE);
     }
-
+    
     @SubscribeEvent
-    public static void registerShaders(RegisterShadersEvent event) {
-        event.registerShader(new ShaderProgram(MFFSMod.location("post/glitch_blit"), DefaultVertexFormat.NEW_ENTITY, ShaderDefines.EMPTY));
+    public static void registerRenderPipelines(RegisterRenderPipelinesEvent event) {
+        event.registerPipeline(ModRenderPipeline.HOLO_TRIANGLE);
+        event.registerPipeline(ModRenderPipeline.HOLO_TEXTURED_TRIANGLE);
+        event.registerPipeline(ModRenderPipeline.HOLO_QUAD);
+        event.registerPipeline(ModRenderPipeline.BLOCK_FILL);
+        event.registerPipeline(ModRenderPipeline.BLOCK_OUTLINE);
+        event.registerPipeline(ModRenderPipeline.HOLO_ENTITY);
+        event.registerPipeline(ModRenderPipeline.BEAM_PARTICLE);
     }
 
-    private ModClientSetup() {}
+    @SubscribeEvent
+    public static void modifyBakingResult(ModelEvent.ModifyBakingResult event) {
+        event.getBakingResult().blockStateModels().computeIfPresent(
+            ModBlocks.FORCE_FIELD.get().defaultBlockState(),
+            (location, model) -> new ForceFieldBlockModel(model)
+        );
+    }
+
+    private ModClientSetup() {
+    }
 }

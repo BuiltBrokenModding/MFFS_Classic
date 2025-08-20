@@ -11,20 +11,24 @@ import org.joml.Matrix4f;
 
 // TODO Port
 public final class RenderPostProcessor {
-    public static final RenderStateShard.OutputStateShard GLITCH_TARGET = new RenderStateShard.OutputStateShard(MFFSMod.MODID + ":glitch_target", () -> {
-        if (RenderPostProcessor.enableGlitchEffect) {
-            RenderPostProcessor.glitchRenderTarget.bindWrite(false);
-            RenderSystem.depthMask(true);
-        } else {
-            ModRenderType.TRANSLUCENT_TARGET_NO_DEPTH_MASK.setupRenderState();
-        }
-    }, () -> {
-        if (RenderPostProcessor.enableGlitchEffect) {
-            Minecraft.getInstance().getMainRenderTarget().bindWrite(false);
-        } else {
-            ModRenderType.TRANSLUCENT_TARGET_NO_DEPTH_MASK.clearRenderState();
-        }
-    });
+//    public static final RenderStateShard.OutputStateShard GLITCH_TARGET = new RenderStateShard.OutputStateShard(
+//        MFFSMod.location("glitch_target").toString(),
+//        () -> {
+//            if (RenderPostProcessor.enableGlitchEffect) {
+//                RenderPostProcessor.glitchRenderTarget.bindWrite(false);
+//                RenderSystem.depthMask(true);
+//            } else {
+//                ModRenderType.TRANSLUCENT_TARGET_NO_DEPTH_MASK.setupRenderState();
+//            }
+//        },
+//        () -> {
+//            if (RenderPostProcessor.enableGlitchEffect) {
+//                Minecraft.getInstance().getMainRenderTarget().bindWrite(false);
+//            } else {
+//                ModRenderType.TRANSLUCENT_TARGET_NO_DEPTH_MASK.clearRenderState();
+//            }
+//        }
+//    );
     private static final ResourceLocation NOISE_SEED = MFFSMod.location("textures/model/noise.png");
 
     static RenderTarget glitchRenderTarget;
@@ -132,5 +136,6 @@ public final class RenderPostProcessor {
 //        pass.inTarget.unbindRead();
     }
 
-    private RenderPostProcessor() {}
+    private RenderPostProcessor() {
+    }
 }

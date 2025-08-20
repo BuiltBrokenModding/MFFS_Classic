@@ -1,14 +1,14 @@
 package dev.su5ed.mffs.util.inventory;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.common.util.ValueIOSerializable;
 
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public class InventorySlot implements INBTSerializable<CompoundTag> {
+public class InventorySlot implements ValueIOSerializable {
     private final InventorySlotItemHandler parent;
     private final String name;
     private final Mode mode;
@@ -108,15 +108,15 @@ public class InventorySlot implements INBTSerializable<CompoundTag> {
     }
 
     @Override
-    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
-        CompoundTag tag = new CompoundTag();
-        tag.put("item", this.content.saveOptional(provider));
-        return tag;
+    public void serialize(ValueOutput valueOutput) {
+        if (!this.content.isEmpty()) {
+            valueOutput.store("item", ItemStack.CODEC, this.content);
+        }
     }
 
     @Override
-    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
-        this.content = ItemStack.parseOptional(provider, nbt.getCompound("item"));
+    public void deserialize(ValueInput valueInput) {
+        this.content = valueInput.read("item", ItemStack.CODEC).orElse(ItemStack.EMPTY);
     }
 
     public enum Mode {

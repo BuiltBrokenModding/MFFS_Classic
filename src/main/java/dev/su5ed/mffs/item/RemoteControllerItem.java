@@ -19,9 +19,7 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -82,9 +80,9 @@ public class RemoteControllerItem extends BaseItem implements CoordLink {
         return InteractionResult.PASS;
     }
 
-    @Override
-    public void appendHoverTextPre(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
-        // TODO Store name in link?
+//    @Override
+//    public void appendHoverTextPre(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+//         TODO Store name in link?
 //        BlockPos pos = getLink(stack);
 //        if (level != null && pos != null) {
 //            BlockEntity be = level.getBlockEntity(pos);
@@ -94,7 +92,7 @@ public class RemoteControllerItem extends BaseItem implements CoordLink {
 //                    Component.literal(pos.toShortString()).withStyle(ChatFormatting.GRAY)).withStyle(ChatFormatting.DARK_GRAY));
 //            }
 //        }
-    }
+//    }
 
     @Nullable
     @Override

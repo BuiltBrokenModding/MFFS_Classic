@@ -47,7 +47,7 @@ public abstract class FortronMenu<T extends FortronBlockEntity & Activatable> ex
         super(type, containerId);
 
         this.player = player;
-        this.blockEntity = player.getCommandSenderWorld().getBlockEntity(pos, blockEntityType).orElseThrow();
+        this.blockEntity = player.level().getBlockEntity(pos, blockEntityType).orElseThrow();
         this.playerInventory = new InvWrapper(playerInventory);
 
         trackPower();

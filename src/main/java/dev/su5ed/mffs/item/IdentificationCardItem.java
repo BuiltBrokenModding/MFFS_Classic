@@ -15,6 +15,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import org.jetbrains.annotations.Nullable;
@@ -23,6 +24,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 
 public class IdentificationCardItem extends BaseItem {
 
@@ -71,14 +73,14 @@ public class IdentificationCardItem extends BaseItem {
     }
 
     @Override
-    protected void appendHoverTextPre(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
-        super.appendHoverTextPre(stack, context, tooltipComponents, isAdvanced);
+    protected void appendHoverTextPre(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
+        super.appendHoverTextPre(stack, context, tooltipDisplay, tooltipAdder, flag);
 
         IdentificationCard card = stack.getCapability(ModCapabilities.IDENTIFICATION_CARD);
         if (card != null) {
             GameProfile identity = card.getIdentity();
             if (identity != null) {
-                tooltipComponents.add(ModUtil.translate("info", "identity",
+                tooltipAdder.accept(ModUtil.translate("info", "identity",
                     Component.literal(identity.getName()).withStyle(ChatFormatting.GREEN)).withStyle(ChatFormatting.DARK_GRAY));
             }
             List<FieldPermission> perms = List.copyOf(card.getPermissions());
@@ -87,7 +89,7 @@ public class IdentificationCardItem extends BaseItem {
                 for (int i = 1; i < perms.size(); i++) {
                     permsComponent.append(", ").append(ModUtil.translate(perms.get(i)));
                 }
-                tooltipComponents.add(permsComponent.withStyle(ChatFormatting.DARK_GRAY));
+                tooltipAdder.accept(permsComponent.withStyle(ChatFormatting.DARK_GRAY));
             }
         }
     }

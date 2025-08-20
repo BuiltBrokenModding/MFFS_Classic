@@ -1,7 +1,5 @@
 package dev.su5ed.mffs.screen;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
 import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.menu.FortronCapacitorMenu;
 import dev.su5ed.mffs.network.SwitchTransferModePacket;
@@ -11,7 +9,9 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.network.PacketDistributor;
+import org.joml.Matrix3x2fStack;
 
 public class FortronCapacitorScreen extends FortronScreen<FortronCapacitorMenu> {
     public static final ResourceLocation BACKGROUND = MFFSMod.location("textures/gui/fortron_capacitor.png");
@@ -30,18 +30,18 @@ public class FortronCapacitorScreen extends FortronScreen<FortronCapacitorMenu> 
         super.init();
 
         addRenderableWidget(new IconCycleButton<>(this.width / 2 + 15, this.height / 2 - 37, 18, 18, 0, 0, 18, this.menu.blockEntity::getTransferMode,
-            value -> PacketDistributor.sendToServer(new SwitchTransferModePacket(this.menu.blockEntity.getBlockPos(), value.next()))));
+            value -> ClientPacketDistributor.sendToServer(new SwitchTransferModePacket(this.menu.blockEntity.getBlockPos(), value.next()))));
     }
 
     @Override
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         super.renderLabels(guiGraphics, mouseX, mouseY);
 
-        PoseStack poseStack = guiGraphics.pose();
-        poseStack.pushPose();
-        poseStack.mulPose(Axis.ZP.rotationDegrees(-90));
+        Matrix3x2fStack poseStack = guiGraphics.pose();
+        poseStack.pushMatrix();
+        poseStack.rotate(-90); // FIXME
         guiGraphics.drawString(this.font, ModUtil.translate("screen", "upgrade"), -95, 140, GuiColors.DARK_GREY, false);
-        poseStack.popPose();
+        poseStack.popMatrix();
 
         guiGraphics.drawString(this.font, ModUtil.translate("screen", "linked_devices", this.menu.blockEntity.getDevicesByFrequency().size()), 8, 28, GuiColors.DARK_GREY, false);
         guiGraphics.drawString(this.font, ModUtil.translate("screen", "transmission_rate", this.menu.blockEntity.getTransmissionRate() * 10), 8, 40, GuiColors.DARK_GREY, false);

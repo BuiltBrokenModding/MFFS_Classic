@@ -11,6 +11,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 public class InterdictionMatrixScreen extends FortronScreen<InterdictionMatrixMenu> {
@@ -34,7 +35,7 @@ public class InterdictionMatrixScreen extends FortronScreen<InterdictionMatrixMe
             button -> {
                 InterdictionMatrix.ConfiscationMode mode = this.menu.blockEntity.getConfiscationMode().next();
                 this.menu.blockEntity.setConfiscationMode(mode);
-                PacketDistributor.sendToServer(new SwitchConfiscationModePacket(this.menu.blockEntity.getBlockPos(), mode));
+                ClientPacketDistributor.sendToServer(new SwitchConfiscationModePacket(this.menu.blockEntity.getBlockPos(), mode));
             }
         ));
     }

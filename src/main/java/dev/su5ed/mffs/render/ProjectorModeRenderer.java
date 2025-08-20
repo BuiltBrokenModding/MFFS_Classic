@@ -1,6 +1,5 @@
 package dev.su5ed.mffs.render;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
@@ -29,7 +28,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public final class ProjectorModeRenderer {
-    public static final RenderType PYRAMID_RENDER_TYPE = ModRenderType.POS_TEX_TRANSLUCENT_UNCULLED_TRIANGLE.apply(ForceCubeModel.CORE_TEXTURE);
+    public static final RenderType PYRAMID_RENDER_TYPE = ModRenderType.HOLO_TEXTURED_TRIANGLE.apply(ForceCubeModel.CORE_TEXTURE);
     private static final List<ProjectorMode> MODES = List.of(ModProjectorModes.CUBE, ModProjectorModes.SPHERE, ModProjectorModes.TUBE, ModProjectorModes.PYRAMID);
     private static final Map<ProjectorMode, RendererInfo> RENDERERS = Map.of(
         ModProjectorModes.CUBE, new RendererInfo(ForceCubeModel.LAYER_LOCATION, ForceCubeModel.RENDER_TYPE, CubeModeRenderer::new),
@@ -101,12 +100,13 @@ public final class ProjectorModeRenderer {
             RendererInfo info = RENDERERS.get(mode);
             LazyRenderer renderer = info.createRenderer(this.centerPos, this.modelFactory);
             float alpha = (float) -Math.pow(Math.sin((ticks + PERIOD / 2.0) * (Math.PI / (double) PERIOD)), 20) + 1;
+
             VertexConsumer actualConsumer = source.getBuffer(info.renderType);
             VertexConsumer wrapped = new TranslucentVertexConsumer(actualConsumer, (int) (alpha * 255));
-            RenderSystem.setShaderColor(1, 1, 1, alpha);
+//            RenderSystem.setShaderColor(1, 1, 1, alpha); FIXME
             renderer.render(poseStack, wrapped, renderTick, partialTick);
             source.getBuffer(ForceCubeModel.RENDER_TYPE);
-            RenderSystem.setShaderColor(1, 1, 1, 1);
+//            RenderSystem.setShaderColor(1, 1, 1, 1);
         }
     }
 

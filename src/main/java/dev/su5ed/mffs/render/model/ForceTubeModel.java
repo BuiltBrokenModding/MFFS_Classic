@@ -18,10 +18,10 @@ public class ForceTubeModel extends Model {
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(location("force_tube"), "main");
 
     private static final ResourceLocation CORE_TEXTURE = location("textures/model/force_cube.png");
-    public static final RenderType RENDER_TYPE = ModRenderType.STANDARD_TRANSLUCENT_ENTITY.apply(CORE_TEXTURE);
+    public static final RenderType RENDER_TYPE = ModRenderType.HOLO_ENTITY.apply(CORE_TEXTURE);
 
     public ForceTubeModel(ModelPart root) {
-        super(root.getChild("root"), ModRenderType.STANDARD_TRANSLUCENT_ENTITY);
+        super(root.getChild("root"), ModRenderType.HOLO_ENTITY);
     }
 
     public static LayerDefinition createBodyLayer() {

@@ -1,9 +1,9 @@
 package dev.su5ed.mffs.util.inventory;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import one.util.streamex.StreamEx;
@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public class InventorySlotItemHandler implements IItemHandler, IItemHandlerModifiable, INBTSerializable<CompoundTag> {
+public class InventorySlotItemHandler implements IItemHandler, IItemHandlerModifiable, ValueIOSerializable {
     private final Runnable onChanged;
     private final List<InventorySlot> slots = new ArrayList<>();
 
@@ -24,7 +24,8 @@ public class InventorySlotItemHandler implements IItemHandler, IItemHandlerModif
     }
 
     public InventorySlot addSlot(String name, InventorySlot.Mode mode, Predicate<ItemStack> filter) {
-        return addSlot(name, mode, filter, stack -> {});
+        return addSlot(name, mode, filter, stack -> {
+        });
     }
 
     public InventorySlot addSlot(String name, InventorySlot.Mode mode, Predicate<ItemStack> filter, Consumer<ItemStack> onChanged) {
@@ -93,27 +94,20 @@ public class InventorySlotItemHandler implements IItemHandler, IItemHandlerModif
         return this.slots.get(slot).accepts(stack);
     }
 
-    @Override
-    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
-        CompoundTag nbt = new CompoundTag();
-        this.slots.forEach(slot -> {
-            nbt.put(slot.getName(), slot.getItem().saveOptional(provider));
-        });
-        return nbt;
-    }
-
-    @Override
-    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
-        this.slots.forEach(slot -> {
-            if (nbt.contains(slot.getName())) {
-                CompoundTag tag = nbt.getCompound(slot.getName());
-                slot.setItem(ItemStack.parseOptional(provider, tag), false);
-            }
-        });
-    }
-
     protected void validateSlotIndex(int slot) {
         if (slot < 0 || slot >= this.slots.size())
             throw new RuntimeException("Slot " + slot + " not in valid range - [0," + this.slots.size() + ")");
+    }
+
+    @Override
+    public void serialize(ValueOutput valueOutput) {
+        ValueOutput slots = valueOutput.child("slots");
+        this.slots.forEach(slot -> slots.putChild(slot.getName(), slot));
+    }
+
+    @Override
+    public void deserialize(ValueInput valueInput) {
+        ValueInput slots = valueInput.childOrEmpty("slots");
+        this.slots.forEach(slot -> slots.child(slot.getName()).ifPresent(slot::deserialize));
     }
 }

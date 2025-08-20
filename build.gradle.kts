@@ -2,7 +2,7 @@ import me.modmuss50.mpp.ReleaseType
 
 plugins {
     `maven-publish`
-    id("net.neoforged.moddev") version "2.0.78"
+    id("net.neoforged.moddev") version "2.0.107"
     id("me.modmuss50.mod-publish-plugin") version "0.8.+"
     id("wtf.gofancy.git-changelog") version "1.1.+"
     id("org.moddedmc.wiki.toolkit") version "0.2.4"

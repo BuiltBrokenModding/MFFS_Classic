@@ -1,34 +1,10 @@
 {
   "variants": {
-    "active=false,facing=east": {
-      "model": "mffs:block/biometric_identifier",
-      "y": 90
-    },
-    "active=false,facing=north": {
+    "active=false": {
       "model": "mffs:block/biometric_identifier"
     },
-    "active=false,facing=south": {
-      "model": "mffs:block/biometric_identifier",
-      "y": 180
-    },
-    "active=false,facing=west": {
-      "model": "mffs:block/biometric_identifier",
-      "y": 270
-    },
-    "active=true,facing=east": {
-      "model": "mffs:block/biometric_identifier_active",
-      "y": 90
-    },
-    "active=true,facing=north": {
+    "active=true": {
       "model": "mffs:block/biometric_identifier_active"
-    },
-    "active=true,facing=south": {
-      "model": "mffs:block/biometric_identifier_active",
-      "y": 180
-    },
-    "active=true,facing=west": {
-      "model": "mffs:block/biometric_identifier_active",
-      "y": 270
     }
   }
 }

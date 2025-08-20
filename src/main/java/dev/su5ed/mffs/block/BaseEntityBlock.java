@@ -52,16 +52,6 @@ public class BaseEntityBlock extends Block implements EntityBlock {
             .orElseGet(() -> super.useWithoutItem(state, level, pos, player, hit));
     }
 
-    // Credit: Mekanism
-    @Override
-    public void onRemove(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState newState, boolean isMoving) {
-        if (state.hasBlockEntity() && (!state.is(newState.getBlock()) || !newState.hasBlockEntity())) {
-            getBlockEntity(level, pos)
-                .ifPresent(BaseBlockEntity::beforeBlockRemove);
-        }
-        super.onRemove(state, level, pos, newState, isMoving);
-    }
-
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);

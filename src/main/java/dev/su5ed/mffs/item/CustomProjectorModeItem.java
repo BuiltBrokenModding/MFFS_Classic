@@ -21,13 +21,12 @@ import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -35,10 +34,10 @@ import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
 
 public class CustomProjectorModeItem extends BaseItem {
     private CustomStructureSavedData structureManager;
@@ -68,7 +67,7 @@ public class CustomProjectorModeItem extends BaseItem {
         public boolean selectPrimary() {
             return this.primary == null || this.secondary != null;
         }
-        
+
         public boolean selectSecondary() {
             return this.primary != null && this.secondary == null;
         }
@@ -145,28 +144,28 @@ public class CustomProjectorModeItem extends BaseItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
         Mode mode = getMode(stack);
-        tooltipComponents.add(ModUtil.translate("item", "custom_mode.mode", mode.getName().withStyle(ChatFormatting.GRAY)).withStyle(ChatFormatting.DARK_GRAY));
+        tooltipAdder.accept(ModUtil.translate("item", "custom_mode.mode", mode.getName().withStyle(ChatFormatting.GRAY)).withStyle(ChatFormatting.DARK_GRAY));
         String id = stack.get(ModDataComponentTypes.PATTERN_ID);
         if (id != null) {
-            tooltipComponents.add(ModUtil.translate("item", "custom_mode.pattern_id", Component.literal(id).withStyle(ChatFormatting.GRAY)).withStyle(ChatFormatting.DARK_GRAY));
+            tooltipAdder.accept(ModUtil.translate("item", "custom_mode.pattern_id", Component.literal(id).withStyle(ChatFormatting.GRAY)).withStyle(ChatFormatting.DARK_GRAY));
         }
         StructureCoords coords = stack.get(ModDataComponentTypes.STRUCTURE_COORDS);
         if (coords != null && coords.primary() != null) {
-            tooltipComponents.add(ModUtil.translate("item", "custom_mode.set_primary_point",
+            tooltipAdder.accept(ModUtil.translate("item", "custom_mode.set_primary_point",
                 Component.literal(coords.primary().toShortString()).withStyle(ChatFormatting.GRAY)).withStyle(ChatFormatting.DARK_GRAY));
 
             if (coords.secondary() != null) {
-                tooltipComponents.add(ModUtil.translate("item", "custom_mode.secondary_point",
+                tooltipAdder.accept(ModUtil.translate("item", "custom_mode.secondary_point",
                     Component.literal(coords.secondary().toShortString()).withStyle(ChatFormatting.GRAY)).withStyle(ChatFormatting.DARK_GRAY));
-                tooltipComponents.add(ModUtil.translate("item", "custom_mode.set_secondary_point").withStyle(ChatFormatting.GOLD));
+                tooltipAdder.accept(ModUtil.translate("item", "custom_mode.set_secondary_point").withStyle(ChatFormatting.GOLD));
             } else {
-                tooltipComponents.add(ModUtil.translate("item", "custom_mode.set_primary_point").withStyle(ChatFormatting.LIGHT_PURPLE));
+                tooltipAdder.accept(ModUtil.translate("item", "custom_mode.set_primary_point").withStyle(ChatFormatting.LIGHT_PURPLE));
             }
         }
 
-        super.appendHoverText(stack, context, tooltipComponents, isAdvanced);
+        super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
     }
 
     public Mode getMode(ItemStack stack) {
@@ -180,7 +179,7 @@ public class CustomProjectorModeItem extends BaseItem {
 
     public String getOrCreateId(ItemStack stack) {
         if (!stack.has(ModDataComponentTypes.PATTERN_ID)) {
-            String id = RandomStringUtils.randomAlphanumeric(8).toUpperCase(Locale.ROOT);
+            String id = RandomStringUtils.secure().nextAlphanumeric(8).toUpperCase(Locale.ROOT);
             stack.set(ModDataComponentTypes.PATTERN_ID, id);
             return id;
         }
@@ -190,14 +189,7 @@ public class CustomProjectorModeItem extends BaseItem {
     @SuppressWarnings("resource")
     public CustomStructureSavedData getOrCreateData(ServerLevel level) {
         if (this.structureManager == null) {
-            this.structureManager = level.getServer().overworld().getDataStorage().computeIfAbsent(new SavedData.Factory<>(
-                CustomStructureSavedData::new,
-                (tag, provider) -> {
-                    CustomStructureSavedData data = new CustomStructureSavedData();
-                    data.load(tag);
-                    return data;
-                }
-            ), CustomStructureSavedData.NAME);
+            this.structureManager = level.getServer().overworld().getDataStorage().computeIfAbsent(CustomStructureSavedData.TYPE);
         }
         return this.structureManager;
     }

@@ -16,16 +16,17 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 
 public class BiometricIdentifierRenderer implements BlockEntityRenderer<BiometricIdentifierBlockEntity> {
     public static final ResourceLocation HOLO_SCREEN_TEXTURE = ResourceLocation.fromNamespaceAndPath(MFFSMod.MODID, "model/holo_screen");
-    private static final RenderType RENDER_TYPE = ModRenderType.POS_COL_TEX_TRANSLUCENT_UNCULLED_QUAD.apply(TextureAtlas.LOCATION_BLOCKS);
+    private static final RenderType RENDER_TYPE = ModRenderType.HOLO_QUAD.apply(TextureAtlas.LOCATION_BLOCKS);
     
     public BiometricIdentifierRenderer(BlockEntityRendererProvider.Context context) {}
 
     @Override
-    public void render(BiometricIdentifierBlockEntity blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
+    public void render(BiometricIdentifierBlockEntity blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay, Vec3 vec) {
         if (blockEntity.hasLevel() && blockEntity.isActive()) {
             BlockState state = blockEntity.getBlockState();
             Direction facing = state.getValue(BlockStateProperties.HORIZONTAL_FACING);

@@ -1,12 +1,13 @@
 package dev.su5ed.mffs.screen;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ARGB;
@@ -39,10 +40,6 @@ public class IconToggleButton extends AbstractButton {
 
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.enableDepthTest();
-
         int color;
         if (this.value.getAsBoolean()) {
             color = ARGB.colorFromFloat(this.alpha, 0.6F, 0.6F, 0.6F);
@@ -51,11 +48,12 @@ public class IconToggleButton extends AbstractButton {
         } else {
             color = ARGB.colorFromFloat(this.alpha, 1.0F, 1.0F, 1.0F);
         }
-        guiGraphics.blit(RenderType::guiTextured, this.image, getX(), getY(), this.imageU, this.imageV, this.width, this.height, 256, 256, color);
-        guiGraphics.blit(RenderType::guiTextured, this.image, getX() + this.width / 2, getY(), 200 - this.width / 2, this.imageV, this.width / 2, this.height, 256, 256, color);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, this.image, getX(), getY(), this.imageU, this.imageV, this.width, this.height, 256, 256, color);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, this.image, getX() + this.width / 2, getY(), 200 - this.width / 2, this.imageV, this.width / 2, this.height, 256, 256, color);
 
         if (isHoveredOrFocused()) {
-            guiGraphics.renderComponentTooltip(this.screen.getMinecraft().font, List.of(getMessage()), mouseX, mouseY);
+            ClientTooltipComponent tooltip = ClientTooltipComponent.create(getMessage().getVisualOrderText());
+            guiGraphics.renderTooltip(this.screen.getMinecraft().font, List.of(tooltip), mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null);
         }
     }
 

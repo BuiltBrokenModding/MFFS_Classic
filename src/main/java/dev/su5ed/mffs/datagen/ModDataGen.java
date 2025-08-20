@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
-@EventBusSubscriber(modid = MFFSMod.MODID, bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = MFFSMod.MODID)
 public final class ModDataGen {
 
     @SubscribeEvent
@@ -34,7 +34,7 @@ public final class ModDataGen {
         event.createProvider(ModelsGen::new);
         BlockTagsProvider blockTags = new BlockTagsGen(output, registries);
         generator.addProvider(true, blockTags);
-        generator.addProvider(true, new ItemTagsGen(output, registries, blockTags.contentsGetter()));
+        generator.addProvider(true, new ItemTagsGen(output, registries));
         generator.addProvider(true, new RecipesGen.Runner(output, registries));
         generator.addProvider(true, new LootTableProvider(output, Set.of(), List.of(
             new LootTableProvider.SubProviderEntry(LootTableGen.ModBlockLoot::new, LootContextParamSets.BLOCK),
@@ -42,7 +42,6 @@ public final class ModDataGen {
         ), registries));
         generator.addProvider(true, new AdvancementProvider(output, registries, List.of(new AdvancementsGen())));
         generator.addProvider(true, new DamageTypeTagsGen(output, registries));
-        generator.addProvider(true, PackMetadataGen.create(output));
     }
 
     private ModDataGen() {}

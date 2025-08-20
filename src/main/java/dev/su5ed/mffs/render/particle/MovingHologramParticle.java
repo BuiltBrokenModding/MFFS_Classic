@@ -10,15 +10,14 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.ModelBlockRenderer;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.client.model.data.ModelData;
 
 public class MovingHologramParticle extends Particle {
 
@@ -65,8 +64,15 @@ public class MovingHologramParticle extends Particle {
         BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
         ModelBlockRenderer modelRenderer = blockRenderer.getModelRenderer();
         BlockState state = ModBlocks.FORCE_FIELD.get().defaultBlockState();
-        BakedModel model = blockRenderer.getBlockModel(state);
-        modelRenderer.renderModel(pose.last(), new TranslucentVertexConsumer(buffer, alpha), state, model, this.rCol, this.gCol, this.bCol, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, ModelData.EMPTY, RenderType.solid());
+        BlockStateModel model = blockRenderer.getBlockModel(state);
+        modelRenderer.renderModel(
+            pose.last(),
+            t -> new TranslucentVertexConsumer(buffer, alpha),
+            model,
+            this.rCol, this.gCol, this.bCol,
+            LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY,
+            this.level, new BlockPos((int) getPos().x, (int) getPos().y, (int) getPos().z), state
+        );
 
         pose.popPose();
     }

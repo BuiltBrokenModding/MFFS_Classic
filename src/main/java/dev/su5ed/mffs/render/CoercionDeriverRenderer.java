@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.Vec3;
 
 public class CoercionDeriverRenderer implements BlockEntityRenderer<FortronBlockEntity> {
     public static final ResourceLocation COERCION_DERIVER_OFF_TEXTURE = MFFSMod.location("textures/model/coercion_deriver_off.png");
@@ -24,7 +25,7 @@ public class CoercionDeriverRenderer implements BlockEntityRenderer<FortronBlock
     }
 
     @Override
-    public void render(FortronBlockEntity blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
+    public void render(FortronBlockEntity blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay, Vec3 vec3) {
         ResourceLocation texture = blockEntity.isActive() ? COERCION_DERIVER_ON_TEXTURE : COERCION_DERIVER_OFF_TEXTURE;
 
         poseStack.pushPose();

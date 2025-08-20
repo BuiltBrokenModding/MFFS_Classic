@@ -1,5 +1,5 @@
-// 1.21.4	2025-02-27T18:42:17.464596	Model Definitions - mffs
-c2f5bd8134f29fad8f555a4380c3b47ecba510d7 assets/mffs/blockstates/biometric_identifier.json
+// 1.21.8	2025-08-20T19:28:28.178934	Model Definitions - mffs
+df0680e5ab1f61ce15e70c233211b4a8c0ca01e8 assets/mffs/blockstates/biometric_identifier.json
 39664fd5f9627fd244d7d75466ce80dad7264edd assets/mffs/blockstates/coercion_deriver.json
 8c60301609e0e49d0670bdd656f5d1d8cc2e64e9 assets/mffs/blockstates/force_field.json
 f590c768e69991c7a7dd0505e9176a4a9ad6a022 assets/mffs/blockstates/fortron_capacitor.json
@@ -50,7 +50,7 @@ cdee0e01deddb24b828704e20265592f2ac5c0b2 assets/mffs/items/steel_compound.json
 92adb46b5052e7c7f3bf6297b54ea5eee00511a4 assets/mffs/items/translation_module.json
 3e34cdaba7fc9257a484721cd87034cfd5455946 assets/mffs/items/tube_mode.json
 6522bc9bf9e625c4c435ccfb1758b2b94305ae15 assets/mffs/items/warn_module.json
-b2378710ba0e715a1888657bf0da6d1f5f8471b0 assets/mffs/models/block/force_field.json
+de023eecc7420a89c35ef1361ee0c71802d0a915 assets/mffs/models/block/force_field.json
 738399a9cbec94661d428fe121b8c3f9c7987840 assets/mffs/models/item/anti_friendly_module.json
 d85ae5c751e0c2f74f1819dc288f236acf0763cf assets/mffs/models/item/anti_hostile_module.json
 504e843a3119fad08160293b77336babf6fa2265 assets/mffs/models/item/anti_personnel_module.json

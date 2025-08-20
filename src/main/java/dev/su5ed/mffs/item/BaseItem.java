@@ -9,8 +9,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -22,20 +24,19 @@ public class BaseItem extends Item {
 
         this.description = properties.description != null ? Suppliers.memoize(() -> properties.description.apply(this)) : null;
     }
-    
-    protected void appendHoverTextPre(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced) {}
+
+    protected void appendHoverTextPre(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {}
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
-        super.appendHoverText(stack, context, tooltipComponents, isAdvanced);
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
+        super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
 
-        appendHoverTextPre(stack, context, tooltipComponents, isAdvanced);
+        appendHoverTextPre(stack, context, tooltipDisplay, tooltipAdder, flag);
         if (this.description != null) {
             if (ModClientSetup.hasShiftDown()) {
-                tooltipComponents.add(this.description.get());
-            }
-            else {
-                tooltipComponents.add(ModUtil.translate("info", "show_details", ModUtil.translate("info", "key.shift").withStyle(ChatFormatting.GRAY))
+                tooltipAdder.accept(this.description.get());
+            } else {
+                tooltipAdder.accept(ModUtil.translate("info", "show_details", ModUtil.translate("info", "key.shift").withStyle(ChatFormatting.GRAY))
                     .withStyle(ChatFormatting.DARK_GRAY));
             }
         }

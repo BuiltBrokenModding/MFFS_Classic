@@ -35,6 +35,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.common.NeoForge;
@@ -194,9 +195,10 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
     }
 
     @Override
-    public void beforeBlockRemove() {
+    public void preRemoveSideEffects(BlockPos pos, BlockState state) {
         destroyField();
-        super.beforeBlockRemove();
+
+        super.preRemoveSideEffects(pos, state);
     }
 
     @Nullable
@@ -232,9 +234,9 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
     }
 
     @Override
-    public void handleUpdateTag(CompoundTag tag, HolderLookup.Provider provider) {
-        super.handleUpdateTag(tag, provider);
-        this.clientAnimationSpeed = tag.getInt("animationSpeed");
+    public void handleUpdateTag(ValueInput input) {
+        super.handleUpdateTag(input);
+        input.getInt("animationSpeed").ifPresent(s -> this.clientAnimationSpeed = s);
     }
 
     @Override

@@ -7,19 +7,15 @@ import dev.su5ed.mffs.api.security.BiometricIdentifier;
 import dev.su5ed.mffs.api.security.BiometricIdentifierLink;
 import dev.su5ed.mffs.block.BaseEntityBlock;
 import dev.su5ed.mffs.setup.ModCapabilities;
-import dev.su5ed.mffs.util.Fortron;
-import dev.su5ed.mffs.util.FortronStorageImpl;
-import dev.su5ed.mffs.util.FrequencyGrid;
-import dev.su5ed.mffs.util.ModUtil;
-import dev.su5ed.mffs.util.TransferMode;
+import dev.su5ed.mffs.util.*;
 import dev.su5ed.mffs.util.inventory.InventorySlot;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.fluids.FluidType;
 import one.util.streamex.StreamEx;
 
@@ -117,8 +113,9 @@ public abstract class FortronBlockEntity extends InventoryBlockEntity implements
     }
 
     @Override
-    public void beforeBlockRemove() {
-        super.beforeBlockRemove();
+    public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+        super.preRemoveSideEffects(pos, state);
+
         if (this.markSendFortron) {
             // Let remaining Fortron escape.
             Fortron.transferFortron(this.fortronStorage, FrequencyGrid.instance().get(this.level, this.worldPosition, 100, this.fortronStorage.getFrequency()), TransferMode.DRAIN, Integer.MAX_VALUE);
@@ -127,19 +124,19 @@ public abstract class FortronBlockEntity extends InventoryBlockEntity implements
     }
 
     @Override
-    protected void loadCommonTag(CompoundTag tag, HolderLookup.Provider provider) {
-        super.loadCommonTag(tag, provider);
+    protected void loadCommonTag(ValueInput input) {
+        super.loadCommonTag(input);
 
-        this.fortronStorage.deserializeNBT(provider, tag.getCompound("fortronStorage"));
-        this.active = tag.getBoolean("active");
+        input.child("fortronStorage").ifPresent(this.fortronStorage::deserialize);
+        this.active = input.getBooleanOr("active", false);
     }
 
     @Override
-    protected void saveCommonTag(CompoundTag tag, HolderLookup.Provider provider) {
-        super.saveCommonTag(tag, provider);
+    protected void saveCommonTag(ValueOutput output) {
+        super.saveCommonTag(output);
 
-        tag.put("fortronStorage", this.fortronStorage.serializeNBT(provider));
-        tag.putBoolean("active", this.active);
+        output.putChild("fortronStorage", this.fortronStorage);
+        output.putBoolean("active", this.active);
     }
 
     /**

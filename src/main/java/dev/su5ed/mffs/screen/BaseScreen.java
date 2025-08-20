@@ -6,7 +6,9 @@ import dev.su5ed.mffs.util.inventory.ColoredSlot;
 import dev.su5ed.mffs.util.inventory.SlotActive;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -45,7 +47,7 @@ public abstract class BaseScreen<T extends AbstractContainerMenu> extends Abstra
 
     @Override
     protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
-        guiGraphics.blit(RenderType::guiTextured, this.background, this.leftPos, this.topPos, 0.0F, 0.0F, this.imageWidth, this.imageHeight, 256, 256);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, this.background, this.leftPos, this.topPos, 0.0F, 0.0F, this.imageWidth, this.imageHeight, 256, 256);
     }
 
     @Override
@@ -53,11 +55,19 @@ public abstract class BaseScreen<T extends AbstractContainerMenu> extends Abstra
         super.renderTooltip(guiGraphics, mouseX, mouseY);
 
         if (this.menu.getCarried().isEmpty() && this.hoveredSlot instanceof TooltipSlot tooltipSlot && !this.hoveredSlot.hasItem()) {
-            guiGraphics.renderComponentTooltip(this.font, tooltipSlot.getTooltips(), mouseX, mouseY);
+            List<ClientTooltipComponent> clientTooltips = tooltipSlot.getTooltips().stream()
+                .map(t -> ClientTooltipComponent.create(t.getVisualOrderText()))
+                .toList();
+            if (!clientTooltips.isEmpty()) {
+                guiGraphics.renderTooltip(this.font, clientTooltips, mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null);
+            }
         } else if (!this.tooltips.isEmpty()) {
             StreamEx.of(this.tooltips)
                 .filter(coord -> isHovering(coord.x, coord.y, coord.width, coord.height, mouseX, mouseY))
-                .forEach(coord -> guiGraphics.renderComponentTooltip(this.font, List.of(coord.tooltip), mouseX, mouseY));
+                .forEach(coord -> {
+                    ClientTooltipComponent tooltip = ClientTooltipComponent.create(coord.tooltip.getVisualOrderText());
+                    guiGraphics.renderTooltip(this.font, List.of(tooltip), mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null);
+                });
         }
 
         this.tooltips.clear();
@@ -68,13 +78,14 @@ public abstract class BaseScreen<T extends AbstractContainerMenu> extends Abstra
         guiGraphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, GuiColors.DARK_GREY, false);
     }
 
-    public void renderFg(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {}
+    public void renderFg(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    }
 
     @Override
     protected void renderSlot(GuiGraphics guiGraphics, Slot slot) {
         super.renderSlot(guiGraphics, slot);
         if (slot instanceof ColoredSlot colored && colored.shouldTint()) {
-            guiGraphics.fill(colored.tintItems() ? RenderType.guiOverlay() : RenderType.gui(), slot.x - 1, slot.y - 1, slot.x + 17, slot.y + 17, colored.getTintColor());
+            guiGraphics.fill(RenderPipelines.GUI, slot.x - 1, slot.y - 1, slot.x + 17, slot.y + 17, colored.getTintColor());
         }
     }
 
@@ -96,5 +107,6 @@ public abstract class BaseScreen<T extends AbstractContainerMenu> extends Abstra
         this.tooltips.add(new TooltipCoordinate((int) x, (int) y, width, height, tooltip));
     }
 
-    public record TooltipCoordinate(int x, int y, int width, int height, Component tooltip) {}
+    public record TooltipCoordinate(int x, int y, int width, int height, Component tooltip) {
+    }
 }

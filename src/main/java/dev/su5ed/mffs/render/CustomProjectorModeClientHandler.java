@@ -19,7 +19,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import one.util.streamex.StreamEx;
 
 import java.util.HashMap;
@@ -40,7 +40,7 @@ public final class CustomProjectorModeClientHandler {
         ResourceKey<Level> key = level.dimension();
         Map<String, VoxelShape> map = STRUCTURE_SHAPES.get(key);
         if (map == null || !map.containsKey(id)) {
-            PacketDistributor.sendToServer(new StructureDataRequestPacket(id));
+            ClientPacketDistributor.sendToServer(new StructureDataRequestPacket(id));
             setShape(key, id, null);
             return null;
         }
@@ -53,41 +53,40 @@ public final class CustomProjectorModeClientHandler {
     }
 
     @SubscribeEvent
-    public static void renderLevel(RenderLevelStageEvent event) {
-        if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_WEATHER) {
-            Minecraft minecraft = Minecraft.getInstance();
-            StreamEx.of(minecraft.player.getMainHandItem(), minecraft.player.getOffhandItem())
-                .findFirst(stack -> stack.is(ModItems.CUSTOM_MODE.get()))
-                .ifPresent(stack -> {
-                    PoseStack pose = new PoseStack();
-                    Vec3 cameraPos = event.getCamera().getPosition();
-                    CustomProjectorModeItem.StructureCoords coords = stack.get(ModDataComponentTypes.STRUCTURE_COORDS);
-                    if (coords != null) {
-                        BlockPos primary = coords.primary();
-                        if (primary != null) {
-                            BlockHighlighter.highlightBlock(pose, cameraPos, primary, BlockHighlighter.LIGHT_GREEN);
+    public static void renderLevelAfterWeather(RenderLevelStageEvent.AfterWeather event) {
+        Minecraft minecraft = Minecraft.getInstance();
+        StreamEx.of(minecraft.player.getMainHandItem(), minecraft.player.getOffhandItem())
+            .findFirst(stack -> stack.is(ModItems.CUSTOM_MODE.get()))
+            .ifPresent(stack -> {
+                PoseStack pose = new PoseStack();
+                Vec3 cameraPos = event.getCamera().getPosition();
+                CustomProjectorModeItem.StructureCoords coords = stack.get(ModDataComponentTypes.STRUCTURE_COORDS);
+                if (coords != null) {
+                    BlockPos primary = coords.primary();
+                    if (primary != null) {
+                        BlockHighlighter.highlightBlock(pose, cameraPos, primary, BlockHighlighter.LIGHT_GREEN);
 
-                            if (coords.secondary() != null) {
-                                BlockPos secondary = coords.secondary();
-                                BlockHighlighter.highlightBlock(pose, cameraPos, secondary, BlockHighlighter.LIGHT_RED);
-                                BlockHighlighter.highlightArea(pose, cameraPos, primary, secondary);
-                            } else if (minecraft.hitResult instanceof BlockHitResult blockHitResult) {
-                                BlockPos secondary = blockHitResult.getBlockPos();
-                                float alpha = MIN_ALPHA + (MAX_ALPHA - MIN_ALPHA) * 0.5F * Mth.abs(Mth.sin(2 * Mth.PI * (1 / (float) PERIOD_TICKS) * event.getRenderTick()) + 1.0F);
-                                BlockHighlighter.highlightBlock(pose, cameraPos, secondary, BlockHighlighter.LIGHT_RED.withAlpha(alpha));
-                                BlockHighlighter.highlightArea(pose, cameraPos, primary, secondary);
-                            }
+                        if (coords.secondary() != null) {
+                            BlockPos secondary = coords.secondary();
+                            BlockHighlighter.highlightBlock(pose, cameraPos, secondary, BlockHighlighter.LIGHT_RED);
+                            BlockHighlighter.highlightArea(pose, cameraPos, primary, secondary);
+                        } else if (minecraft.hitResult instanceof BlockHitResult blockHitResult) {
+                            BlockPos secondary = blockHitResult.getBlockPos();
+                            float alpha = MIN_ALPHA + (MAX_ALPHA - MIN_ALPHA) * 0.5F * Mth.abs(Mth.sin(2 * Mth.PI * (1 / (float) PERIOD_TICKS) * event.getRenderTick()) + 1.0F);
+                            BlockHighlighter.highlightBlock(pose, cameraPos, secondary, BlockHighlighter.LIGHT_RED.withAlpha(alpha));
+                            BlockHighlighter.highlightArea(pose, cameraPos, primary, secondary);
                         }
                     }
-                    if (stack.has(ModDataComponentTypes.PATTERN_ID)) {
-                        VoxelShape shape = getOrRequestShape(stack, minecraft.level);
-                        if (shape != null) {
-                            BlockHighlighter.highlightArea(pose, cameraPos, shape, null);
-                        }
+                }
+                if (stack.has(ModDataComponentTypes.PATTERN_ID)) {
+                    VoxelShape shape = getOrRequestShape(stack, minecraft.level);
+                    if (shape != null) {
+                        BlockHighlighter.highlightArea(pose, cameraPos, shape, null);
                     }
-                });
-        }
+                }
+            });
     }
 
-    private CustomProjectorModeClientHandler() {}
+    private CustomProjectorModeClientHandler() {
+    }
 }

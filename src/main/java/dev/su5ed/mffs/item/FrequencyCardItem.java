@@ -11,12 +11,13 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public class FrequencyCardItem extends BaseItem {
     private static final int MAX_FREQUENCY = 999999;
@@ -61,12 +62,12 @@ public class FrequencyCardItem extends BaseItem {
     }
 
     @Override
-    public void appendHoverTextPre(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
-        super.appendHoverTextPre(stack, context, tooltipComponents, isAdvanced);
+    protected void appendHoverTextPre(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
+        super.appendHoverTextPre(stack, context, tooltipDisplay, tooltipAdder, flag);
 
         FrequencyCard card = stack.getCapability(ModCapabilities.FREQUENCY_CARD);
         if (card != null) {
-            tooltipComponents.add(ModUtil.translate("info", "frequency",
+            tooltipAdder.accept(ModUtil.translate("info", "frequency",
                 Component.literal(String.valueOf(card.getFrequency())).withStyle(ChatFormatting.GREEN)).withStyle(ChatFormatting.DARK_GRAY));
         }
     }

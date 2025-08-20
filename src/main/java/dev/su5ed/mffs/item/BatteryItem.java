@@ -7,10 +7,11 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 public class BatteryItem extends Item {
     private final int capacity;
@@ -36,12 +37,12 @@ public class BatteryItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
-        super.appendHoverText(stack, context, tooltipComponents, isAdvanced);
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
+        super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
 
         IEnergyStorage energy = stack.getCapability(Capabilities.EnergyStorage.ITEM);
         if (energy != null) {
-            tooltipComponents.add(ModUtil.translate("info", "stored_energy",
+            tooltipAdder.accept(ModUtil.translate("info", "stored_energy",
                     Component.literal(String.valueOf(energy.getEnergyStored())).withStyle(ChatFormatting.GRAY),
                     Component.literal(String.valueOf(energy.getMaxEnergyStored())).withStyle(ChatFormatting.GRAY))
                 .withStyle(ChatFormatting.DARK_GRAY));

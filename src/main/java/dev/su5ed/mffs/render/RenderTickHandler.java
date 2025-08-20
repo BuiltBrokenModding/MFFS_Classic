@@ -61,52 +61,46 @@ public final class RenderTickHandler {
     }
 
     @SubscribeEvent
-    public static void renderLevel(RenderLevelStageEvent event) {
-        if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS) {
-            Minecraft minecraft = Minecraft.getInstance();
-            Camera camera = event.getCamera();
-            PoseStack poseStack = event.getPoseStack();
-            int ticks = event.getRenderTick();
-            DeltaTracker partialTicks = event.getPartialTick();
-            MultiBufferSource.BufferSource bufferSource = minecraft.renderBuffers().bufferSource();
+    public static void renderLevelAfterTranslucentBlocks(RenderLevelStageEvent.AfterTranslucentBlocks event) {
+        Minecraft minecraft = Minecraft.getInstance();
+        Camera camera = event.getCamera();
+        PoseStack poseStack = event.getPoseStack();
+        int ticks = event.getRenderTick();
+        DeltaTracker partialTicks = event.getPartialTick();
+        MultiBufferSource.BufferSource bufferSource = minecraft.renderBuffers().bufferSource();
 
-            RenderPostProcessor.prepareRender();
+        RenderPostProcessor.prepareRender();
 
-            poseStack.pushPose();
-            // here we translate based on the inverse position of the client viewing camera to get back to 0, 0, 0
-            Vec3 camPos = camera.getPosition();
-            poseStack.translate(-camPos.x, -camPos.y, -camPos.z);
+        poseStack.pushPose();
+        // here we translate based on the inverse position of the client viewing camera to get back to 0, 0, 0
+        Vec3 camPos = camera.getPosition();
+        poseStack.translate(-camPos.x, -camPos.y, -camPos.z);
 
-            // Render
-            Consumer<TransparentRenderInfo> consumer = info -> info.render(poseStack, bufferSource, ticks, partialTicks.getGameTimeDeltaPartialTick(false));
-            if (transparentRenderers.size() == 1) {
-                //If we only have one render holoType we don't need to bother calculating any distances
-                EntryStream.of(transparentRenderers)
-                    .mapKeyValue(TransparentRenderInfo::new)
-                    .forEach(consumer);
-            } else {
-                EntryStream.of(transparentRenderers)
-                    .mapKeyValue((renderType, renderers) -> {
-                        double closest = StreamEx.of(renderers)
-                            .mapPartial(renderer -> Optional.ofNullable(renderer.centerPos()))
-                            .mapToDouble(camPos::distanceToSqr)
-                            .min()
-                            .orElse(Double.MAX_VALUE);
-                        //Note: we remap it in order to keep track of the closest distance so that we only have to calculate it once
-                        return new TransparentRenderInfo(renderType, renderers, closest);
-                    })
-                    //Sort in the order of furthest to closest (reverse of by closest)
-                    .reverseSorted(Comparator.comparingDouble(TransparentRenderInfo::closest))
-                    .forEachOrdered(consumer);
-            }
-            transparentRenderers.clear();
-
-            poseStack.popPose();
+        // Render
+        Consumer<TransparentRenderInfo> consumer = info -> info.render(poseStack, bufferSource, ticks, partialTicks.getGameTimeDeltaPartialTick(false));
+        if (transparentRenderers.size() == 1) {
+            //If we only have one render holoType we don't need to bother calculating any distances
+            EntryStream.of(transparentRenderers)
+                .mapKeyValue(TransparentRenderInfo::new)
+                .forEach(consumer);
+        } else {
+            EntryStream.of(transparentRenderers)
+                .mapKeyValue((renderType, renderers) -> {
+                    double closest = StreamEx.of(renderers)
+                        .mapPartial(renderer -> Optional.ofNullable(renderer.centerPos()))
+                        .mapToDouble(camPos::distanceToSqr)
+                        .min()
+                        .orElse(Double.MAX_VALUE);
+                    //Note: we remap it in order to keep track of the closest distance so that we only have to calculate it once
+                    return new TransparentRenderInfo(renderType, renderers, closest);
+                })
+                //Sort in the order of furthest to closest (reverse of by closest)
+                .reverseSorted(Comparator.comparingDouble(TransparentRenderInfo::closest))
+                .forEachOrdered(consumer);
         }
+        transparentRenderers.clear();
 
-        if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_WEATHER) {
-            RenderPostProcessor.process(event.getRenderTick());
-        }
+        poseStack.popPose();
     }
 
     public record TransparentRenderInfo(RenderType renderType, List<LazyRenderer> renders, double closest) {
