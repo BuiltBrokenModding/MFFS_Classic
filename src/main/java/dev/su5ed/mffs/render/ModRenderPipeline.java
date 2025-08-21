@@ -37,9 +37,11 @@ public class ModRenderPipeline {
         .withLocation(MFFSMod.location("pipeline/holo_textured_triangle"))
         .withVertexShader("core/position_tex")
         .withFragmentShader("core/position_tex")
+        .withSampler("Sampler0")
         .withBlend(BlendFunction.TRANSLUCENT)
         .withVertexFormat(DefaultVertexFormat.POSITION_TEX, VertexFormat.Mode.TRIANGLES)
         .withCull(false)
+        .withDepthWrite(false)
         .build();
 
     public static final RenderPipeline HOLO_QUAD = RenderPipeline.builder(RenderPipelines.GUI_TEXTURED_SNIPPET)

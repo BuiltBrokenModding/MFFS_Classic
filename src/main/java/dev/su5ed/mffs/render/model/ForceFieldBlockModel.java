@@ -13,11 +13,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.client.model.DelegateBlockStateModel;
 import net.neoforged.neoforge.model.data.ModelData;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class ForceFieldBlockModel implements BlockStateModel {
+public class ForceFieldBlockModel extends DelegateBlockStateModel {
     private final BlockStateModel defaultModel;
     private final LoadingCache<BlockState, BlockStateModel> cache = CacheBuilder.newBuilder()
         .build(new CacheLoader<>() {
@@ -28,6 +30,7 @@ public class ForceFieldBlockModel implements BlockStateModel {
         });
 
     public ForceFieldBlockModel(BlockStateModel defaultModel) {
+        super(defaultModel);
         this.defaultModel = defaultModel;
     }
 
@@ -35,7 +38,13 @@ public class ForceFieldBlockModel implements BlockStateModel {
     public void collectParts(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, List<BlockModelPart> parts) {
         ModelData data = level.getModelData(pos);
         Pair<BlockStateModel, BlockState> model = getCamouflageModel(state, data);
-        model.getFirst().collectParts(level, pos, model.getSecond(), random, parts);
+
+        List<BlockModelPart> toWrap = new ArrayList<>();
+        BlockState fakeState = model.getSecond();
+        model.getFirst().collectParts(level, pos, fakeState, random, toWrap);
+        for (BlockModelPart part : toWrap) {
+            parts.add(new DelegateBlockModelPart(part, fakeState));
+        }
     }
 
     @Override
@@ -43,16 +52,6 @@ public class ForceFieldBlockModel implements BlockStateModel {
         ModelData data = level.getModelData(pos);
         Pair<BlockStateModel, BlockState> model = getCamouflageModel(null, data);
         return model.getFirst().particleIcon(level, pos, state);
-    }
-
-    @Override
-    public void collectParts(RandomSource random, List<BlockModelPart> output) {
-        this.defaultModel.collectParts(random, output);
-    }
-
-    @Override
-    public TextureAtlasSprite particleIcon() {
-        return this.defaultModel.particleIcon();
     }
 
     private Pair<BlockStateModel, BlockState> getCamouflageModel(BlockState state, ModelData data) {

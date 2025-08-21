@@ -103,10 +103,8 @@ public final class ProjectorModeRenderer {
 
             VertexConsumer actualConsumer = source.getBuffer(info.renderType);
             VertexConsumer wrapped = new TranslucentVertexConsumer(actualConsumer, (int) (alpha * 255));
-//            RenderSystem.setShaderColor(1, 1, 1, alpha); FIXME
             renderer.render(poseStack, wrapped, renderTick, partialTick);
             source.getBuffer(ForceCubeModel.RENDER_TYPE);
-//            RenderSystem.setShaderColor(1, 1, 1, 1);
         }
     }
 

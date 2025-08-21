@@ -22,7 +22,6 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.model.data.ModelData;
-import net.neoforged.neoforge.network.PacketDistributor;
 import org.slf4j.Logger;
 
 import java.util.Optional;

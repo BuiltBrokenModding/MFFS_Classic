@@ -111,10 +111,10 @@ dependencies {
     implementation(jarJar(group = "one.util", name = "streamex", version = versionStreamex))
 
     // compile against the JEI API but do not include it at runtime     
-    compileOnly("mezz.jei:jei-1.21-common-api:$versionJei")
-    compileOnly("mezz.jei:jei-1.21-neoforge-api:$versionJei")
+    compileOnly("mezz.jei:jei-1.21.8-common-api:$versionJei")
+    compileOnly("mezz.jei:jei-1.21.8-neoforge-api:$versionJei")
     // at runtime, use the full JEI jar for NeoForge
-//    runtimeOnly("mezz.jei:jei-1.21-neoforge:$versionJei")
+    runtimeOnly("mezz.jei:jei-1.21.8-neoforge:$versionJei")
 
     compileOnly(group = "mcjty.theoneprobe", name = "theoneprobe", version = versionTOP) { isTransitive = false }
 //    runtimeOnly("org.sinytra:item-asset-export-neoforge:1.0.2+1.21")

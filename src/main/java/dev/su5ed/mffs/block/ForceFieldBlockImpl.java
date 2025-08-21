@@ -155,6 +155,9 @@ public class ForceFieldBlockImpl extends Block implements ForceFieldBlock, Entit
                 }
                 return null;
             })
+            .or(() -> getCamouflageBlock(level, pos)
+                .filter(this::preventStackOverflow)
+                .map(block -> block.getCollisionShape(level, pos, context)))
             .orElse(COLLIDABLE_BLOCK);
     }
 

@@ -12,6 +12,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.world.item.Item;
@@ -162,10 +163,9 @@ public final class ModClientSetup {
 
     @SubscribeEvent
     public static void modifyBakingResult(ModelEvent.ModifyBakingResult event) {
-        event.getBakingResult().blockStateModels().computeIfPresent(
-            ModBlocks.FORCE_FIELD.get().defaultBlockState(),
-            (location, model) -> new ForceFieldBlockModel(model)
-        );
+        Map<BlockState, BlockStateModel> models = event.getBakingResult().blockStateModels();
+        ModBlocks.FORCE_FIELD.get().getStateDefinition().getPossibleStates().forEach(state ->
+            models.computeIfPresent(state, (location, model) -> new ForceFieldBlockModel(model)));
     }
 
     private ModClientSetup() {

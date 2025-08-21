@@ -42,6 +42,14 @@ public class ModelsGen extends ModelProvider {
             ItemModelUtils.plainModel(location("block/interdiction_matrix")));
 
         blockModels.createTrivialBlock(ModBlocks.FORCE_FIELD.get(), TexturedModel.CUBE.updateTemplate(t -> t.extend()
+            .element(e -> e
+                .from(0, 0, 0)
+                .to(16, 16, 16)
+                .allFaces((d, f) -> f
+                    .uvs(0, 0, 16, 16)
+                    .cullface(d)
+                    .texture(TextureSlot.ALL)
+                    .tintindex(0)))
             .renderType("translucent")
             .build())
         );
@@ -108,7 +116,7 @@ public class ModelsGen extends ModelProvider {
         MultiVariantGenerator gen = MultiVariantGenerator.dispatch(block)
             .with(createBooleanModelDispatch(ProjectorBlock.ACTIVE, active, plain));
         if (block.defaultBlockState().hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
-            gen.with(BlockModelGenerators.ROTATION_HORIZONTAL_FACING);
+            gen = gen.with(BlockModelGenerators.ROTATION_HORIZONTAL_FACING);
         }
 
         blockModels.blockStateOutput.accept(gen);

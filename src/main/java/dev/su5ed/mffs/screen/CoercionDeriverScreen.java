@@ -12,7 +12,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
-import net.neoforged.neoforge.network.PacketDistributor;
 import org.joml.Matrix3x2fStack;
 
 public class CoercionDeriverScreen extends FortronScreen<CoercionDeriverMenu> {
@@ -47,8 +46,8 @@ public class CoercionDeriverScreen extends FortronScreen<CoercionDeriverMenu> {
 
         Matrix3x2fStack poseStack = guiGraphics.pose();
         poseStack.pushMatrix();
-        poseStack.rotate(-90); // FIXME
-        guiGraphics.drawString(this.font, ModUtil.translate("screen", "upgrade"), -95, 140, GuiColors.DARK_GREY, false);
+        poseStack.rotateAbout((float) Math.toRadians(-90), 140, 95);
+        guiGraphics.drawString(this.font, ModUtil.translate("screen", "upgrade"), 140, 95, GuiColors.DARK_GREY, false);
         poseStack.popMatrix();
 
         guiGraphics.drawString(this.font, ModUtil.translate("screen", "progress")
