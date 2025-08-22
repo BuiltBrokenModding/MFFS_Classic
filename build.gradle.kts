@@ -68,6 +68,16 @@ neoForge {
                 file("src/main/resources/").absolutePath
             )
         }
+
+        create("exportClient") {
+            client()
+            systemProperty("wiki_exporter.enabled", "true")
+        }
+        create("exportServer") {
+            server()
+            programArgument("nogui")
+            systemProperty("wiki_exporter.enabled", "true")
+        }
     }
     mods { 
         create("mffs") {
@@ -77,9 +87,6 @@ neoForge {
 }
 
 wiki {
-    origin {
-        branch = "deploy/staging"
-    }
     docs {
         register("mffs") {             
             root = file("docs/mffs")
@@ -119,7 +126,7 @@ dependencies {
     runtimeOnly("mezz.jei:jei-1.21.8-neoforge:$versionJei")
 
     compileOnly(group = "mcjty.theoneprobe", name = "theoneprobe", version = versionTOP) { isTransitive = false }
-//    runtimeOnly("org.sinytra:item-asset-export-neoforge:1.0.2+1.21")
+    runtimeOnly("org.sinytra:wiki-exporter-neoforge:2.1.0+1.21.8")
 }
 
 tasks {
