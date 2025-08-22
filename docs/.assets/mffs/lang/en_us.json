@@ -44,7 +44,5 @@
   "item.mffs.blank_card": "Blank Card",
   "item.mffs.id_card": "Identification Card",
   "item.mffs.infinite_power_card": "Infinite Power Card",
-  "item.mffs.frequency_card": "Frequency Card",
-  
-  "recipe_type.mffs.macerating": "Macerating"
+  "item.mffs.frequency_card": "Frequency Card"
 }

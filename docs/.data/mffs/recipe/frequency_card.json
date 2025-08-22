@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "C": {
-      "item": "mffs:blank_card"
-    },
-    "G": {
-      "tag": "c:ingots/gold"
-    }
+    "C": "mffs:blank_card",
+    "G": "#c:ingots/gold"
   },
   "pattern": [
     "GCG"

@@ -1,8 +1,0 @@
-{
-  "mffs:macerating": [
-    "minecraft:furnace",
-    "minecraft:anvil",
-    "mffs:biometric_identifier",
-    "minecraft:blast_furnace"
-  ]
-}

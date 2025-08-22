@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "B": {
-      "item": "mffs:battery"
-    },
-    "F": {
-      "item": "mffs:focus_matrix"
-    },
-    "S": {
-      "tag": "c:ingots/steel"
-    }
+    "B": "mffs:battery",
+    "F": "mffs:focus_matrix",
+    "S": "#c:ingots/steel"
   },
   "pattern": [
     "SFS",

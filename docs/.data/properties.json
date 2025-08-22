@@ -1,5 +1,33 @@
 {
+  "mffs:interdiction_matrix": {
+    "stack_size": 64,
+    "required_tool": "minecraft:iron_pickaxe",
+    "blast_resistance": 3.0,
+    "hardness": 3.0,
+    "flammable": false
+  },
+  "mffs:coercion_deriver": {
+    "stack_size": 64,
+    "required_tool": "minecraft:iron_pickaxe",
+    "blast_resistance": 3.0,
+    "hardness": 3.0,
+    "flammable": false
+  },
+  "mffs:biometric_identifier": {
+    "stack_size": 64,
+    "required_tool": "minecraft:iron_pickaxe",
+    "blast_resistance": 3.0,
+    "hardness": 3.0,
+    "flammable": false
+  },
   "mffs:projector": {
+    "stack_size": 64,
+    "required_tool": "minecraft:iron_pickaxe",
+    "blast_resistance": 3.0,
+    "hardness": 3.0,
+    "flammable": false
+  },
+  "mffs:fortron_capacitor": {
     "stack_size": 64,
     "required_tool": "minecraft:iron_pickaxe",
     "blast_resistance": 3.0,

@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "D": {
-      "tag": "c:gems/diamond"
-    },
-    "R": {
-      "tag": "c:dusts/redstone"
-    },
-    "S": {
-      "tag": "c:ingots/steel"
-    }
+    "D": "#c:gems/diamond",
+    "R": "#c:dusts/redstone",
+    "S": "#c:ingots/steel"
   },
   "pattern": [
     "RSR",

@@ -5,7 +5,7 @@ plugins {
     id("net.neoforged.moddev") version "2.0.107"
     id("me.modmuss50.mod-publish-plugin") version "0.8.+"
     id("wtf.gofancy.git-changelog") version "1.1.+"
-    id("org.moddedmc.wiki.toolkit") version "0.3.1"
+    id("org.moddedmc.wiki.toolkit") version "0.3.2"
 }
 
 group = "dev.su5ed.mffs"
@@ -41,6 +41,7 @@ neoForge {
         configureEach {
             systemProperty("forge.logging.markers", "REGISTRIES")
             systemProperty("forge.logging.console.level", "debug")
+            systemProperty("wiki_exporter.config.path", file("src/main/resources/exporter-config.json").absolutePath)
             additionalRuntimeClasspathConfiguration.dependencies.add(dependencies.create(group = "one.util", name = "streamex", version = versionStreamex))
         }
 
@@ -89,7 +90,7 @@ neoForge {
 wiki {
     docs {
         register("mffs") {             
-            root = file("docs/mffs")
+            root = file("docs")
         }
     }
 }

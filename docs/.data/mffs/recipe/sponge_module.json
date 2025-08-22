@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "F": {
-      "item": "mffs:focus_matrix"
-    },
-    "S": {
-      "item": "minecraft:sponge"
-    }
+    "F": "mffs:focus_matrix",
+    "S": "minecraft:sponge"
   },
   "pattern": [
     "SSS",

@@ -1,0 +1,20 @@
+{
+  "enabled": [
+    "metadata",
+    "render"
+  ],
+  "modules": {
+    "render": {
+      "namespaces": [
+        "mffs"
+      ],
+      "resolution": 128,
+      "png": true
+    },
+    "metadata": {
+      "namespaces": [
+        "mffs"
+      ]
+    }
+  }
+}

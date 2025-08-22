@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "F": {
-      "item": "mffs:focus_matrix"
-    },
-    "L": {
-      "tag": "c:storage_blocks/lapis"
-    }
+    "F": "mffs:focus_matrix",
+    "L": "#c:storage_blocks/lapis"
   },
   "pattern": [
     "L",
