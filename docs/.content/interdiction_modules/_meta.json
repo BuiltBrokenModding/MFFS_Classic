@@ -1,10 +1,10 @@
 {
-    "anti_friendly_module.mdx": "Anti-Friendly Module",
-    "anti_hostile_module.mdx": "Anti-Hostile Module",
-    "anti_personnel_module.mdx": "Anti-Personnel Module",
-    "anti_spawn_module.mdx": "Anti-Spawn Module",
-    "block_access_module.mdx": "Block Access Module",
-    "block_alter_module.mdx": "Block Alter Module",
-    "confiscation_module.mdx": "Confiscation Module",
-    "warn_module.mdx": "Warn Module"
+    "anti_friendly_module.mdx": "",
+    "anti_hostile_module.mdx": "",
+    "anti_personnel_module.mdx": "",
+    "anti_spawn_module.mdx": "",
+    "block_access_module.mdx": "",
+    "block_alter_module.mdx": "",
+    "confiscation_module.mdx": "",
+    "warn_module.mdx": ""
 }

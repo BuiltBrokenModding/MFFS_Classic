@@ -1,13 +1,13 @@
 {
     "interaction": "Interaction",
-    "camouflage_module.mdx": "Camouflage Module",
-    "dome_module.mdx": "Dome Module",
-    "fusion_module.mdx": "Field Fusion Module",
-    "glow_module.mdx": "Glow Module",
-    "inverter_module.mdx": "Inverter Module",
-    "rotation_module.mdx": "Rotation Module",
-    "shock_module.mdx": "Shock Module",
-    "silence_module.mdx": "Silence Module",
-    "sponge_module.mdx": "Sponge Module",
-    "translation_module.mdx": "Translation Module"
+    "camouflage_module.mdx": "",
+    "dome_module.mdx": "",
+    "fusion_module.mdx": "",
+    "glow_module.mdx": "",
+    "inverter_module.mdx": "",
+    "rotation_module.mdx": "",
+    "shock_module.mdx": "",
+    "silence_module.mdx": "",
+    "sponge_module.mdx": "",
+    "translation_module.mdx": ""
 }

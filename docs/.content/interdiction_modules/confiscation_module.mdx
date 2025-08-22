@@ -1,13 +1,19 @@
 ---
-title: Confiscation Module
 id: mffs:confiscation_module
 type: item
 ---
 
+# Confiscation Module
+
 The Confiscation Module is an optional module for the Interdiction Matrix that gives it the ability to automatically
-take items away from a player. If a player is in the action area of an Interdiction Matrix, it will scan the player's
-inventory and seize any forbidden items found. This applies to all items regardless of whether they are being carried,
-worn, or stored in inventory.
+take items away from a player.
+
+<PrefabObtaining />
+
+## Effect
+
+If a player is in the action area of an Interdiction Matrix, it will scan the player's inventory and seize any forbidden
+items found. This applies to all items regardless of whether they are being carried, worn, or stored in inventory.
 
 ## Filter Mode
 
@@ -27,3 +33,5 @@ have. If all 9 item slots are empty, the Matrix assumes every item must be confi
 If the toggle button reads 'Allowed', the Matrix treats the 9 (green) slots as a list of items the player is allowed
 to keep. Any other item will be confiscated. When all 9 slots are empty, the Interdiction Matrix assumes all items are
 permitted and will not confiscate anything.
+
+<PrefabUsage />
