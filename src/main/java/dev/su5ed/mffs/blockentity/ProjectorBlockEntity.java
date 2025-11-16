@@ -38,13 +38,16 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.items.IItemHandler;
 import one.util.streamex.IntStreamEx;
 import one.util.streamex.StreamEx;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 public class ProjectorBlockEntity extends ModularBlockEntity implements Projector {
@@ -462,11 +465,12 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
                     return block;
                 }
             }
-            return getAllModuleItemsStream()
-                .mapPartial(ProjectorBlockEntity::getFilterBlock)
-                .findFirst()
-                .map(Block::defaultBlockState)
-                .orElse(null);
+            List<Block> weightedList = this.checkNeighbors().entrySet()
+                    .stream()
+                    // For each entry: create a list that repeats the block as many times as its weight
+                    .flatMap(e -> Collections.nCopies(e.getValue(), e.getKey()).stream())
+                    .toList();
+            return weightedList.get(ThreadLocalRandom.current().nextInt(weightedList.size())).defaultBlockState();
         }
         return null;
     }
@@ -550,6 +554,23 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
             }
         }
         return Optional.empty();
+    }
+
+    public Map<Block, Integer> checkNeighbors() {
+        Map<Block, Integer> countMap = new HashMap<>();
+        if (!this.level.isClientSide) {
+            for (Direction side : Direction.values()) {
+                IItemHandler handler = this.level.getCapability(Capabilities.ItemHandler.BLOCK, this.worldPosition.relative(side), side.getOpposite());
+                if (handler != null) {
+                    for (int i = 0; i < handler.getSlots(); i++) {
+                        ItemStack stack = handler.getStackInSlot(i);
+                        int count = stack.getCount();
+                        getFilterBlock(stack).ifPresent(block -> countMap.put(block, countMap.getOrDefault(block, 0) + count));
+                    }
+                }
+            }
+        }
+        return countMap;
     }
 
     private static class ScheduledEvent {
