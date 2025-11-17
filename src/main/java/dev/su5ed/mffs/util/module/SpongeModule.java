@@ -3,10 +3,9 @@ package dev.su5ed.mffs.util.module;
 import dev.su5ed.mffs.api.Projector;
 import dev.su5ed.mffs.api.TargetPosPair;
 import dev.su5ed.mffs.api.module.ModuleType;
+import dev.su5ed.mffs.setup.ModTags;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -24,7 +23,6 @@ public class SpongeModule extends BaseModule {
     private final List<BlockPos> removingBlocks = new ArrayList<>();
     private final List<BlockPos> unWaterLoggingBlocks = new ArrayList<>();
     private final List<BlockPos> unWaterAquaticPlants = new ArrayList<>();
-    private final List<Block> aquaticPlants = List.of(Blocks.KELP,Blocks.KELP_PLANT, Blocks.SEAGRASS,Blocks.TALL_SEAGRASS);
 
     public SpongeModule(ModuleType<?> type, ItemStack stack) {
         super(type, stack);
@@ -52,7 +50,6 @@ public class SpongeModule extends BaseModule {
                 if (state.hasProperty(BlockStateProperties.WATERLOGGED)) {
                     this.unWaterLoggingBlocks.add(pos);
                 }
-
                 if (this.isAquaticPlant(state) && !fluidState.isEmpty()) {
                     this.unWaterAquaticPlants.add(pos);
                 }
@@ -73,33 +70,20 @@ public class SpongeModule extends BaseModule {
             }
         }
         // Handle underwater aquatic plants and drop items as if broken naturally
-        for(BlockPos pos: this.unWaterAquaticPlants){
+        for (BlockPos pos : this.unWaterAquaticPlants) {
             BlockState state = level.getBlockState(pos);
             FluidState fluidState = state.getFluidState();
-            ItemStack stack = this.getDropForBlock(state);
             if (!fluidState.isEmpty()) {
-                if(stack != ItemStack.EMPTY){
-                    // Drop the corresponding item if it exists
-                    level.addFreshEntity(new ItemEntity(level,pos.getX()+0.5,pos.getY()+0.5,pos.getZ()+0.5,stack));
-                }
-                // Remove the block itself by setting it to air
-                level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
+                Block.dropResources(state, level, pos);
+                level.removeBlock(pos, false);
             }
         }
         this.removingBlocks.clear();
         this.unWaterLoggingBlocks.clear();
         this.unWaterAquaticPlants.clear();
     }
+
     private boolean isAquaticPlant(BlockState state) {
-        return this.aquaticPlants.contains(state.getBlock());
-    }
-    private ItemStack getDropForBlock(BlockState state) {
-        // Return the item to drop for the given block
-        // Kelp and Kelp Plant always drop Kelp
-        if (state.is(Blocks.KELP) || state.is(Blocks.KELP_PLANT)) {
-            return new ItemStack(Items.KELP);
-        }
-        // TODO: Optionally add drop for Seagrass / Tall Seagrass (Silk Touch might be required)
-        return ItemStack.EMPTY;
+        return state.is(ModTags.FORCEFIELD_REPLACEABLE);
     }
 }
