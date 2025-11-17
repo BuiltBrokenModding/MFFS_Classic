@@ -465,7 +465,9 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
                     return block;
                 }
             }
-            List<Block> weightedList = this.checkNeighbors().entrySet()
+            var neighborsInventory = this.checkNeighbors();
+            if(neighborsInventory.isEmpty()) return null;
+            List<Block> weightedList =neighborsInventory.entrySet()
                     .stream()
                     // For each entry: create a list that repeats the block as many times as its weight
                     .flatMap(e -> Collections.nCopies(e.getValue(), e.getKey()).stream())
