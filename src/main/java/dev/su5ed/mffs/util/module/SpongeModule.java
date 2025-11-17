@@ -3,6 +3,7 @@ package dev.su5ed.mffs.util.module;
 import dev.su5ed.mffs.api.Projector;
 import dev.su5ed.mffs.api.TargetPosPair;
 import dev.su5ed.mffs.api.module.ModuleType;
+import dev.su5ed.mffs.setup.ModTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -21,6 +22,7 @@ import java.util.List;
 public class SpongeModule extends BaseModule {
     private final List<BlockPos> removingBlocks = new ArrayList<>();
     private final List<BlockPos> unWaterLoggingBlocks = new ArrayList<>();
+    private final List<BlockPos> unWaterAquaticPlants = new ArrayList<>();
 
     public SpongeModule(ModuleType<?> type, ItemStack stack) {
         super(type, stack);
@@ -48,6 +50,9 @@ public class SpongeModule extends BaseModule {
                 if (state.hasProperty(BlockStateProperties.WATERLOGGED)) {
                     this.unWaterLoggingBlocks.add(pos);
                 }
+                if (this.isAquaticPlant(state) && !fluidState.isEmpty()) {
+                    this.unWaterAquaticPlants.add(pos);
+                }
             }
         }
     }
@@ -64,7 +69,21 @@ public class SpongeModule extends BaseModule {
                 level.setBlockAndUpdate(pos, state.setValue(BlockStateProperties.WATERLOGGED, false));
             }
         }
+        // Handle underwater aquatic plants and drop items as if broken naturally
+        for (BlockPos pos : this.unWaterAquaticPlants) {
+            BlockState state = level.getBlockState(pos);
+            FluidState fluidState = state.getFluidState();
+            if (!fluidState.isEmpty()) {
+                Block.dropResources(state, level, pos);
+                level.removeBlock(pos, false);
+            }
+        }
         this.removingBlocks.clear();
         this.unWaterLoggingBlocks.clear();
+        this.unWaterAquaticPlants.clear();
+    }
+
+    private boolean isAquaticPlant(BlockState state) {
+        return state.is(ModTags.FORCEFIELD_REPLACEABLE);
     }
 }
