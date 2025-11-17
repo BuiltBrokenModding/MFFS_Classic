@@ -64,7 +64,9 @@ public abstract class InventoryBlockEntity extends BaseBlockEntity {
                 IItemHandler handler = this.level.getCapability(Capabilities.ItemHandler.BLOCK, this.worldPosition.relative(side), side.getOpposite());
                 if (handler != null) {
                     remainder = ItemHandlerHelper.insertItem(handler, remainder, false);
-                    if(remainder.getCount() == 0) break;
+                    if (remainder.isEmpty()) {
+                        break;
+                    }
                 }
             }
             if (!remainder.isEmpty()) {
