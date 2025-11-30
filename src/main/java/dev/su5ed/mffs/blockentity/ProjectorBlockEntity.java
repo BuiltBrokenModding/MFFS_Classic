@@ -465,16 +465,38 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
                     return block;
                 }
             }
-            var neighborsInventory = this.checkNeighbors();
-            if(neighborsInventory.isEmpty()) return null;
-            List<Block> weightedList =neighborsInventory.entrySet()
-                    .stream()
-                    // For each entry: create a list that repeats the block as many times as its weight
-                    .flatMap(e -> Collections.nCopies(e.getValue(), e.getKey()).stream())
-                    .toList();
-            return weightedList.get(ThreadLocalRandom.current().nextInt(weightedList.size())).defaultBlockState();
+
+            return getCamoBlockFromOwnInventory()
+                .orElseGet(this::getWeightedCamoBlockFromNeighbors);
         }
         return null;
+    }
+
+    // Prioritize own inventory for backwards compatibility
+    @Nullable
+    private Optional<BlockState> getCamoBlockFromOwnInventory() {
+        return getAllModuleItemsStream()
+            .mapPartial(ProjectorBlockEntity::getFilterBlock)
+            .findFirst()
+            .map(Block::defaultBlockState);
+    }
+
+    @Nullable
+    private BlockState getWeightedCamoBlockFromNeighbors() {
+        Map<Block, Integer> neighborsInventory = checkNeighbors();
+        if (neighborsInventory.isEmpty()) {
+            return null;
+        }
+
+        List<Block> weightedList = neighborsInventory.entrySet()
+            .stream()
+            // For each entry: create a list that repeats the block as many times as its weight
+            .flatMap(e -> Collections.nCopies(e.getValue(), e.getKey()).stream())
+            .toList();
+
+        int random = ThreadLocalRandom.current().nextInt(weightedList.size());
+        return weightedList.get(random)
+            .defaultBlockState();
     }
 
     private CompletableFuture<?> runCalculationTask() {
