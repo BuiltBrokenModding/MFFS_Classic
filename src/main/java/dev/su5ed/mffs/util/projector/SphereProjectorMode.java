@@ -14,21 +14,21 @@ public class SphereProjectorMode implements ProjectorMode {
     public Set<Vec3> getExteriorPoints(Projector projector) {
         Set<Vec3> fieldBlocks = new HashSet<>();
         int radius = projector.getModuleCount(ModModules.SCALE);
-        int steps = (int) Math.ceil(Math.PI / Math.atan(1.0D / radius / 2));
-        for (int phi_n = 0; phi_n < 2 * steps; phi_n++) {
-            for (int theta_n = 0; theta_n < steps; theta_n++) {
-                double phi = Math.PI * 2 / steps * phi_n;
-                double theta = Math.PI / steps * theta_n;
+        double rSq = radius * radius;
 
-                double x = Math.sin(theta) * Math.cos(phi) * radius;
-                double y = Math.cos(theta) * radius;
-                double z = Math.sin(theta) * Math.sin(phi) * radius;
-                fieldBlocks.add(new Vec3(x, y, z));
+        for (int x = -radius; x <= radius; x++) {
+            for (int y = -radius; y <= radius; y++) {
+                for (int z = -radius; z <= radius; z++) {
+                    double distSq = x*x + y*y + z*z;
+
+                    if (distSq <= rSq && distSq >= (radius - 1)*(radius - 1)) {
+                        fieldBlocks.add(new Vec3(x, y, z));
+                    }
+                }
             }
         }
         return fieldBlocks;
     }
-
     @Override
     public Set<Vec3> getInteriorPoints(Projector projector) {
         Set<Vec3> fieldBlocks = new HashSet<>();
