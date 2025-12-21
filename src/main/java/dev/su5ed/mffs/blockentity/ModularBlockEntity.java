@@ -146,7 +146,8 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
     }
 
     protected int doGetFortronCost() {
-        double cost = StreamEx.of(getModuleStacks())
+        double cost = getAllModuleItemsStream()
+                .filter(ModUtil::isModule)
             .mapToDouble(stack -> stack.getCount() * Optional.ofNullable(stack.getCapability(ModCapabilities.MODULE_TYPE))
                 .map(module -> (double) module.getFortronCost(getAmplifier()))
                 .orElse(0.0))
