@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "B": {
-      "item": "mffs:battery"
-    },
-    "F": {
-      "item": "mffs:focus_matrix"
-    }
+    "B": "mffs:battery",
+    "F": "mffs:focus_matrix"
   },
   "pattern": [
     "FBF"

@@ -8,27 +8,26 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public class FrequencyCardItem extends BaseItem {
     private static final int MAX_FREQUENCY = 999999;
 
-    public FrequencyCardItem() {
-        super(new ExtendedItemProperties(new Item.Properties().stacksTo(1)).description());
+    public FrequencyCardItem(Properties properties) {
+        super(new ExtendedItemProperties(properties.stacksTo(1)).description());
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
+    public InteractionResult use(Level level, Player player, InteractionHand usedHand) {
         if (player.isShiftKeyDown()) {
             ItemStack stack = player.getItemInHand(usedHand);
             FrequencyCard card = stack.getCapability(ModCapabilities.FREQUENCY_CARD);
@@ -39,7 +38,7 @@ public class FrequencyCardItem extends BaseItem {
                     player.displayClientMessage(ModUtil.translate("info", "frequency.generated",
                         Component.literal(String.valueOf(frequency)).withStyle(ChatFormatting.AQUA)), true);
                 }
-                return InteractionResultHolder.consume(stack);
+                return InteractionResult.CONSUME;
             }
         }
         return super.use(level, player, usedHand);
@@ -50,25 +49,25 @@ public class FrequencyCardItem extends BaseItem {
         Level level = context.getLevel();
         return Optional.ofNullable(level.getBlockEntity(context.getClickedPos()))
             .map(be -> level.getCapability(ModCapabilities.FORTRON, be.getBlockPos(), be.getBlockState(), be, null))
-            .map(fortron -> {
+            .<InteractionResult>map(fortron -> {
                 if (!level.isClientSide) {
                     int frequency = Objects.requireNonNull(stack.getCapability(ModCapabilities.FREQUENCY_CARD)).getFrequency();
                     fortron.setFrequency(frequency);
                     context.getPlayer().displayClientMessage(ModUtil.translate("info", "frequency.set",
                         Component.literal(String.valueOf(frequency)).withStyle(ChatFormatting.GREEN)), true);
                 }
-                return InteractionResult.sidedSuccess(level.isClientSide);
+                return InteractionResult.SUCCESS;
             })
             .orElse(InteractionResult.PASS);
     }
 
     @Override
-    public void appendHoverTextPre(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
-        super.appendHoverTextPre(stack, context, tooltipComponents, isAdvanced);
+    protected void appendHoverTextPre(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
+        super.appendHoverTextPre(stack, context, tooltipDisplay, tooltipAdder, flag);
 
         FrequencyCard card = stack.getCapability(ModCapabilities.FREQUENCY_CARD);
         if (card != null) {
-            tooltipComponents.add(ModUtil.translate("info", "frequency",
+            tooltipAdder.accept(ModUtil.translate("info", "frequency",
                 Component.literal(String.valueOf(card.getFrequency())).withStyle(ChatFormatting.GREEN)).withStyle(ChatFormatting.DARK_GRAY));
         }
     }

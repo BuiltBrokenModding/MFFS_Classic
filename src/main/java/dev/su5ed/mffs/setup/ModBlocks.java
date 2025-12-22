@@ -17,12 +17,11 @@ import java.util.function.Supplier;
 
 public final class ModBlocks {
     private static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MFFSMod.MODID);
-    private static final BlockBehaviour.Properties BLOCK_PROPERTIES = BlockBehaviour.Properties.of().mapColor(MapColor.STONE).instrument(NoteBlockInstrument.BASEDRUM).strength(3F).requiresCorrectToolForDrops();
 
     public static final DeferredBlock<ProjectorBlock> PROJECTOR = block("projector", ProjectorBlock::new);
     public static final DeferredBlock<CoercionDeriverBlock> COERCION_DERIVER = block("coercion_deriver", CoercionDeriverBlock::new);
     public static final DeferredBlock<FortronCapacitorBlock> FORTRON_CAPACITOR = block("fortron_capacitor", FortronCapacitorBlock::new);
-    public static final DeferredBlock<ForceFieldBlockImpl> FORCE_FIELD = BLOCKS.register("force_field", ForceFieldBlockImpl::new);
+    public static final DeferredBlock<ForceFieldBlockImpl> FORCE_FIELD = BLOCKS.registerBlock("force_field", ForceFieldBlockImpl::new);
     public static final DeferredBlock<BiometricIdentifierBlock> BIOMETRIC_IDENTIFIER = block("biometric_identifier", BiometricIdentifierBlock::new);
     public static final DeferredBlock<BaseEntityBlock> INTERDICTION_MATRIX = baseEntityBlock("interdiction_matrix", () -> ModObjects.INTERDICTION_MATRIX_BLOCK_ENTITY);
 
@@ -31,11 +30,11 @@ public final class ModBlocks {
     }
 
     private static DeferredBlock<BaseEntityBlock> baseEntityBlock(String name, Supplier<Supplier<? extends BlockEntityType<? extends BaseBlockEntity>>> beTypeProvider) {
-        return BLOCKS.register(name, () -> new BaseEntityBlock(BLOCK_PROPERTIES, beTypeProvider.get()));
+        return BLOCKS.registerBlock(name, properties -> new BaseEntityBlock(properties.mapColor(MapColor.STONE).instrument(NoteBlockInstrument.BASEDRUM).strength(3F).requiresCorrectToolForDrops(), beTypeProvider.get()));
     }
 
     private static <T extends Block> DeferredBlock<T> block(String name, Function<BlockBehaviour.Properties, T> factory) {
-        return BLOCKS.register(name, () -> factory.apply(BLOCK_PROPERTIES));
+        return BLOCKS.registerBlock(name, properties -> factory.apply(properties.mapColor(MapColor.STONE).instrument(NoteBlockInstrument.BASEDRUM).strength(3F).requiresCorrectToolForDrops()));
     }
 
     private ModBlocks() {}

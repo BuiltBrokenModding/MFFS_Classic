@@ -1,8 +1,7 @@
 package dev.su5ed.mffs.render.particle;
 
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.su5ed.mffs.setup.ModBlocks;
 import dev.su5ed.mffs.util.TranslucentVertexConsumer;
 import net.minecraft.client.Camera;
@@ -10,20 +9,15 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleRenderType;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.ModelBlockRenderer;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.client.model.data.ModelData;
-import org.jetbrains.annotations.Nullable;
 
 public class MovingHologramParticle extends Particle {
 
@@ -70,32 +64,21 @@ public class MovingHologramParticle extends Particle {
         BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
         ModelBlockRenderer modelRenderer = blockRenderer.getModelRenderer();
         BlockState state = ModBlocks.FORCE_FIELD.get().defaultBlockState();
-        BakedModel model = blockRenderer.getBlockModel(state);
-        modelRenderer.renderModel(pose.last(), new TranslucentVertexConsumer(buffer, alpha), state, model, this.rCol, this.gCol, this.bCol, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, ModelData.EMPTY, RenderType.solid());
+        BlockStateModel model = blockRenderer.getBlockModel(state);
+        modelRenderer.renderModel(
+            pose.last(),
+            t -> new TranslucentVertexConsumer(buffer, alpha),
+            model,
+            this.rCol, this.gCol, this.bCol,
+            LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY,
+            this.level, new BlockPos((int) getPos().x, (int) getPos().y, (int) getPos().z), state
+        );
 
         pose.popPose();
     }
 
     @Override
     public ParticleRenderType getRenderType() {
-        return HoloParticleRenderType.INSTANCE;
-    }
-
-    public static class HoloParticleRenderType implements ParticleRenderType {
-        public static final HoloParticleRenderType INSTANCE = new HoloParticleRenderType();
-
-        @Nullable
-        @Override
-        public BufferBuilder begin(Tesselator tesselator, TextureManager textureManager) {
-            RenderSystem.enableDepthTest();
-            RenderSystem.depthMask(true);
-            Minecraft.getInstance().gameRenderer.lightTexture().turnOnLightLayer();
-            RenderSystem.setShader(GameRenderer::getRendertypeTranslucentShader);
-            RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
-            RenderSystem.enableBlend();
-            RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-
-            return tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.BLOCK);
-        }
+        return ModParticleRenderType.HOLO;
     }
 }

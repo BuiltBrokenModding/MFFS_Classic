@@ -1,7 +1,9 @@
 package dev.su5ed.mffs.blockentity;
 
+import com.mojang.logging.LogUtils;
 import dev.su5ed.mffs.api.ForceFieldBlock;
 import dev.su5ed.mffs.api.Projector;
+import dev.su5ed.mffs.block.ForceFieldBlockImpl;
 import dev.su5ed.mffs.network.InitialDataRequestPacket;
 import dev.su5ed.mffs.render.BlockEntityRenderDelegate;
 import dev.su5ed.mffs.setup.ModCapabilities;
@@ -9,18 +11,24 @@ import dev.su5ed.mffs.setup.ModModules;
 import dev.su5ed.mffs.setup.ModObjects;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.client.model.data.ModelData;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
+import net.neoforged.neoforge.model.data.ModelData;
+import org.slf4j.Logger;
 
 import java.util.Optional;
 
 public class ForceFieldBlockEntity extends BlockEntity {
+    private static final Logger LOGGER = LogUtils.getLogger();
+
     private BlockPos projector;
     private BlockState camouflage;
     private int clientBlockLight;
@@ -44,7 +52,13 @@ public class ForceFieldBlockEntity extends BlockEntity {
 
     public void setCamouflage(BlockState camouflage) {
         this.camouflage = camouflage;
-        setChanged();
+        this.level.setBlock(
+            worldPosition,
+            getBlockState()
+                .setValue(ForceFieldBlockImpl.PROPAGATES_SKYLIGHT, camouflage.propagatesSkylightDown())
+                .setValue(ForceFieldBlockImpl.SOLID, !camouflage.getOcclusionShape().isEmpty()),
+            Block.UPDATE_ALL
+        );
     }
 
     @Override
@@ -53,7 +67,7 @@ public class ForceFieldBlockEntity extends BlockEntity {
 
         if (this.level.isClientSide) {
             InitialDataRequestPacket packet = new InitialDataRequestPacket(this.worldPosition);
-            PacketDistributor.sendToServer(packet);
+            ClientPacketDistributor.sendToServer(packet);
             if (this.camouflage != null) {
                 BlockEntityRenderDelegate.INSTANCE.putDelegateFor(this, this.camouflage);
             }
@@ -84,50 +98,61 @@ public class ForceFieldBlockEntity extends BlockEntity {
 
     // Manual handling of update tags so that we send data when the BE is first created, rather than only on world load
     public CompoundTag getCustomUpdateTag(HolderLookup.Provider provider) {
-        CompoundTag tag = new CompoundTag();
-        saveAdditional(tag, provider);
-        if (this.projector != null) {
-            tag.put("projector", NbtUtils.writeBlockPos(this.projector));
+        CompoundTag tag;
+        try (ProblemReporter.ScopedCollector scopedCollector = new ProblemReporter.ScopedCollector(this.problemPath(), LOGGER)) {
+            TagValueOutput output = TagValueOutput.createWithContext(scopedCollector, provider);
+            saveAdditional(output);
+
+            if (this.projector != null) {
+                output.store("projector", BlockPos.CODEC, this.projector);
+            }
+            int clientBlockLight = getProjector().map(projector -> Math.round((float) Math.min(projector.getModuleCount(ModModules.GLOW), 64) / 64 * 15)).orElse(0);
+            output.putInt("clientBlockLight", clientBlockLight);
+
+            tag = output.buildResult();
         }
-        int clientBlockLight = getProjector().map(projector -> Math.round((float) Math.min(projector.getModuleCount(ModModules.GLOW), 64) / 64 * 15)).orElse(0);
-        tag.putInt("clientBlockLight", clientBlockLight);
         return tag;
     }
 
     public void handleCustomUpdateTag(CompoundTag tag, HolderLookup.Provider provider) {
-        super.handleUpdateTag(tag, provider);
-        loadAdditional(tag, provider);
-        this.projector = NbtUtils.readBlockPos(tag, "projector").orElse(null);
-        this.clientBlockLight = tag.getInt("clientBlockLight");
+        try (ProblemReporter.ScopedCollector scopedCollector = new ProblemReporter.ScopedCollector(this.problemPath(), LOGGER)) {
+            ValueInput input = TagValueInput.create(scopedCollector, provider, tag);
 
-        updateRenderClient();
-        this.level.getLightEngine().checkBlock(this.worldPosition);
-        if (this.camouflage != null) {
-            BlockEntityRenderDelegate.INSTANCE.putDelegateFor(this, this.camouflage);
+            super.handleUpdateTag(input);
+            loadAdditional(input);
+
+            this.projector = input.read("projector", BlockPos.CODEC).orElse(null);
+            this.clientBlockLight = tag.getInt("clientBlockLight").orElse(0);
+
+            updateRenderClient();
+            this.level.getLightEngine().checkBlock(this.worldPosition);
+            if (this.camouflage != null) {
+                BlockEntityRenderDelegate.INSTANCE.putDelegateFor(this, this.camouflage);
+            }
         }
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider) {
-        super.saveAdditional(tag, provider);
+    protected void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
 
         if (this.projector != null) {
-            tag.put("projector", NbtUtils.writeBlockPos(this.projector));
+            output.store("projector", BlockPos.CODEC, this.projector);
         }
         if (this.camouflage != null) {
-            tag.put("camouflage", NbtUtils.writeBlockState(this.camouflage));
+            output.store("camouflage", BlockState.CODEC, this.camouflage);
         }
     }
 
     @Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
-        super.loadAdditional(tag, provider);
+    public void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
 
-        NbtUtils.readBlockPos(tag, "projector")
+        input.read("projector", BlockPos.CODEC)
             .ifPresent(p -> this.projector = p);
-        if (tag.contains("camouflage")) {
-            this.camouflage = NbtUtils.readBlockState(provider.lookupOrThrow(Registries.BLOCK), tag.getCompound("camouflage"));
-        }
+
+        input.read("camouflage", BlockState.CODEC)
+            .ifPresent(p -> this.camouflage = p);
     }
 
     public void updateRenderClient() {

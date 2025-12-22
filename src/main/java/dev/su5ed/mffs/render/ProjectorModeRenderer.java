@@ -1,6 +1,5 @@
 package dev.su5ed.mffs.render;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
@@ -17,7 +16,7 @@ import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
@@ -29,7 +28,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public final class ProjectorModeRenderer {
-    public static final RenderType PYRAMID_RENDER_TYPE = ModRenderType.POS_TEX_TRANSLUCENT_UNCULLED_TRIANGLE.apply(ForceCubeModel.CORE_TEXTURE);
+    public static final RenderType PYRAMID_RENDER_TYPE = ModRenderType.HOLO_TEXTURED_TRIANGLE.apply(ForceCubeModel.CORE_TEXTURE);
     private static final List<ProjectorMode> MODES = List.of(ModProjectorModes.CUBE, ModProjectorModes.SPHERE, ModProjectorModes.TUBE, ModProjectorModes.PYRAMID);
     private static final Map<ProjectorMode, RendererInfo> RENDERERS = Map.of(
         ModProjectorModes.CUBE, new RendererInfo(ForceCubeModel.LAYER_LOCATION, ForceCubeModel.RENDER_TYPE, CubeModeRenderer::new),
@@ -101,12 +100,11 @@ public final class ProjectorModeRenderer {
             RendererInfo info = RENDERERS.get(mode);
             LazyRenderer renderer = info.createRenderer(this.centerPos, this.modelFactory);
             float alpha = (float) -Math.pow(Math.sin((ticks + PERIOD / 2.0) * (Math.PI / (double) PERIOD)), 20) + 1;
+
             VertexConsumer actualConsumer = source.getBuffer(info.renderType);
             VertexConsumer wrapped = new TranslucentVertexConsumer(actualConsumer, (int) (alpha * 255));
-            RenderSystem.setShaderColor(1, 1, 1, alpha);
             renderer.render(poseStack, wrapped, renderTick, partialTick);
             source.getBuffer(ForceCubeModel.RENDER_TYPE);
-            RenderSystem.setShaderColor(1, 1, 1, 1);
         }
     }
 
@@ -119,7 +117,7 @@ public final class ProjectorModeRenderer {
 
             poseStack.pushPose();
             hoverObject(poseStack, ticks, scale, this.centerPos);
-            this.model.render(poseStack, buffer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, FastColor.ARGB32.colorFromFloat(Math.min(alpha, 1), 1, 1, 1));
+            this.model.render(poseStack, buffer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, ARGB.colorFromFloat(Math.min(alpha, 1), 1, 1, 1));
             poseStack.popPose();
         }
     }
@@ -142,7 +140,7 @@ public final class ProjectorModeRenderer {
 
                     Vec3 vec = new Vec3(Math.sin(theta) * Math.cos(phi), Math.cos(theta), Math.sin(theta) * Math.sin(phi)).multiply(radius, radius, radius);
                     poseStack.translate(vec.x, vec.y, vec.z);
-                    this.model.render(poseStack, buffer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, FastColor.ARGB32.colorFromFloat(Math.min(alpha, 1) / 5f, 1, 1, 1));
+                    this.model.render(poseStack, buffer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, ARGB.colorFromFloat(Math.min(alpha, 1) / 5f, 1, 1, 1));
                     poseStack.translate(-vec.x, -vec.y, -vec.z);
                 }
             }
@@ -214,7 +212,7 @@ public final class ProjectorModeRenderer {
                             if (i % 2 == 0) {
                                 Vec3 vector = new Vec3(renderX, renderY, renderZ);
                                 poseStack.translate(vector.x, vector.y, vector.z);
-                                this.model.render(poseStack, buffer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, FastColor.ARGB32.colorFromFloat(Math.min(alpha, 1), 1, 1, 1));
+                                this.model.render(poseStack, buffer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, ARGB.colorFromFloat(Math.min(alpha, 1), 1, 1, 1));
                                 poseStack.translate(-vector.x, -vector.y, -vector.z);
                             }
                             i++;

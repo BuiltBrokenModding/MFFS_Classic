@@ -15,7 +15,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Map;
+import java.util.function.Function;
 
 public class BiometricIdentifierBlock extends BaseEntityBlock {
     private static final VoxelShape SHAPE = Shapes.or(
@@ -26,7 +26,7 @@ public class BiometricIdentifierBlock extends BaseEntityBlock {
         Block.box(12, 5, 12, 16, 13, 16)
     );
 
-    private final Map<BlockState, VoxelShape> shapesCache;
+    private final Function<BlockState, VoxelShape> shapesCache;
 
     public BiometricIdentifierBlock(Properties properties) {
         super(properties, ModObjects.BIOMETRIC_IDENTIFIER_BLOCK_ENTITY);
@@ -50,6 +50,6 @@ public class BiometricIdentifierBlock extends BaseEntityBlock {
 
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        return this.shapesCache.get(state);
+        return this.shapesCache.apply(state);
     }
 }

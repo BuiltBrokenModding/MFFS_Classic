@@ -2,9 +2,9 @@ package dev.su5ed.mffs.util;
 
 import dev.su5ed.mffs.api.fortron.FortronStorage;
 import dev.su5ed.mffs.setup.ModFluids;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
@@ -64,17 +64,14 @@ public class FortronStorageImpl implements FortronStorage {
     }
 
     @Override
-    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
-        CompoundTag tag = new CompoundTag();
-        tag.put("fortronTank", this.fortronTank.writeToNBT(provider, new CompoundTag()));
-        tag.putInt("frequency", this.frequency);
-        return tag;
+    public void serialize(ValueOutput valueOutput) {
+        valueOutput.putChild("fortronTank", this.fortronTank);
+        valueOutput.putInt("frequency", this.frequency);
     }
 
     @Override
-    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
-        this.fortronTank.readFromNBT(provider, nbt.getCompound("fortronTank"));
-        this.frequency = nbt.getInt("frequency");
+    public void deserialize(ValueInput valueInput) {
+        valueInput.child("fortronTank").ifPresent(this.fortronTank::deserialize);
     }
 
     @Override

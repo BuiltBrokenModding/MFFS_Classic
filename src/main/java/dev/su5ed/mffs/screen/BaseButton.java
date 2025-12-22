@@ -1,12 +1,13 @@
 package dev.su5ed.mffs.screen;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ARGB;
 
 public abstract class BaseButton extends AbstractButton {
     private final Runnable onPress;
@@ -20,14 +21,9 @@ public abstract class BaseButton extends AbstractButton {
     @Override
     protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         Minecraft minecraft = Minecraft.getInstance();
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.enableDepthTest();
 
-        guiGraphics.setColor(1.0F, 1.0F, 1.0F, this.alpha);
         ResourceLocation widgetsLocation = SPRITES.get(this.active, this.isHovered());
-        guiGraphics.blitSprite(widgetsLocation, getX(), getY(), this.width, this.height);
-        guiGraphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, widgetsLocation, getX(), getY(), this.width, this.height, ARGB.white(this.alpha));
 
         renderFg(guiGraphics, minecraft, mouseX, mouseY, partialTick);
     }

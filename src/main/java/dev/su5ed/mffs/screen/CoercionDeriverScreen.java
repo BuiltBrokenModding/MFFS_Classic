@@ -1,7 +1,5 @@
 package dev.su5ed.mffs.screen;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
 import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.blockentity.CoercionDeriverBlockEntity.EnergyMode;
 import dev.su5ed.mffs.menu.CoercionDeriverMenu;
@@ -13,7 +11,8 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
+import org.joml.Matrix3x2fStack;
 
 public class CoercionDeriverScreen extends FortronScreen<CoercionDeriverMenu> {
     public static final ResourceLocation BACKGROUND = MFFSMod.location("textures/gui/coercion_deriver.png");
@@ -36,7 +35,7 @@ public class CoercionDeriverScreen extends FortronScreen<CoercionDeriverMenu> {
             button -> {
                 EnergyMode mode = this.menu.blockEntity.getEnergyMode().next();
                 this.menu.blockEntity.setEnergyMode(mode);
-                PacketDistributor.sendToServer(new SwitchEnergyModePacket(this.menu.blockEntity.getBlockPos(), mode));
+                ClientPacketDistributor.sendToServer(new SwitchEnergyModePacket(this.menu.blockEntity.getBlockPos(), mode));
             })
         );
     }
@@ -45,11 +44,11 @@ public class CoercionDeriverScreen extends FortronScreen<CoercionDeriverMenu> {
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         super.renderLabels(guiGraphics, mouseX, mouseY);
 
-        PoseStack poseStack = guiGraphics.pose();
-        poseStack.pushPose();
-        poseStack.mulPose(Axis.ZP.rotationDegrees(-90));
-        guiGraphics.drawString(this.font, ModUtil.translate("screen", "upgrade"), -95, 140, GuiColors.DARK_GREY, false);
-        poseStack.popPose();
+        Matrix3x2fStack poseStack = guiGraphics.pose();
+        poseStack.pushMatrix();
+        poseStack.rotateAbout((float) Math.toRadians(-90), 140, 95);
+        guiGraphics.drawString(this.font, ModUtil.translate("screen", "upgrade"), 140, 95, GuiColors.DARK_GREY, false);
+        poseStack.popMatrix();
 
         guiGraphics.drawString(this.font, ModUtil.translate("screen", "progress")
             .append(ModUtil.translate("screen", "progress." + (this.menu.blockEntity.isActive() ? "running" : "idle"))), 8, 70, GuiColors.DARK_GREY, false);

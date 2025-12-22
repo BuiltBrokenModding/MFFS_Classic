@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "B": {
-      "item": "mffs:battery"
-    },
-    "F": {
-      "item": "mffs:focus_matrix"
-    },
-    "P": {
-      "item": "minecraft:diamond_pickaxe"
-    }
+    "B": "mffs:battery",
+    "F": "mffs:focus_matrix",
+    "P": "minecraft:diamond_pickaxe"
   },
   "pattern": [
     " P ",

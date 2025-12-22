@@ -16,18 +16,23 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.InsideBlockEffectApplier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.EntityCollisionContext;
@@ -39,20 +44,43 @@ import java.util.Optional;
 
 public class ForceFieldBlockImpl extends Block implements ForceFieldBlock, EntityBlock {
     private static final VoxelShape COLLIDABLE_BLOCK = Shapes.create(0.01, 0.01, 0.01, 0.99, 0.99, 0.99);
+    public static final BooleanProperty PROPAGATES_SKYLIGHT = BooleanProperty.create("propagates_skylight");
+    public static final BooleanProperty SOLID = BooleanProperty.create("solid");
 
-    public ForceFieldBlockImpl() {
-        super(Properties.ofFullCopy(Blocks.GLASS)
+    public ForceFieldBlockImpl(Properties properties) {
+        super(properties
+            .instrument(NoteBlockInstrument.HAT)
+            .strength(0.3F)
+            .sound(SoundType.GLASS)
+            .noOcclusion()
+            .isValidSpawn(Blocks::never)
+            .isRedstoneConductor((a, b, c) -> false)
+            .isSuffocating((a, b, c) -> false)
+            .isViewBlocking((a, b, c) -> false)
             .destroyTime(-1)
             .strength(-1.0F, 3600000.0F)
             .noLootTable());
+
+        registerDefaultState(this.stateDefinition.any().setValue(PROPAGATES_SKYLIGHT, true).setValue(SOLID, true));
     }
 
     @Override
-    public boolean propagatesSkylightDown(BlockState state, BlockGetter level, BlockPos pos) {
-        return getCamouflageBlock(level, pos)
-            .filter(this::preventStackOverflow)
-            .map(block -> block.propagatesSkylightDown(level, pos))
-            .orElse(true);
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
+        builder.add(PROPAGATES_SKYLIGHT, SOLID);
+    }
+
+    @Nullable
+    @Override
+    public BlockState getStateForPlacement(BlockPlaceContext pContext) {
+        return super.getStateForPlacement(pContext)
+            .setValue(PROPAGATES_SKYLIGHT, true)
+            .setValue(SOLID, true);
+    }
+
+    @Override
+    protected boolean propagatesSkylightDown(BlockState state) {
+        return state.getValue(PROPAGATES_SKYLIGHT);
     }
 
     @Override
@@ -89,11 +117,8 @@ public class ForceFieldBlockImpl extends Block implements ForceFieldBlock, Entit
     }
 
     @Override
-    public VoxelShape getOcclusionShape(BlockState state, BlockGetter level, BlockPos pos) {
-        return getCamouflageBlock(level, pos)
-            .filter(this::preventStackOverflow)
-            .map(block -> block.getOcclusionShape(level, pos))
-            .orElseGet(() -> super.getOcclusionShape(state, level, pos));
+    protected VoxelShape getOcclusionShape(BlockState state) {
+        return state.getValue(SOLID) ? Shapes.block() : Shapes.empty();
     }
 
     @Override
@@ -108,7 +133,7 @@ public class ForceFieldBlockImpl extends Block implements ForceFieldBlock, Entit
     }
 
     @Override
-    public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader level, BlockPos pos, Player player) {
+    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean includeData, Player player) {
         return ItemStack.EMPTY;
     }
 
@@ -145,12 +170,15 @@ public class ForceFieldBlockImpl extends Block implements ForceFieldBlock, Entit
                 }
                 return null;
             })
+            .or(() -> getCamouflageBlock(level, pos)
+                .filter(this::preventStackOverflow)
+                .map(block -> block.getCollisionShape(level, pos, context)))
             .orElse(COLLIDABLE_BLOCK);
     }
 
     @Override
-    public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
-        super.entityInside(state, level, pos, entity);
+    public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity, InsideBlockEffectApplier effectApplier) {
+        super.entityInside(state, level, pos, entity, effectApplier);
 
         getProjector(level, pos)
             .ifPresent(projector -> {
@@ -184,8 +212,8 @@ public class ForceFieldBlockImpl extends Block implements ForceFieldBlock, Entit
                         }
 
                         if (applyEffects) {
-                            living.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 4 * 20, 3));
-                            living.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 20, 1));
+                            living.addEffect(new MobEffectInstance(MobEffects.NAUSEA, 4 * 20, 3));
+                            living.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 20, 1));
                         }
                     }
 

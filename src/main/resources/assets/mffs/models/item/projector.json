@@ -2,6 +2,7 @@
 	"parent": "minecraft:block/block",
 	"texture_size": [256, 128],
 	"textures": {
+		"particle": "mffs:block/machine_block",
 		"0": "mffs:model/projector_on"
 	},
 	"elements": [

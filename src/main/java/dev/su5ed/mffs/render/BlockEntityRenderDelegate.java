@@ -9,6 +9,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -51,7 +52,7 @@ public final class BlockEntityRenderDelegate {
         this.renderDelegates.remove(originalBlockEntity);
     }
 
-    public void tryRenderDelegate(BlockEntity originalBlockEntity, float partialTicks, PoseStack pose, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
+    public void tryRenderDelegate(BlockEntity originalBlockEntity, float partialTicks, PoseStack pose, MultiBufferSource buffer, int combinedLight, int combinedOverlay, Vec3 vec3) {
         DelegateRendererInfo delegateRendererInfo = this.renderDelegates.get(originalBlockEntity);
         if (delegateRendererInfo != null) {
             try {
@@ -59,7 +60,7 @@ public final class BlockEntityRenderDelegate {
                 copyPose.pushPose();
                 copyPose.last().pose().mul(pose.last().pose());
                 copyPose.last().normal().mul(pose.last().normal());
-                delegateRendererInfo.delegateRenderer().render(delegateRendererInfo.delegateBlockEntity(), partialTicks, copyPose, buffer, combinedLight, combinedOverlay);
+                delegateRendererInfo.delegateRenderer().render(delegateRendererInfo.delegateBlockEntity(), partialTicks, copyPose, buffer, combinedLight, combinedOverlay, vec3);
                 copyPose.popPose();
             } catch (Exception e) {
                 MFFSMod.LOGGER.warn("Error rendering delegate BlockEntity {}: {}", delegateRendererInfo.delegateBlockEntity(), e);

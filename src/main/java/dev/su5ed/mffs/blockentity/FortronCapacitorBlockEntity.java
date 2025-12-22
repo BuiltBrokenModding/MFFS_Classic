@@ -14,14 +14,14 @@ import dev.su5ed.mffs.util.ModUtil;
 import dev.su5ed.mffs.util.TransferMode;
 import dev.su5ed.mffs.util.inventory.InventorySlot;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -113,15 +113,18 @@ public class FortronCapacitorBlockEntity extends ModularBlockEntity implements F
     }
 
     @Override
-    protected void saveCommonTag(CompoundTag tag, HolderLookup.Provider provider) {
-        super.saveCommonTag(tag, provider);
-        tag.putString("transferMode", this.transferMode.name());
+    protected void saveCommonTag(ValueOutput output) {
+        super.saveCommonTag(output);
+        output.putString("transferMode", this.transferMode.name());
     }
 
     @Override
-    protected void loadCommonTag(CompoundTag tag, HolderLookup.Provider provider) {
-        super.loadCommonTag(tag, provider);
-        this.transferMode = TransferMode.valueOf(tag.getString("transferMode"));
+    protected void loadCommonTag(ValueInput input) {
+        super.loadCommonTag(input);
+
+        input.getString("transferMode")
+            .map(TransferMode::valueOf)
+            .ifPresent(t -> this.transferMode = t);
     }
 
     @Nullable

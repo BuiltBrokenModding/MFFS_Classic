@@ -6,7 +6,6 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.advancements.critereon.*;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
-import net.minecraft.core.component.DataComponentPredicate;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.inventory.MenuType;
@@ -15,7 +14,6 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandler;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -50,7 +48,7 @@ public class MenuInventoryTrigger extends SimpleCriterionTrigger<MenuInventoryTr
         @SafeVarargs
         public static TriggerInstance create(MenuType<?> menuType, boolean active, Holder<Item>... items) {
             List<ItemPredicate> predicates = Stream.of(items)
-                .map(holder -> new ItemPredicate(Optional.of(HolderSet.direct(holder)), MinMaxBounds.Ints.ANY, DataComponentPredicate.EMPTY, Map.of()))
+                .map(holder -> new ItemPredicate(Optional.of(HolderSet.direct(holder)), MinMaxBounds.Ints.ANY, DataComponentMatchers.ANY))
                 .toList();
             return new TriggerInstance(Optional.empty(), menuType, active, predicates);
         }

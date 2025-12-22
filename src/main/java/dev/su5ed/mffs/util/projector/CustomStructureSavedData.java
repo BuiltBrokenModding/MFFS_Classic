@@ -8,10 +8,6 @@ import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.network.SetStructureShapePacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -20,6 +16,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraft.world.level.saveddata.SavedDataType;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.BooleanOp;
@@ -36,7 +33,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 public class CustomStructureSavedData extends SavedData {
-    public static final String NAME = MFFSMod.MODID + "_custom_structures";
+    private static final String NAME = MFFSMod.MODID + "_custom_structures";
     public static final Codec<AABB> AABB_CODEC = RecordCodecBuilder.create(instance -> instance.group(
         Codec.DOUBLE.fieldOf("minX").forGetter(a -> a.minX),
         Codec.DOUBLE.fieldOf("minY").forGetter(a -> a.minY),
@@ -56,9 +53,31 @@ public class CustomStructureSavedData extends SavedData {
     );
     public static final Codec<VoxelShape> VOXEL_SHAPE_CODEC = AABB_CODEC.listOf().xmap(CustomStructureSavedData::shapeFromAABBs, VoxelShape::toAabbs);
     public static final StreamCodec<FriendlyByteBuf, VoxelShape> VOXEL_SHAPE_STREAM_CODEC = AABB_STREAM_CODEC.apply(ByteBufCodecs.list()).map(CustomStructureSavedData::shapeFromAABBs, VoxelShape::toAabbs);
-    public static final Codec<Map<String, Structure>> CODEC = Codec.unboundedMap(Codec.STRING, Structure.CODEC);
+    public static final Codec<Map<String, Structure>> STRUCTURES_CODEC = Codec.unboundedMap(Codec.STRING, Structure.CODEC);
+    public static final Codec<CustomStructureSavedData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+        STRUCTURES_CODEC.fieldOf("structures").forGetter(CustomStructureSavedData::getStructures)
+    ).apply(instance, CustomStructureSavedData::new));
+
+    public static final SavedDataType<CustomStructureSavedData> TYPE = new SavedDataType<>(
+        NAME,
+        CustomStructureSavedData::new,
+        CODEC,
+        null
+    );
 
     private final Map<String, Structure> structures = new HashMap<>();
+
+    public CustomStructureSavedData() {
+        setDirty();
+    }
+
+    public CustomStructureSavedData(Map<String, Structure> structures) {
+        this.structures.putAll(structures);
+    }
+
+    public Map<String, Structure> getStructures() {
+        return this.structures;
+    }
 
     @Nullable
     public Structure get(String id) {
@@ -126,18 +145,6 @@ public class CustomStructureSavedData extends SavedData {
             structure.blocks.remove(pos);
             setDirty();
         }
-    }
-
-    public void load(CompoundTag tag) {
-        Tag structuresTag = tag.get("structures");
-        this.structures.putAll(CODEC.decode(NbtOps.INSTANCE, structuresTag).getOrThrow().getFirst());
-    }
-
-    @Override
-    public CompoundTag save(CompoundTag tag, HolderLookup.Provider provider) {
-        Tag structuresTag = CODEC.encodeStart(NbtOps.INSTANCE, this.structures).getOrThrow();
-        tag.put("structures", structuresTag);
-        return tag;
     }
 
     public static VoxelShape shapeFromAABBs(List<AABB> aabbs) {

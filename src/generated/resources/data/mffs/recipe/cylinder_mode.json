@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "S": {
-      "item": "mffs:sphere_mode"
-    }
+    "S": "mffs:sphere_mode"
   },
   "pattern": [
     "S",

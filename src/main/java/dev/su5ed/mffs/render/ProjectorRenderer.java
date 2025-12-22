@@ -40,10 +40,10 @@ public class ProjectorRenderer implements BlockEntityRenderer<ProjectorBlockEnti
     }
 
     @Override
-    public void render(ProjectorBlockEntity blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
+    public void render(ProjectorBlockEntity blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay, Vec3 vec3) {
         renderRotor(blockEntity, partialTick, poseStack, bufferSource, packedLight, packedOverlay);
         blockEntity.getMode().ifPresent(mode -> {
-            RenderTickHandler.addTransparentRenderer(ModRenderType.STANDARD_TRANSLUCENT_TRIANGLE, this.holoRenderer.apply(blockEntity));
+            RenderTickHandler.addTransparentRenderer(ModRenderType.HOLO_TRIANGLE, this.holoRenderer.apply(blockEntity));
             ModClientSetup.renderLazy(blockEntity.getModeStack().getItem(), blockEntity, this.modelPartCache);
         });
     }

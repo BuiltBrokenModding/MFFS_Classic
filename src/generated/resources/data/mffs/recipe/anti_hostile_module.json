@@ -2,21 +2,11 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "B": {
-      "item": "minecraft:bone"
-    },
-    "F": {
-      "item": "mffs:focus_matrix"
-    },
-    "G": {
-      "item": "minecraft:ghast_tear"
-    },
-    "P": {
-      "item": "minecraft:gunpowder"
-    },
-    "R": {
-      "item": "minecraft:rotten_flesh"
-    }
+    "B": "minecraft:bone",
+    "F": "mffs:focus_matrix",
+    "G": "minecraft:ghast_tear",
+    "P": "minecraft:gunpowder",
+    "R": "minecraft:rotten_flesh"
   },
   "pattern": [
     " R ",

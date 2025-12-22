@@ -1,85 +1,114 @@
 package dev.su5ed.mffs.render;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormat;
+import dev.su5ed.mffs.MFFSMod;
 import net.minecraft.Util;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.resources.ResourceLocation;
+import org.lwjgl.opengl.GL11;
 
+import java.util.OptionalDouble;
 import java.util.function.Function;
 
-import static dev.su5ed.mffs.render.RenderPostProcessor.GLITCH_TARGET;
-
-public class ModRenderType extends RenderType {
-    protected static final RenderStateShard.OutputStateShard TRANSLUCENT_TARGET_NO_DEPTH_MASK = new RenderStateShard.OutputStateShard("translucent_target_no_depth_mask", () -> {
-        if (Minecraft.useShaderTransparency()) {
-            Minecraft.getInstance().levelRenderer.getTranslucentTarget().bindWrite(false);
-        }
-        RenderSystem.depthMask(false);
+public abstract class ModRenderType extends RenderType {
+    protected static final RenderStateShard.LayeringStateShard VIEW_OFFSET_Z_SMOOTH_LAYERING = new RenderStateShard.LayeringStateShard("mffs:translucent_smooth", () -> {
+        TRANSLUCENT_TARGET.setupRenderState();
+        GL11.glEnable(GL11.GL_LINE_SMOOTH);
     }, () -> {
-        if (Minecraft.useShaderTransparency()) {
-            Minecraft.getInstance().getMainRenderTarget().bindWrite(false);
-        }
-        RenderSystem.depthMask(true);
+        TRANSLUCENT_TARGET.clearRenderState();
+        GL11.glDisable(GL11.GL_LINE_SMOOTH);
     });
 
     /**
      * Source: Mekanism
      * <a href="https://github.com/mekanism/Mekanism/blob/6093851f05dfb5ff2da52ace87f06ea03a7571a4/src/main/java/mekanism/client/render/MekanismRenderType.java#L47">MekanismRenderType</a>
      */
-    public static final Function<ResourceLocation, RenderType> STANDARD_TRANSLUCENT_ENTITY = Util.memoize(location -> create(
-        "mffs:standard_translucent_entity",
-        DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS,
+    public static final Function<ResourceLocation, RenderType> HOLO_ENTITY = Util.memoize(location -> create(
+        MFFSMod.location("holo_entity").toString(),
         256, false, true,
+        ModRenderPipeline.HOLO_ENTITY,
         RenderType.CompositeState.builder()
-            .setShaderState(RENDERTYPE_EYES_SHADER)
-            .setTextureState(new RenderStateShard.TextureStateShard(location, false, false))
-            .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-            .setOutputState(GLITCH_TARGET)
+            .setTextureState(new RenderStateShard.TextureStateShard(location, false))
+            .setOutputState(TRANSLUCENT_TARGET)
             .createCompositeState(true)
     ));
-
-    public static final RenderType STANDARD_TRANSLUCENT_TRIANGLE = create(
-        "mffs:standard_translucent_triangle",
-        DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.TRIANGLES,
+ 
+    public static final RenderType HOLO_TRIANGLE = create(
+        MFFSMod.location("holo_triangle").toString(),
         256, false, true,
+        ModRenderPipeline.HOLO_TRIANGLE,
         RenderType.CompositeState.builder()
-            .setShaderState(POSITION_COLOR_SHADER)
-            .setTransparencyState(LIGHTNING_TRANSPARENCY)
-            .setOutputState(TRANSLUCENT_TARGET_NO_DEPTH_MASK)
+            .setOutputState(TRANSLUCENT_TARGET)
             .createCompositeState(true)
     );
 
-    public static final Function<ResourceLocation, RenderType> POS_TEX_TRANSLUCENT_UNCULLED_TRIANGLE = Util.memoize(location -> create(
-        "mffs:standard_translucent_triangle_fan",
-        DefaultVertexFormat.POSITION_TEX, VertexFormat.Mode.TRIANGLES,
+    public static final Function<ResourceLocation, RenderType> HOLO_TEXTURED_TRIANGLE = Util.memoize(location -> create(
+        MFFSMod.location("holo_textured_triangle").toString(),
         256, false, true,
+        ModRenderPipeline.HOLO_TEXTURED_TRIANGLE,
         RenderType.CompositeState.builder()
-            .setShaderState(POSITION_TEX_SHADER)
-            .setTextureState(new RenderStateShard.TextureStateShard(location, false, false))
-            .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-            .setOutputState(GLITCH_TARGET)
-            .setCullState(NO_CULL)
-            .createCompositeState(true)
-    ));
-
-    public static final Function<ResourceLocation, RenderType> POS_COL_TEX_TRANSLUCENT_UNCULLED_QUAD = Util.memoize(location -> create(
-        "mffs:standard_translucent_quad",
-        DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.QUADS,
-        256, false, true,
-        RenderType.CompositeState.builder()
-            .setShaderState(new ShaderStateShard(GameRenderer::getPositionTexColorShader))
-            .setTextureState(new RenderStateShard.TextureStateShard(location, false, false))
-            .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+            .setTextureState(new RenderStateShard.TextureStateShard(location, false))
             .setOutputState(TRANSLUCENT_TARGET)
             .createCompositeState(true)
     ));
 
-    private ModRenderType(String name, VertexFormat format, VertexFormat.Mode mode, int bufferSize, boolean affectsCrumbling, boolean sortOnUpload, Runnable setupState, Runnable clearState) {
-        super(name, format, mode, bufferSize, affectsCrumbling, sortOnUpload, setupState, clearState);
+    public static final Function<ResourceLocation, RenderType> HOLO_QUAD = Util.memoize(location -> create(
+        MFFSMod.location("holo_quad").toString(),
+        256, false, true,
+        ModRenderPipeline.HOLO_QUAD,
+        RenderType.CompositeState.builder()
+            .setTextureState(new RenderStateShard.TextureStateShard(location, false))
+            .setOutputState(TRANSLUCENT_TARGET)
+            .createCompositeState(true)
+    ));
+
+    // TODO Pipieline
+    public static final RenderType HOLO_PARTICLE = create(
+        MFFSMod.location("holo_particle").toString(),
+        256, false, true,
+        RenderPipelines.TRANSLUCENT_MOVING_BLOCK,
+        RenderType.CompositeState.builder()
+            .setLightmapState(RenderStateShard.LIGHTMAP)
+            .setTextureState(new RenderStateShard.TextureStateShard(TextureAtlas.LOCATION_BLOCKS, false))
+            .setOutputState(PARTICLES_TARGET)
+            .createCompositeState(true)
+    );
+
+    public static final RenderType BEAM_PARTICLE = create(
+        MFFSMod.location("beam_particle").toString(),
+        1536, false, false,
+        ModRenderPipeline.BEAM_PARTICLE,
+        RenderType.CompositeState.builder()
+            .setTextureState(new RenderStateShard.TextureStateShard(ResourceLocation.fromNamespaceAndPath(MFFSMod.MODID, "textures/particle/fortron.png"), false))
+            .setOutputState(TRANSLUCENT_TARGET)
+            .setLightmapState(LIGHTMAP)
+            .createCompositeState(false)
+    );
+
+    public static final RenderType BLOCK_FILL = create(
+        MFFSMod.location("block_fill").toString(),
+        1536, false, true,
+        ModRenderPipeline.BLOCK_FILL,
+        RenderType.CompositeState.builder()
+            .setLayeringState(VIEW_OFFSET_Z_LAYERING)
+            .setOutputState(TRANSLUCENT_TARGET)
+            .createCompositeState(false)
+    );
+
+    public static final RenderType BLOCK_OUTLINE = create(
+        MFFSMod.location("block_outline").toString(),
+        1536, false, false,
+        ModRenderPipeline.BLOCK_OUTLINE,
+        RenderType.CompositeState.builder()
+            .setLineState(new RenderStateShard.LineStateShard(OptionalDouble.empty()))
+            .setLayeringState(VIEW_OFFSET_Z_SMOOTH_LAYERING)
+            .setOutputState(TRANSLUCENT_TARGET)
+            .createCompositeState(false)
+    );
+
+    private ModRenderType(String name, int bufferSize, boolean affectsCrumbling, boolean sortOnUpload, Runnable setupState, Runnable clearState) {
+        super(name, bufferSize, affectsCrumbling, sortOnUpload, setupState, clearState);
     }
 }

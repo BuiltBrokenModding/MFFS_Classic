@@ -8,12 +8,14 @@
         "body": {
             "parent": "mffs:block/biometric_identifier_body",
             "textures": {
+                "particle": "mffs:model/biometric_identifier_on",
                 "0": "mffs:model/biometric_identifier_on"
             }
         },
         "screen": {
             "parent": "mffs:block/biometric_identifier_screen",
             "textures": {
+                "particle": "mffs:model/biometric_identifier_on",
                 "0": "mffs:model/biometric_identifier_on"
             }
         }

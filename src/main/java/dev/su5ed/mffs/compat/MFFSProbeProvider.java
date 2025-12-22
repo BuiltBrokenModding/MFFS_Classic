@@ -25,8 +25,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 
 import java.util.function.Function;
@@ -47,8 +45,8 @@ public class MFFSProbeProvider implements IBlockDisplayOverride, IProbeInfoProvi
         if (level.getChunkAt(pos).getBlockEntity(pos, LevelChunk.EntityCreationType.CHECK) instanceof ForceFieldBlockEntity forceField) {
             BlockState camo = forceField.getCamouflage();
             if (camo != null) {
-                HitResult mouseOver = new BlockHitResult(data.getHitVec(), data.getSideHit(), pos, false);
-                ItemStack clone = camo.getCloneItemStack(mouseOver, level, pos, player);
+                // TODO Test?
+                ItemStack clone = camo.getCloneItemStack(pos, level, true, player);
                 DefaultProbeInfoProvider.showStandardBlockInfo(Config.getRealConfig(), mode, info, camo, camo.getBlock(), level, pos, player, new ProbeHitData(data.getPos(), data.getHitVec(), data.getSideHit(), clone));
                 return true;
             }

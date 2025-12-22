@@ -2,21 +2,11 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "C": {
-      "item": "mffs:cube_mode"
-    },
-    "F": {
-      "item": "mffs:focus_matrix"
-    },
-    "P": {
-      "item": "mffs:pyramid_mode"
-    },
-    "S": {
-      "item": "mffs:sphere_mode"
-    },
-    "T": {
-      "item": "mffs:tube_mode"
-    }
+    "C": "mffs:cube_mode",
+    "F": "mffs:focus_matrix",
+    "P": "mffs:pyramid_mode",
+    "S": "mffs:sphere_mode",
+    "T": "mffs:tube_mode"
   },
   "pattern": [
     " C ",

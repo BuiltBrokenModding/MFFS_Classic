@@ -9,7 +9,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 public abstract class FortronScreen<T extends FortronMenu<?>> extends BaseScreen<T> {
     protected IntIntPair frequencyBoxPos = IntIntPair.of(0, 0);
@@ -28,7 +28,7 @@ public abstract class FortronScreen<T extends FortronMenu<?>> extends BaseScreen
         super.init();
 
         addRenderableWidget(new ToggleButton(this.width / 2 - 82, this.height / 2 - 104, this.menu.blockEntity::isActive,
-            () -> PacketDistributor.sendToServer(new ToggleModePacket(this.menu.blockEntity.getBlockPos(), !this.menu.blockEntity.isActive()))));
+            () -> ClientPacketDistributor.sendToServer(new ToggleModePacket(this.menu.blockEntity.getBlockPos(), !this.menu.blockEntity.isActive()))));
 
         this.frequency = new NumericEditBox(this.font, this.leftPos + this.frequencyBoxPos.leftInt(), this.topPos + this.frequencyBoxPos.rightInt(), 50, 12, ModUtil.translate("screen", "frequency"));
         this.frequency.setCanLoseFocus(true);
@@ -63,6 +63,6 @@ public abstract class FortronScreen<T extends FortronMenu<?>> extends BaseScreen
 
     private void onFrequencyChanged(String str) {
         int frequency = str.isEmpty() ? 0 : Integer.parseInt(str);
-        PacketDistributor.sendToServer(new UpdateFrequencyPacket(this.menu.blockEntity.getBlockPos(), frequency));
+        ClientPacketDistributor.sendToServer(new UpdateFrequencyPacket(this.menu.blockEntity.getBlockPos(), frequency));
     }
 }

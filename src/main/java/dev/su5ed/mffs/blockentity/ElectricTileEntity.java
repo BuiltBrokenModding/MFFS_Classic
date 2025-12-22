@@ -5,11 +5,11 @@ import dev.su5ed.mffs.util.CustomEnergyStorage;
 import dev.su5ed.mffs.util.SidedEnergyWrapper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import one.util.streamex.StreamEx;
@@ -90,16 +90,16 @@ public abstract class ElectricTileEntity extends ModularBlockEntity {
     }
 
     @Override
-    protected void saveTag(CompoundTag tag, HolderLookup.Provider provider) {
-        super.saveTag(tag, provider);
+    protected void saveTag(ValueOutput output) {
+        super.saveTag(output);
 
-        tag.put("energy", this.energy.serializeNBT(provider));
+        output.putChild("energy", this.energy);
     }
 
     @Override
-    protected void loadTag(CompoundTag tag, HolderLookup.Provider provider) {
-        super.loadTag(tag, provider);
+    protected void loadTag(ValueInput input) {
+        super.loadTag(input);
 
-        this.energy.deserializeNBT(provider, tag.get("energy"));
+        input.child("energy").ifPresent(this.energy::deserialize);
     }
 }

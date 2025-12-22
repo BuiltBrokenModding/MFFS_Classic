@@ -7,10 +7,10 @@
  */
 package dev.su5ed.mffs.render;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
-import net.minecraft.client.renderer.GameRenderer;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -34,7 +34,6 @@ import org.lwjgl.opengl.GL11;
  * </ul>
  */
 public final class BlockHighlighter {
-    private static final float OUTLINE_WIDTH = 1.0F;
     private static final Color OUTLINE_COLOR = new Color(1, 1, 1, 0.5F);
     public static final Color LIGHT_GREEN = new Color(0, 1, 0, 0.15F);
     public static final Color LIGHT_RED = new Color(1, 0, 0, 0.25F);
@@ -50,38 +49,27 @@ public final class BlockHighlighter {
     }
 
     public static void highlightArea(PoseStack pose, Vec3 cameraPos, VoxelShape shape, @Nullable Color fillColor) {
-        Tesselator tessellator = Tesselator.getInstance();
-
-        // Setup rendering
-        RenderSystem.setShader(GameRenderer::getPositionColorShader);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.enableBlend();
-        RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-        RenderSystem.disableDepthTest(); // See through
-        RenderSystem.disableCull();
-        RenderSystem.depthMask(false);
-
         pose.pushPose();
         pose.translate(-cameraPos.x, -cameraPos.y, -cameraPos.z);
+
         // Allow glass and other translucent/transparent objects to render properly
         if (fillColor != null) {
-            drawOutlineBoxes(tessellator, pose, fillColor, shape);
+            VertexConsumer fillBuffer = Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(ModRenderType.BLOCK_FILL);
+            drawOutlineBoxes(fillBuffer, pose, fillColor, shape);
         }
-        drawOutlineLines(tessellator, pose, OUTLINE_COLOR, shape);
-        pose.popPose();
 
-        RenderSystem.depthMask(true);
-        RenderSystem.enableDepthTest();
-        RenderSystem.enableCull();
+        VertexConsumer outlineBuffer = Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(ModRenderType.BLOCK_OUTLINE);
+        drawOutlineLines(outlineBuffer, pose, OUTLINE_COLOR, shape);
+
+        pose.popPose();
     }
 
     /**
      * Draws boxes for an outline. Depth and blending should be set before this is called.
      */
-    private static void drawOutlineBoxes(Tesselator tessellator, PoseStack matrices, Color color, VoxelShape outline) {
+    private static void drawOutlineBoxes(VertexConsumer buffer, PoseStack matrices, Color color, VoxelShape outline) {
         PoseStack.Pose entry = matrices.last();
 
-        BufferBuilder buffer = tessellator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
         // Divide into each edge and draw all of them
         outline.forAllBoxes((minX, minY, minZ, maxX, maxY, maxZ) -> {
             // Fix Z fighting
@@ -93,22 +81,15 @@ public final class BlockHighlighter {
             maxZ += .001;
             drawBox(entry, buffer, (float) minX, (float) minY, (float) minZ, (float) maxX, (float) maxY, (float) maxZ, color);
         });
-        MeshData data = buffer.build();
-        if (data != null) {
-            BufferUploader.drawWithShader(data);
-        }
     }
 
     /**
      * Renders an outline, sets shader and smooth lines.
      * Before calling blend and depth should be set
      */
-    private static void drawOutlineLines(Tesselator tessellator, PoseStack matrices, Color color, VoxelShape outline) {
+    private static void drawOutlineLines(VertexConsumer buffer, PoseStack matrices, Color color, VoxelShape outline) {
         GL11.glEnable(GL11.GL_LINE_SMOOTH);
-        RenderSystem.setShader(GameRenderer::getRendertypeLinesShader);
-        RenderSystem.lineWidth(OUTLINE_WIDTH);
 
-        BufferBuilder buffer = tessellator.begin(VertexFormat.Mode.LINES, DefaultVertexFormat.POSITION_COLOR_NORMAL);
         drawOutlineLine(matrices.last(), buffer, color, outline);
 
         // Revert some changes
@@ -118,7 +99,7 @@ public final class BlockHighlighter {
     /**
      * Draws an outline. Setup should be done before this method is called.
      */
-    private static void drawOutlineLine(PoseStack.Pose entry, BufferBuilder buffer, Color color, VoxelShape outline) {
+    private static void drawOutlineLine(PoseStack.Pose entry, VertexConsumer buffer, Color color, VoxelShape outline) {
         outline.forAllEdges((minX, minY, minZ, maxX, maxY, maxZ) -> {
             // Fix Z fighting
             minX -= .001;
@@ -129,13 +110,9 @@ public final class BlockHighlighter {
             maxZ += .001;
             drawLine(entry, buffer, new Vector3d(minX, minY, minZ), new Vector3d(maxX, maxY, maxZ), color);
         });
-        MeshData data = buffer.build();
-        if (data != null) {
-            BufferUploader.drawWithShader(data);
-        }
     }
 
-    private static void drawBox(PoseStack.Pose entry, BufferBuilder buffer, float minX, float minY, float minZ, float maxX, float maxY, float maxZ, Color color) {
+    private static void drawBox(PoseStack.Pose entry, VertexConsumer buffer, float minX, float minY, float minZ, float maxX, float maxY, float maxZ, Color color) {
         Matrix4f position = entry.pose();
 
         float r = color.red();
@@ -207,7 +184,7 @@ public final class BlockHighlighter {
      * @param end    Ending point
      * @param color  Color to render
      */
-    private static void drawLine(PoseStack.Pose entry, BufferBuilder buffer, Vector3d start, Vector3d end, Color color) {
+    private static void drawLine(PoseStack.Pose entry, VertexConsumer buffer, Vector3d start, Vector3d end, Color color) {
         Vector3d normal = getNormalAngle(start, end);
         float red = color.red();
         float green = color.green();

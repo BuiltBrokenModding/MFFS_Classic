@@ -1,11 +1,10 @@
 package dev.su5ed.mffs.api.fortron;
 
 import dev.su5ed.mffs.api.FrequencyBlock;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.common.util.ValueIOSerializable;
 
-public interface FortronStorage extends INBTSerializable<CompoundTag>, FrequencyBlock {
+public interface FortronStorage extends ValueIOSerializable, FrequencyBlock {
     /**
      * @return the owning block entity
      */

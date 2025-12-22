@@ -34,7 +34,7 @@ import static dev.su5ed.mffs.MFFSMod.location;
 
 public class BaseEntityBlock extends Block implements EntityBlock {
     public static final ResourceLocation CONTENT_KEY = location("content");
-    public static final Property<Boolean> ACTIVE = BooleanProperty.create("active");
+    public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 
     private final Supplier<? extends BlockEntityType<? extends BaseBlockEntity>> provider;
 
@@ -50,16 +50,6 @@ public class BaseEntityBlock extends Block implements EntityBlock {
         return getBlockEntity(level, pos)
             .map(be -> be.useWithoutItem(state, level, pos, player, hit))
             .orElseGet(() -> super.useWithoutItem(state, level, pos, player, hit));
-    }
-
-    // Credit: Mekanism
-    @Override
-    public void onRemove(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState newState, boolean isMoving) {
-        if (state.hasBlockEntity() && (!state.is(newState.getBlock()) || !newState.hasBlockEntity())) {
-            getBlockEntity(level, pos)
-                .ifPresent(BaseBlockEntity::beforeBlockRemove);
-        }
-        super.onRemove(state, level, pos, newState, isMoving);
     }
 
     @Override

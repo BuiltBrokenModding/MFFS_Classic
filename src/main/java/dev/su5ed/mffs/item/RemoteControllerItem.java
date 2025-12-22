@@ -15,14 +15,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -38,8 +35,8 @@ import java.util.Objects;
 
 public class RemoteControllerItem extends BaseItem implements CoordLink {
 
-    public RemoteControllerItem() {
-        super(new ExtendedItemProperties(new Item.Properties().stacksTo(1)).description());
+    public RemoteControllerItem(Properties properties) {
+        super(new ExtendedItemProperties(properties.stacksTo(1)).description());
     }
 
     @Override
@@ -60,7 +57,7 @@ public class RemoteControllerItem extends BaseItem implements CoordLink {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
+    public InteractionResult use(Level level, Player player, InteractionHand usedHand) {
         ItemStack stack = player.getItemInHand(usedHand);
         if (!level.isClientSide && !player.isShiftKeyDown()) {
             BlockPos pos = getLink(stack);
@@ -73,19 +70,19 @@ public class RemoteControllerItem extends BaseItem implements CoordLink {
                     int frequency = Objects.requireNonNull(level.getCapability(ModCapabilities.FORTRON, be.getBlockPos(), be.getBlockState(), be, null)).getFrequency();
                     if (drawEnergy(level, player.blockPosition(), player.position().add(0, player.getEyeHeight() - 0.2, 0), frequency, (int) requiredEnergy)) {
                         player.openMenu(new RemoteMenuProvider(menuProvider), pos);
-                        return InteractionResultHolder.success(stack);
+                        return InteractionResult.SUCCESS;
                     }
 
                     player.displayClientMessage(ModUtil.translate("info", "cannot_harness", Math.round(requiredEnergy)).withStyle(ChatFormatting.RED), true);
                 }
             }
         }
-        return InteractionResultHolder.pass(stack);
+        return InteractionResult.PASS;
     }
 
-    @Override
-    public void appendHoverTextPre(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
-        // TODO Store name in link?
+//    @Override
+//    public void appendHoverTextPre(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+//         TODO Store name in link?
 //        BlockPos pos = getLink(stack);
 //        if (level != null && pos != null) {
 //            BlockEntity be = level.getBlockEntity(pos);
@@ -95,7 +92,7 @@ public class RemoteControllerItem extends BaseItem implements CoordLink {
 //                    Component.literal(pos.toShortString()).withStyle(ChatFormatting.GRAY)).withStyle(ChatFormatting.DARK_GRAY));
 //            }
 //        }
-    }
+//    }
 
     @Nullable
     @Override

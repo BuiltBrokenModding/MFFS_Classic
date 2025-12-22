@@ -92,6 +92,8 @@ public class BiometricIdentifierBlockEntity extends FortronBlockEntity implement
     }
 
     public static boolean canOpBypass(Player player) {
-        return player instanceof ServerPlayer serverPlayer && MFFSConfig.COMMON.allowOpBiometryOverride.get() && serverPlayer.server.getPlayerList().isOp(player.getGameProfile());
+        return player instanceof ServerPlayer serverPlayer
+            && MFFSConfig.COMMON.allowOpBiometryOverride.get()
+            && serverPlayer.getServer().getPlayerList().isOp(player.getGameProfile());
     }
 }
