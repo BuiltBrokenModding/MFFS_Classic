@@ -1,5 +1,6 @@
 package dev.su5ed.mffs.block;
 
+import dev.su5ed.mffs.MFFSConfig;
 import dev.su5ed.mffs.api.ForceFieldBlock;
 import dev.su5ed.mffs.api.Projector;
 import dev.su5ed.mffs.api.module.Module;
@@ -123,9 +124,23 @@ public class ForceFieldBlockImpl extends Block implements ForceFieldBlock, Entit
         return getProjector(level, pos)
             .map(projector -> {
                 if (context instanceof EntityCollisionContext entityContext && entityContext.getEntity() instanceof Player player) {
-                    BiometricIdentifier bioIndentifier = projector.getBiometricIdentifier();
-                    if (player.isShiftKeyDown() && !context.isAbove(COLLIDABLE_BLOCK, pos, true) && (player.isCreative() || bioIndentifier != null && bioIndentifier.isAccessGranted(player, FieldPermission.WARP))) {
-                        return Shapes.empty();
+                    BiometricIdentifier bioIdentifier = projector.getBiometricIdentifier();
+                    boolean isAuthorized = player.isCreative() || (bioIdentifier != null && bioIdentifier.isAccessGranted(player, FieldPermission.WARP));
+
+                    if (isAuthorized) {
+                        // Walk-through mode: authorized players can walk through without sneaking
+                        if (MFFSConfig.COMMON.allowWalkThroughForceFields.get()) {
+                            // If player is standing on top, keep it solid (prevents falling through floors)
+                            if (context.isAbove(COLLIDABLE_BLOCK, pos, true)) {
+                                return COLLIDABLE_BLOCK;
+                            }
+                            // Otherwise allow walk-through
+                            return Shapes.empty();
+                        }
+                        // Sneak mode: original behavior - must sneak to pass through
+                        else if (player.isShiftKeyDown() && !context.isAbove(COLLIDABLE_BLOCK, pos, true)) {
+                            return Shapes.empty();
+                        }
                     }
                 }
                 return null;
@@ -145,12 +160,58 @@ public class ForceFieldBlockImpl extends Block implements ForceFieldBlock, Entit
                     }
                 }
                 if (!entity.level().isClientSide && entity.distanceToSqr(new Vec3(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5)) < Mth.square(0.7)) {
-                    if (entity instanceof LivingEntity living && (!(entity instanceof Player player) || !player.isCreative())) {
-                        living.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 4 * 20, 3));
-                        living.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 20, 1));
-                    }
                     BiometricIdentifier identifier = projector.getBiometricIdentifier();
-                    if (!(entity instanceof Player player) || !isSneaking(entity) || !player.isCreative() && (identifier == null || !identifier.isAccessGranted(player, FieldPermission.WARP))) {
+
+                    // Determine if entity is an authorized player
+                    boolean isAuthorizedPlayer = false;
+                    if (entity instanceof Player player) {
+                        isAuthorizedPlayer = player.isCreative() || (identifier != null && identifier.isAccessGranted(player, FieldPermission.WARP));
+                    }
+
+                    // Apply confusion and slowness effects
+                    if (entity instanceof LivingEntity living) {
+                        boolean applyEffects = true;
+
+                        if (entity instanceof Player player) {
+                            // Creative players never get effects
+                            if (player.isCreative()) {
+                                applyEffects = false;
+                            }
+                            // Authorized players don't get effects if config is enabled
+                            else if (isAuthorizedPlayer && MFFSConfig.COMMON.disableForceFieldEffectsForAuthorizedPlayers.get()) {
+                                applyEffects = false;
+                            }
+                        }
+
+                        if (applyEffects) {
+                            living.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 4 * 20, 3));
+                            living.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 20, 1));
+                        }
+                    }
+
+                    // Apply damage
+                    boolean applyDamage = true;
+
+                    if (entity instanceof Player player) {
+                        // Creative players never take damage
+                        if (player.isCreative()) {
+                            applyDamage = false;
+                        }
+                        // Sneaking authorized players don't take damage (original behavior)
+                        else if (isAuthorizedPlayer && isSneaking(entity)) {
+                            applyDamage = false;
+                        }
+                        // Authorized players in walk-through mode don't take damage
+                        else if (isAuthorizedPlayer && MFFSConfig.COMMON.allowWalkThroughForceFields.get()) {
+                            applyDamage = false;
+                        }
+                        // Authorized players don't take damage if config is enabled
+                        else if (isAuthorizedPlayer && MFFSConfig.COMMON.disableForceFieldDamageForAuthorizedPlayers.get()) {
+                            applyDamage = false;
+                        }
+                    }
+
+                    if (applyDamage) {
                         ModUtil.shockEntity(entity, Integer.MAX_VALUE);
                     }
                 }
