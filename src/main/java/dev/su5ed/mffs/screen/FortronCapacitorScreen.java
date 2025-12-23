@@ -44,7 +44,7 @@ public class FortronCapacitorScreen extends FortronScreen<FortronCapacitorMenu> 
         poseStack.popPose();
 
         guiGraphics.drawString(this.font, ModUtil.translate("screen", "linked_devices", this.menu.blockEntity.getDevicesByFrequency().size()), 8, 28, GuiColors.DARK_GREY, false);
-        guiGraphics.drawString(this.font, ModUtil.translate("screen", "transmission_rate", this.menu.blockEntity.getTransmissionRate() * 10), 8, 40, GuiColors.DARK_GREY, false);
+        guiGraphics.drawString(this.font, ModUtil.translate("screen", "transmission_rate", this.menu.blockEntity.getTransmissionRate() * 2), 8, 40, GuiColors.DARK_GREY, false);
         guiGraphics.drawString(this.font, ModUtil.translate("screen", "range", this.menu.blockEntity.getTransmissionRange()), 8, 52, GuiColors.DARK_GREY, false);
 
         guiGraphics.drawString(this.font, ModUtil.translate("screen", "fortron.name"), 8, 95, GuiColors.DARK_GREY, false);
