@@ -30,7 +30,7 @@ public class AdvancementsGen implements AdvancementSubProvider {
     @Override
     public void generate(HolderLookup.Provider registries, Consumer<AdvancementHolder> writer) {
         AdvancementHolder root = Advancement.Builder.advancement()
-            .display(ModItems.COERCION_DERIVER_ITEM.get(), title("root"), description("root"), location("textures/block/machine_block.png"), AdvancementType.TASK, false, false, false)
+            .display(ModItems.COERCION_DERIVER_ITEM.get(), title("root"), description("root"), location("block/machine_block"), AdvancementType.TASK, false, false, false)
             .addCriterion("has_steel_compound", hasItems(ModItems.STEEL_COMPOUND.get()))
             .save(writer, id("root"));
         AdvancementHolder steelCompound = Advancement.Builder.advancement()
