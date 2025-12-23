@@ -149,20 +149,15 @@ public class ForceFieldBlockImpl extends Block implements ForceFieldBlock, Entit
         return getProjector(level, pos)
             .map(projector -> {
                 if (context instanceof EntityCollisionContext entityContext && entityContext.getEntity() instanceof Player player) {
-                    BiometricIdentifier bioIdentifier = projector.getBiometricIdentifier();
-                    boolean isAuthorized = player.isCreative() || (bioIdentifier != null && bioIdentifier.isAccessGranted(player, FieldPermission.WARP));
-
-                    if (isAuthorized) {
+                    BiometricIdentifier identifier = projector.getBiometricIdentifier();
+                    if (isAuthorized(identifier, player)) {
                         // Walk-through mode: authorized players can walk through without sneaking
                         if (MFFSConfig.COMMON.allowWalkThroughForceFields.get()) {
                             // If player is standing on top, keep it solid (prevents falling through floors)
-                            if (context.isAbove(COLLIDABLE_BLOCK, pos, true)) {
-                                return COLLIDABLE_BLOCK;
-                            }
                             // Otherwise allow walk-through
-                            return Shapes.empty();
+                            return context.isAbove(COLLIDABLE_BLOCK, pos, true) ? null : Shapes.empty();
                         }
-                        // Sneak mode: original behavior - must sneak to pass through
+                        // Sneak mode: must sneak to pass through
                         else if (player.isShiftKeyDown() && !context.isAbove(COLLIDABLE_BLOCK, pos, true)) {
                             return Shapes.empty();
                         }
@@ -189,27 +184,15 @@ public class ForceFieldBlockImpl extends Block implements ForceFieldBlock, Entit
                 }
                 if (!entity.level().isClientSide && entity.distanceToSqr(new Vec3(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5)) < Mth.square(0.7)) {
                     BiometricIdentifier identifier = projector.getBiometricIdentifier();
+                    boolean isAuthorizedPlayer = entity instanceof Player player && isAuthorized(identifier, player);
 
-                    // Determine if entity is an authorized player
-                    boolean isAuthorizedPlayer = false;
-                    if (entity instanceof Player player) {
-                        isAuthorizedPlayer = player.isCreative() || (identifier != null && identifier.isAccessGranted(player, FieldPermission.WARP));
-                    }
-
-                    // Apply confusion and slowness effects
                     if (entity instanceof LivingEntity living) {
-                        boolean applyEffects = true;
-
-                        if (entity instanceof Player player) {
-                            // Creative players never get effects
-                            if (player.isCreative()) {
-                                applyEffects = false;
-                            }
-                            // Authorized players don't get effects if config is enabled
-                            else if (isAuthorizedPlayer && MFFSConfig.COMMON.disableForceFieldEffectsForAuthorizedPlayers.get()) {
-                                applyEffects = false;
-                            }
-                        }
+                        // Apply nausea and slowness effects
+                        // Creative players never get effects
+                        // Authorized players don't get effects if config is enabled
+                        boolean applyEffects = !(entity instanceof Player player)
+                            || !player.isCreative()
+                            && (!isAuthorizedPlayer || !MFFSConfig.COMMON.disableForceFieldEffectsForAuthorizedPlayers.get());
 
                         if (applyEffects) {
                             living.addEffect(new MobEffectInstance(MobEffects.NAUSEA, 4 * 20, 3));
@@ -218,26 +201,14 @@ public class ForceFieldBlockImpl extends Block implements ForceFieldBlock, Entit
                     }
 
                     // Apply damage
-                    boolean applyDamage = true;
-
-                    if (entity instanceof Player player) {
-                        // Creative players never take damage
-                        if (player.isCreative()) {
-                            applyDamage = false;
-                        }
-                        // Sneaking authorized players don't take damage (original behavior)
-                        else if (isAuthorizedPlayer && isSneaking(entity)) {
-                            applyDamage = false;
-                        }
-                        // Authorized players in walk-through mode don't take damage
-                        else if (isAuthorizedPlayer && MFFSConfig.COMMON.allowWalkThroughForceFields.get()) {
-                            applyDamage = false;
-                        }
-                        // Authorized players don't take damage if config is enabled
-                        else if (isAuthorizedPlayer && MFFSConfig.COMMON.disableForceFieldDamageForAuthorizedPlayers.get()) {
-                            applyDamage = false;
-                        }
-                    }
+                    // Creative players never take damage
+                    // Sneaking authorized players don't take damage
+                    // Authorized players in walk-through mode don't take damage
+                    // Authorized players don't take damage if config is enabled
+                    boolean applyDamage = !(entity instanceof Player player) || !player.isCreative() && !isAuthorizedPlayer
+                        || !isSneaking(entity)
+                        && !MFFSConfig.COMMON.allowWalkThroughForceFields.get()
+                        && !MFFSConfig.COMMON.disableForceFieldDamageForAuthorizedPlayers.get();
 
                     if (applyDamage) {
                         ModUtil.shockEntity(entity, Integer.MAX_VALUE);
@@ -252,6 +223,10 @@ public class ForceFieldBlockImpl extends Block implements ForceFieldBlock, Entit
 
     private boolean preventStackOverflow(BlockState state) {
         return !state.is(this);
+    }
+
+    private boolean isAuthorized(BiometricIdentifier identifier, Player player) {
+        return player.isCreative() || identifier != null && identifier.isAccessGranted(player, FieldPermission.WARP);
     }
 
     @Nullable
