@@ -200,15 +200,12 @@ public class ForceFieldBlockImpl extends Block implements ForceFieldBlock, Entit
                         }
                     }
 
-                    // Apply damage
+                    // Apply instant death damage
                     // Creative players never take damage
-                    // Sneaking authorized players don't take damage
-                    // Authorized players in walk-through mode don't take damage
-                    // Authorized players don't take damage if config is enabled
-                    boolean applyDamage = !(entity instanceof Player player) || !player.isCreative() && !isAuthorizedPlayer
-                        || !isSneaking(entity)
-                        && !MFFSConfig.COMMON.allowWalkThroughForceFields.get()
-                        && !MFFSConfig.COMMON.disableForceFieldDamageForAuthorizedPlayers.get();
+                    // If instant death is disabled for authorized players, no one takes instant death
+                    // Otherwise everyone except creative takes instant death
+                    boolean applyDamage = !MFFSConfig.COMMON.disableForceFieldInstantDeathForAuthorizedPlayers.get()
+                        && (!(entity instanceof Player player) || !player.isCreative());
 
                     if (applyDamage) {
                         ModUtil.shockEntity(entity, Integer.MAX_VALUE);
