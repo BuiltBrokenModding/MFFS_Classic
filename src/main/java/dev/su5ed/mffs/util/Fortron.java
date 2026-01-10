@@ -99,8 +99,8 @@ public final class Fortron {
      * Tries to transfer Fortron to a specific machine from this capacitor. Renders an animation on
      * the client side.
      *
-     * @param receiver : The machine to be transfered to.
-     * @param joules   : The amount of energy to be transfered.
+     * @param receiver : The machine to transfer to.
+     * @param joules   : The amount of energy to transfer.
      */
     public static void doTransferFortron(FortronStorage transmitter, FortronStorage receiver, int joules, int limit) {
         boolean isCamo = transmitter instanceof ModuleAcceptor acceptor && acceptor.hasModule(ModModules.CAMOUFLAGE);
