@@ -26,6 +26,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ public class RemoteControllerItem extends BaseItem implements CoordLink {
     public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
         Level level = context.getLevel();
         Player player = context.getPlayer();
-        if (!level.isClientSide && player.isShiftKeyDown()) {
+        if (!level.isClientSide() && player.isShiftKeyDown()) {
             BlockPos pos = context.getClickedPos();
             BlockEntity be = level.getBlockEntity(pos);
             if (be != null && level.getCapability(ModCapabilities.FORTRON, be.getBlockPos(), be.getBlockState(), be, null) != null) {
@@ -59,7 +60,7 @@ public class RemoteControllerItem extends BaseItem implements CoordLink {
     @Override
     public InteractionResult use(Level level, Player player, InteractionHand usedHand) {
         ItemStack stack = player.getItemInHand(usedHand);
-        if (!level.isClientSide && !player.isShiftKeyDown()) {
+        if (!level.isClientSide() && !player.isShiftKeyDown()) {
             BlockPos pos = getLink(stack);
 
             if (pos != null && level.isLoaded(pos)) {
@@ -113,7 +114,10 @@ public class RemoteControllerItem extends BaseItem implements CoordLink {
         // Find providers
         for (FortronStorage fortron : fortronTiles) {
             int required = energy - total;
-            int receivedEnergy = fortron.extractFortron(required, true);
+            int receivedEnergy;
+            try (Transaction tx = Transaction.openRoot()) {
+                receivedEnergy = fortron.extractFortron(required, tx);
+            }
             if (receivedEnergy > 0) {
                 transmitters.add(fortron);
             }
@@ -127,7 +131,10 @@ public class RemoteControllerItem extends BaseItem implements CoordLink {
             // Draw energy
             for (FortronStorage fortron : transmitters) {
                 int required = energy - total;
-                total += fortron.extractFortron(required, false);
+                try (Transaction tx = Transaction.openRoot()) {
+                    total += fortron.extractFortron(required, tx);
+                    tx.commit();
+                }
                 BlockPos fortronPos = fortron.getOwner().getBlockPos();
                 Fortron.renderClientBeam(level, target, Vec3.atCenterOf(fortronPos), fortronPos, ParticleColor.BLUE_BEAM, 20);
             }

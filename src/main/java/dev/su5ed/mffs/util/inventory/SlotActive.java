@@ -43,11 +43,6 @@ public class SlotActive extends SlotInventory implements ColoredSlot {
     }
 
     @Override
-    public boolean tintItems() {
-        return true;
-    }
-
-    @Override
     public boolean mayPlace(@NotNull ItemStack stack) {
         return !isDisabled() && super.mayPlace(stack);
     }

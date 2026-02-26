@@ -10,7 +10,7 @@ import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
@@ -20,10 +20,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class BaseScreen<T extends AbstractContainerMenu> extends AbstractContainerScreen<T> {
-    private final ResourceLocation background;
+    private final Identifier background;
     private final List<TooltipCoordinate> tooltips = new ArrayList<>();
 
-    public BaseScreen(T menu, Inventory playerInventory, Component title, ResourceLocation background) {
+    public BaseScreen(T menu, Inventory playerInventory, Component title, Identifier background) {
         super(menu, playerInventory, title);
 
         this.background = background;
@@ -82,8 +82,9 @@ public abstract class BaseScreen<T extends AbstractContainerMenu> extends Abstra
     }
 
     @Override
-    protected void renderSlot(GuiGraphics guiGraphics, Slot slot) {
-        super.renderSlot(guiGraphics, slot);
+    protected void renderSlot(GuiGraphics guiGraphics, Slot slot, int mouseX, int mouseY) {
+        super.renderSlot(guiGraphics, slot, mouseX, mouseY);
+
         if (slot instanceof ColoredSlot colored && colored.shouldTint()) {
             guiGraphics.fill(RenderPipelines.GUI, slot.x - 1, slot.y - 1, slot.x + 17, slot.y + 17, colored.getTintColor());
         }

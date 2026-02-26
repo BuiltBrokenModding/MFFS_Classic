@@ -23,7 +23,7 @@ import net.minecraft.world.item.Items;
 import java.util.function.Consumer;
 
 import static dev.su5ed.mffs.MFFSMod.location;
-import static net.minecraft.advancements.critereon.InventoryChangeTrigger.TriggerInstance.hasItems;
+import static net.minecraft.advancements.criterion.InventoryChangeTrigger.TriggerInstance.hasItems;
 
 public class AdvancementsGen implements AdvancementSubProvider {
 

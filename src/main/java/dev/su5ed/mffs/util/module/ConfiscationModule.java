@@ -12,6 +12,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import one.util.streamex.StreamEx;
 
 import java.util.Collection;
@@ -55,7 +56,10 @@ public class ConfiscationModule extends BaseInterdictionModule {
                 BlockEntity be = interdictionMatrix.be();
                 FortronStorage fortron = be.getLevel().getCapability(ModCapabilities.FORTRON, be.getBlockPos(), be.getBlockState(), be, null);
                 if (fortron != null) {
-                    fortron.extractFortron(confiscationCount, false);   
+                    try (Transaction tx = Transaction.openRoot()) {
+                        fortron.extractFortron(confiscationCount, tx);
+                        tx.commit();
+                    }
                 }
             }
         }

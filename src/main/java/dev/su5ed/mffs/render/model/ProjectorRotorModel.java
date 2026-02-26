@@ -9,13 +9,13 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 
-public class ProjectorRotorModel extends Model {
+public class ProjectorRotorModel extends Model.Simple {
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(MFFSMod.location("projector_rotor"), "main");
 
     public ProjectorRotorModel(ModelPart root) {
-        super(root.getChild("root"), RenderType::entityTranslucent);
+        super(root.getChild("root"), RenderTypes::entityTranslucent);
     }
 
     public static LayerDefinition createBodyLayer() {

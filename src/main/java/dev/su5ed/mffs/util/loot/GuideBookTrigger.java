@@ -1,8 +1,9 @@
 package dev.su5ed.mffs.util.loot;
 
 import com.mojang.serialization.Codec;
-import net.minecraft.advancements.critereon.ContextAwarePredicate;
-import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
+import com.mojang.serialization.MapCodec;
+import net.minecraft.advancements.criterion.ContextAwarePredicate;
+import net.minecraft.advancements.criterion.SimpleCriterionTrigger;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.Optional;
@@ -19,6 +20,6 @@ public class GuideBookTrigger extends SimpleCriterionTrigger<GuideBookTrigger.Tr
 
     public record TriggerInstance(Optional<ContextAwarePredicate> player) implements SimpleInstance {
         public static final TriggerInstance INSTANCE = new TriggerInstance(Optional.empty());
-        private static final Codec<TriggerInstance> CODEC = Codec.unit(INSTANCE);
+        private static final Codec<TriggerInstance> CODEC = MapCodec.unitCodec(INSTANCE);
     }
 }

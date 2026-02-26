@@ -7,11 +7,11 @@ import it.unimi.dsi.fastutil.ints.IntIntPair;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 
 public class ProjectorScreen extends FortronScreen<ProjectorMenu> {
-    public static final ResourceLocation BACKGROUND = MFFSMod.location("textures/gui/projector.png");
+    public static final Identifier BACKGROUND = MFFSMod.location("textures/gui/projector.png");
 
     public ProjectorScreen(ProjectorMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title, BACKGROUND);

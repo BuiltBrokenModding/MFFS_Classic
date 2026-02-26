@@ -7,13 +7,13 @@ import dev.su5ed.mffs.util.ModUtil;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import org.joml.Matrix3x2fStack;
 
 public class FortronCapacitorScreen extends FortronScreen<FortronCapacitorMenu> {
-    public static final ResourceLocation BACKGROUND = MFFSMod.location("textures/gui/fortron_capacitor.png");
+    public static final Identifier BACKGROUND = MFFSMod.location("textures/gui/fortron_capacitor.png");
 
     public FortronCapacitorScreen(FortronCapacitorMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title, BACKGROUND);

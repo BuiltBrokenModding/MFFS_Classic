@@ -6,13 +6,13 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 
 import java.util.function.DoubleSupplier;
 
 public class FortronChargeWidget extends AbstractWidget {
-    public static final ResourceLocation COMPONENTS = MFFSMod.location("textures/gui/components.png");
+    public static final Identifier COMPONENTS = MFFSMod.location("textures/gui/components.png");
 
     private final DoubleSupplier scale;
 

@@ -6,12 +6,14 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.fluid.FluidStacksResourceHandler;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 public class FortronStorageImpl implements FortronStorage {
     private final BlockEntity owner;
-    private final FluidTank fortronTank;
+    private final FortronFluidTank fortronTank;
     private final Runnable onContentsChanged;
 
     private int frequency;
@@ -22,14 +24,14 @@ public class FortronStorageImpl implements FortronStorage {
         this.onContentsChanged = onContentsChanged;
     }
 
-    public FluidTank getFortronTank() {
+    public FluidStacksResourceHandler getFortronTank() {
         return this.fortronTank;
     }
 
     public void setCapacity(int capacity) {
         this.fortronTank.setCapacity(capacity);
         if (!this.fortronTank.isEmpty()) {
-            this.fortronTank.getFluid().setAmount(Math.min(this.fortronTank.getFluidAmount(), capacity));
+            this.fortronTank.setAmount(Math.min(this.fortronTank.getFluidAmount(), capacity));
         }
     }
 
@@ -45,7 +47,7 @@ public class FortronStorageImpl implements FortronStorage {
 
     @Override
     public void setStoredFortron(int energy) {
-        this.fortronTank.setFluid(Fortron.getFortron(energy));
+        this.fortronTank.setAmount(energy);
     }
 
     @Override
@@ -54,13 +56,13 @@ public class FortronStorageImpl implements FortronStorage {
     }
 
     @Override
-    public int extractFortron(int ml, boolean simulate) {
-        return this.fortronTank.drain(ml, simulate ? IFluidHandler.FluidAction.SIMULATE : IFluidHandler.FluidAction.EXECUTE).getAmount();
+    public int extractFortron(int ml, Transaction tx) {
+        return this.fortronTank.extract(ml, tx);
     }
 
     @Override
-    public int insertFortron(int ml, boolean simulate) {
-        return this.fortronTank.fill(Fortron.getFortron(ml), simulate ? IFluidHandler.FluidAction.SIMULATE : IFluidHandler.FluidAction.EXECUTE);
+    public int insertFortron(int ml, Transaction tx) {
+        return this.fortronTank.insert(ml, tx);
     }
 
     @Override
@@ -85,18 +87,48 @@ public class FortronStorageImpl implements FortronStorage {
         this.owner.setChanged();
     }
 
-    private class FortronFluidTank extends FluidTank {
+    private class FortronFluidTank extends FluidStacksResourceHandler {
+        private final FluidResource resource = FluidResource.of(ModFluids.FORTRON_FLUID);
+
         public FortronFluidTank(int capacity) {
-            super(capacity);
+            super(1, capacity);
+        }
+
+        public void setCapacity(int capacity) {
+            this.capacity = capacity;
+        }
+
+        public boolean isEmpty() {
+            return getResource(0).isEmpty();
+        }
+
+        public void setAmount(int amount) {
+            this.set(0, this.resource, amount);
+        }
+
+        public int getFluidAmount() {
+            return getAmountAsInt(0);
+        }
+        
+        public int getCapacity() {
+            return this.capacity;
+        }
+
+        public int insert(int amount, TransactionContext transaction) {
+            return super.insert(0, this.resource, amount, transaction);
+        }
+
+        public int extract(int amount, TransactionContext transaction) {
+            return super.extract(0, this.resource, amount, transaction);
         }
 
         @Override
-        public boolean isFluidValid(FluidStack stack) {
-            return stack.getFluid() == ModFluids.FORTRON_FLUID.get();
+        public boolean isValid(int index, FluidResource resource) {
+            return resource.is(ModFluids.FORTRON_FLUID);
         }
 
         @Override
-        protected void onContentsChanged() {
+        protected void onContentsChanged(int index, FluidStack previousContents) {
             FortronStorageImpl.this.onContentsChanged.run();
         }
     }

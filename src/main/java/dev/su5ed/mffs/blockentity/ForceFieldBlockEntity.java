@@ -65,7 +65,7 @@ public class ForceFieldBlockEntity extends BlockEntity {
     public void onLoad() {
         super.onLoad();
 
-        if (this.level.isClientSide) {
+        if (this.level.isClientSide()) {
             InitialDataRequestPacket packet = new InitialDataRequestPacket(this.worldPosition);
             ClientPacketDistributor.sendToServer(packet);
             if (this.camouflage != null) {
@@ -76,7 +76,7 @@ public class ForceFieldBlockEntity extends BlockEntity {
 
     @Override
     public void setRemoved() {
-        if (this.level.isClientSide) {
+        if (this.level.isClientSide()) {
             BlockEntityRenderDelegate.INSTANCE.removeDelegateOf(this);
         }
         super.setRemoved();

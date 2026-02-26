@@ -1,12 +1,10 @@
 package dev.su5ed.mffs.render.particle;
 
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleRenderType;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -22,13 +20,13 @@ public class BeamParticle extends Particle {
     private final float rotPitch;
     private final float prevYaw;
     private final float prevPitch;
+    private final ParticleColor color;
 
     private float prevSize;
 
     public BeamParticle(ClientLevel level, Vec3 start, Vec3 target, ParticleColor color, int lifetime) {
         super(level, start.x(), start.y(), start.z(), 0, 0, 0);
 
-        setColor(color.getRed(), color.getGreen(), color.getBlue());
         setSize(0.02f, 0.02f);
         setBoundingBox(new AABB(start, target));
         setLifetime(lifetime);
@@ -42,6 +40,7 @@ public class BeamParticle extends Particle {
         this.rotPitch = (float) (Math.atan2(yd, destX) * 180.0D / Math.PI);
         this.prevYaw = this.rotYaw;
         this.prevPitch = this.rotPitch;
+        this.color = color;
     }
 
     @Override
@@ -52,7 +51,11 @@ public class BeamParticle extends Particle {
     }
 
     @Override
-    public void render(VertexConsumer buffer, Camera renderInfo, float partialTicks) {
+    public ParticleRenderType getGroup() {
+        return ModParticleRenderType.BEAM;
+    }
+
+    public BeamParticleGroup.BeamParticleData extract(Camera camera, float partialTicks) {
         Matrix4f mat = new Matrix4f();
         mat.identity();
 
@@ -73,7 +76,7 @@ public class BeamParticle extends Particle {
         float tickSlide = this.level.getGameTime() + partialTicks;
         float vOffset = -tickSlide * 0.2F - Mth.floor(-tickSlide * 0.1F);
 
-        Vec3 vec3 = renderInfo.getPosition();
+        Vec3 vec3 = camera.position();
         float xx = (float) (Mth.lerp(partialTicks, this.xo, this.x) - vec3.x());
         float yy = (float) (Mth.lerp(partialTicks, this.yo, this.y) - vec3.y());
         float zz = (float) (Mth.lerp(partialTicks, this.zo, this.z) - vec3.z());
@@ -98,28 +101,18 @@ public class BeamParticle extends Particle {
             new Vector3f(xPosMax, yMax, 0.0F)
         };
 
-        float u0 = 0.0F;
-        float u1 = 1.0F;
-        int brightness = LightTexture.FULL_BRIGHT;
-
         mat.rotate(Axis.YP.rotationDegrees(rot));
-        for (int i = 0; i < 3; i++) {
-            float v0 = -1.0F + vOffset + i / 3.0F;
-            float v1 = this.length * size + v0;
-
-            mat.rotate(Axis.YP.rotationDegrees(60));
-
-            buffer.addVertex(mat, vectors[0].x(), vectors[0].y(), vectors[0].z()).setUv(u1, v1).setColor(this.rCol, this.gCol, this.bCol, opacity).setLight(brightness);
-            buffer.addVertex(mat, vectors[1].x(), vectors[1].y(), vectors[1].z()).setUv(u1, v0).setColor(this.rCol, this.gCol, this.bCol, opacity).setLight(brightness);
-            buffer.addVertex(mat, vectors[2].x(), vectors[2].y(), vectors[2].z()).setUv(u0, v0).setColor(this.rCol, this.gCol, this.bCol, opacity).setLight(brightness);
-            buffer.addVertex(mat, vectors[3].x(), vectors[3].y(), vectors[3].z()).setUv(u0, v1).setColor(this.rCol, this.gCol, this.bCol, opacity).setLight(brightness);
-        }
-
+        
         this.prevSize = size;
-    }
-
-    @Override
-    public ParticleRenderType getRenderType() {
-        return ModParticleRenderType.BEAM;
+        
+        return new BeamParticleGroup.BeamParticleData(
+            this.color,
+            vectors,
+            mat,
+            vOffset,
+            this.length,
+            size,
+            opacity
+        );
     }
 }

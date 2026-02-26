@@ -50,7 +50,7 @@ public abstract class BaseBlockEntity extends BlockEntity implements MenuProvide
     }
 
     public InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
-        if (!this.level.isClientSide) {
+        if (!this.level.isClientSide()) {
             player.openMenu(this, this.worldPosition);
         }
         return InteractionResult.SUCCESS;

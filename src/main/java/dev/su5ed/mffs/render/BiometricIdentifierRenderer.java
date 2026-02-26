@@ -1,35 +1,58 @@
 package dev.su5ed.mffs.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.blockentity.BiometricIdentifierBlockEntity;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.data.AtlasIds;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Matrix4f;
+import org.jspecify.annotations.Nullable;
 
-public class BiometricIdentifierRenderer implements BlockEntityRenderer<BiometricIdentifierBlockEntity> {
-    public static final ResourceLocation HOLO_SCREEN_TEXTURE = ResourceLocation.fromNamespaceAndPath(MFFSMod.MODID, "model/holo_screen");
+public class BiometricIdentifierRenderer implements BlockEntityRenderer<BiometricIdentifierBlockEntity, BiometricIdentifierRenderer.BiometricIdentifierRenderState> {
+    public static final Identifier HOLO_SCREEN_TEXTURE = Identifier.fromNamespaceAndPath(MFFSMod.MODID, "model/holo_screen");
     private static final RenderType RENDER_TYPE = ModRenderType.HOLO_QUAD.apply(TextureAtlas.LOCATION_BLOCKS);
-    
-    public BiometricIdentifierRenderer(BlockEntityRendererProvider.Context context) {}
+
+    public BiometricIdentifierRenderer(BlockEntityRendererProvider.Context context) {
+    }
+
+    public static final class BiometricIdentifierRenderState extends BlockEntityRenderState {
+        public BiometricIdentifierBlockEntity blockEntity;
+    }
 
     @Override
-    public void render(BiometricIdentifierBlockEntity blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay, Vec3 vec) {
+    public BiometricIdentifierRenderState createRenderState() {
+        return new BiometricIdentifierRenderState();
+    }
+
+    @Override
+    public void extractRenderState(BiometricIdentifierBlockEntity blockEntity, BiometricIdentifierRenderState renderState, float partialTick, Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
+        BlockEntityRenderer.super.extractRenderState(blockEntity, renderState, partialTick, cameraPosition, breakProgress);
+
+        renderState.blockEntity = blockEntity;
+    }
+
+    @Override
+    public void submit(BiometricIdentifierRenderState renderState, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState cameraRenderState) {
+        BiometricIdentifierBlockEntity blockEntity = renderState.blockEntity;
+
         if (blockEntity.hasLevel() && blockEntity.isActive()) {
             BlockState state = blockEntity.getBlockState();
             Direction facing = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
+
             poseStack.pushPose();
             poseStack.translate(0.5D, 0.5D, 0.5D);
             poseStack.mulPose(Axis.YN.rotationDegrees(facing.toYRot()));
@@ -40,13 +63,20 @@ public class BiometricIdentifierRenderer implements BlockEntityRenderer<Biometri
             poseStack.translate(0.5, 0.5, 0.5);
             poseStack.scale(0.85F, 0.85F, 0.85F);
             poseStack.translate(-0.5, -0.5, -0.5);
-            Matrix4f mat = poseStack.last().pose();
-            VertexConsumer screenConsumer = bufferSource.getBuffer(RENDER_TYPE);
-            TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(HOLO_SCREEN_TEXTURE);
-            screenConsumer.addVertex(mat, 0.0F, 1.0F, 1.0F).setColor(1.0F, 1.0F, 1.0F, alpha).setUv(sprite.getU0(), sprite.getV1());
-            screenConsumer.addVertex(mat, 1.0F, 1.0F, 1.0F).setColor(1.0F, 1.0F, 1.0F, alpha).setUv(sprite.getU1(), sprite.getV1());
-            screenConsumer.addVertex(mat, 1.0F, 1.0F, 0.0F).setColor(1.0F, 1.0F, 1.0F, alpha).setUv(sprite.getU1(), sprite.getV0());
-            screenConsumer.addVertex(mat, 0.0F, 1.0F, 0.0F).setColor(1.0F, 1.0F, 1.0F, alpha).setUv(sprite.getU0(), sprite.getV0());
+
+            nodeCollector.submitCustomGeometry(
+                poseStack,
+                RENDER_TYPE,
+                (pose, screenConsumer) -> {
+                    TextureAtlasSprite sprite = Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.BLOCKS).getSprite(HOLO_SCREEN_TEXTURE);
+
+                    screenConsumer.addVertex(pose, 0.0F, 1.0F, 1.0F).setColor(1.0F, 1.0F, 1.0F, alpha).setUv(sprite.getU0(), sprite.getV1());
+                    screenConsumer.addVertex(pose, 1.0F, 1.0F, 1.0F).setColor(1.0F, 1.0F, 1.0F, alpha).setUv(sprite.getU1(), sprite.getV1());
+                    screenConsumer.addVertex(pose, 1.0F, 1.0F, 0.0F).setColor(1.0F, 1.0F, 1.0F, alpha).setUv(sprite.getU1(), sprite.getV0());
+                    screenConsumer.addVertex(pose, 0.0F, 1.0F, 0.0F).setColor(1.0F, 1.0F, 1.0F, alpha).setUv(sprite.getU0(), sprite.getV0());
+                }
+            );
+
             poseStack.popPose();
         }
     }

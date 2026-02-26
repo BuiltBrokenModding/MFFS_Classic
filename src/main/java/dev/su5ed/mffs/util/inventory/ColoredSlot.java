@@ -4,6 +4,4 @@ public interface ColoredSlot {
     boolean shouldTint();
 
     int getTintColor();
-
-    boolean tintItems();
 }

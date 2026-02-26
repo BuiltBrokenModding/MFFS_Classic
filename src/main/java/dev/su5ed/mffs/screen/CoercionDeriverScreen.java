@@ -9,13 +9,13 @@ import it.unimi.dsi.fastutil.ints.IntIntPair;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import org.joml.Matrix3x2fStack;
 
 public class CoercionDeriverScreen extends FortronScreen<CoercionDeriverMenu> {
-    public static final ResourceLocation BACKGROUND = MFFSMod.location("textures/gui/coercion_deriver.png");
+    public static final Identifier BACKGROUND = MFFSMod.location("textures/gui/coercion_deriver.png");
 
     public CoercionDeriverScreen(CoercionDeriverMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title, BACKGROUND);

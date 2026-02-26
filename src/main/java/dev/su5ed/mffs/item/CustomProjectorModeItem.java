@@ -123,7 +123,7 @@ public class CustomProjectorModeItem extends BaseItem {
     @Override
     public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
         Level level = context.getLevel();
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             BlockPos pos = context.getClickedPos();
             Player player = context.getPlayer();
             StructureCoords coords = stack.get(ModDataComponentTypes.STRUCTURE_COORDS);

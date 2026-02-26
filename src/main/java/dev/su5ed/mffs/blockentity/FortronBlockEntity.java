@@ -73,7 +73,7 @@ public abstract class FortronBlockEntity extends InventoryBlockEntity implements
 
     @Override
     public boolean isActive() {
-        return this.level.isClientSide ? getBlockState().getValue(BaseEntityBlock.ACTIVE) : this.active || this.level.hasNeighborSignal(this.worldPosition);
+        return this.level.isClientSide() ? getBlockState().getValue(BaseEntityBlock.ACTIVE) : this.active || this.level.hasNeighborSignal(this.worldPosition);
     }
 
     @Override

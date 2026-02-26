@@ -5,13 +5,13 @@ import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.runtime.IJeiRuntime;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import static dev.su5ed.mffs.MFFSMod.location;
 
 @JeiPlugin
 public class MFFSJeiPlugin implements IModPlugin {
-    public static final ResourceLocation PLUGIN_ID = location("jei_plugin");
+    public static final Identifier PLUGIN_ID = location("jei_plugin");
 
     @Override
     public void onRuntimeAvailable(IJeiRuntime runtime) {
@@ -26,7 +26,7 @@ public class MFFSJeiPlugin implements IModPlugin {
     }
 
     @Override
-    public ResourceLocation getPluginUid() {
+    public Identifier getPluginUid() {
         return PLUGIN_ID;
     }
 }

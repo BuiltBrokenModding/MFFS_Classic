@@ -11,8 +11,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.ItemUtil;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -44,7 +45,8 @@ public abstract class InventoryBlockEntity extends BaseBlockEntity {
     }
 
     protected InventorySlot addVirtualSlot(String name) {
-        return this.items.addSlot(name, InventorySlot.Mode.NONE, stack -> true, stack -> {}, true);
+        return this.items.addSlot(name, InventorySlot.Mode.NONE, stack -> true, stack -> {
+        }, true);
     }
 
     protected void onInventoryChanged() {
@@ -58,12 +60,12 @@ public abstract class InventoryBlockEntity extends BaseBlockEntity {
     }
 
     public boolean mergeIntoInventory(ItemStack stack) {
-        if (!this.level.isClientSide && !stack.isEmpty()) {
+        if (!this.level.isClientSide() && !stack.isEmpty()) {
             ItemStack remainder = stack;
             for (Direction side : Direction.values()) {
-                IItemHandler handler = this.level.getCapability(Capabilities.ItemHandler.BLOCK, this.worldPosition.relative(side), side.getOpposite());
+                ResourceHandler<ItemResource> handler = this.level.getCapability(Capabilities.Item.BLOCK, this.worldPosition.relative(side), side.getOpposite());
                 if (handler != null) {
-                    remainder = ItemHandlerHelper.insertItem(handler, remainder, false);
+                    remainder = ItemUtil.insertItemReturnRemaining(handler, remainder, false, null);
                     if (remainder.isEmpty()) {
                         break;
                     }

@@ -1,6 +1,6 @@
 package dev.su5ed.mffs.setup;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
@@ -23,7 +23,7 @@ public final class ModTags {
     }
 
     private static TagKey<Item> cItemTag(String name) {
-        return ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", name));
+        return ItemTags.create(Identifier.fromNamespaceAndPath("c", name));
     }
 
     private static TagKey<Block> blockTag(String name) {

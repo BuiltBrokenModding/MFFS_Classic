@@ -2,7 +2,7 @@ package dev.su5ed.mffs.block;
 
 import dev.su5ed.mffs.blockentity.BaseBlockEntity;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -33,7 +33,7 @@ import java.util.function.Supplier;
 import static dev.su5ed.mffs.MFFSMod.location;
 
 public class BaseEntityBlock extends Block implements EntityBlock {
-    public static final ResourceLocation CONTENT_KEY = location("content");
+    public static final Identifier CONTENT_KEY = location("content");
     public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 
     private final Supplier<? extends BlockEntityType<? extends BaseBlockEntity>> provider;

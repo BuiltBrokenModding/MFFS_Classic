@@ -27,11 +27,10 @@ package dev.su5ed.mffs.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.su5ed.mffs.MFFSMod;
-import net.minecraft.client.Camera;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -63,17 +62,14 @@ public final class RenderTickHandler {
     @SubscribeEvent
     public static void renderLevelAfterTranslucentBlocks(RenderLevelStageEvent.AfterTranslucentBlocks event) {
         Minecraft minecraft = Minecraft.getInstance();
-        Camera camera = event.getCamera();
         PoseStack poseStack = event.getPoseStack();
-        int ticks = event.getRenderTick();
-        DeltaTracker partialTicks = event.getPartialTick();
+        int ticks = event.getLevelRenderer().getTicks();
+        DeltaTracker partialTicks = minecraft.getDeltaTracker();
         MultiBufferSource.BufferSource bufferSource = minecraft.renderBuffers().bufferSource();
-
-        RenderPostProcessor.prepareRender();
 
         poseStack.pushPose();
         // here we translate based on the inverse position of the client viewing camera to get back to 0, 0, 0
-        Vec3 camPos = camera.getPosition();
+        Vec3 camPos = event.getLevelRenderState().cameraRenderState.pos;
         poseStack.translate(-camPos.x, -camPos.y, -camPos.z);
 
         // Render

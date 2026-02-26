@@ -18,7 +18,7 @@ public class CoercionDeriverMenu extends FortronMenu<CoercionDeriverBlockEntity>
         layoutPlayerInventorySlots(8, 135);
         addDataSlot(this.blockEntity::getProcessTime, this.blockEntity::setProcessTime);
         addDataSlot(() -> this.blockEntity.getEnergyMode().ordinal(), i -> this.blockEntity.setEnergyMode(EnergyMode.values()[i]));
-        addIntDataSlot(this.blockEntity.energy::getEnergyStored, this.blockEntity.energy::setEnergy);
+        addIntDataSlot(this.blockEntity.energy::getAmountAsInt, this.blockEntity.energy::set);
         addIntDataSlot(() -> this.blockEntity.fortronProducedLastTick, v -> this.blockEntity.fortronProducedLastTick = v);
 
         EntryStream.of(this.blockEntity.upgradeSlots)

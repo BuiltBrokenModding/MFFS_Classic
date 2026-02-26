@@ -18,9 +18,8 @@ import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.SlotItemHandler;
-import net.neoforged.neoforge.items.wrapper.InvWrapper;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.apache.commons.lang3.function.TriFunction;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,8 +32,8 @@ import java.util.function.IntSupplier;
 public abstract class FortronMenu<T extends FortronBlockEntity & Activatable> extends AbstractContainerMenu {
     public final T blockEntity;
     protected final Player player;
-    protected final IItemHandler playerInventory;
-    private final IItemHandler itemHandler;
+    protected final Inventory playerInventory;
+    private final ResourceHandler<ItemResource> itemHandler;
 
     private final List<Slot> hotBarSlots = new ArrayList<>();
     private final List<Slot> playerInventorySlots = new ArrayList<>();
@@ -48,11 +47,14 @@ public abstract class FortronMenu<T extends FortronBlockEntity & Activatable> ex
 
         this.player = player;
         this.blockEntity = player.level().getBlockEntity(pos, blockEntityType).orElseThrow();
-        this.playerInventory = new InvWrapper(playerInventory);
+        this.playerInventory = playerInventory;
 
         trackPower();
 
-        this.itemHandler = Objects.requireNonNull(this.blockEntity.getLevel().getCapability(Capabilities.ItemHandler.BLOCK, this.blockEntity.getBlockPos(), this.blockEntity.getBlockState(), this.blockEntity, null), "IItemHandler capability not found");
+        this.itemHandler = Objects.requireNonNull(
+            this.blockEntity.getLevel().getCapability(Capabilities.Item.BLOCK, this.blockEntity.getBlockPos(), this.blockEntity.getBlockState(), this.blockEntity, null),
+            "IItemHandler capability not found"
+        );
         addSlotListener(new AdvancementContainerListener());
     }
 
@@ -131,7 +133,7 @@ public abstract class FortronMenu<T extends FortronBlockEntity & Activatable> ex
     }
 
     protected void layoutPlayerInventorySlots(int x, int y) {
-        TriFunction<Integer, Integer, Integer, Slot> factory = (index, slotX, slotY) -> new SlotItemHandler(this.playerInventory, index, slotX, slotY);
+        TriFunction<Integer, Integer, Integer, Slot> factory = (index, slotX, slotY) -> new Slot(this.playerInventory, index, slotX, slotY);
 
         // Player inventory
         this.playerInventorySlots.addAll(addSlotBox(9, x, y, 9, 18, 3, 18, factory));

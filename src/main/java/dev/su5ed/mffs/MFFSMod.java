@@ -5,7 +5,7 @@ import dev.su5ed.mffs.compat.MFFSProbeProvider;
 import dev.su5ed.mffs.item.IdentificationCardItem;
 import dev.su5ed.mffs.network.Network;
 import dev.su5ed.mffs.setup.*;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.InterModComms;
 import net.neoforged.fml.ModContainer;
@@ -50,7 +50,7 @@ public final class MFFSMod {
         }
     }
 
-    public static ResourceLocation location(String path) {
-        return ResourceLocation.fromNamespaceAndPath(MODID, path);
+    public static Identifier location(String path) {
+        return Identifier.fromNamespaceAndPath(MODID, path);
     }
 }

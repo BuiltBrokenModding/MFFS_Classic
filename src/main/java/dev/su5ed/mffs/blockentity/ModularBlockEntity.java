@@ -14,6 +14,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import one.util.streamex.IntStreamEx;
 import one.util.streamex.StreamEx;
 import org.jetbrains.annotations.Nullable;
@@ -55,7 +56,10 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
 
     public void consumeCost() {
         if (getFortronCost() > 0) {
-            this.fortronStorage.extractFortron(getFortronCost(), false);
+            try (Transaction tx = Transaction.openRoot()) {
+                this.fortronStorage.extractFortron(getFortronCost(), tx);
+                tx.commit();
+            }
         }
     }
 
@@ -154,10 +158,12 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
         return (int) Math.round(cost);
     }
 
-    protected void addModuleSlots(List<? super InventorySlot> list) {}
+    protected void addModuleSlots(List<? super InventorySlot> list) {
+    }
 
     protected List<InventorySlot> createUpgradeSlots(int count) {
-        return createUpgradeSlots(count, ModUtil::isModule, stack -> {});
+        return createUpgradeSlots(count, ModUtil::isModule, stack -> {
+        });
     }
 
     protected List<InventorySlot> createUpgradeSlots(int count, @Nullable Module.Category category, Consumer<ItemStack> onChanged) {

@@ -31,7 +31,7 @@ public final class ModDataComponentTypes {
 
     // Identification Card
     public static final Supplier<DataComponentType<GameProfile>> ID_CARD_PROFILE = DATA_COMPONENT_TYPES.register(
-        "id_card_profile", () -> DataComponentType.<GameProfile>builder().persistent(ExtraCodecs.GAME_PROFILE).networkSynchronized(ByteBufCodecs.GAME_PROFILE).build());
+        "id_card_profile", () -> DataComponentType.<GameProfile>builder().persistent(ExtraCodecs.AUTHLIB_GAME_PROFILE).networkSynchronized(ByteBufCodecs.GAME_PROFILE).build());
     public static final Supplier<DataComponentType<List<FieldPermission>>> ID_CARD_PERMISSIONS = DATA_COMPONENT_TYPES.register(
         "id_card_permissions", () -> DataComponentType.<List<FieldPermission>>builder().persistent(ModUtil.FIELD_PERMISSION_CODEC.listOf()).networkSynchronized(ModUtil.FIELD_PERMISSION_STREAM_CODEC.apply(ByteBufCodecs.list())).build());
 

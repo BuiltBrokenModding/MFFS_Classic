@@ -1,114 +1,105 @@
 package dev.su5ed.mffs.render;
 
 import dev.su5ed.mffs.MFFSMod;
-import net.minecraft.Util;
-import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderStateShard;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.resources.ResourceLocation;
-import org.lwjgl.opengl.GL11;
+import net.minecraft.client.renderer.rendertype.RenderSetup;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.Util;
 
-import java.util.OptionalDouble;
 import java.util.function.Function;
 
-public abstract class ModRenderType extends RenderType {
-    protected static final RenderStateShard.LayeringStateShard VIEW_OFFSET_Z_SMOOTH_LAYERING = new RenderStateShard.LayeringStateShard("mffs:translucent_smooth", () -> {
-        TRANSLUCENT_TARGET.setupRenderState();
-        GL11.glEnable(GL11.GL_LINE_SMOOTH);
-    }, () -> {
-        TRANSLUCENT_TARGET.clearRenderState();
-        GL11.glDisable(GL11.GL_LINE_SMOOTH);
-    });
+import static net.minecraft.client.renderer.rendertype.LayeringTransform.VIEW_OFFSET_Z_LAYERING;
+
+public abstract class ModRenderType {
+    // FIXME
+//    protected static final RenderStateShard.LayeringStateShard VIEW_OFFSET_Z_SMOOTH_LAYERING = new RenderStateShard.LayeringStateShard("mffs:translucent_smooth", () -> {
+//        TRANSLUCENT_TARGET.setupRenderState();
+//        GL11.glEnable(GL11.GL_LINE_SMOOTH);
+//    }, () -> {
+//        TRANSLUCENT_TARGET.clearRenderState();
+//        GL11.glDisable(GL11.GL_LINE_SMOOTH);
+//    });
 
     /**
      * Source: Mekanism
      * <a href="https://github.com/mekanism/Mekanism/blob/6093851f05dfb5ff2da52ace87f06ea03a7571a4/src/main/java/mekanism/client/render/MekanismRenderType.java#L47">MekanismRenderType</a>
      */
-    public static final Function<ResourceLocation, RenderType> HOLO_ENTITY = Util.memoize(location -> create(
-        MFFSMod.location("holo_entity").toString(),
-        256, false, true,
-        ModRenderPipeline.HOLO_ENTITY,
-        RenderType.CompositeState.builder()
-            .setTextureState(new RenderStateShard.TextureStateShard(location, false))
-            .setOutputState(TRANSLUCENT_TARGET)
-            .createCompositeState(true)
-    ));
- 
-    public static final RenderType HOLO_TRIANGLE = create(
+    public static final Function<Identifier, RenderType> HOLO_ENTITY = Util.memoize(location -> RenderType.create(
+            MFFSMod.location("holo_entity").toString(),
+            RenderSetup.builder(ModRenderPipeline.HOLO_ENTITY)
+                .withTexture("Sampler0", location)
+                .useLightmap()
+                .useOverlay()
+                .affectsCrumbling()
+                .sortOnUpload()
+                .createRenderSetup()
+        )
+    );
+
+    public static final RenderType HOLO_TRIANGLE = RenderType.create(
         MFFSMod.location("holo_triangle").toString(),
-        256, false, true,
-        ModRenderPipeline.HOLO_TRIANGLE,
-        RenderType.CompositeState.builder()
-            .setOutputState(TRANSLUCENT_TARGET)
-            .createCompositeState(true)
+        RenderSetup.builder(ModRenderPipeline.HOLO_TRIANGLE)
+            .useLightmap()
+            .useOverlay()
+            .affectsCrumbling()
+            .sortOnUpload()
+            .createRenderSetup()
     );
 
-    public static final Function<ResourceLocation, RenderType> HOLO_TEXTURED_TRIANGLE = Util.memoize(location -> create(
-        MFFSMod.location("holo_textured_triangle").toString(),
-        256, false, true,
-        ModRenderPipeline.HOLO_TEXTURED_TRIANGLE,
-        RenderType.CompositeState.builder()
-            .setTextureState(new RenderStateShard.TextureStateShard(location, false))
-            .setOutputState(TRANSLUCENT_TARGET)
-            .createCompositeState(true)
-    ));
-
-    public static final Function<ResourceLocation, RenderType> HOLO_QUAD = Util.memoize(location -> create(
-        MFFSMod.location("holo_quad").toString(),
-        256, false, true,
-        ModRenderPipeline.HOLO_QUAD,
-        RenderType.CompositeState.builder()
-            .setTextureState(new RenderStateShard.TextureStateShard(location, false))
-            .setOutputState(TRANSLUCENT_TARGET)
-            .createCompositeState(true)
-    ));
-
-    // TODO Pipieline
-    public static final RenderType HOLO_PARTICLE = create(
-        MFFSMod.location("holo_particle").toString(),
-        256, false, true,
-        RenderPipelines.TRANSLUCENT_MOVING_BLOCK,
-        RenderType.CompositeState.builder()
-            .setLightmapState(RenderStateShard.LIGHTMAP)
-            .setTextureState(new RenderStateShard.TextureStateShard(TextureAtlas.LOCATION_BLOCKS, false))
-            .setOutputState(PARTICLES_TARGET)
-            .createCompositeState(true)
+    public static final Function<Identifier, RenderType> HOLO_TEXTURED_TRIANGLE = Util.memoize(location -> RenderType.create(
+            MFFSMod.location("holo_textured_triangle").toString(),
+            RenderSetup.builder(ModRenderPipeline.HOLO_TEXTURED_TRIANGLE)
+                .withTexture("Sampler0", location)
+                .useLightmap()
+                .useOverlay()
+                .affectsCrumbling()
+                .sortOnUpload()
+                .createRenderSetup()
+        )
     );
 
-    public static final RenderType BEAM_PARTICLE = create(
+    public static final Function<Identifier, RenderType> HOLO_QUAD = Util.memoize(location -> RenderType.create(
+            MFFSMod.location("holo_quad").toString(),
+            RenderSetup.builder(ModRenderPipeline.HOLO_QUAD)
+                .withTexture("Sampler0", location)
+                .useLightmap()
+                .useOverlay()
+                .affectsCrumbling()
+                .sortOnUpload()
+                .createRenderSetup()
+        )
+    );
+
+    public static final RenderType BEAM_PARTICLE = RenderType.create(
         MFFSMod.location("beam_particle").toString(),
-        1536, false, false,
-        ModRenderPipeline.BEAM_PARTICLE,
-        RenderType.CompositeState.builder()
-            .setTextureState(new RenderStateShard.TextureStateShard(ResourceLocation.fromNamespaceAndPath(MFFSMod.MODID, "textures/particle/fortron.png"), false))
-            .setOutputState(TRANSLUCENT_TARGET)
-            .setLightmapState(LIGHTMAP)
-            .createCompositeState(false)
+        RenderSetup.builder(ModRenderPipeline.BEAM_PARTICLE)
+            .withTexture("Sampler0", MFFSMod.location("textures/particle/fortron.png"))
+            .useLightmap()
+            .useOverlay()
+            .affectsCrumbling()
+            .sortOnUpload()
+            .createRenderSetup()
     );
 
-    public static final RenderType BLOCK_FILL = create(
+    public static final RenderType BLOCK_FILL = RenderType.create(
         MFFSMod.location("block_fill").toString(),
-        1536, false, true,
-        ModRenderPipeline.BLOCK_FILL,
-        RenderType.CompositeState.builder()
-            .setLayeringState(VIEW_OFFSET_Z_LAYERING)
-            .setOutputState(TRANSLUCENT_TARGET)
-            .createCompositeState(false)
+        RenderSetup.builder(ModRenderPipeline.BLOCK_FILL)
+            .useLightmap()
+            .useOverlay()
+            .affectsCrumbling()
+            .sortOnUpload()
+            .setLayeringTransform(VIEW_OFFSET_Z_LAYERING)
+            .createRenderSetup()
     );
 
-    public static final RenderType BLOCK_OUTLINE = create(
+    public static final RenderType BLOCK_OUTLINE = RenderType.create(
         MFFSMod.location("block_outline").toString(),
-        1536, false, false,
-        ModRenderPipeline.BLOCK_OUTLINE,
-        RenderType.CompositeState.builder()
-            .setLineState(new RenderStateShard.LineStateShard(OptionalDouble.empty()))
-            .setLayeringState(VIEW_OFFSET_Z_SMOOTH_LAYERING)
-            .setOutputState(TRANSLUCENT_TARGET)
-            .createCompositeState(false)
+        RenderSetup.builder(ModRenderPipeline.BLOCK_OUTLINE)
+            .useLightmap()
+            .useOverlay()
+            .affectsCrumbling()
+            .sortOnUpload()
+            .setLayeringTransform(VIEW_OFFSET_Z_LAYERING) // TODO Smooth layering
+            .createRenderSetup()
     );
-
-    private ModRenderType(String name, int bufferSize, boolean affectsCrumbling, boolean sortOnUpload, Runnable setupState, Runnable clearState) {
-        super(name, bufferSize, affectsCrumbling, sortOnUpload, setupState, clearState);
-    }
 }

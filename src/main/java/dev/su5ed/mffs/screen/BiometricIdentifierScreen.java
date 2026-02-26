@@ -9,7 +9,7 @@ import it.unimi.dsi.fastutil.ints.IntIntPair;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BiometricIdentifierScreen extends FortronScreen<BiometricIdentifierMenu> {
-    public static final ResourceLocation BACKGROUND = MFFSMod.location("textures/gui/biometric_identifier.png");
+    public static final Identifier BACKGROUND = MFFSMod.location("textures/gui/biometric_identifier.png");
 
     private final List<AbstractWidget> permissionButtons = new ArrayList<>();
 

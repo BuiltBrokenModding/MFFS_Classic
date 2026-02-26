@@ -12,7 +12,7 @@ import net.minecraft.client.data.models.blockstates.MultiVariantGenerator;
 import net.minecraft.client.data.models.model.*;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
@@ -100,15 +100,15 @@ public class ModelsGen extends ModelProvider {
         itemModels.itemModelOutput.accept(ModItems.REDSTONE_TORCH_OFF.get(),
             ItemModelUtils.plainModel(
                 ModelTemplates.FLAT_ITEM.create(ModelLocationUtils.getModelLocation(ModItems.REDSTONE_TORCH_OFF.get()),
-                    TextureMapping.layer0(ResourceLocation.withDefaultNamespace("block/redstone_torch_off")),
+                    TextureMapping.layer0(Identifier.withDefaultNamespace("block/redstone_torch_off")),
                     itemModels.modelOutput)
             ));
     }
 
     private void machineBlock(BlockModelGenerators blockModels, Block block, boolean item) {
-        ResourceLocation id = BuiltInRegistries.BLOCK.getKey(block);
-        ResourceLocation inactiveLocation = ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "block/" + id.getPath());
-        ResourceLocation activeLocation = inactiveLocation.withSuffix("_active");
+        Identifier id = BuiltInRegistries.BLOCK.getKey(block);
+        Identifier inactiveLocation = Identifier.fromNamespaceAndPath(id.getNamespace(), "block/" + id.getPath());
+        Identifier activeLocation = inactiveLocation.withSuffix("_active");
 
         MultiVariant plain = plainVariant(inactiveLocation);
         MultiVariant active = plainVariant(activeLocation);

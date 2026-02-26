@@ -13,13 +13,13 @@ import dev.su5ed.mffs.blockentity.ElectricTileEntity;
 import dev.su5ed.mffs.blockentity.FortronBlockEntity;
 import dev.su5ed.mffs.blockentity.InventoryBlockEntity;
 import dev.su5ed.mffs.item.*;
-import dev.su5ed.mffs.util.ItemEnergyStorage;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.transfer.energy.ItemAccessEnergyHandler;
 import one.util.streamex.StreamEx;
 
 public final class ModCapabilities {
@@ -44,12 +44,12 @@ public final class ModCapabilities {
             modMachines
         );
         event.registerBlock(
-            Capabilities.FluidHandler.BLOCK,
+            Capabilities.Fluid.BLOCK,
             (level, pos, state, be, context) -> be != null ? ((FortronBlockEntity) be).fortronStorage.getFortronTank() : null,
             modMachines
         );
         event.registerBlock(
-            Capabilities.ItemHandler.BLOCK,
+            Capabilities.Item.BLOCK,
             (level, pos, state, be, context) -> ((InventoryBlockEntity) be).getItems(),
             modMachines
         );
@@ -57,14 +57,14 @@ public final class ModCapabilities {
         event.registerBlockEntity(BIOMETRIC_IDENTIFIER, ModObjects.BIOMETRIC_IDENTIFIER_BLOCK_ENTITY.get(), (be, unused) -> be);
         event.registerBlockEntity(INTERDICTION_MATRIX, ModObjects.INTERDICTION_MATRIX_BLOCK_ENTITY.get(), (be, unused) -> be);
         event.registerBlockEntity(
-            Capabilities.EnergyStorage.BLOCK,
+            Capabilities.Energy.BLOCK,
             ModObjects.COERCION_DERIVER_BLOCK_ENTITY.get(),
             ElectricTileEntity::getEnergy
         );
 
-        event.registerItem(Capabilities.EnergyStorage.ITEM, (stack, unused) -> {
+        event.registerItem(Capabilities.Energy.ITEM, (stack, access) -> {
             BatteryItem batteryItem = (BatteryItem) stack.getItem();
-            return new ItemEnergyStorage(stack, batteryItem.getCapacity(), batteryItem.getMaxTransfer());
+            return new ItemAccessEnergyHandler(access, ModDataComponentTypes.ENERGY.get(), batteryItem.getCapacity(), batteryItem.getMaxTransfer());
         }, ModItems.BATTERY);
         event.registerItem(FREQUENCY_CARD, (stack, unused) -> new FrequencyCardItem.FrequencyCardHandler(stack), ModItems.FREQUENCY_CARD);
         event.registerItem(IDENTIFICATION_CARD, (stack, unused) -> new IdentificationCardItem.IdentificationCardAttachment(stack), ModItems.ID_CARD);

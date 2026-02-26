@@ -7,7 +7,7 @@ import dev.su5ed.mffs.util.ModUtil;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
@@ -19,7 +19,7 @@ public abstract class FortronScreen<T extends FortronMenu<?>> extends BaseScreen
 
     private NumericEditBox frequency;
 
-    public FortronScreen(T menu, Inventory playerInventory, Component title, ResourceLocation background) {
+    public FortronScreen(T menu, Inventory playerInventory, Component title, Identifier background) {
         super(menu, playerInventory, title, background);
     }
 

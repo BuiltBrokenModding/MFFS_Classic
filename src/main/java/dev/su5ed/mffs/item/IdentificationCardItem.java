@@ -38,7 +38,7 @@ public class IdentificationCardItem extends BaseItem {
             ItemStack stack = player.getItemInHand(usedHand);
 
             IdentificationCard card = stack.getCapability(ModCapabilities.IDENTIFICATION_CARD);
-            if (!level.isClientSide) {
+            if (!level.isClientSide()) {
                 if (card.getIdentity() != null) {
                     card.setIdentity(null);
                     player.displayClientMessage(ModUtil.translate("info", "identity_cleared"), true);
@@ -58,7 +58,7 @@ public class IdentificationCardItem extends BaseItem {
         if (player.isShiftKeyDown() && target instanceof Player targetPlayer) {
             IdentificationCard card = stack.getCapability(ModCapabilities.IDENTIFICATION_CARD);
             if (card != null) {
-                if (!player.level().isClientSide) {
+                if (!player.level().isClientSide()) {
                     setCardIdentity(card, player, targetPlayer.getGameProfile());
                 }
                 event.setCanceled(true);
@@ -69,7 +69,7 @@ public class IdentificationCardItem extends BaseItem {
 
     private static void setCardIdentity(IdentificationCard card, Player user, GameProfile profile) {
         card.setIdentity(profile);
-        user.displayClientMessage(ModUtil.translate("info", "identity_set", Component.literal(profile.getName()).withStyle(ChatFormatting.GREEN)), true);
+        user.displayClientMessage(ModUtil.translate("info", "identity_set", Component.literal(profile.name()).withStyle(ChatFormatting.GREEN)), true);
     }
 
     @Override
@@ -81,7 +81,7 @@ public class IdentificationCardItem extends BaseItem {
             GameProfile identity = card.getIdentity();
             if (identity != null) {
                 tooltipAdder.accept(ModUtil.translate("info", "identity",
-                    Component.literal(identity.getName()).withStyle(ChatFormatting.GREEN)).withStyle(ChatFormatting.DARK_GRAY));
+                    Component.literal(identity.name()).withStyle(ChatFormatting.GREEN)).withStyle(ChatFormatting.DARK_GRAY));
             }
             List<FieldPermission> perms = List.copyOf(card.getPermissions());
             if (!perms.isEmpty()) {

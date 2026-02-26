@@ -1,62 +1,49 @@
 package dev.su5ed.mffs.util;
 
-import net.neoforged.neoforge.energy.EnergyStorage;
+import net.neoforged.neoforge.transfer.energy.SimpleEnergyHandler;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 import java.util.function.BooleanSupplier;
 
-public class CustomEnergyStorage extends EnergyStorage {
+public class CustomEnergyStorage extends SimpleEnergyHandler {
     private final BooleanSupplier canReceive;
     private final Runnable onChanged;
 
     public CustomEnergyStorage(int capacity, int maxTransfer, BooleanSupplier canReceive, Runnable onChanged) {
-        super(capacity, maxTransfer, maxTransfer);
+        super(capacity, maxTransfer);
 
         this.canReceive = canReceive;
         this.onChanged = onChanged;
     }
 
-    protected void onEnergyChanged() {
+    @Override
+    protected void onEnergyChanged(int previousAmount) {
+        super.onEnergyChanged(previousAmount);
         this.onChanged.run();
     }
 
     @Override
-    public int receiveEnergy(int maxReceive, boolean simulate) {
-        int rc = super.receiveEnergy(maxReceive, simulate);
-        if (rc > 0 && !simulate) {
-            onEnergyChanged();
+    public int insert(int amount, TransactionContext transaction) {
+        if (!this.canReceive.getAsBoolean()) {
+            return 0;
         }
-        return rc;
-    }
-
-    @Override
-    public int extractEnergy(int maxExtract, boolean simulate) {
-        int rc = super.extractEnergy(maxExtract, simulate);
-        if (rc > 0 && !simulate) {
-            onEnergyChanged();
-        }
-        return rc;
-    }
-
-    @Override
-    public boolean canReceive() {
-        return super.canReceive() && this.canReceive.getAsBoolean();
-    }
-
-    public void setEnergy(int energy) {
-        this.energy = energy;
-        onEnergyChanged();
+        return super.insert(amount, transaction);
     }
 
     public void setMaxTransfer(int maxTransfer) {
-        this.maxReceive = maxTransfer;
+        this.maxInsert = maxTransfer;
         this.maxExtract = maxTransfer;
     }
 
     public int getRequestedEnergy() {
-        return getMaxEnergyStored() - getEnergyStored();
+        return getCapacityAsInt() - getAmountAsInt();
     }
-
+    
     public boolean canExtract(int extract) {
-        return extractEnergy(extract, true) >= extract;
+        try (Transaction tx = Transaction.openRoot()) {
+            int extracted = extract(extract, tx);
+            return extracted >= extract;
+        }
     }
 }

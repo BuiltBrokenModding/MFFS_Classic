@@ -40,7 +40,9 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import one.util.streamex.IntStreamEx;
 import one.util.streamex.StreamEx;
 import org.jetbrains.annotations.Nullable;
@@ -106,7 +108,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
     public int computeAnimationSpeed() {
         int speed = 4;
         int fortronCost = getFortronCost();
-        if (isActive() && getMode().isPresent() && this.fortronStorage.extractFortron(fortronCost, true) >= fortronCost) {
+        if (isActive() && getMode().isPresent() && canConsumeFieldCost(fortronCost)) {
             speed *= fortronCost / 8.0F;
         }
         return Math.min(120, speed);
@@ -117,7 +119,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
     }
 
     public void setClientAnimationSpeed(int clientAnimationSpeed) {
-        if (!this.level.isClientSide) {
+        if (!this.level.isClientSide()) {
             throw new IllegalStateException("Must only be called on the client");
         }
         this.clientAnimationSpeed = clientAnimationSpeed;
@@ -136,7 +138,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
     @Override
     public void onLoad() {
         super.onLoad();
-        if (!this.level.isClientSide) {
+        if (!this.level.isClientSide()) {
             NeoForge.EVENT_BUS.register(this);
             reCalculateForceField();
         }
@@ -144,7 +146,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
 
     @Override
     public void setRemoved() {
-        if (!this.level.isClientSide) {
+        if (!this.level.isClientSide()) {
             NeoForge.EVENT_BUS.unregister(this);
         }
         super.setRemoved();
@@ -172,7 +174,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
         }
 
         int fortronCost = getFortronCost();
-        if (isActive() && getMode().isPresent() && this.fortronStorage.extractFortron(fortronCost, true) >= fortronCost) {
+        if (isActive() && getMode().isPresent() && canConsumeFieldCost(fortronCost)) {
             consumeCost();
 
             if (getTicks() % 10 == 0) {
@@ -194,6 +196,12 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
         if (speed != this.clientAnimationSpeed) {
             this.clientAnimationSpeed = speed;
             sendToChunk(new UpdateAnimationSpeed(this.worldPosition, speed));
+        }
+    }
+
+    private boolean canConsumeFieldCost(int fortronCost) {
+        try (Transaction tx = Transaction.openRoot()) {
+            return this.fortronStorage.extractFortron(fortronCost, tx) >= fortronCost;
         }
     }
 
@@ -224,7 +232,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
     protected void onInventoryChanged() {
         super.onInventoryChanged();
         // Update mode light
-        if (!this.level.isClientSide) {
+        if (!this.level.isClientSide()) {
             this.level.getChunkSource().getLightEngine().checkBlock(this.worldPosition);
         }
     }
@@ -392,7 +400,10 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
             // Only update after the projector has been set to avoid recursive remove block call from ForceFieldBlockEntity#getProjector
             this.level.sendBlockUpdated(pos, state, state, Block.UPDATE_ALL);
 
-            this.fortronStorage.extractFortron(1, false);
+            try (Transaction tx = Transaction.openRoot()) {
+                this.fortronStorage.extractFortron(1, tx);
+                tx.commit();
+            }
             this.projectedBlocks.add(pos);
             this.projectionCache.invalidate(pos);
         }
@@ -423,7 +434,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
         this.projectedBlocks.clear();
         this.projectionCache.invalidateAll();
         this.semaphore.reset();
-        if (!this.level.isClientSide) {
+        if (!this.level.isClientSide()) {
             StreamEx.of(fieldPositions)
                 .map(TargetPosPair::pos)
                 .filter(pos -> this.level.getBlockState(pos).is(ModBlocks.FORCE_FIELD.get()))
@@ -457,7 +468,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
     }
 
     public BlockState getCamoBlock(Vec3 pos) {
-        if (!this.level.isClientSide && hasModule(ModModules.CAMOUFLAGE)) {
+        if (!this.level.isClientSide() && hasModule(ModModules.CAMOUFLAGE)) {
             if (getModeStack().getItem() instanceof CustomProjectorModeItem custom) {
                 Map<Vec3, BlockState> map = custom.getFieldBlocks(this, getModeStack());
                 BlockState block = map.get(pos);
@@ -582,13 +593,13 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
 
     public Map<Block, Integer> checkNeighbors() {
         Map<Block, Integer> countMap = new HashMap<>();
-        if (!this.level.isClientSide) {
+        if (!this.level.isClientSide()) {
             for (Direction side : Direction.values()) {
-                IItemHandler handler = this.level.getCapability(Capabilities.ItemHandler.BLOCK, this.worldPosition.relative(side), side.getOpposite());
+                ResourceHandler<ItemResource> handler = this.level.getCapability(Capabilities.Item.BLOCK, this.worldPosition.relative(side), side.getOpposite());
                 if (handler != null) {
-                    for (int i = 0; i < handler.getSlots(); i++) {
-                        ItemStack stack = handler.getStackInSlot(i);
-                        int count = stack.getCount();
+                    for (int i = 0; i < handler.size(); i++) {
+                        ItemStack stack = handler.getResource(i).toStack();
+                        int count = handler.getAmountAsInt(i);
                         getFilterBlock(stack).ifPresent(block -> countMap.put(block, countMap.getOrDefault(block, 0) + count));
                     }
                 }

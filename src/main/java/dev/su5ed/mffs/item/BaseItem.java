@@ -4,6 +4,7 @@ import com.google.common.base.Suppliers;
 import dev.su5ed.mffs.setup.ModClientSetup;
 import dev.su5ed.mffs.util.ModUtil;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
@@ -33,7 +34,7 @@ public class BaseItem extends Item {
 
         appendHoverTextPre(stack, context, tooltipDisplay, tooltipAdder, flag);
         if (this.description != null) {
-            if (ModClientSetup.hasShiftDown()) {
+            if (Minecraft.getInstance().hasShiftDown()) {
                 tooltipAdder.accept(this.description.get());
             } else {
                 tooltipAdder.accept(ModUtil.translate("info", "show_details", ModUtil.translate("info", "key.shift").withStyle(ChatFormatting.GRAY))

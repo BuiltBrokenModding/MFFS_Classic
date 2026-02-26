@@ -4,9 +4,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 
 public abstract class BaseButton extends AbstractButton {
@@ -19,21 +20,21 @@ public abstract class BaseButton extends AbstractButton {
     }
 
     @Override
-    protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void onPress(InputWithModifiers input) {
+        this.onPress.run();
+    }
+
+    @Override
+    protected void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         Minecraft minecraft = Minecraft.getInstance();
 
-        ResourceLocation widgetsLocation = SPRITES.get(this.active, this.isHovered());
+        Identifier widgetsLocation = SPRITES.get(this.active, this.isHovered());
         guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, widgetsLocation, getX(), getY(), this.width, this.height, ARGB.white(this.alpha));
 
         renderFg(guiGraphics, minecraft, mouseX, mouseY, partialTick);
     }
 
     protected abstract void renderFg(GuiGraphics guiGraphics, Minecraft minecraft, int mouseX, int mouseY, float partialTick);
-
-    @Override
-    public void onPress() {
-        this.onPress.run();
-    }
 
     @Override
     protected void updateWidgetNarration(NarrationElementOutput output) {}

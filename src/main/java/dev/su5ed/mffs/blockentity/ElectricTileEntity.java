@@ -11,19 +11,20 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
+import net.neoforged.neoforge.transfer.energy.EnergyHandlerUtil;
 import one.util.streamex.StreamEx;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
 
 public abstract class ElectricTileEntity extends ModularBlockEntity {
     public final CustomEnergyStorage energy;
-    private final Map<Direction, Supplier<IEnergyStorage>> sidedEnergyCap;
+    private final Map<Direction, Supplier<EnergyHandler>> sidedEnergyCap;
 
     protected ElectricTileEntity(BlockEntityType<? extends BaseBlockEntity> type, BlockPos pos, BlockState state, int capacity) {
         super(type, pos, state);
@@ -34,13 +35,14 @@ public abstract class ElectricTileEntity extends ModularBlockEntity {
         this.sidedEnergyCap = StreamEx.of(inputSides)
             .append(outputSides)
             .distinct()
-            .<Supplier<IEnergyStorage>>mapToEntry(side -> Suppliers.memoize(() -> new SidedEnergyWrapper(this.energy, side == null || inputSides.contains(side), side == null || outputSides.contains(side))))
+            .<Supplier<EnergyHandler>>mapToEntry(side -> Suppliers.memoize(
+                () -> new SidedEnergyWrapper(this.energy, side == null || inputSides.contains(side), side == null || outputSides.contains(side))))
             .toMap();
     }
-    
+
     @Nullable
-    public IEnergyStorage getEnergy(Direction side) {
-        Supplier<IEnergyStorage> supplier = this.sidedEnergyCap.get(side);
+    public EnergyHandler getEnergy(Direction side) {
+        Supplier<EnergyHandler> supplier = this.sidedEnergyCap.get(side);
         return supplier != null ? supplier.get() : null;
     }
 
@@ -48,9 +50,9 @@ public abstract class ElectricTileEntity extends ModularBlockEntity {
      * Charges electric item.
      */
     public void chargeItemFromSelf(ItemStack stack) {
-        IEnergyStorage energy = stack.getCapability(Capabilities.EnergyStorage.ITEM);
-        if (energy != null) {
-            this.energy.extractEnergy(energy.receiveEnergy(this.energy.getEnergyStored(), false), false);
+        EnergyHandler receiver = stack.getCapability(Capabilities.Energy.ITEM, ItemAccess.forStack(stack));
+        if (receiver != null) {
+            EnergyHandlerUtil.move(this.energy, receiver, this.energy.getAmountAsInt(), null);
         }
     }
 
@@ -58,23 +60,19 @@ public abstract class ElectricTileEntity extends ModularBlockEntity {
      * Discharges electric item.
      */
     public void dischargeItemIntoSelf(ItemStack stack) {
-        IEnergyStorage energy = stack.getCapability(Capabilities.EnergyStorage.ITEM);
-        if (energy != null) {
-            this.energy.receiveEnergy(energy.extractEnergy(this.energy.getRequestedEnergy(), false), false);
+        EnergyHandler source = stack.getCapability(Capabilities.Energy.ITEM, ItemAccess.forStack(stack));
+        if (source != null) {
+            EnergyHandlerUtil.move(source, this.energy, this.energy.getRequestedEnergy(), null);
         }
     }
 
-    protected long outputEnergyToNearbyTiles() {
-        long totalUsed = 0;
+    protected void outputEnergyToNearbyTiles() {
         for (Direction direction : getEnergyOutputSides()) {
-            if (this.energy.getEnergyStored() > 0) {
-                int received = Optional.ofNullable(this.level.getCapability(Capabilities.EnergyStorage.BLOCK, this.worldPosition.relative(direction), direction.getOpposite()))
-                    .map(energy -> energy.receiveEnergy(this.energy.extractEnergy(this.energy.getEnergyStored(), true), false))
-                    .orElse(0);
-                totalUsed += this.energy.extractEnergy(received, false);
+            if (this.energy.getAmountAsInt() > 0) {
+                EnergyHandler handler = this.level.getCapability(Capabilities.Energy.BLOCK, this.worldPosition.relative(direction), direction.getOpposite());
+                EnergyHandlerUtil.move(this.energy, handler, Integer.MAX_VALUE, null);
             }
         }
-        return totalUsed;
     }
 
     public Set<Direction> getEnergyInputSides() {
@@ -83,10 +81,6 @@ public abstract class ElectricTileEntity extends ModularBlockEntity {
 
     public Set<Direction> getEnergyOutputSides() {
         return Collections.emptySet();
-    }
-
-    public IEnergyStorage getGlobalEnergyStorage() {
-        return this.energy;
     }
 
     @Override

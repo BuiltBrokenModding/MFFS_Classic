@@ -13,6 +13,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 public class AntiPersonnelModule extends BaseInterdictionModule {
 
@@ -35,7 +36,10 @@ public class AntiPersonnelModule extends BaseInterdictionModule {
             BlockEntity be = interdictionMatrix.be();
             FortronStorage fortron = be.getLevel().getCapability(ModCapabilities.FORTRON, be.getBlockPos(), be.getBlockState(), be, null);
             if (fortron != null) {
-                fortron.extractFortron(MFFSConfig.COMMON.interdictionMatrixKillEnergy.get(), false);
+                try (Transaction tx = Transaction.openRoot()) {
+                    fortron.extractFortron(MFFSConfig.COMMON.interdictionMatrixKillEnergy.get(), tx);
+                    tx.commit();
+                }
             }
             player.displayClientMessage(ModUtil.translate("info", "interdiction_matrix.fairwell", interdictionMatrix.getTitle()), false);
             return true;

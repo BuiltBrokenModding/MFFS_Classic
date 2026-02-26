@@ -20,6 +20,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import one.util.streamex.StreamEx;
 
 import java.util.Collection;
@@ -137,7 +138,7 @@ public final class Fortron {
     }
 
     public static InterdictionMatrix getNearestInterdictionMatrix(Level level, BlockPos pos) {
-        return StreamEx.of(FrequencyGrid.instance(level.isClientSide).get())
+        return StreamEx.of(FrequencyGrid.instance(level.isClientSide()).get())
             .mapPartial(storage -> {
                 BlockEntity be = storage.getOwner();
                 return be.getLevel() == level ? Optional.ofNullable(level.getCapability(ModCapabilities.INTERDICTION_MATRIX, be.getBlockPos(), be.getBlockState(), be, null))
@@ -162,8 +163,15 @@ public final class Fortron {
     private static void doTransferFortron(FortronStorage source, FortronStorage destination, int joules, int limit, boolean isCamo) {
         // Take energy from receiver.
         int transfer = Math.min(Math.abs(joules), limit);
-        int available = destination.insertFortron(source.extractFortron(transfer, true), true);
-        int transferred = source.extractFortron(destination.insertFortron(available, false), false);
+        int transferred;
+        try (Transaction tx = Transaction.openRoot()) {
+            int available;
+            try (Transaction stx = Transaction.open(tx)) {
+                available = destination.insertFortron(source.extractFortron(transfer, stx), stx);
+            }
+            transferred = source.extractFortron(destination.insertFortron(available, tx), tx);
+            tx.commit();
+        }
 
         // Draw Beam Effect
         if (transferred > 0 && !isCamo) {

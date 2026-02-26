@@ -25,6 +25,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import one.util.streamex.IntStreamEx;
 import one.util.streamex.StreamEx;
 import org.jetbrains.annotations.Nullable;
@@ -95,9 +96,12 @@ public class InterdictionMatrixBlockEntity extends ModularBlockEntity implements
         super.tickServer();
 
         if (getTicks() % 10 == 0 && (isActive() || this.frequencySlot.getItem().is(ModItems.INFINITE_POWER_CARD.get()))) {
-            if (this.fortronStorage.extractFortron(getFortronCost() * 10, true) > 0) {
-                this.fortronStorage.extractFortron(getFortronCost() * 10, false);
-                scan();
+            try (Transaction tx = Transaction.openRoot()) {
+                int extracted = this.fortronStorage.extractFortron(getFortronCost() * 10, tx);
+                if (extracted > 0) {
+                    tx.commit();
+                    scan();
+                }
             }
         }
     }

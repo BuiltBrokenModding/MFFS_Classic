@@ -6,9 +6,7 @@
   "mixins": [
       "LevelMixin"
   ],
-  "client": [
-      "MinecraftMixin"
-  ],
+  "client": [],
   "injectors": {
     "defaultRequire": 1
   }

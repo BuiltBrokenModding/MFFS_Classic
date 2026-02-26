@@ -3,15 +3,15 @@ package dev.su5ed.mffs.util.loot;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.advancements.critereon.*;
+import net.minecraft.advancements.criterion.*;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,15 +23,15 @@ public class MenuInventoryTrigger extends SimpleCriterionTrigger<MenuInventoryTr
         return TriggerInstance.CODEC;
     }
 
-    public void trigger(ServerPlayer player, boolean active, IItemHandler itemHandler) {
+    public void trigger(ServerPlayer player, boolean active, ResourceHandler<ItemResource> itemHandler) {
         trigger(player, instance -> {
             if (instance.active != active) {
                 return false;
             }
             List<ItemPredicate> list = new ObjectArrayList<>(instance.items);
-            for (int i = 0; i < itemHandler.getSlots(); i++) {
-                ItemStack stackInSlot = itemHandler.getStackInSlot(i);
-                list.removeIf(predicate -> predicate.test(stackInSlot));
+            for (int i = 0; i < itemHandler.size(); i++) {
+                ItemResource stackInSlot = itemHandler.getResource(i);
+                list.removeIf(predicate -> predicate.test(stackInSlot.toStack()));
             }
             return list.isEmpty();
         });

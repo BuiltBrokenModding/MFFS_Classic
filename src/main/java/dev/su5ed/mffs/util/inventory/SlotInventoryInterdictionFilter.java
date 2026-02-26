@@ -21,8 +21,4 @@ public class SlotInventoryInterdictionFilter extends SlotInventoryFilter impleme
         return this.tintColorSupplier.getAsInt();
     }
 
-    @Override
-    public boolean tintItems() {
-        return false;
-    }
 }

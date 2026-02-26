@@ -9,7 +9,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 
 import java.util.function.Consumer;
 
@@ -40,11 +41,11 @@ public class BatteryItem extends Item {
     public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
         super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
 
-        IEnergyStorage energy = stack.getCapability(Capabilities.EnergyStorage.ITEM);
+        EnergyHandler energy = stack.getCapability(Capabilities.Energy.ITEM, ItemAccess.forStack(stack));
         if (energy != null) {
             tooltipAdder.accept(ModUtil.translate("info", "stored_energy",
-                    Component.literal(String.valueOf(energy.getEnergyStored())).withStyle(ChatFormatting.GRAY),
-                    Component.literal(String.valueOf(energy.getMaxEnergyStored())).withStyle(ChatFormatting.GRAY))
+                    Component.literal(String.valueOf(energy.getAmountAsInt())).withStyle(ChatFormatting.GRAY),
+                    Component.literal(String.valueOf(energy.getCapacityAsInt())).withStyle(ChatFormatting.GRAY))
                 .withStyle(ChatFormatting.DARK_GRAY));
         }
     }
@@ -67,7 +68,7 @@ public class BatteryItem extends Item {
     }
 
     private static float getChargeLevel(ItemStack stack) {
-        IEnergyStorage energy = stack.getCapability(Capabilities.EnergyStorage.ITEM);
-        return energy != null ? energy.getEnergyStored() / (float) energy.getMaxEnergyStored() : 0;
+        EnergyHandler energy = stack.getCapability(Capabilities.Energy.ITEM, ItemAccess.forStack(stack));
+        return energy != null ? energy.getAmountAsInt() / (float) energy.getCapacityAsInt() : 0;
     }
 }

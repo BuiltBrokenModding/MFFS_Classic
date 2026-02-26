@@ -4,17 +4,17 @@ import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.block.ForceFieldBlockImpl;
 import dev.su5ed.mffs.render.*;
 import dev.su5ed.mffs.render.model.*;
+import dev.su5ed.mffs.render.particle.BeamParticleGroup;
 import dev.su5ed.mffs.render.particle.BeamParticleProvider;
+import dev.su5ed.mffs.render.particle.ModParticleRenderType;
 import dev.su5ed.mffs.render.particle.MovingHologramParticleProvider;
 import dev.su5ed.mffs.screen.*;
 import dev.su5ed.mffs.util.ModFluidType;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -32,8 +32,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import static dev.su5ed.mffs.MFFSMod.location;
-
 @EventBusSubscriber(modid = MFFSMod.MODID, value = Dist.CLIENT)
 public final class ModClientSetup {
     private static final Map<Item, LazyRendererFactory> LAZY_RENDERERS = new HashMap<>();
@@ -43,10 +41,6 @@ public final class ModClientSetup {
         if (factory != null) {
             factory.apply(be, modelFactory);
         }
-    }
-
-    public static boolean hasShiftDown() {
-        return Screen.hasShiftDown();
     }
 
     private static void registerLazyRenderers() {
@@ -60,10 +54,7 @@ public final class ModClientSetup {
 
     @SubscribeEvent
     public static void clientSetup(FMLClientSetupEvent event) {
-        event.enqueueWork(() -> {
-            registerLazyRenderers();
-            RenderPostProcessor.initRenderTarget();
-        });
+        event.enqueueWork(ModClientSetup::registerLazyRenderers);
     }
 
     @SubscribeEvent
@@ -113,33 +104,28 @@ public final class ModClientSetup {
     }
 
     @SubscribeEvent
-    public static void onRegisterReloadListeners(AddClientReloadListenersEvent event) {
-        event.addListener(location("post_process"), (ResourceManagerReloadListener) resourceManager -> RenderPostProcessor.reloadPostProcessPass());
-    }
-
-    @SubscribeEvent
     public static void registerClientExtensions(RegisterClientExtensionsEvent event) {
         ModFluidType.FluidRenderInfo properties = ModFluids.FORTRON.getProperties();
         event.registerFluidType(new IClientFluidTypeExtensions() {
             @Override
-            public ResourceLocation getStillTexture() {
+            public Identifier getStillTexture() {
                 return properties.stillTexture();
             }
 
             @Override
-            public ResourceLocation getFlowingTexture() {
+            public Identifier getFlowingTexture() {
                 return properties.flowingTexture();
             }
 
             @Nullable
             @Override
-            public ResourceLocation getOverlayTexture() {
+            public Identifier getOverlayTexture() {
                 return properties.overlayTexture();
             }
 
             @Nullable
             @Override
-            public ResourceLocation getRenderOverlayTexture(Minecraft mc) {
+            public Identifier getRenderOverlayTexture(Minecraft mc) {
                 return properties.renderOverlayTexture();
             }
 
@@ -166,6 +152,11 @@ public final class ModClientSetup {
         Map<BlockState, BlockStateModel> models = event.getBakingResult().blockStateModels();
         ModBlocks.FORCE_FIELD.get().getStateDefinition().getPossibleStates().forEach(state ->
             models.computeIfPresent(state, (location, model) -> new ForceFieldBlockModel(model)));
+    }
+
+    @SubscribeEvent
+    public static void registerParticleGroups(RegisterParticleGroupsEvent event) {
+        event.register(ModParticleRenderType.BEAM, BeamParticleGroup::new);
     }
 
     private ModClientSetup() {

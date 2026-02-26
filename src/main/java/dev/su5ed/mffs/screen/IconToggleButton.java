@@ -7,9 +7,10 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
+import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.function.BooleanSupplier;
 
 public class IconToggleButton extends AbstractButton {
     private final Screen screen;
-    private final ResourceLocation image;
+    private final Identifier image;
     private final int imageU;
     private final int imageV;
     private final BooleanSupplier value;
@@ -27,7 +28,7 @@ public class IconToggleButton extends AbstractButton {
         this(screen, x, y, width, height, tooltip, IconCycleButton.GUI_BUTTONS, imageU, imageV, value, onPress);
     }
 
-    public IconToggleButton(Screen screen, int x, int y, int width, int height, Component tooltip, ResourceLocation image, int imageU, int imageV, BooleanSupplier value, BooleanConsumer onPress) {
+    public IconToggleButton(Screen screen, int x, int y, int width, int height, Component tooltip, Identifier image, int imageU, int imageV, BooleanSupplier value, BooleanConsumer onPress) {
         super(x, y, width, height, tooltip);
 
         this.screen = screen;
@@ -39,7 +40,12 @@ public class IconToggleButton extends AbstractButton {
     }
 
     @Override
-    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void onPress(InputWithModifiers input) {
+        this.onPress.accept(this.value.getAsBoolean());
+    }
+
+    @Override
+    protected void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         int color;
         if (this.value.getAsBoolean()) {
             color = ARGB.colorFromFloat(this.alpha, 0.6F, 0.6F, 0.6F);
@@ -55,11 +61,6 @@ public class IconToggleButton extends AbstractButton {
             ClientTooltipComponent tooltip = ClientTooltipComponent.create(getMessage().getVisualOrderText());
             guiGraphics.renderTooltip(this.screen.getMinecraft().font, List.of(tooltip), mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null);
         }
-    }
-
-    @Override
-    public void onPress() {
-        this.onPress.accept(this.value.getAsBoolean());
     }
 
     @Override

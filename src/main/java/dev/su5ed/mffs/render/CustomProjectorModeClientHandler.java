@@ -59,7 +59,8 @@ public final class CustomProjectorModeClientHandler {
             .findFirst(stack -> stack.is(ModItems.CUSTOM_MODE.get()))
             .ifPresent(stack -> {
                 PoseStack pose = new PoseStack();
-                Vec3 cameraPos = event.getCamera().getPosition();
+                Vec3 cameraPos = event.getLevelRenderState().cameraRenderState.pos;
+                float renderTicks = event.getLevelRenderer().getTicks();
                 CustomProjectorModeItem.StructureCoords coords = stack.get(ModDataComponentTypes.STRUCTURE_COORDS);
                 if (coords != null) {
                     BlockPos primary = coords.primary();
@@ -72,7 +73,7 @@ public final class CustomProjectorModeClientHandler {
                             BlockHighlighter.highlightArea(pose, cameraPos, primary, secondary);
                         } else if (minecraft.hitResult instanceof BlockHitResult blockHitResult) {
                             BlockPos secondary = blockHitResult.getBlockPos();
-                            float alpha = MIN_ALPHA + (MAX_ALPHA - MIN_ALPHA) * 0.5F * Mth.abs(Mth.sin(2 * Mth.PI * (1 / (float) PERIOD_TICKS) * event.getRenderTick()) + 1.0F);
+                            float alpha = MIN_ALPHA + (MAX_ALPHA - MIN_ALPHA) * 0.5F * Mth.abs(Mth.sin(2 * Mth.PI * (1 / (float) PERIOD_TICKS) * renderTicks) + 1.0F);
                             BlockHighlighter.highlightBlock(pose, cameraPos, secondary, BlockHighlighter.LIGHT_RED.withAlpha(alpha));
                             BlockHighlighter.highlightArea(pose, cameraPos, primary, secondary);
                         }

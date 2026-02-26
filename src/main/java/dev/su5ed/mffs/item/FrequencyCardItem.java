@@ -32,7 +32,7 @@ public class FrequencyCardItem extends BaseItem {
             ItemStack stack = player.getItemInHand(usedHand);
             FrequencyCard card = stack.getCapability(ModCapabilities.FREQUENCY_CARD);
             if (card != null) {
-                if (!level.isClientSide) {
+                if (!level.isClientSide()) {
                     int frequency = level.random.nextInt(MAX_FREQUENCY + 1);
                     card.setFrequency(frequency);
                     player.displayClientMessage(ModUtil.translate("info", "frequency.generated",
@@ -50,7 +50,7 @@ public class FrequencyCardItem extends BaseItem {
         return Optional.ofNullable(level.getBlockEntity(context.getClickedPos()))
             .map(be -> level.getCapability(ModCapabilities.FORTRON, be.getBlockPos(), be.getBlockState(), be, null))
             .<InteractionResult>map(fortron -> {
-                if (!level.isClientSide) {
+                if (!level.isClientSide()) {
                     int frequency = Objects.requireNonNull(stack.getCapability(ModCapabilities.FREQUENCY_CARD)).getFrequency();
                     fortron.setFrequency(frequency);
                     context.getPlayer().displayClientMessage(ModUtil.translate("info", "frequency.set",

@@ -20,11 +20,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
 public class MovingHologramParticle extends Particle {
+    private final ParticleColor color;
 
     public MovingHologramParticle(ClientLevel level, Vec3 pos, ParticleColor color, int lifetime) {
         super(level, pos.x(), pos.y(), pos.z(), 0, 0, 0);
 
-        setColor(color.getRed(), color.getGreen(), color.getBlue());
+        this.color = color;
         setLifetime(lifetime);
     }
 
@@ -36,11 +37,15 @@ public class MovingHologramParticle extends Particle {
     }
 
     @Override
+    public ParticleRenderType getGroup() {
+        return ModParticleRenderType.HOLO;
+    }
+
     public void render(VertexConsumer buffer, Camera renderInfo, float partialTicks) {
         PoseStack pose = new PoseStack();
         pose.pushPose();
 
-        Vec3 vec3 = renderInfo.getPosition();
+        Vec3 vec3 = renderInfo.position();
         float xx = (float) (Mth.lerp(partialTicks, this.xo, this.x) - vec3.x());
         float yy = (float) (Mth.lerp(partialTicks, this.yo, this.y) - vec3.y());
         float zz = (float) (Mth.lerp(partialTicks, this.zo, this.z) - vec3.z());
@@ -69,16 +74,11 @@ public class MovingHologramParticle extends Particle {
             pose.last(),
             t -> new TranslucentVertexConsumer(buffer, alpha),
             model,
-            this.rCol, this.gCol, this.bCol,
+            this.color.getRed(), this.color.getGreen(), this.color.getBlue(),
             LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY,
             this.level, new BlockPos((int) getPos().x, (int) getPos().y, (int) getPos().z), state
         );
 
         pose.popPose();
-    }
-
-    @Override
-    public ParticleRenderType getRenderType() {
-        return ModParticleRenderType.HOLO;
     }
 }

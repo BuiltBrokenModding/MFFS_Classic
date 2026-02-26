@@ -20,6 +20,8 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
@@ -43,7 +45,7 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity {
     public CoercionDeriverBlockEntity(BlockPos pos, BlockState state) {
         super(ModObjects.COERCION_DERIVER_BLOCK_ENTITY.get(), pos, state, DEFAULT_FE_CAPACITY);
 
-        this.batterySlot = addSlot("battery", InventorySlot.Mode.BOTH, stack -> stack.getCapability(Capabilities.EnergyStorage.ITEM) != null);
+        this.batterySlot = addSlot("battery", InventorySlot.Mode.BOTH, stack -> stack.getCapability(Capabilities.Energy.ITEM, ItemAccess.forStack(stack)) != null);
         this.fuelSlot = addSlot("fuel", InventorySlot.Mode.BOTH, stack -> stack.is(ModTags.FORTRON_FUEL));
         this.upgradeSlots = createUpgradeSlots(3);
         this.energy.setMaxTransfer(getMaxFETransferRate());
@@ -124,10 +126,13 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity {
     }
 
     private void produceFortron() {
-        final int fortronOutput = calculateFortronProduction();
-        final int fortronStored = fortronProducedLastTick = this.fortronStorage.insertFortron(fortronOutput, false);
-        final int asEnergy = fortronStored * MFFSConfig.COMMON.coercionDriverFePerFortron.get();
-        this.energy.extractEnergy(asEnergy, false);
+        int fortronOutput = calculateFortronProduction();
+        try (Transaction tx = Transaction.openRoot()) {
+            int fortronStored = fortronProducedLastTick = this.fortronStorage.insertFortron(fortronOutput, tx);
+            int asEnergy = fortronStored * MFFSConfig.COMMON.coercionDriverFePerFortron.get();
+            this.energy.extract(asEnergy, tx);
+            tx.commit();
+        }
     }
 
     /**
@@ -137,7 +142,7 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity {
      */
     public int calculateFortronProduction() {
         final int spaceLeft = this.fortronStorage.getFortronCapacity() - this.fortronStorage.getStoredFortron();
-        final int maxFortronFromEnergy = this.energy.getEnergyStored() / MFFSConfig.COMMON.coercionDriverFePerFortron.get();
+        final int maxFortronFromEnergy = this.energy.getAmountAsInt() / MFFSConfig.COMMON.coercionDriverFePerFortron.get();
         return Math.min(maxFortronFromEnergy, Math.min(getMaxFortronProducedPerTick(), spaceLeft));
     }
 
@@ -145,19 +150,30 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity {
         final int energyPerFortron = MFFSConfig.COMMON.coercionDriverFePerFortron.get() - MFFSConfig.COMMON.coercionDriverFortronToFeLoss.get();
 
         // Only run if we can withdraw at least 1 fortron
-        if (this.energy.getEnergyStored() + energyPerFortron < this.energy.getMaxEnergyStored()) {
-            //Calculate upper limits per tick
-            final int maxFortronOut = this.fortronStorage.extractFortron(getMaxFortronProducedPerTick(), true);
-            final int maxEnergyOut = maxFortronOut * energyPerFortron;
+        if (this.energy.getAmountAsInt() + energyPerFortron < this.energy.getCapacityAsInt()) {
+            try (Transaction tx = Transaction.openRoot()) {
+                //Calculate upper limits per tick
+                int maxFortronOut;
+                try (Transaction stx = Transaction.open(tx)) {
+                    maxFortronOut = this.fortronStorage.extractFortron(getMaxFortronProducedPerTick(), stx);
+                }
+                int maxEnergyOut = maxFortronOut * energyPerFortron;
 
-            //Calculate amount of energy that can actually be moved
-            final int maxEnergyReceived = this.energy.receiveEnergy(maxEnergyOut, true);
+                //Calculate amount of energy that can actually be moved
+                final int maxEnergyReceived;
+                try (Transaction stx = Transaction.open(tx)) {
+                    maxEnergyReceived = this.energy.insert(maxEnergyOut, stx);
+                }
 
-            // Calculate actual values to move, round down to avoid material loss
-            final int fortronToRemove = (int) Math.floor(maxEnergyReceived / (float) energyPerFortron);
+                // Calculate actual values to move, round down to avoid material loss
+                final int fortronToRemove = (int) Math.floor(maxEnergyReceived / (float) energyPerFortron);
 
-            // Apply values
-            this.energy.receiveEnergy(this.fortronStorage.extractFortron(fortronToRemove, false) * energyPerFortron, false);
+                // Apply values
+                final int extracted = this.fortronStorage.extractFortron(fortronToRemove, tx);
+                this.energy.insert(extracted * energyPerFortron, tx);
+
+                tx.commit();
+            }
         }
     }
 

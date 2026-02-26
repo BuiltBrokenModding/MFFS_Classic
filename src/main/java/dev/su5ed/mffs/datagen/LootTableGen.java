@@ -51,7 +51,7 @@ final class LootTableGen {
         @Override
         public void generate(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> consumer) {
             // TODO
-//            Item book = BuiltInRegistries.ITEM.get(new ResourceLocation("patchouli", "guide_book"));
+//            Item book = BuiltInRegistries.ITEM.get(new Identifier("patchouli", "guide_book"));
 //            CompoundTag tag = new CompoundTag();
 //            tag.putString("patchouli:book", MFFSMod.MODID + ":handbook");
 //            consumer.accept(location("grant_book_on_first_join"), LootTable.lootTable()

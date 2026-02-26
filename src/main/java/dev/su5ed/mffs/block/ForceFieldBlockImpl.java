@@ -172,8 +172,8 @@ public class ForceFieldBlockImpl extends Block implements ForceFieldBlock, Entit
     }
 
     @Override
-    public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity, InsideBlockEffectApplier effectApplier) {
-        super.entityInside(state, level, pos, entity, effectApplier);
+    protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity, InsideBlockEffectApplier applier, boolean intersects) {
+        super.entityInside(state, level, pos, entity, applier, intersects);
 
         getProjector(level, pos)
             .ifPresent(projector -> {
@@ -182,7 +182,7 @@ public class ForceFieldBlockImpl extends Block implements ForceFieldBlock, Entit
                         return;
                     }
                 }
-                if (!entity.level().isClientSide && entity.distanceToSqr(new Vec3(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5)) < Mth.square(0.7)) {
+                if (!entity.level().isClientSide() && entity.distanceToSqr(new Vec3(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5)) < Mth.square(0.7)) {
                     BiometricIdentifier identifier = projector.getBiometricIdentifier();
                     boolean isAuthorizedPlayer = entity instanceof Player player && isAuthorized(identifier, player);
 

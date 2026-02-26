@@ -2,10 +2,10 @@ import me.modmuss50.mpp.ReleaseType
 
 plugins {
     `maven-publish`
-    id("net.neoforged.moddev") version "2.0.107"
+    id("net.neoforged.moddev") version "2.0.140"
     id("me.modmuss50.mod-publish-plugin") version "0.8.+"
     id("wtf.gofancy.git-changelog") version "1.1.+"
-    id("org.moddedmc.wiki.toolkit") version "0.2.4"
+    id("org.moddedmc.wiki.toolkit") version "0.4.+"
 }
 
 group = "dev.su5ed.mffs"
@@ -41,7 +41,6 @@ neoForge {
         configureEach {
             systemProperty("forge.logging.markers", "REGISTRIES")
             systemProperty("forge.logging.console.level", "debug")
-            additionalRuntimeClasspathConfiguration.dependencies.add(dependencies.create(group = "one.util", name = "streamex", version = versionStreamex))
         }
 
         create("client") {
@@ -79,7 +78,6 @@ neoForge {
 wiki {
     docs {
         register("mffs") {             
-            exportedAssetNamespaces.add("mffs")
             root = file("docs/mffs")
         }
     }
@@ -111,10 +109,10 @@ dependencies {
     implementation(jarJar(group = "one.util", name = "streamex", version = versionStreamex))
 
     // compile against the JEI API but do not include it at runtime     
-    compileOnly("mezz.jei:jei-1.21.8-common-api:$versionJei")
-    compileOnly("mezz.jei:jei-1.21.8-neoforge-api:$versionJei")
+    compileOnly("mezz.jei:jei-1.21.11-common-api:$versionJei")
+    compileOnly("mezz.jei:jei-1.21.11-neoforge-api:$versionJei")
     // at runtime, use the full JEI jar for NeoForge
-    runtimeOnly("mezz.jei:jei-1.21.8-neoforge:$versionJei")
+    runtimeOnly("mezz.jei:jei-1.21.11-neoforge:$versionJei")
 
     compileOnly(group = "mcjty.theoneprobe", name = "theoneprobe", version = versionTOP) { isTransitive = false }
 //    runtimeOnly("org.sinytra:item-asset-export-neoforge:1.0.2+1.21")

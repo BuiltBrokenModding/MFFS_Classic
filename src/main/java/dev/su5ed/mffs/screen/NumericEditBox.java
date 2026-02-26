@@ -2,6 +2,7 @@ package dev.su5ed.mffs.screen;
 
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.network.chat.Component;
 
 public class NumericEditBox extends EditBox {
@@ -11,7 +12,8 @@ public class NumericEditBox extends EditBox {
     }
 
     @Override
-    public boolean charTyped(char codePoint, int modifiers) {
+    public boolean charTyped(CharacterEvent event) {
+        int codePoint = event.codepoint();
         if (canConsumeInput() && Character.isDigit(codePoint)) {
             insertText(Character.toString(codePoint));
             return true;
