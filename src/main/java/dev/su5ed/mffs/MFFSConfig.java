@@ -42,7 +42,8 @@ public class MFFSConfig {
 
         public final ModConfigSpec.IntValue interdictionMatrixKillEnergy;
 
-        public final ModConfigSpec.BooleanValue disableForceFieldDamageForAuthorizedPlayers;
+        public final ModConfigSpec.BooleanValue disableForceFieldInstantDeathForAuthorizedPlayers;
+        public final ModConfigSpec.BooleanValue disableShockModuleDamageForAuthorizedPlayers;
         public final ModConfigSpec.BooleanValue disableForceFieldEffectsForAuthorizedPlayers;
         public final ModConfigSpec.BooleanValue allowWalkThroughForceFields;
 
@@ -99,9 +100,12 @@ public class MFFSConfig {
             builder.pop();
 
             builder.push("force_field");
-            this.disableForceFieldDamageForAuthorizedPlayers = builder
-                .comment("Prevent authorized players from taking damage when passing through force fields")
-                .define("disableForceFieldDamageForAuthorizedPlayers", false);
+            this.disableForceFieldInstantDeathForAuthorizedPlayers = builder
+                .comment("Prevent authorized players from taking instant death damage when passing through force fields")
+                .define("disableForceFieldInstantDeathForAuthorizedPlayers", false);
+            this.disableShockModuleDamageForAuthorizedPlayers = builder
+                .comment("Prevent authorized players from taking shock module damage when passing through force fields")
+                .define("disableShockModuleDamageForAuthorizedPlayers", false);
             this.disableForceFieldEffectsForAuthorizedPlayers = builder
                 .comment("Remove confusion and slowness effects for authorized players passing through force fields")
                 .define("disableForceFieldEffectsForAuthorizedPlayers", false);
