@@ -4,10 +4,7 @@ import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.block.ForceFieldBlockImpl;
 import dev.su5ed.mffs.render.*;
 import dev.su5ed.mffs.render.model.*;
-import dev.su5ed.mffs.render.particle.BeamParticleGroup;
-import dev.su5ed.mffs.render.particle.BeamParticleProvider;
-import dev.su5ed.mffs.render.particle.ModParticleRenderType;
-import dev.su5ed.mffs.render.particle.MovingHologramParticleProvider;
+import dev.su5ed.mffs.render.particle.*;
 import dev.su5ed.mffs.screen.*;
 import dev.su5ed.mffs.util.ModFluidType;
 import net.minecraft.client.Minecraft;
@@ -157,6 +154,7 @@ public final class ModClientSetup {
     @SubscribeEvent
     public static void registerParticleGroups(RegisterParticleGroupsEvent event) {
         event.register(ModParticleRenderType.BEAM, BeamParticleGroup::new);
+        event.register(ModParticleRenderType.HOLO, MovingHolograpParticleGroup::new);
     }
 
     private ModClientSetup() {

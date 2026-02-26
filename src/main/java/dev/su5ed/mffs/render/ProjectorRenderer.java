@@ -44,8 +44,13 @@ public class ProjectorRenderer implements BlockEntityRenderer<ProjectorBlockEnti
     }
 
     public static final class ProjectorRenderState extends BlockEntityRenderState {
-        public ProjectorBlockEntity projector;
+        public ProjectorBlockEntity blockEntity;
+
+        public boolean isActive;
+        public int animation;
+        public int animationSpeed;
         public float partialTick;
+        public boolean hasMode;
     }
 
     @Override
@@ -57,28 +62,31 @@ public class ProjectorRenderer implements BlockEntityRenderer<ProjectorBlockEnti
     public void extractRenderState(ProjectorBlockEntity blockEntity, ProjectorRenderState renderState, float partialTick, Vec3 cameraPosition, ModelFeatureRenderer.CrumblingOverlay breakProgress) {
         BlockEntityRenderer.super.extractRenderState(blockEntity, renderState, partialTick, cameraPosition, breakProgress);
 
-        renderState.projector = blockEntity;
+        renderState.blockEntity = blockEntity;
+        renderState.isActive = blockEntity.isActive();
+        renderState.animation = blockEntity.getAnimation();
+        renderState.animationSpeed = blockEntity.getAnimationSpeed();
         renderState.partialTick = partialTick;
+        renderState.hasMode = blockEntity.getMode().isPresent();
     }
 
     @Override
     public void submit(ProjectorRenderState renderState, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState cameraRenderState) {
-        ProjectorBlockEntity blockEntity = renderState.projector;
-
         renderRotor(renderState, nodeCollector, poseStack);
-        blockEntity.getMode().ifPresent(mode -> {
+        if (renderState.hasMode) {
+            ProjectorBlockEntity blockEntity = renderState.blockEntity;
             RenderTickHandler.addTransparentRenderer(ModRenderType.HOLO_TRIANGLE, this.holoRenderer.apply(blockEntity));
             ModClientSetup.renderLazy(blockEntity.getModeStack().getItem(), blockEntity, this.modelPartCache);
-        });
+        }
     }
 
     private void renderRotor(ProjectorRenderState renderState, SubmitNodeCollector nodeCollector, PoseStack poseStack) {
-        Identifier texture = renderState.projector.isActive() ? PROJECTOR_ON_TEXTURE : PROJECTOR_OFF_TEXTURE;
+        Identifier texture = renderState.isActive ? PROJECTOR_ON_TEXTURE : PROJECTOR_OFF_TEXTURE;
 
         poseStack.pushPose();
         poseStack.translate(0.5, -0.75, 0.5);
-        float activePartial = renderState.projector.isActive() ? renderState.partialTick : 0;
-        poseStack.mulPose(Axis.YN.rotationDegrees((renderState.projector.getAnimation() + activePartial) * renderState.projector.getAnimationSpeed()));
+        float activePartial = renderState.isActive ? renderState.partialTick : 0;
+        poseStack.mulPose(Axis.YN.rotationDegrees((renderState.animation + activePartial) * renderState.animationSpeed));
 
         nodeCollector.submitModelPart(this.rotor, poseStack, RenderTypes.entityTranslucent(texture), renderState.lightCoords, OverlayTexture.NO_OVERLAY, null);
 

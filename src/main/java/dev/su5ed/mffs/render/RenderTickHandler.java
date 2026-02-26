@@ -60,7 +60,7 @@ public final class RenderTickHandler {
     }
 
     @SubscribeEvent
-    public static void renderLevelAfterTranslucentBlocks(RenderLevelStageEvent.AfterTranslucentBlocks event) {
+    public static void renderLevelLate(RenderLevelStageEvent.AfterWeather event) {
         Minecraft minecraft = Minecraft.getInstance();
         PoseStack poseStack = event.getPoseStack();
         int ticks = event.getLevelRenderer().getTicks();

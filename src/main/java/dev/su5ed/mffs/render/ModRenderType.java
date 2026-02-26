@@ -11,15 +11,6 @@ import java.util.function.Function;
 import static net.minecraft.client.renderer.rendertype.LayeringTransform.VIEW_OFFSET_Z_LAYERING;
 
 public abstract class ModRenderType {
-    // FIXME
-//    protected static final RenderStateShard.LayeringStateShard VIEW_OFFSET_Z_SMOOTH_LAYERING = new RenderStateShard.LayeringStateShard("mffs:translucent_smooth", () -> {
-//        TRANSLUCENT_TARGET.setupRenderState();
-//        GL11.glEnable(GL11.GL_LINE_SMOOTH);
-//    }, () -> {
-//        TRANSLUCENT_TARGET.clearRenderState();
-//        GL11.glDisable(GL11.GL_LINE_SMOOTH);
-//    });
-
     /**
      * Source: Mekanism
      * <a href="https://github.com/mekanism/Mekanism/blob/6093851f05dfb5ff2da52ace87f06ea03a7571a4/src/main/java/mekanism/client/render/MekanismRenderType.java#L47">MekanismRenderType</a>
@@ -99,7 +90,7 @@ public abstract class ModRenderType {
             .useOverlay()
             .affectsCrumbling()
             .sortOnUpload()
-            .setLayeringTransform(VIEW_OFFSET_Z_LAYERING) // TODO Smooth layering
+            .setLayeringTransform(VIEW_OFFSET_Z_LAYERING)
             .createRenderSetup()
     );
 }

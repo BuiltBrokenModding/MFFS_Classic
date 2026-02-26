@@ -190,14 +190,17 @@ public final class BlockHighlighter {
         float green = color.green();
         float blue = color.blue();
         float alpha = color.alpha();
+        float lineWidth = Minecraft.getInstance().getWindow().getAppropriateLineWidth();
 
         buffer.addVertex(entry.pose(), (float) start.x, (float) start.y, (float) start.z)
             .setColor(red, green, blue, alpha)
-            .setNormal(entry, (float) normal.x, (float) normal.y, (float) normal.z);
+            .setNormal(entry, (float) normal.x, (float) normal.y, (float) normal.z)
+            .setLineWidth(lineWidth);
 
         buffer.addVertex(entry.pose(), (float) end.x, (float) end.y, (float) end.z)
             .setColor(red, green, blue, alpha)
-            .setNormal(entry, (float) normal.x, (float) normal.y, (float) normal.z);
+            .setNormal(entry, (float) normal.x, (float) normal.y, (float) normal.z)
+            .setLineWidth(lineWidth);
     }
 
     public record Color(float red, float green, float blue, float alpha) {

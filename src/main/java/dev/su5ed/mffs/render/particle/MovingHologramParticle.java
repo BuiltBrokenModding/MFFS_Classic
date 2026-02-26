@@ -1,22 +1,10 @@
 package dev.su5ed.mffs.render.particle;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import dev.su5ed.mffs.setup.ModBlocks;
-import dev.su5ed.mffs.util.TranslucentVertexConsumer;
-import net.minecraft.client.Camera;
-import net.minecraft.client.Minecraft;
+import dev.su5ed.mffs.render.particle.MovingHolograpParticleGroup.MovingHologramParticleData;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleRenderType;
-import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
-import net.minecraft.client.renderer.block.ModelBlockRenderer;
-import net.minecraft.client.renderer.block.model.BlockStateModel;
-import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
 public class MovingHologramParticle extends Particle {
@@ -41,44 +29,11 @@ public class MovingHologramParticle extends Particle {
         return ModParticleRenderType.HOLO;
     }
 
-    public void render(VertexConsumer buffer, Camera renderInfo, float partialTicks) {
-        PoseStack pose = new PoseStack();
-        pose.pushPose();
-
-        Vec3 vec3 = renderInfo.position();
-        float xx = (float) (Mth.lerp(partialTicks, this.xo, this.x) - vec3.x());
-        float yy = (float) (Mth.lerp(partialTicks, this.yo, this.y) - vec3.y());
-        float zz = (float) (Mth.lerp(partialTicks, this.zo, this.z) - vec3.z());
-        pose.translate(xx, yy, zz);
-
-        pose.translate(0.5, 0.5, 0.5);
-        pose.scale(1.01f, 1.01f, 1.01f);
-        pose.translate(-0.5, -0.5, -0.5);
-
-        float completion = this.age / (float) this.lifetime;
-        pose.scale(1, completion, 1);
-
-        float op = 0.5f;
-
-        int remaining = this.lifetime - this.age;
-        if (remaining <= 4) {
-            op = 0.5f - (5 - remaining) * 0.1F;
-        }
-
-        int alpha = (int) (255 * op * 2);
-        BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
-        ModelBlockRenderer modelRenderer = blockRenderer.getModelRenderer();
-        BlockState state = ModBlocks.FORCE_FIELD.get().defaultBlockState();
-        BlockStateModel model = blockRenderer.getBlockModel(state);
-        modelRenderer.renderModel(
-            pose.last(),
-            t -> new TranslucentVertexConsumer(buffer, alpha),
-            model,
-            this.color.getRed(), this.color.getGreen(), this.color.getBlue(),
-            LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY,
-            this.level, new BlockPos((int) getPos().x, (int) getPos().y, (int) getPos().z), state
-        );
-
-        pose.popPose();
+    public MovingHologramParticleData extract(float partialTicks) {
+        double x0 = Mth.lerp(partialTicks, this.xo, this.x);
+        double y0 = Mth.lerp(partialTicks, this.yo, this.y);
+        double z0 = Mth.lerp(partialTicks, this.zo, this.z);
+        
+        return new MovingHologramParticleData(this.color, this.age, this.lifetime, x0, y0, z0);
     }
 }

@@ -1,11 +1,7 @@
 package dev.su5ed.mffs.setup;
 
 import dev.su5ed.mffs.MFFSMod;
-import dev.su5ed.mffs.menu.BiometricIdentifierMenu;
-import dev.su5ed.mffs.menu.CoercionDeriverMenu;
-import dev.su5ed.mffs.menu.FortronCapacitorMenu;
-import dev.su5ed.mffs.menu.InterdictionMatrixMenu;
-import dev.su5ed.mffs.menu.ProjectorMenu;
+import dev.su5ed.mffs.menu.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.player.Inventory;

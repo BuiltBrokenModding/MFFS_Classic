@@ -1,6 +1,7 @@
 package dev.su5ed.mffs.render.particle;
 
 import com.mojang.math.Axis;
+import dev.su5ed.mffs.render.particle.BeamParticleGroup.BeamParticleData;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
@@ -55,7 +56,7 @@ public class BeamParticle extends Particle {
         return ModParticleRenderType.BEAM;
     }
 
-    public BeamParticleGroup.BeamParticleData extract(Camera camera, float partialTicks) {
+    public BeamParticleData extract(Camera camera, float partialTicks) {
         Matrix4f mat = new Matrix4f();
         mat.identity();
 
@@ -105,7 +106,7 @@ public class BeamParticle extends Particle {
         
         this.prevSize = size;
         
-        return new BeamParticleGroup.BeamParticleData(
+        return new BeamParticleData(
             this.color,
             vectors,
             mat,

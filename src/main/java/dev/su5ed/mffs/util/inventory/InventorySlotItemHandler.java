@@ -19,7 +19,6 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-// TODO Rework including InventorySlot
 public class InventorySlotItemHandler implements ResourceHandler<ItemResource>, ValueIOSerializable {
     private final Runnable onChanged;
     private final List<InventorySlot> slots = new ArrayList<>();

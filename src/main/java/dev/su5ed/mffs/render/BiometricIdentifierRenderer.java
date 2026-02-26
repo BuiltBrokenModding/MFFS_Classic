@@ -30,7 +30,9 @@ public class BiometricIdentifierRenderer implements BlockEntityRenderer<Biometri
     }
 
     public static final class BiometricIdentifierRenderState extends BlockEntityRenderState {
-        public BiometricIdentifierBlockEntity blockEntity;
+        public boolean shouldRender;
+        public Direction facing;
+        public int animation;
     }
 
     @Override
@@ -42,23 +44,23 @@ public class BiometricIdentifierRenderer implements BlockEntityRenderer<Biometri
     public void extractRenderState(BiometricIdentifierBlockEntity blockEntity, BiometricIdentifierRenderState renderState, float partialTick, Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         BlockEntityRenderer.super.extractRenderState(blockEntity, renderState, partialTick, cameraPosition, breakProgress);
 
-        renderState.blockEntity = blockEntity;
+        BlockState state = blockEntity.getBlockState();
+        renderState.shouldRender = blockEntity.hasLevel() && blockEntity.isActive();
+        renderState.facing = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
+        renderState.animation = blockEntity.getAnimation();
     }
 
     @Override
     public void submit(BiometricIdentifierRenderState renderState, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState cameraRenderState) {
-        BiometricIdentifierBlockEntity blockEntity = renderState.blockEntity;
-
-        if (blockEntity.hasLevel() && blockEntity.isActive()) {
-            BlockState state = blockEntity.getBlockState();
-            Direction facing = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
+        if (renderState.shouldRender) {
+            Direction facing = renderState.facing;
 
             poseStack.pushPose();
             poseStack.translate(0.5D, 0.5D, 0.5D);
             poseStack.mulPose(Axis.YN.rotationDegrees(facing.toYRot()));
             poseStack.mulPose(Axis.XP.rotationDegrees(25));
-            float offset = 0.4F * (0.5F - quadraticCurve(Math.min(0.05F + blockEntity.getAnimation() / 50F, 0.5F)));
-            float alpha = Math.max(0, Math.min(-1F + blockEntity.getAnimation() / 4F, 1));
+            float offset = 0.4F * (0.5F - quadraticCurve(Math.min(0.05F + renderState.animation / 50F, 0.5F)));
+            float alpha = Math.max(0, Math.min(-1F + renderState.animation / 4F, 1));
             poseStack.translate(-0.5, -0.65 - offset, -0.5 - offset * 0.6);
             poseStack.translate(0.5, 0.5, 0.5);
             poseStack.scale(0.85F, 0.85F, 0.85F);

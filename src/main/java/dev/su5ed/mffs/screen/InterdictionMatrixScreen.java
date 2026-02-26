@@ -12,7 +12,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 public class InterdictionMatrixScreen extends FortronScreen<InterdictionMatrixMenu> {
     public static final Identifier BACKGROUND = MFFSMod.location("textures/gui/interdiction_matrix.png");

@@ -1,11 +1,17 @@
 package dev.su5ed.mffs.compat;
 
 import dev.su5ed.mffs.screen.InterdictionMatrixScreen;
+import dev.su5ed.mffs.setup.ModFluids;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
+import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.runtime.IJeiRuntime;
 import net.minecraft.resources.Identifier;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidType;
+
+import java.util.List;
 
 import static dev.su5ed.mffs.MFFSMod.location;
 
@@ -16,8 +22,10 @@ public class MFFSJeiPlugin implements IModPlugin {
     @Override
     public void onRuntimeAvailable(IJeiRuntime runtime) {
         // Hide Fortron from JEI as it's not a crafting fluid
-        // TODO Update when JEI is available
-//        runtime.getIngredientManager().removeIngredientsAtRuntime(ForgeTypes.FLUID_STACK, List.of(new FluidStack(ModFluids.FORTRON_FLUID.get(), FluidType.BUCKET_VOLUME)));
+        runtime.getIngredientManager().removeIngredientsAtRuntime(
+            NeoForgeTypes.FLUID_STACK,
+            List.of(new FluidStack(ModFluids.FORTRON_FLUID.get(), FluidType.BUCKET_VOLUME))
+        );
     }
 
     @Override

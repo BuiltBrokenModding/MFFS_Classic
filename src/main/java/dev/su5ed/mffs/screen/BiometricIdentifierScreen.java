@@ -12,7 +12,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +37,7 @@ public class BiometricIdentifierScreen extends FortronScreen<BiometricIdentifier
         for (int i = 0, x = 0, y = 0; i < FieldPermission.values().length; i++) {
             x++;
             FieldPermission permission = FieldPermission.values()[i];
-            AbstractWidget widget = addWidget(new IconToggleButton(this, this.width / 2 - 21 + 20 * x, this.height / 2 - 87 + 20 * y, 18, 18, ModUtil.translateTooltip(permission), 18, 18 * i,
+            AbstractWidget widget = addWidget(new IconToggleButton(this.width / 2 - 21 + 20 * x, this.height / 2 - 87 + 20 * y, 18, 18, ModUtil.translateTooltip(permission), 18, 18 * i,
                 () -> this.menu.hasPermission(permission), value -> togglePermission(permission, !value)));
             this.permissionButtons.add(widget);
             if (i % 3 == 0 && i != 0) {
