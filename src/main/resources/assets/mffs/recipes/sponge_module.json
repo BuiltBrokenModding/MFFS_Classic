@@ -1,0 +1,21 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "SSS",
+        "SFS",
+        "SSS"
+    ],
+    "key": {
+        "F": {
+            "item": "mffs:focus_matrix"
+        },
+        "S": {
+            "item": "minecraft:sponge",
+            "data": 0
+        }
+    },
+    "result": {
+        "item": "mffs:sponge_module",
+        "count": 1
+    }
+}

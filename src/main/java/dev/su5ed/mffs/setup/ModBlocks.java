@@ -2,39 +2,39 @@ package dev.su5ed.mffs.setup;
 
 import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.block.*;
-import dev.su5ed.mffs.blockentity.BaseBlockEntity;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
-import net.minecraft.world.level.material.MapColor;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.registries.DeferredBlock;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import net.minecraft.block.Block;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.registries.IForgeRegistry;
 
-import java.util.function.Function;
-import java.util.function.Supplier;
-
+@Mod.EventBusSubscriber(modid = MFFSMod.MODID)
 public final class ModBlocks {
-    private static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MFFSMod.MODID);
 
-    public static final DeferredBlock<ProjectorBlock> PROJECTOR = block("projector", ProjectorBlock::new);
-    public static final DeferredBlock<CoercionDeriverBlock> COERCION_DERIVER = block("coercion_deriver", CoercionDeriverBlock::new);
-    public static final DeferredBlock<FortronCapacitorBlock> FORTRON_CAPACITOR = block("fortron_capacitor", FortronCapacitorBlock::new);
-    public static final DeferredBlock<ForceFieldBlockImpl> FORCE_FIELD = BLOCKS.registerBlock("force_field", ForceFieldBlockImpl::new);
-    public static final DeferredBlock<BiometricIdentifierBlock> BIOMETRIC_IDENTIFIER = block("biometric_identifier", BiometricIdentifierBlock::new);
-    public static final DeferredBlock<BaseEntityBlock> INTERDICTION_MATRIX = baseEntityBlock("interdiction_matrix", () -> ModObjects.INTERDICTION_MATRIX_BLOCK_ENTITY);
+    // Static block references - populated during RegistryEvent.Register<Block>
+    public static ProjectorBlock PROJECTOR;
+    public static CoercionDeriverBlock COERCION_DERIVER;
+    public static FortronCapacitorBlock FORTRON_CAPACITOR;
+    public static ForceFieldBlockImpl FORCE_FIELD;
+    public static BiometricIdentifierBlock BIOMETRIC_IDENTIFIER;
+    public static InterdictionMatrixBlock INTERDICTION_MATRIX;
 
-    public static void init(IEventBus bus) {
-        BLOCKS.register(bus);
+    @SubscribeEvent
+    public static void registerBlocks(RegistryEvent.Register<Block> event) {
+        IForgeRegistry<Block> registry = event.getRegistry();
+        PROJECTOR             = register(registry, new ProjectorBlock(), "projector");
+        COERCION_DERIVER      = register(registry, new CoercionDeriverBlock(), "coercion_deriver");
+        FORTRON_CAPACITOR     = register(registry, new FortronCapacitorBlock(), "fortron_capacitor");
+        FORCE_FIELD           = register(registry, new ForceFieldBlockImpl(), "force_field");
+        BIOMETRIC_IDENTIFIER  = register(registry, new BiometricIdentifierBlock(), "biometric_identifier");
+        INTERDICTION_MATRIX   = register(registry, new InterdictionMatrixBlock(), "interdiction_matrix");
     }
 
-    private static DeferredBlock<BaseEntityBlock> baseEntityBlock(String name, Supplier<Supplier<? extends BlockEntityType<? extends BaseBlockEntity>>> beTypeProvider) {
-        return BLOCKS.registerBlock(name, properties -> new BaseEntityBlock(properties.mapColor(MapColor.STONE).instrument(NoteBlockInstrument.BASEDRUM).strength(3F).requiresCorrectToolForDrops(), beTypeProvider.get()));
-    }
-
-    private static <T extends Block> DeferredBlock<T> block(String name, Function<BlockBehaviour.Properties, T> factory) {
-        return BLOCKS.registerBlock(name, properties -> factory.apply(properties.mapColor(MapColor.STONE).instrument(NoteBlockInstrument.BASEDRUM).strength(3F).requiresCorrectToolForDrops()));
+    private static <T extends Block> T register(IForgeRegistry<Block> registry, T block, String name) {
+        block.setRegistryName(MFFSMod.MODID, name);
+        block.setTranslationKey(MFFSMod.MODID + "." + name);
+        registry.register(block);
+        return block;
     }
 
     private ModBlocks() {}

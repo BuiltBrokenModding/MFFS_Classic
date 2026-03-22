@@ -1,0 +1,17 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        " F ",
+        "FFF",
+        " F "
+    ],
+    "key": {
+        "F": {
+            "item": "mffs:focus_matrix"
+        }
+    },
+    "result": {
+        "item": "mffs:sphere_mode",
+        "count": 1
+    }
+}

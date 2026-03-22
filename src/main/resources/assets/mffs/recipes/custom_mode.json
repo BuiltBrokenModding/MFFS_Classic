@@ -1,0 +1,29 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        " C ",
+        "TFP",
+        " S "
+    ],
+    "key": {
+        "C": {
+            "item": "mffs:cube_mode"
+        },
+        "F": {
+            "item": "mffs:focus_matrix"
+        },
+        "P": {
+            "item": "mffs:pyramid_mode"
+        },
+        "S": {
+            "item": "mffs:sphere_mode"
+        },
+        "T": {
+            "item": "mffs:tube_mode"
+        }
+    },
+    "result": {
+        "item": "mffs:custom_mode",
+        "count": 1
+    }
+}

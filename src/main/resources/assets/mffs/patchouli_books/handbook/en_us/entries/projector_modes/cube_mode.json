@@ -4,23 +4,23 @@
     "category": "mffs:projector_modes",
     "pages": [
         {
-            "type": "patchouli:spotlight",
+            "type": "spotlight",
             "item": "mffs:cube_mode",
             "link_recipe": true,
-            "text": "By default, the $(2)Cube Mode$() sets the Projector to generate a force field in the shape of a cube that is exactly 1 block thick. Each $(l:mffs:upgrade_modules/scale_module)$(5)Scale Module$() increases the size of the force field by 1 block in all directions."
+            "text": "By default, the $(2)Cube Mode$() sets the Projector to generate a force field in the shape of a cube that is exactly 1 block thick. Each $(l:upgrade_modules/scale_module)$(5)Scale Module$() increases the size of the force field by 1 block in all directions."
         },
         {
-            "type": "patchouli:crafting",
+            "type": "crafting",
             "recipe": "mffs:cube_mode",
             "text": "Crafting the $(2)Cube Mode$()."
         },
         {
-            "type": "patchouli:text",
+            "type": "text",
             "title": "Field Adjustment",
-            "text": "The $(2)Cube Mode$() item can also be used to create cuboid (or right rectangular prism) shape force fields. Placing a $(l:mffs:upgrade_modules/scale_module)$(5)Scale Module$() into an item slot marked by a directional arrow will scale the field by 1 block in only that direction. For example, to increase the height of a force field by 1 block; add a $(l:mffs:upgrade_modules/scale_module)$(5)Scale Module$() into an item slot marked by a directional arrow pointing towards the top-left or top-right of the GUI screen."
+            "text": "The $(2)Cube Mode$() item can also be used to create cuboid (or right rectangular prism) shape force fields. Placing a $(l:upgrade_modules/scale_module)$(5)Scale Module$() into an item slot marked by a directional arrow will scale the field by 1 block in only that direction. For example, to increase the height of a force field by 1 block; add a $(l:upgrade_modules/scale_module)$(5)Scale Module$() into an item slot marked by a directional arrow pointing towards the top-left or top-right of the GUI screen."
         },
         {
-            "type": "patchouli:image",
+            "type": "image",
             "images": [
                 "mffs:textures/gui/handbook/cube_mode.png"
             ],

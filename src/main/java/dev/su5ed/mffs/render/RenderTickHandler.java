@@ -21,97 +21,128 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package dev.su5ed.mffs.render;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.su5ed.mffs.MFFSMod;
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.entity.Entity;
+import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.relauncher.Side;
 import one.util.streamex.EntryStream;
 import one.util.streamex.StreamEx;
 
-import java.util.*;
-import java.util.function.Consumer;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
- * Source: Mekanism <a href="https://github.com/mekanism/Mekanism/blob/6093851f05dfb5ff2da52ace87f06ea03a7571a4/src/main/java/mekanism/client/render/RenderTickHandler.java">RenderTickHandler</a>
+ * Reference (1.20.1): uses {@code @EventBusSubscriber(Dist.CLIENT)},
+ *   {@code RenderLevelStageEvent.AfterWeather}, {@code MultiBufferSource.BufferSource}.
+ * In 1.12.2: uses {@code @Mod.EventBusSubscriber(Side.CLIENT)},
+ *   {@code RenderWorldLastEvent}, direct {@code GlStateManager} for GL state.
+ *
+ * Source inspiration: Mekanism
+ * <a href="https://github.com/mekanism/Mekanism/blob/6093851f05dfb5ff2da52ace87f06ea03a7571a4/src/main/java/mekanism/client/render/RenderTickHandler.java">RenderTickHandler</a>
  */
-@EventBusSubscriber(modid = MFFSMod.MODID, value = Dist.CLIENT)
+@Mod.EventBusSubscriber(value = Side.CLIENT, modid = MFFSMod.MODID)
 public final class RenderTickHandler {
-    private static final Map<RenderType, List<LazyRenderer>> transparentRenderers = new HashMap<>();
+    private static final Map<ModRenderType, List<LazyRenderer>> transparentRenderers = new HashMap<>();
+    /** Monotonic client tick counter; incremented on each CLIENT tick START. */
+    private static int clientTicks = 0;
 
-    public static void addTransparentRenderer(RenderType renderType, LazyRenderer render) {
+    /**
+     * Enqueue a {@link LazyRenderer} to be rendered on the next {@link RenderWorldLastEvent}.
+     * Should be called from a TESR's {@code render()} method.
+     * The queue is cleared automatically at the start of each client tick.
+     */
+    public static void addTransparentRenderer(ModRenderType renderType, LazyRenderer render) {
         transparentRenderers.computeIfAbsent(renderType, r -> new ArrayList<>()).add(render);
     }
 
     @SubscribeEvent
-    public static void onTick(ClientTickEvent.Pre event) {
-        transparentRenderers.clear();
+    public static void onTick(TickEvent.ClientTickEvent event) {
+        if (event.phase == TickEvent.Phase.START) {
+            transparentRenderers.clear();
+            clientTicks++;
+        }
     }
 
     @SubscribeEvent
-    public static void renderLevelLate(RenderLevelStageEvent.AfterWeather event) {
-        Minecraft minecraft = Minecraft.getInstance();
-        PoseStack poseStack = event.getPoseStack();
-        int ticks = event.getLevelRenderer().getTicks();
-        DeltaTracker partialTicks = minecraft.getDeltaTracker();
-        MultiBufferSource.BufferSource bufferSource = minecraft.renderBuffers().bufferSource();
+    public static void renderLevelLate(RenderWorldLastEvent event) {
+        Minecraft mc = Minecraft.getMinecraft();
+        Entity viewer = mc.getRenderViewEntity();
+        if (viewer == null) return;
 
-        poseStack.pushPose();
-        // here we translate based on the inverse position of the client viewing camera to get back to 0, 0, 0
-        Vec3 camPos = event.getLevelRenderState().cameraRenderState.pos;
-        poseStack.translate(-camPos.x, -camPos.y, -camPos.z);
+        float partialTick = event.getPartialTicks();
+        double camX = viewer.lastTickPosX + (viewer.posX - viewer.lastTickPosX) * partialTick;
+        double camY = viewer.lastTickPosY + (viewer.posY - viewer.lastTickPosY) * partialTick;
+        double camZ = viewer.lastTickPosZ + (viewer.posZ - viewer.lastTickPosZ) * partialTick;
 
-        // Render
-        Consumer<TransparentRenderInfo> consumer = info -> info.render(poseStack, bufferSource, ticks, partialTicks.getGameTimeDeltaPartialTick(false));
+        // Render camo-TESR delegates (force field blocks camouflaged as chests etc.).
+        // This replaces the old class-wide ForceFieldBlockEntityRenderer TESR registration;
+        // only the small set of instances that actually have a delegate is iterated here.
+        BlockEntityRenderDelegate.INSTANCE.renderAllDelegates(camX, camY, camZ, partialTick);
+
+        if (transparentRenderers.isEmpty()) return;
+
+        final Vec3d camPos = new Vec3d(camX, camY, camZ);
+        final int ticks = clientTicks;
+
+        // Translate to world-origin (blocks at absolute coords) from camera-relative space
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(-camX, -camY, -camZ);
+
         if (transparentRenderers.size() == 1) {
-            //If we only have one render holoType we don't need to bother calculating any distances
-            EntryStream.of(transparentRenderers)
-                .mapKeyValue(TransparentRenderInfo::new)
-                .forEach(consumer);
+            // Simple path: no distance sorting needed
+            transparentRenderers.forEach((type, renderers) ->
+                renderGroup(type, renderers, ticks, partialTick));
         } else {
+            // Sort render type groups back-to-front (furthest first) for correct alpha blending
             EntryStream.of(transparentRenderers)
-                .mapKeyValue((renderType, renderers) -> {
+                .mapKeyValue((type, renderers) -> {
                     double closest = StreamEx.of(renderers)
-                        .mapPartial(renderer -> Optional.ofNullable(renderer.centerPos()))
-                        .mapToDouble(camPos::distanceToSqr)
+                        .mapPartial(r -> Optional.ofNullable(r.centerPos()))
+                        .mapToDouble(pos -> pos.squareDistanceTo(camPos))
                         .min()
                         .orElse(Double.MAX_VALUE);
-                    //Note: we remap it in order to keep track of the closest distance so that we only have to calculate it once
-                    return new TransparentRenderInfo(renderType, renderers, closest);
+                    return new TransparentRenderInfo(type, renderers, closest);
                 })
-                //Sort in the order of furthest to closest (reverse of by closest)
-                .reverseSorted(Comparator.comparingDouble(TransparentRenderInfo::closest))
-                .forEachOrdered(consumer);
+                // Reverse sort: largest distance first
+                .reverseSorted(Comparator.comparingDouble(info -> info.closest))
+                .forEach(info -> renderGroup(info.renderType, info.renderers, ticks, partialTick));
         }
-        transparentRenderers.clear();
 
-        poseStack.popPose();
+        GlStateManager.popMatrix();
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        transparentRenderers.clear();
     }
 
-    public record TransparentRenderInfo(RenderType renderType, List<LazyRenderer> renders, double closest) {
-        public TransparentRenderInfo(RenderType renderType, List<LazyRenderer> renders) {
-            this(renderType, renders, 0);
+    private static void renderGroup(ModRenderType renderType, List<LazyRenderer> renderers, int ticks, float partialTick) {
+        renderType.setup();
+        for (LazyRenderer renderer : renderers) {
+            renderer.render(ticks, partialTick);
         }
+        renderType.teardown();
+    }
 
-        private void render(PoseStack poseStack, MultiBufferSource.BufferSource bufferSource, int ticks, float partialTicks) {
-            //Batch all renders for a single render holoType into a single buffer addition
-            VertexConsumer buffer = bufferSource.getBuffer(this.renderType);
-            for (LazyRenderer renderer : this.renders) {
-                //Note: We don't bother sorting renders in a specific render holoType as we assume the render holoType has sortOnUpload as true
-                renderer.render(poseStack, buffer, ticks, partialTicks);
-            }
-            bufferSource.endBatch(this.renderType);
+    // Simple data carrier for distance-sorted rendering
+    private static final class TransparentRenderInfo {
+        final ModRenderType renderType;
+        final List<LazyRenderer> renderers;
+        final double closest;
+
+        TransparentRenderInfo(ModRenderType renderType, List<LazyRenderer> renderers, double closest) {
+            this.renderType = renderType;
+            this.renderers = renderers;
+            this.closest = closest;
         }
     }
 

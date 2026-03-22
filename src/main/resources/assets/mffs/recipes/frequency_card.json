@@ -1,0 +1,19 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "GCG"
+    ],
+    "key": {
+        "C": {
+            "item": "mffs:blank_card"
+        },
+        "G": {
+            "type": "forge:ore_dict",
+            "ore": "ingotGold"
+        }
+    },
+    "result": {
+        "item": "mffs:frequency_card",
+        "count": 1
+    }
+}

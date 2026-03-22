@@ -1,12 +1,12 @@
 package dev.su5ed.mffs.api.module;
 
 import dev.su5ed.mffs.api.security.InterdictionMatrix;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.entity.EntityLivingBase;
 
 public interface InterdictionMatrixModule extends Module {
     /**
      * Called when the Interdiction Matrix attempts to defend a region.
      * {@return true} to stop processing other modules in this list.
      */
-    boolean onDefend(InterdictionMatrix interdictionMatrix, LivingEntity target);
+    boolean onDefend(InterdictionMatrix interdictionMatrix, EntityLivingBase target);
 }

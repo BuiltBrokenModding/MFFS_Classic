@@ -1,0 +1,24 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "FSF",
+        "SCS",
+        "FSF"
+    ],
+    "key": {
+        "C": {
+            "item": "mffs:blank_card"
+        },
+        "F": {
+            "item": "mffs:focus_matrix"
+        },
+        "S": {
+            "type": "forge:ore_dict",
+            "ore": "ingotSteel"
+        }
+    },
+    "result": {
+        "item": "mffs:biometric_identifier",
+        "count": 1
+    }
+}

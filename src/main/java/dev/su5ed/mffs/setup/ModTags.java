@@ -1,34 +1,46 @@
 package dev.su5ed.mffs.setup;
 
-import net.minecraft.resources.Identifier;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
+// =============================================================================
+// 1.12.2 Backport: Tag / OreDictionary
+// =============================================================================
 
-import static dev.su5ed.mffs.MFFSMod.location;
+import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
+import net.minecraftforge.oredict.OreDictionary;
+
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 public final class ModTags {
-    public static final TagKey<Item> FORTRON_FUEL = itemTag("fortron_fuel");
-    public static final TagKey<Block> FORCEFIELD_REPLACEABLE = blockTag("forcefield_replaceable");
 
-    public static final TagKey<Block> STABILIZATION_BLACKLIST = blockTag("stabilization_blacklist");
-    public static final TagKey<Block> DISINTEGRATION_BLACKLIST = blockTag("disintegration_blacklist");
+    // Item OreDictionary names
+    public static final String FORTRON_FUEL  = "fortronFuel";
 
-    public static final TagKey<Item> INGOTS_STEEL = cItemTag("ingots/steel");
+    public static final String INGOTS_STEEL  = "ingotSteel";
 
-    private static TagKey<Item> itemTag(String name) {
-        return ItemTags.create(location(name));
+    private static Set<Block> FORCEFIELD_REPLACEABLE;
+
+    /**
+     * Get the set of blocks that force fields can replace when projecting.
+     * Includes snow, vines, tall/short grass, dead bushes, etc.
+     * Lazily initialized to avoid class loading issues.
+     */
+    public static Set<Block> getForceFieldReplaceable() {
+        if (FORCEFIELD_REPLACEABLE == null) {
+            Set<Block> set = new HashSet<>();
+            set.add(Blocks.SNOW_LAYER);
+            set.add(Blocks.SNOW);
+            set.add(Blocks.VINE);
+            set.add(Blocks.TALLGRASS);
+            set.add(Blocks.DEADBUSH);
+            set.add(Blocks.DOUBLE_PLANT);
+            set.add(Blocks.WATERLILY);
+            FORCEFIELD_REPLACEABLE = Collections.unmodifiableSet(set);
+        }
+        return FORCEFIELD_REPLACEABLE;
     }
 
-    private static TagKey<Item> cItemTag(String name) {
-        return ItemTags.create(Identifier.fromNamespaceAndPath("c", name));
-    }
-
-    private static TagKey<Block> blockTag(String name) {
-        return BlockTags.create(location(name));
-    }
 
     private ModTags() {}
 }

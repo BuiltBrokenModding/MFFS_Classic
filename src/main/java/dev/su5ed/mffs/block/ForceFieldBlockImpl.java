@@ -7,231 +7,254 @@ import dev.su5ed.mffs.api.module.Module;
 import dev.su5ed.mffs.api.security.BiometricIdentifier;
 import dev.su5ed.mffs.api.security.FieldPermission;
 import dev.su5ed.mffs.blockentity.ForceFieldBlockEntity;
-import dev.su5ed.mffs.compat.CreateTrainCompat;
 import dev.su5ed.mffs.setup.ModObjects;
-import dev.su5ed.mffs.util.ModUtil;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.util.Mth;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.InsideBlockEffectApplier;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
-import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.EntityCollisionContext;
-import net.minecraft.world.phys.shapes.Shapes;
-import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.block.Block;
+import net.minecraft.block.ITileEntityProvider;
+import net.minecraft.block.SoundType;
+import net.minecraft.block.material.Material;
+import net.minecraft.block.state.BlockStateContainer;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.MobEffects;
+import net.minecraft.item.ItemStack;
+import net.minecraft.potion.PotionEffect;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
+import net.minecraftforge.common.property.ExtendedBlockState;
+import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.common.property.IUnlistedProperty;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
-public class ForceFieldBlockImpl extends Block implements ForceFieldBlock, EntityBlock {
-    private static final VoxelShape COLLIDABLE_BLOCK = Shapes.create(0.01, 0.01, 0.01, 0.99, 0.99, 0.99);
-    public static final BooleanProperty PROPAGATES_SKYLIGHT = BooleanProperty.create("propagates_skylight");
-    public static final BooleanProperty SOLID = BooleanProperty.create("solid");
+public class ForceFieldBlockImpl extends Block implements ForceFieldBlock, ITileEntityProvider {
 
-    public ForceFieldBlockImpl(Properties properties) {
-        super(properties
-            .instrument(NoteBlockInstrument.HAT)
-            .strength(0.3F)
-            .sound(SoundType.GLASS)
-            .noOcclusion()
-            .isValidSpawn(Blocks::never)
-            .isRedstoneConductor((a, b, c) -> false)
-            .isSuffocating((a, b, c) -> false)
-            .isViewBlocking((a, b, c) -> false)
-            .destroyTime(-1)
-            .strength(-1.0F, 3600000.0F)
-            .noLootTable());
+    private static final AxisAlignedBB COLLIDABLE_BOX = new AxisAlignedBB(0.01, 0.01, 0.01, 0.99, 0.99, 0.99);
 
-        registerDefaultState(this.stateDefinition.any().setValue(PROPAGATES_SKYLIGHT, true).setValue(SOLID, true));
+    public ForceFieldBlockImpl() {
+        super(Material.GLASS);
+        setSoundType(SoundType.GLASS);
+        setHardness(-1.0F);
+        setResistance(720000000.0F);
+        setLightOpacity(0);
     }
 
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        super.createBlockStateDefinition(builder);
-        builder.add(PROPAGATES_SKYLIGHT, SOLID);
+    protected BlockStateContainer createBlockState() {
+        return new ExtendedBlockState(this, new net.minecraft.block.properties.IProperty[0],
+            new IUnlistedProperty[]{ForceFieldBlock.CAMOUFLAGE_PROPERTY});
+    }
+
+    @Override
+    public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos) {
+        IExtendedBlockState extState = (IExtendedBlockState) state;
+        IBlockState camo = getCamouflageBlock(world, pos).orElse(null);
+        return extState.withProperty(ForceFieldBlock.CAMOUFLAGE_PROPERTY, camo);
+    }
+
+    @Override
+    public int getLightOpacity(IBlockState state, IBlockAccess world, BlockPos pos) {
+        // Hot path: called by Chunk.setBlockState for every FF block placed during projection.
+        // Read the cached opacity from the TE (computed once in setCamouflage) rather than
+        // re-entering the getCamouflageBlock → world.getTileEntity → camo.getLightOpacity chain.
+        TileEntity te = world.getTileEntity(pos);
+        if (te instanceof ForceFieldBlockEntity ffe) {
+            return ffe.getCachedLightOpacity();
+        }
+        return 0;
+    }
+
+    @Override
+    public boolean isOpaqueCube(IBlockState state) { return false; }
+
+    @Override
+    public boolean isFullCube(IBlockState state) { return false; }
+
+    @Override
+    public BlockRenderLayer getRenderLayer() {
+        return BlockRenderLayer.TRANSLUCENT;
+    }
+
+    @Override
+    public boolean canRenderInLayer(IBlockState state, BlockRenderLayer layer) {
+        // Must return true for all layers so the model can render camo quads
+        // in whatever layer the camo block uses (SOLID, CUTOUT, etc.)
+        return true;
+    }
+
+    @Override
+    public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos) {
+        // Only a subset of force field blocks emit light based on configured spacing.
+        // With spacing 3, roughly 1/3 of blocks emit light — reduces lighting BFS cost.
+        int spacing = Math.max(1, MFFSConfig.forceFieldLightSpacing);
+        if ((pos.getX() + pos.getY() + pos.getZ()) % spacing != 0) return 0;
+        if (MFFSConfig.simpleLighting && !isTouchingPhysicalBlock(world, pos)) return 0;
+
+        return Optional.ofNullable(world.getTileEntity(pos))
+            .map(te -> te instanceof ForceFieldBlockEntity f ? f.getClientBlockLight() : null)
+            .orElseGet(() -> super.getLightValue(state, world, pos));
+    }
+
+    private boolean isTouchingPhysicalBlock(IBlockAccess world, BlockPos pos) {
+        for (EnumFacing face : EnumFacing.values()) {
+            IBlockState neighbor = world.getBlockState(pos.offset(face));
+            Block block = neighbor.getBlock();
+            if (block instanceof ForceFieldBlock) continue;
+            if (block.isAir(neighbor, world, pos.offset(face))) continue;
+
+            // Treat "physical" as solid/opaque world geometry (not fluid-like).
+            if (!neighbor.getMaterial().isLiquid() && (neighbor.isOpaqueCube() || neighbor.getMaterial().blocksMovement())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean doesSideBlockRendering(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing face) {
+        // Delegate to the camouflage block when present.
+        // Regardless of camo, always cull the shared face when the neighbor is also a force field
+        return getCamouflageBlock(world, pos)
+            .filter(this::preventStackOverflow)
+            .map(s -> {
+                if (world.getBlockState(pos.offset(face)).getBlock() instanceof ForceFieldBlock) return true;
+                return s.doesSideBlockRendering(world, pos, face);
+            })
+            .orElseGet(() -> world.getBlockState(pos.offset(face)).getBlock() instanceof ForceFieldBlock);
+    }
+
+    @Override
+    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
+        return getCamouflageBlock(source, pos)
+            .filter(this::preventStackOverflow)
+            .map(s -> s.getBoundingBox(source, pos))
+            .orElse(FULL_BLOCK_AABB);
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos,
+                                      AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes,
+                                      @Nullable Entity entityIn, boolean isActualState) {
+        AxisAlignedBB box = getCollisionBoxForEntity(state, worldIn, pos, entityIn);
+        if (box != null) {
+            addCollisionBoxToList(pos, entityBox, collidingBoxes, box);
+        }
     }
 
     @Nullable
-    @Override
-    public BlockState getStateForPlacement(BlockPlaceContext pContext) {
-        return super.getStateForPlacement(pContext)
-            .setValue(PROPAGATES_SKYLIGHT, true)
-            .setValue(SOLID, true);
-    }
-
-    @Override
-    protected boolean propagatesSkylightDown(BlockState state) {
-        return state.getValue(PROPAGATES_SKYLIGHT);
-    }
-
-    @Override
-    public float getShadeBrightness(BlockState state, BlockGetter level, BlockPos pos) {
-        return getCamouflageBlock(level, pos)
+    private AxisAlignedBB getCollisionBoxForEntity(IBlockState state, IBlockAccess world,
+                                                    BlockPos pos, @Nullable Entity entityIn) {
+        Optional<Projector> projectorOpt = getProjector(world, pos);
+        if (projectorOpt.isPresent() && entityIn instanceof EntityPlayer player) {
+            BiometricIdentifier identifier = projectorOpt.get().getBiometricIdentifier();
+            if (isAuthorized(identifier, player)) {
+                boolean isAbove = player.posY >= pos.getY() + 0.99;
+                if (!isAbove && MFFSConfig.allowWalkThroughForceFields) {
+                    return null; // authorized walk-through
+                } else if (!isAbove && player.isSneaking()) {
+                    return null; // sneak through
+                }
+            }
+        }
+        return getCamouflageBlock(world, pos)
             .filter(this::preventStackOverflow)
-            .map(block -> block.getShadeBrightness(level, pos))
-            .orElse(1.0F);
+            .map(s -> s.getCollisionBoundingBox(world, pos))
+            .orElse(COLLIDABLE_BOX);
     }
 
     @Override
-    public boolean hidesNeighborFace(BlockGetter level, BlockPos pos, BlockState state, BlockState neighborState, Direction side) {
-        return getCamouflageBlock(level, pos)
-            .filter(this::preventStackOverflow)
-            .flatMap(block -> getCamouflageBlock(level, pos.relative(side))
-                .map(neighbor -> block.skipRendering(neighbor, side)))
-            .orElseGet(() -> neighborState.is(this));
+    public void onEntityCollision(World world, BlockPos pos, IBlockState state, Entity entity) {
+        super.onEntityCollision(world, pos, state, entity);
+        Optional<Projector> projectorOpt = getProjector(world, pos);
+        if (!projectorOpt.isPresent()) return;
+        Projector projector = projectorOpt.get();
+        for (Module module : projector.getModuleInstances()) {
+            if (module.onCollideWithForceField(world, pos, entity)) return;
+        }
+        if (!world.isRemote) {
+            double cx = pos.getX() + 0.5, cy = pos.getY(), cz = pos.getZ() + 0.5;
+            if (entity.getDistanceSq(cx, cy, cz) < 0.49) {
+                BiometricIdentifier identifier = projector.getBiometricIdentifier();
+                boolean isAuthorizedPlayer = entity instanceof EntityPlayer player
+                    && isAuthorized(identifier, player);
+                if (entity instanceof EntityLivingBase living) {
+                    boolean applyEffects = !(entity instanceof EntityPlayer player)
+                        || (!player.capabilities.isCreativeMode
+                            && (!isAuthorizedPlayer || !MFFSConfig.disableForceFieldEffectsForAuthorizedPlayers));
+                    if (applyEffects) {
+                        living.addPotionEffect(new PotionEffect(MobEffects.NAUSEA, 4 * 20, 3));
+                        living.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 20, 1));
+                    }
+                }
+                boolean applyDamage = !(entity instanceof EntityPlayer player)
+                    || (!player.capabilities.isCreativeMode && !isAuthorizedPlayer)
+                    || (!isSneaking(entity) && !MFFSConfig.allowWalkThroughForceFields
+                        && !MFFSConfig.disableForceFieldDamageForAuthorizedPlayers);
+                if (applyDamage) {
+                    entity.attackEntityFrom(new DamageSource(ModObjects.FIELD_SHOCK_DAMAGE_TYPE), Integer.MAX_VALUE);
+                }
+            }
+        }
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        return getCamouflageBlock(level, pos)
-            .filter(this::preventStackOverflow)
-            .map(block -> block.getShape(level, pos))
-            .orElseGet(() -> super.getShape(state, level, pos, context));
+    public Optional<Projector> getProjector(IBlockAccess world, BlockPos pos) {
+        TileEntity te = world != null ? world.getTileEntity(pos) : null;
+        if (te instanceof ForceFieldBlockEntity forceField) {
+            return forceField.getProjector();
+        }
+        return Optional.empty();
+    }
+
+    private Optional<IBlockState> getCamouflageBlock(IBlockAccess world, BlockPos pos) {
+        if (world == null || pos == null) return Optional.empty();
+        TileEntity te = world.getTileEntity(pos);
+        if (te instanceof ForceFieldBlockEntity forceField) {
+            return Optional.ofNullable(forceField.getCamouflage());
+        }
+        return Optional.empty();
     }
 
     @Override
-    public VoxelShape getVisualShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        return getCamouflageBlock(level, pos)
-            .filter(this::preventStackOverflow)
-            .map(block -> block.getVisualShape(level, pos, context))
-            .orElseGet(Shapes::empty);
-    }
-
-    @Override
-    protected VoxelShape getOcclusionShape(BlockState state) {
-        return state.getValue(SOLID) ? Shapes.block() : Shapes.empty();
-    }
-
-    @Override
-    public Optional<Projector> getProjector(BlockGetter level, BlockPos pos) {
-        BlockEntity be = level.getBlockEntity(pos);
-        return be instanceof ForceFieldBlockEntity forceField ? forceField.getProjector() : Optional.empty();
-    }
-
-    private Optional<BlockState> getCamouflageBlock(BlockGetter level, BlockPos pos) {
-        return Optional.ofNullable(level.getBlockEntity(pos))
-            .map(be -> be instanceof ForceFieldBlockEntity forceField ? forceField.getCamouflage() : null);
-    }
-
-    @Override
-    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean includeData, Player player) {
+    public ItemStack getPickBlock(IBlockState state, net.minecraft.util.math.RayTraceResult target,
+                                   World world, BlockPos pos, EntityPlayer player) {
         return ItemStack.EMPTY;
     }
 
-    @Override
-    public int getLightEmission(BlockState state, BlockGetter level, BlockPos pos) {
-        return Optional.ofNullable(level.getBlockEntity(pos))
-            .map(be -> be instanceof ForceFieldBlockEntity f ? f.getClientBlockLight() : null)
-            .orElseGet(() -> super.getLightEmission(state, level, pos));
-    }
-
-    @Override
-    public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        return getProjector(level, pos)
-            .map(projector -> {
-                if (context instanceof EntityCollisionContext entityContext && entityContext.getEntity() instanceof Player player) {
-                    BiometricIdentifier identifier = projector.getBiometricIdentifier();
-                    if (isAuthorized(identifier, player)) {
-                        // Walk-through mode: authorized players can walk through without sneaking
-                        if (MFFSConfig.COMMON.allowWalkThroughForceFields.get()) {
-                            // If player is standing on top, keep it solid (prevents falling through floors)
-                            // Otherwise allow walk-through
-                            return context.isAbove(COLLIDABLE_BLOCK, pos, true) ? null : Shapes.empty();
-                        }
-                        // Sneak mode: must sneak to pass through
-                        else if (player.isShiftKeyDown() && !context.isAbove(COLLIDABLE_BLOCK, pos, true)) {
-                            return Shapes.empty();
-                        }
-                    }
-                }
-                return null;
-            })
-            .or(() -> getCamouflageBlock(level, pos)
-                .filter(this::preventStackOverflow)
-                .map(block -> block.getCollisionShape(level, pos, context)))
-            .orElse(COLLIDABLE_BLOCK);
-    }
-
-    @Override
-    protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity, InsideBlockEffectApplier applier, boolean intersects) {
-        super.entityInside(state, level, pos, entity, applier, intersects);
-
-        getProjector(level, pos)
-            .ifPresent(projector -> {
-                for (Module module : projector.getModuleInstances()) {
-                    if (module.onCollideWithForceField(level, pos, entity)) {
-                        return;
-                    }
-                }
-                if (!entity.level().isClientSide() && entity.distanceToSqr(new Vec3(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5)) < Mth.square(0.7)) {
-                    BiometricIdentifier identifier = projector.getBiometricIdentifier();
-                    boolean isAuthorizedPlayer = entity instanceof Player player && isAuthorized(identifier, player);
-
-                    if (entity instanceof LivingEntity living) {
-                        // Apply nausea and slowness effects
-                        // Creative players never get effects
-                        // Authorized players don't get effects if config is enabled
-                        boolean applyEffects = !(entity instanceof Player player)
-                            || !player.isCreative()
-                            && (!isAuthorizedPlayer || !MFFSConfig.COMMON.disableForceFieldEffectsForAuthorizedPlayers.get());
-
-                        if (applyEffects) {
-                            living.addEffect(new MobEffectInstance(MobEffects.NAUSEA, 4 * 20, 3));
-                            living.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 20, 1));
-                        }
-                    }
-
-                    // Apply damage
-                    // Creative players never take damage
-                    // Sneaking authorized players don't take damage
-                    // Authorized players in walk-through mode don't take damage
-                    // Authorized players don't take damage if config is enabled
-                    boolean applyDamage = !(entity instanceof Player player) || !player.isCreative() && !isAuthorizedPlayer
-                        || !isSneaking(entity)
-                        && !MFFSConfig.COMMON.allowWalkThroughForceFields.get()
-                        && !MFFSConfig.COMMON.disableForceFieldDamageForAuthorizedPlayers.get();
-
-                    if (applyDamage) {
-                        ModUtil.shockEntity(entity, Integer.MAX_VALUE);
-                    }
-                }
-            });
-    }
-
-    private boolean isSneaking(Entity entity) {
-        return entity.isShiftKeyDown() || CreateTrainCompat.isTrainPassenger(entity);
-    }
-
-    private boolean preventStackOverflow(BlockState state) {
-        return !state.is(this);
-    }
-
-    private boolean isAuthorized(BiometricIdentifier identifier, Player player) {
-        return player.isCreative() || identifier != null && identifier.isAccessGranted(player, FieldPermission.WARP);
-    }
-
     @Nullable
     @Override
-    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return ModObjects.FORCE_FIELD_BLOCK_ENTITY.get().create(pos, state);
+    public net.minecraft.item.Item getItemDropped(IBlockState state, Random rand, int fortune) {
+        return null;
+    }
+
+    @Override
+    public boolean hasTileEntity(IBlockState state) { return true; }
+
+    @Override
+    public TileEntity createNewTileEntity(World worldIn, int meta) {
+        return new ForceFieldBlockEntity();
+    }
+
+    private boolean isSneaking(Entity entity) { return entity.isSneaking(); }
+
+    private boolean preventStackOverflow(IBlockState state) { return state.getBlock() != this; }
+
+    private boolean isAuthorized(BiometricIdentifier identifier, EntityPlayer player) {
+        // No biometric configured → everyone is allowed through by default.
+        // With a biometric configured, the player must have the WARP permission.
+        return player.capabilities.isCreativeMode
+            || identifier == null
+            || identifier.isAccessGranted(player, FieldPermission.WARP);
     }
 }

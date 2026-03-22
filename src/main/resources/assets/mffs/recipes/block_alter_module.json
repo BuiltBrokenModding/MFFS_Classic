@@ -1,0 +1,20 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        " G ",
+        "GMG",
+        " G "
+    ],
+    "key": {
+        "G": {
+            "item": "minecraft:gold_block"
+        },
+        "M": {
+            "item": "mffs:block_access_module"
+        }
+    },
+    "result": {
+        "item": "mffs:block_alter_module",
+        "count": 1
+    }
+}

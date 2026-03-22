@@ -1,25 +1,26 @@
-/**
- *
- */
 package dev.su5ed.mffs.api;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.LevelAccessor;
-import net.neoforged.bus.api.ICancellableEvent;
-import net.neoforged.neoforge.event.level.LevelEvent;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.common.eventhandler.Cancelable;
+import net.minecraftforge.fml.common.eventhandler.Event;
 
 /**
  * Events for the Force Manipulator
  *
  * @author Calclavia
  */
-public abstract class EventForceManipulate extends LevelEvent {
+public abstract class EventForceManipulate extends Event {
+    private final World world;
     private final BlockPos beforePos;
 
-    public EventForceManipulate(LevelAccessor level, BlockPos beforePos) {
-        super(level);
-
+    public EventForceManipulate(World world, BlockPos beforePos) {
+        this.world     = world;
         this.beforePos = beforePos;
+    }
+
+    public World getWorld() {
+        return this.world;
     }
 
     public BlockPos getBeforePos() {
@@ -32,9 +33,10 @@ public abstract class EventForceManipulate extends LevelEvent {
      * TileEntity class will be instantiated after words in the new position. This can be canceled
      * and the block will then not move at all.
      */
-    public static class EventPreForceManipulate extends EventForceManipulate implements ICancellableEvent {
-        public EventPreForceManipulate(LevelAccessor level, BlockPos beforePos) {
-            super(level, beforePos);
+    @Cancelable
+    public static class EventPreForceManipulate extends EventForceManipulate {
+        public EventPreForceManipulate(World world, BlockPos beforePos) {
+            super(world, beforePos);
         }
     }
 }

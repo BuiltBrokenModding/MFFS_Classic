@@ -1,0 +1,210 @@
+# MFFS 1.12.2 Language File - English (en_US)
+# Converted from 1.21.x en_us.json for the 1.12.2 backport.
+# Key changes:
+#   "block.mffs.X"  -> tile.mffs.X.name  (Forge 1.12.2 tile entity naming)
+#   "item.mffs.X"   -> item.mffs.X.name
+#   "fluid_type.*"  -> removed (NeoForge FluidType not applicable in 1.12.2)
+#   "advancements.*" -> removed (advancement system not in 1.12.2)
+# All other keys (info.*, screen.*, mffs.*, death.*) retain the same key name.
+# ==============================================================================
+
+# Creative Tab
+itemGroup.mffs.main=MFFS
+
+# Coercion Deriver modes
+info.mffs.coercion_deriver.mode.integrate=Integrate
+info.mffs.coercion_deriver.mode.derive=Derive
+
+# General info messages
+info.mffs.link=Linked to %s at %s
+info.mffs.frequency=Frequency: %s
+info.mffs.frequency.generated=Generated random frequency: %s
+info.mffs.frequency.set=Frequency set to: %s
+info.mffs.cannot_harness=Cannot harness %s F from the Fortron field.
+info.mffs.stored_energy=Stored Energy: %s / %s F
+info.mffs.identity=Identity: %s
+info.mffs.identity.everyone=Everyone
+info.mffs.identity_set=Identity set to: %s
+info.mffs.identity_cleared=Identity cleared
+info.mffs.perms=Perms:
+
+# Field permissions
+info.mffs.field_permission.warp=Warp
+info.mffs.field_permission.warp.tooltip=Walk through and bypass force fields.
+info.mffs.field_permission.use_blocks=Use Blocks
+info.mffs.field_permission.use_blocks.tooltip=Interact and open GUIs in blocks.
+info.mffs.field_permission.place_blocks=Place Blocks
+info.mffs.field_permission.place_blocks.tooltip=Place and break blocks.
+info.mffs.field_permission.configure_security_center=Configure Security
+info.mffs.field_permission.configure_security_center.tooltip=Configure the Biometric Identifier.
+info.mffs.field_permission.bypass_defense=Bypass Defense
+info.mffs.field_permission.bypass_defense.tooltip=Bypass Interdiction Matrix restrictions.
+info.mffs.field_permission.bypass_confiscation=Bypass Confiscation
+info.mffs.field_permission.bypass_confiscation.tooltip=Bypass the Interdiction Matrix confiscation.
+info.mffs.field_permission.remote_control=Remote Control
+info.mffs.field_permission.remote_control.tooltip=Use the remote control within defensive region.
+
+# Interdiction Matrix messages
+info.mffs.interdiction_matrix.warning=[%s] Warning! Approaching %s: %sm
+info.mffs.interdiction_matrix.warning.kill_zone=Kill Zone
+info.mffs.interdiction_matrix.warning.confiscation_zone=Confiscation Zone
+info.mffs.interdiction_matrix.warning.defense_zone=Defense Zone
+info.mffs.interdiction_matrix.no_entry=[%s] Leave this zone immediately. You have no right to enter.
+info.mffs.interdiction_matrix.no_permission=[%s] You have no permission to do that!
+info.mffs.interdiction_matrix.fairwell=[%s] Fairwell.
+info.mffs.module.anti_personnel.requires_biometric=⚠ Requires an active Biometric Identifier
+info.mffs.module.block_alter.requires_biometric=⚠ Requires an active Biometric Identifier
+info.mffs.module.block_access.requires_biometric=⚠ Requires an active Biometric Identifier
+info.mffs.interdiction_matrix.biometric_warning=§cError:§r Offensive modules require biometrics!
+info.mffs.projector.biometric_warning=§cWarning:§r No biometrics - Fields unrestricted!
+info.mffs.interdiction_matrix.confiscation_singular=[%s] %s of your items has been confiscated.
+info.mffs.interdiction_matrix.confiscation_plural=[%s] %s of your items have been confiscated.
+
+# Misc info
+info.mffs.show_details=Hold %s for details
+info.mffs.key.shift=Shift
+info.mffs.fortron_usage=Fortron: %s F/s
+info.mffs.handbook.title=Force Field Handbook
+info.mffs.handbook.landing_text=Welcome to the in-game MFFS user guide, designed to help you navigate the complex world of Force Field technology. Force Fields, high tech machinery and defensive measures are all included. Let's get started!
+
+# Death messages
+death.attack.mffs.field_shock=%1$s was disintegrated by a force field.
+
+# Blocks (1.12.2: tile.<unlocalizedName>.name)
+tile.mffs.machine_block.name=Base Machine Block
+tile.mffs.force_field.name=Force Field
+tile.mffs.projector.name=Force Field Projector
+tile.mffs.coercion_deriver.name=Coercion Deriver
+tile.mffs.fortron_capacitor.name=Fortron Capacitor
+tile.mffs.biometric_identifier.name=Biometric Identifier
+tile.mffs.interdiction_matrix.name=Interdiction Matrix
+
+# Items (1.12.2: item.<unlocalizedName>.name)
+item.mffs.remote_controller.name=Remote Controller
+item.mffs.remote_controller.description=Provides remote access to machines. Use on a machine while sneaking to link.
+item.mffs.cube_mode.name=Cube Mode
+item.mffs.sphere_mode.name=Sphere Mode
+item.mffs.tube_mode.name=Tube Mode
+item.mffs.pyramid_mode.name=Pyramid Mode
+item.mffs.cylinder_mode.name=Cylinder Mode
+item.mffs.custom_mode.name=Custom Mode
+item.mffs.custom_mode.description=Save a custom field shape. Draws in solid blocks, manual hollowing required. Sneak+right-click to save, again to clear.
+item.mffs.custom_mode.mode=Mode: %s
+item.mffs.custom_mode.mode.additive=Additive
+item.mffs.custom_mode.mode.subtractive=Substraction
+item.mffs.custom_mode.primary_point=Primary pos: %s
+item.mffs.custom_mode.secondary_point=Secondary pos: %s
+item.mffs.custom_mode.pattern_id=Pattern ID: %s
+item.mffs.custom_mode.field_size=Field size: %s
+item.mffs.custom_mode.not_saved=Field not saved.
+item.mffs.custom_mode.set_primary_point=Select secondary position
+item.mffs.custom_mode.set_secondary_point=[Shift right-click to save]
+item.mffs.custom_mode.data_saved=Field structure saved.
+item.mffs.custom_mode.changed_mode=Selected mode: %s
+item.mffs.custom_mode.clear=Field structure cleared
+item.mffs.custom_mode.too_far=Selected position is too far away! Must be at most %s blocks far.
+
+# Module items
+item.mffs.camouflage_module.name=Camouflage Module
+item.mffs.camouflage_module.description=Applies a custom model to force field blocks.
+item.mffs.capacity_module.name=Capacity Module
+item.mffs.capacity_module.description=Increases the capacity of a certain device.
+item.mffs.disintegration_module.name=Disintegration Module
+item.mffs.disintegration_module.description=Destroys blocks in place of the force field.
+item.mffs.rotation_module.name=Rotation Module
+item.mffs.rotation_module.description=Rotates the field by a specific angle.
+item.mffs.scale_module.name=Scale Module
+item.mffs.scale_module.description=Increases the scale of a certain component.
+item.mffs.speed_module.name=Speed Module
+item.mffs.speed_module.description=Increases the speed of a device.
+item.mffs.translation_module.name=Translation Module
+item.mffs.translation_module.description=Translates the field, displacing it away from the origin.
+item.mffs.glow_module.name=Glow Module
+item.mffs.glow_module.description=Makes force field block emit light
+item.mffs.silence_module.name=Silence Module
+item.mffs.silence_module.description=Silences the force field and prevents it from making sound.
+item.mffs.shock_module.name=Shock Module
+item.mffs.shock_module.description=Touching the force field hurts entities.
+item.mffs.sponge_module.name=Sponge Module
+item.mffs.sponge_module.description=Removes fluids from the force field's area
+item.mffs.fusion_module.name=Field Fusion Module
+item.mffs.fusion_module.description=Joins overlapping force fields of the same frequency together
+item.mffs.dome_module.name=Dome Module
+item.mffs.dome_module.description=Removes the bottom half of the force field
+item.mffs.collection_module.name=Collection Module
+item.mffs.collection_module.description=Collects dropped blocks from the disintegration module.
+item.mffs.stabilization_module.name=Stabilization Module
+item.mffs.stabilization_module.description=Stabilizes the projected force field and crystallizes the field into solid blocks. Place a chest next the projector with blocks to stablize the field.
+item.mffs.inverter_module.name=Inverter Module
+item.mffs.inverter_module.description=Inverts the field to use negative space instead of the positive space.
+item.mffs.warn_module.name=Warn Module
+item.mffs.warn_module.description=Sends a warning to intruders.
+item.mffs.block_alter_module.name=Block Alter Module
+item.mffs.block_alter_module.description=Prevents intruders from placing or breaking blocks.
+item.mffs.block_access_module.name=Block Access Module
+item.mffs.block_access_module.description=Prevents intruders from right clicking on blocks.
+item.mffs.anti_friendly_module.name=Anti-Friendly Module
+item.mffs.anti_friendly_module.description=Will cause Interdiction Matrix to kill all friendly mobs.
+item.mffs.anti_hostile_module.name=Anti-Hostile Module
+item.mffs.anti_hostile_module.description=Will cause Interdiction Matrix to kill all hostile mobs.
+item.mffs.anti_personnel_module.name=Anti-Personnel Module
+item.mffs.anti_personnel_module.description=Will cause Interdiction Matrix to kill all players.
+item.mffs.anti_spawn_module.name=Anti-Spawn Module
+item.mffs.anti_spawn_module.description=Prevents entities from spawning in a specific region.
+item.mffs.confiscation_module.name=Confiscation Module
+item.mffs.confiscation_module.description=Confiscates intruders' items.
+
+# Misc items
+item.mffs.focus_matrix.name=Focus Matrix
+item.mffs.battery.name=Battery
+item.mffs.steel_compound.name=Steel Compound
+item.mffs.steel_ingot.name=Steel Ingot
+item.mffs.blank_card.name=Blank Card
+item.mffs.id_card.name=Identification Card
+item.mffs.id_card.description=Authorizes players in the Biometric Identifier. Use while sneaking to set identity
+item.mffs.infinite_power_card.name=Infinite Power Card
+item.mffs.infinite_power_card.description=A creative-only item that can be placed inside a capacitor for infinite energy.
+item.mffs.frequency_card.name=Frequency Card
+item.mffs.frequency_card.description=Used for ease of frequency transmission. Use while sneaking to generate a random frequency.
+
+# Sounds (shown in resource pack GUI)
+sounds.mffs.field=Field Sound
+
+# Projector menu labels
+mffs.projector_menu.mode=Mode
+mffs.projector_menu.down=Down
+mffs.projector_menu.up=Up
+mffs.projector_menu.north=North
+mffs.projector_menu.south=South
+mffs.projector_menu.west=West
+mffs.projector_menu.east=East
+mffs.confiscation_mode.blacklist=Banned
+mffs.confiscation_mode.whitelist=Allowed
+
+# Screen labels
+screen.mffs.frequency=Frequency:
+screen.mffs.frequency.tooltip=Machines with the same frequency will share Fortron energy.
+screen.mffs.matrix=Matrix
+screen.mffs.matrix.tooltip=The projection matrix is used to determine how the projection should be created.
+screen.mffs.fortron=Fortron: %s L / %s L
+screen.mffs.fortron.name=Fortron:
+screen.mffs.fortron.value=%s L / %s L
+screen.mffs.fortron.short=Fortron: %s F
+screen.mffs.fortron.tooltip=Fortron is the type of force energy used in MFFS machines.
+screen.mffs.fortron_cost=%s%s F/s
+screen.mffs.upgrade=Upgrade
+screen.mffs.linked_devices=Linked Devices: %s
+screen.mffs.transmission_rate=Transmission rate: %s F/s
+screen.mffs.range=Range: %s 
+screen.mffs.progress=Progress: 
+screen.mffs.progress.running=Running
+screen.mffs.progress.idle=Idle
+screen.mffs.rights=Rights
+screen.mffs.rights.tooltip=Assign rights to the card to your left here.
+screen.mffs.master=Master
+screen.mffs.master.tooltip=The Master Card will denote the player in the card owner of the Biometric Identifier.
+screen.mffs.copy=Copy
+screen.mffs.copy.tooltip=Copy all data from the Rights slot to this card
+screen.mffs.warn_range=Warning: %s
+screen.mffs.action_range=Action: %s
+screen.mffs.filter_mode=Filter Mode:

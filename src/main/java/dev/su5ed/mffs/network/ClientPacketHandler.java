@@ -1,52 +1,47 @@
 package dev.su5ed.mffs.network;
 
-import dev.su5ed.mffs.blockentity.ProjectorBlockEntity;
-import dev.su5ed.mffs.render.CustomProjectorModeClientHandler;
-import dev.su5ed.mffs.render.particle.BeamParticleOptions;
-import dev.su5ed.mffs.render.particle.MovingHologramParticleOptions;
+import dev.su5ed.mffs.render.particle.BeamParticle;
+import dev.su5ed.mffs.render.particle.MovingHologramParticle;
 import dev.su5ed.mffs.render.particle.ParticleColor;
-import dev.su5ed.mffs.setup.ModObjects;
 import net.minecraft.client.Minecraft;
-import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-@SuppressWarnings("unused")
+@SideOnly(Side.CLIENT)
 public final class ClientPacketHandler {
 
-    public static void handleDrawBeamPacket(DrawBeamPacket packet, IPayloadContext ctx) {
-        Minecraft minecraft = Minecraft.getInstance();
-        Vec3 pos = packet.position();
-        minecraft.level.addParticle(new BeamParticleOptions(packet.target(), packet.color(), packet.lifetime()), pos.x(), pos.y(), pos.z(), 0, 0, 0);
+    public static void handleDrawBeamPacket(DrawBeamPacket packet) {
+        Minecraft mc = Minecraft.getMinecraft();
+        if (mc.world == null) return;
+        Vec3d pos = packet.getPosition();
+        BeamParticle particle = new BeamParticle(
+            mc.world, pos, packet.getTarget(), packet.getColor(), packet.getLifetime());
+        mc.effectRenderer.addEffect(particle);
     }
 
-    public static void handleSetStructureShapePacket(SetStructureShapePacket packet, IPayloadContext ctx) {
-        CustomProjectorModeClientHandler.setShape(packet.level(), packet.structId(), packet.shape().orElse(null));
-    }
-
-    public static void handleUpdateAnimationSpeedPacket(UpdateAnimationSpeed packet, IPayloadContext ctx) {
-        Network.findBlockEntity(ProjectorBlockEntity.class, Minecraft.getInstance().level, packet.pos())
-            .ifPresent(be -> be.setClientAnimationSpeed(packet.animationSpeed()));
-    }
-
-    public static void handleDrawHologramPacket(DrawHologramPacket packet, IPayloadContext ctx) {
-        Minecraft minecraft = Minecraft.getInstance();
-        DrawHologramPacket.Type type = packet.holoType();
-        Vec3 pos = packet.pos().add(0.5, 0.5, 0.5);
-        Vec3 target = packet.target();
-        Vec3 targetCenter = packet.target().add(0.5, 0.5, 0.5);
-        if (type == DrawHologramPacket.Type.CONSTRUCT) {
-            minecraft.level.addParticle(new BeamParticleOptions(targetCenter, ParticleColor.BLUE_BEAM, 40), pos.x(), pos.y(), pos.z(), 0, 0, 0);
-            minecraft.level.addParticle(new MovingHologramParticleOptions(ParticleColor.BLUE_FIELD, 40), target.x(), target.y(), target.z(), 0, 0, 0);
-        } else if (type == DrawHologramPacket.Type.DESTROY) {
-            minecraft.level.addParticle(new BeamParticleOptions(targetCenter, ParticleColor.RED, 40), pos.x(), pos.y(), pos.z(), 0, 0, 0);
-            minecraft.level.addParticle(new MovingHologramParticleOptions(ParticleColor.RED, 40), target.x(), target.y(), target.z(), 0, 0, 0);
+    public static void handleDrawHologramPacket(DrawHologramPacket packet) {
+        Minecraft mc = Minecraft.getMinecraft();
+        if (mc.world == null) return;
+        DrawHologramPacket.HoloType type = packet.getHoloType();
+        Vec3d pos    = new Vec3d(packet.getPos().x + 0.5, packet.getPos().y + 0.5, packet.getPos().z + 0.5);
+        Vec3d target = packet.getTarget();
+        Vec3d tc     = new Vec3d(target.x + 0.5, target.y + 0.5, target.z + 0.5);
+        if (type == DrawHologramPacket.HoloType.CONSTRUCT) {
+            // Spawn blue beam from projector to target (neutral texture — color tint renders cleanly)
+            BeamParticle beam = new BeamParticle(mc.world, pos, tc, ParticleColor.BLUE_BEAM, 40, BeamParticle.TEXTURE_NEUTRAL);
+            mc.effectRenderer.addEffect(beam);
+            // Spawn hologram cube at target position (materializing effect)
+            MovingHologramParticle holo = new MovingHologramParticle(mc.world, target, ParticleColor.BLUE_FIELD, 40);
+            mc.effectRenderer.addEffect(holo);
+        } else if (type == DrawHologramPacket.HoloType.DESTROY) {
+            // Spawn red beam from projector to target (neutral texture — color tint renders cleanly)
+            BeamParticle beam = new BeamParticle(mc.world, pos, tc, ParticleColor.RED, 40, BeamParticle.TEXTURE_NEUTRAL);
+            mc.effectRenderer.addEffect(beam);
+            // Spawn hologram cube at target position (dematerializing effect)
+            MovingHologramParticle holo = new MovingHologramParticle(mc.world, target, ParticleColor.RED, 40);
+            mc.effectRenderer.addEffect(holo);
         }
-    }
-
-    public static void handleBlockEntityUpdatePacket(UpdateBlockEntityPacket packet, IPayloadContext ctx) {
-        Minecraft minecraft = Minecraft.getInstance();
-        minecraft.level.getBlockEntity(packet.pos(), ModObjects.FORCE_FIELD_BLOCK_ENTITY.get())
-            .ifPresent(be -> be.handleCustomUpdateTag(packet.data(), be.getLevel().registryAccess()));
     }
 
     private ClientPacketHandler() {}

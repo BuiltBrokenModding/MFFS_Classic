@@ -1,109 +1,61 @@
 package dev.su5ed.mffs.blockentity;
 
-import com.mojang.logging.LogUtils;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.ProblemReporter;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.MenuProvider;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.TagValueOutput;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
-import net.minecraft.world.phys.BlockHitResult;
-import net.neoforged.neoforge.network.PacketDistributor;
-import org.slf4j.Logger;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ITickable;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 
 import java.util.List;
 
-public abstract class BaseBlockEntity extends BlockEntity implements MenuProvider {
-    private static final Logger LOGGER = LogUtils.getLogger();
+/**
+ * Ticking base for tile entities that need a per-tick update.
+ * Extends {@link BaseTileEntity} and adds {@link ITickable} so Minecraft
+ * registers instances in its tickable-TE list.
+ *
+ * <p>Non-ticking tile entities (e.g. {@link ForceFieldBlockEntity}) should
+ * extend {@link BaseTileEntity} directly to avoid unnecessary tick overhead.
+ */
+public abstract class BaseBlockEntity extends BaseTileEntity implements ITickable {
 
     private long tickCounter;
 
-    protected BaseBlockEntity(BlockEntityType<? extends BaseBlockEntity> type, BlockPos pos, BlockState state) {
-        super(type, pos, state);
+    // Required no-arg constructor for TileEntity registration
+    protected BaseBlockEntity() {
+        super();
     }
 
     public long getTicks() {
         return this.tickCounter;
     }
 
-    public void tickClient() {
+    // ITickable.update() - dispatches to client/server tick
+    @Override
+    public void update() {
         ++this.tickCounter;
-    }
-
-    public void tickServer() {
-        ++this.tickCounter;
-    }
-
-    public void provideAdditionalDrops(List<? super ItemStack> drops) {
-    }
-
-    public InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
-        if (!this.level.isClientSide()) {
-            player.openMenu(this, this.worldPosition);
+        if (this.world != null) {
+            if (this.world.isRemote) {
+                tickClient();
+            } else {
+                tickServer();
+            }
         }
-        return InteractionResult.SUCCESS;
     }
 
-    public Component getDisplayName() {
-        return getBlockState().getBlock().getName();
-    }
+    public void tickClient() {}
 
+    public void tickServer() {}
+
+    /**
+     * Called when the block is broken to gather drops. Subclasses should add items to the list.
+     */
     @Override
-    public CompoundTag getUpdateTag(HolderLookup.Provider provider) {
-        CompoundTag tag;
-        try (ProblemReporter.ScopedCollector scopedCollector = new ProblemReporter.ScopedCollector(this.problemPath(), LOGGER)) {
-            TagValueOutput output = TagValueOutput.createWithContext(scopedCollector, provider);
-            this.saveCommonTag(output);
-            tag = output.buildResult();
-        }
-        return tag;
-    }
+    public void provideAdditionalDrops(List<? super ItemStack> drops) {}
 
+    /**
+     * Return a display name for use in GUI titles.
+     */
     @Override
-    public void handleUpdateTag(ValueInput input) {
-        super.handleUpdateTag(input);
-        loadCommonTag(input);
-    }
-
-    @Override
-    protected void saveAdditional(ValueOutput output) {
-        super.saveAdditional(output);
-        saveCommonTag(output);
-        saveTag(output);
-    }
-
-    @Override
-    protected void loadAdditional(ValueInput input) {
-        super.loadAdditional(input);
-        loadCommonTag(input);
-        loadTag(input);
-    }
-
-    protected void loadCommonTag(ValueInput input) {
-    }
-
-    protected void saveCommonTag(ValueOutput output) {
-    }
-
-    protected void loadTag(ValueInput input) {
-    }
-
-    protected void saveTag(ValueOutput output) {
-    }
-
-    public <T extends CustomPacketPayload> void sendToChunk(T msg) {
-        PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) this.level, this.level.getChunkAt(this.worldPosition).getPos(), msg);
+    public ITextComponent getDisplayName() {
+        return new TextComponentTranslation(getBlockType().getTranslationKey() + ".name");
     }
 }

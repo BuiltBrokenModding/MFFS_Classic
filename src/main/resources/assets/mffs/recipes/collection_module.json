@@ -1,0 +1,20 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "F F",
+        " H ",
+        "F F"
+    ],
+    "key": {
+        "F": {
+            "item": "mffs:focus_matrix"
+        },
+        "H": {
+            "item": "minecraft:hopper"
+        }
+    },
+    "result": {
+        "item": "mffs:collection_module",
+        "count": 1
+    }
+}

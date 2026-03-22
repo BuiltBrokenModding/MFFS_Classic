@@ -4,13 +4,13 @@
     "category": "mffs:tools",
     "pages": [
         {
-            "type": "patchouli:spotlight",
+            "type": "spotlight",
             "item": "mffs:frequency_card",
             "link_recipe": true,
-            "text": "The $(5)Frequency Card$() can hold, memorize and generate frequencies for interacting with machines. Its frequency can be set by placing it into a machine's frequency slot. Using it on any machine will set the frequency of that machine to whatever is set on the card. You can generate a random frequency by shift-right-clicking while holding the card."
+            "text": "The $(5)Frequency Card$() can hold, transfer and generate frequencies. You can copy a machine's frequency by placing it into a machine's frequency slot or generate a random one by shift-right clicking air with the card. You can transfer the card's frequency to a machine by shift-right clicking the machine with the card."
         },
         {
-            "type": "patchouli:crafting",
+            "type": "crafting",
             "recipe": "mffs:frequency_card",
             "text": "Crafting the $(5)Frequency Card$()."
         }

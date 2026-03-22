@@ -1,142 +1,129 @@
 package dev.su5ed.mffs.render;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Axis;
-import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.blockentity.ProjectorBlockEntity;
+import dev.su5ed.mffs.compat.CodeChickenLibEmissiveCompat;
 import dev.su5ed.mffs.render.model.ProjectorRotorModel;
-import dev.su5ed.mffs.setup.ModClientSetup;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.geom.ModelLayerLocation;
-import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
-import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.state.CameraRenderState;
-import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.core.BlockPos;
-import net.minecraft.resources.Identifier;
-import net.minecraft.util.Util;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.Nullable;
-import org.joml.Matrix4f;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.item.Item;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.opengl.GL11;
 
-import java.util.function.Function;
+// TileEntitySpecialRenderer that renders the rotating rotor accent + holographic pyramid.
 
-public class ProjectorRenderer implements BlockEntityRenderer<ProjectorBlockEntity, ProjectorRenderer.ProjectorRenderState> {
-    public static final Identifier PROJECTOR_OFF_TEXTURE = MFFSMod.location("textures/model/projector_off.png");
-    public static final Identifier PROJECTOR_ON_TEXTURE = MFFSMod.location("textures/model/projector_on.png");
-
-    private final ModelPart rotor;
-    private final Function<ModelLayerLocation, ModelPart> modelPartCache;
-    private final Function<BlockEntity, HoloRenderer> holoRenderer;
-
-    public ProjectorRenderer(BlockEntityRendererProvider.Context context) {
-        this.rotor = context.bakeLayer(ProjectorRotorModel.LAYER_LOCATION);
-
-        this.modelPartCache = Util.memoize(context::bakeLayer);
-        this.holoRenderer = Util.memoize(HoloRenderer::new);
-    }
-
-    public static final class ProjectorRenderState extends BlockEntityRenderState {
-        public ProjectorBlockEntity blockEntity;
-
-        public boolean isActive;
-        public int animation;
-        public int animationSpeed;
-        public float partialTick;
-        public boolean hasMode;
-    }
+@SideOnly(Side.CLIENT)
+public class ProjectorRenderer extends TileEntitySpecialRenderer<ProjectorBlockEntity> {
+    private static final ResourceLocation TEXTURE_OFF      = new ResourceLocation("mffs", "textures/model/projector_off.png");
+    private static final ResourceLocation TEXTURE_ON       = new ResourceLocation("mffs", "textures/model/projector_on.png");
+    private static final ResourceLocation TEXTURE_EMISSIVE = new ResourceLocation("mffs", "textures/model/projector_emissive.png");
+    private static final ProjectorRotorModel MODEL = new ProjectorRotorModel();
 
     @Override
-    public ProjectorRenderState createRenderState() {
-        return new ProjectorRenderState();
-    }
+    public void render(ProjectorBlockEntity te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
+        // Phase 1: Emissive block overlay (active state only)
+        if (te.getWorld() != null) {
+            CodeChickenLibEmissiveCompat.renderBlockEmissive(
+                te.getWorld().getBlockState(te.getPos()), x, y, z, TEXTURE_EMISSIVE, te.isActive());
+        }
 
-    @Override
-    public void extractRenderState(ProjectorBlockEntity blockEntity, ProjectorRenderState renderState, float partialTick, Vec3 cameraPosition, ModelFeatureRenderer.CrumblingOverlay breakProgress) {
-        BlockEntityRenderer.super.extractRenderState(blockEntity, renderState, partialTick, cameraPosition, breakProgress);
+        // Phase 2: Render rotating rotor
+        bindTexture(te.isActive() ? TEXTURE_ON : TEXTURE_OFF);
 
-        renderState.blockEntity = blockEntity;
-        renderState.isActive = blockEntity.isActive();
-        renderState.animation = blockEntity.getAnimation();
-        renderState.animationSpeed = blockEntity.getAnimationSpeed();
-        renderState.partialTick = partialTick;
-        renderState.hasMode = blockEntity.getMode().isPresent();
-    }
+        GlStateManager.pushMatrix();
+        // Translate to block center + 1.5 above,
+        // then flip 180° on Z so model Y-up becomes render Y-down (correct normals + lighting).
+        GlStateManager.translate(x + 0.5, y + 1.5, z + 0.5);
+        GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
 
-    @Override
-    public void submit(ProjectorRenderState renderState, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState cameraRenderState) {
-        renderRotor(renderState, nodeCollector, poseStack);
-        if (renderState.hasMode) {
-            ProjectorBlockEntity blockEntity = renderState.blockEntity;
-            RenderTickHandler.addTransparentRenderer(ModRenderType.HOLO_TRIANGLE, this.holoRenderer.apply(blockEntity));
-            ModClientSetup.renderLazy(blockEntity.getModeStack().getItem(), blockEntity, this.modelPartCache);
+        // Match RenderType.entityTranslucent: enable alpha blending, disable alpha test
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+        GlStateManager.disableAlpha();
+
+        float activePartial = te.isActive() ? partialTicks : 0;
+        float rotAngle = (te.getAnimation() + activePartial) * te.getAnimationSpeed();
+        MODEL.render(rotAngle, 0.0625F);
+
+        if (te.isActive() && CodeChickenLibEmissiveCompat.isBlockEmissiveAvailable()) {
+            float previousLightX = OpenGlHelper.lastBrightnessX;
+            float previousLightY = OpenGlHelper.lastBrightnessY;
+
+            bindTexture(TEXTURE_EMISSIVE);
+            RenderHelper.disableStandardItemLighting();
+            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240F, 240F);
+            MODEL.render(rotAngle, 0.0625F);
+            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, previousLightX, previousLightY);
+            RenderHelper.enableStandardItemLighting();
+        }
+
+        GlStateManager.enableAlpha();
+        GlStateManager.disableBlend();
+        GlStateManager.popMatrix();
+
+        // Phase 3: Render holographic pyramid + mode shape (active + mode present only)
+        if (te.isActive() && te.getMode().isPresent()) {
+            renderHoloPyramid(te, x, y, z, partialTicks);
+
+            // Phase 4: Render the mode-specific holographic shape (cube/sphere/etc)
+            Item modeItem = te.getModeStack().getItem();
+            ProjectorModeRenderer.renderMode(te, modeItem, x, y, z, partialTicks);
         }
     }
 
-    private void renderRotor(ProjectorRenderState renderState, SubmitNodeCollector nodeCollector, PoseStack poseStack) {
-        Identifier texture = renderState.isActive ? PROJECTOR_ON_TEXTURE : PROJECTOR_OFF_TEXTURE;
+    /**
+     * Renders the glowing holographic pyramid that points upward from the projector.
+     * Player-facing billboard with additive blending.
+     */
+    private void renderHoloPyramid(ProjectorBlockEntity te, double x, double y, double z, float partialTicks) {
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder buffer = tessellator.getBuffer();
 
-        poseStack.pushPose();
-        poseStack.translate(0.5, -0.75, 0.5);
-        float activePartial = renderState.isActive ? renderState.partialTick : 0;
-        poseStack.mulPose(Axis.YN.rotationDegrees((renderState.animation + activePartial) * renderState.animationSpeed));
+        RenderHelper.disableStandardItemLighting();
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(x + 0.5, y + 0.5, z + 0.5);
 
-        nodeCollector.submitModelPart(this.rotor, poseStack, RenderTypes.entityTranslucent(texture), renderState.lightCoords, OverlayTexture.NO_OVERLAY, null);
+        // Face toward the player
+        double xDiff = Minecraft.getMinecraft().player.posX - (te.getPos().getX() + 0.5);
+        double zDiff = Minecraft.getMinecraft().player.posZ - (te.getPos().getZ() + 0.5);
+        float rotation = (float) Math.toDegrees(Math.atan2(zDiff, xDiff));
+        GlStateManager.rotate(-rotation + 27.0F, 0.0F, 1.0F, 0.0F);
 
-        poseStack.popPose();
-    }
+        GlStateManager.disableTexture2D();
+        GlStateManager.shadeModel(GL11.GL_SMOOTH);
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
+        GlStateManager.disableAlpha();
+        GlStateManager.enableCull();
+        GlStateManager.depthMask(false);
 
-    private static class HoloRenderer implements LazyRenderer {
-        private final BlockEntity be;
-        private final Vec3 centerPos;
+        // Triangle fan: center bright blue, tips transparent
+        float height = 2.0F;
+        float width = 2.0F;
 
-        public HoloRenderer(BlockEntity be) {
-            this.be = be;
-            this.centerPos = Vec3.atCenterOf(be.getBlockPos());
-        }
+        buffer.begin(GL11.GL_TRIANGLE_FAN, DefaultVertexFormats.POSITION_COLOR);
+        buffer.pos(0, 0, 0).color(72, 198, 255, 255).endVertex();
+        buffer.pos(-0.866 * width, height, -0.5 * width).color(0, 0, 0, 0).endVertex();
+        buffer.pos(0.866 * width, height, -0.5 * width).color(0, 0, 0, 0).endVertex();
+        buffer.pos(0, height, 1.0 * width).color(0, 0, 0, 0).endVertex();
+        buffer.pos(-0.866 * width, height, -0.5 * width).color(0, 0, 0, 0).endVertex();
+        tessellator.draw();
 
-        @Override
-        public void render(PoseStack poseStack, VertexConsumer buffer, int ticks, float partialTick) {
-            poseStack.pushPose();
-
-            poseStack.translate(this.centerPos.x, this.centerPos.y, this.centerPos.z);
-            Vec3 playerPos = Minecraft.getInstance().player.position();
-            BlockPos bePos = this.be.getBlockPos();
-            double xDifference = playerPos.x - (bePos.getX() + 0.5D);
-            double zDifference = playerPos.z - (bePos.getZ() + 0.5D);
-            float rotation = (float) Math.toDegrees(Math.atan2(zDifference, xDifference));
-            poseStack.mulPose(Axis.YP.rotationDegrees(-rotation + 27.0F));
-
-            float height = 2.0F;
-            float width = 2.0F;
-            Matrix4f mat = poseStack.last().pose();
-
-            buffer.addVertex(mat, 0, 0, 0).setColor(72, 198, 255, 255);
-            buffer.addVertex(mat, -0.866F * width, height, -0.5F * width).setColor(0, 0, 0, 0);
-            buffer.addVertex(mat, 0.866F * width, height, -0.5F * width).setColor(0, 0, 0, 0);
-
-            buffer.addVertex(mat, 0, 0, 0).setColor(72, 198, 255, 255);
-            buffer.addVertex(mat, 0.866F * width, height, -0.5F * width).setColor(0, 0, 0, 0);
-            buffer.addVertex(mat, 0.0F, height, width).setColor(0, 0, 0, 0);
-
-            buffer.addVertex(mat, 0, 0, 0).setColor(72, 198, 255, 255);
-            buffer.addVertex(mat, 0.0F, height, width).setColor(0, 0, 0, 0);
-            buffer.addVertex(mat, -0.866F * width, height, -0.5F * width).setColor(0, 0, 0, 0);
-
-            poseStack.popPose();
-        }
-
-        @Nullable
-        @Override
-        public Vec3 centerPos() {
-            return this.centerPos;
-        }
+        GlStateManager.depthMask(true);
+        GlStateManager.disableCull();
+        GlStateManager.disableBlend();
+        GlStateManager.shadeModel(GL11.GL_FLAT);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.enableTexture2D();
+        GlStateManager.enableAlpha();
+        RenderHelper.enableStandardItemLighting();
+        GlStateManager.popMatrix();
     }
 }

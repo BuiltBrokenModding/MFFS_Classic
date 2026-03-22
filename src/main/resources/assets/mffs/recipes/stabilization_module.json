@@ -1,0 +1,30 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "FDF",
+        "PSA",
+        "FDF"
+    ],
+    "key": {
+        "A": {
+            "item": "minecraft:diamond_axe"
+        },
+        "D": {
+            "type": "forge:ore_dict",
+            "ore": "gemDiamond"
+        },
+        "F": {
+            "item": "mffs:focus_matrix"
+        },
+        "P": {
+            "item": "minecraft:diamond_pickaxe"
+        },
+        "S": {
+            "item": "minecraft:diamond_shovel"
+        }
+    },
+    "result": {
+        "item": "mffs:stabilization_module",
+        "count": 1
+    }
+}

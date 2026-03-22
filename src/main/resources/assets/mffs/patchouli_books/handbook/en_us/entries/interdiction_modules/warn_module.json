@@ -4,13 +4,13 @@
     "category": "mffs:interdiction_modules",
     "pages": [
         {
-            "type": "patchouli:spotlight",
+            "type": "spotlight",
             "item": "mffs:warn_module",
             "link_recipe": true,
-            "text": "The $(5)Warn Module$() can be placed in the matrix slots of an $(l:mffs:machines/interdiction_matrix)Interdiction Matrix$() to periodically send a warning to all unathorized players within its Action Range."
+            "text": "The $(5)Warn Module$() can be placed in the matrix slots of an $(l:machines/interdiction_matrix)Interdiction Matrix$() to periodically send a warning to all unathorized players within its Action Range."
         },
         {
-            "type": "patchouli:crafting",
+            "type": "crafting",
             "recipe": "mffs:warn_module",
             "text": "Crafting the $(5)Warn Module$()."
         }

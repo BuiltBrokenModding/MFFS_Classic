@@ -1,28 +1,16 @@
 <p align="center">
     <img src="https://raw.githubusercontent.com/BuiltBrokenModding/MFFS_Classic/9bd18609f2dd87c20bd2fefba639254a425afbe4/src/main/resources/logo.png" alt="Logo" width="50%">
 </p>
-<p align="center">
-    <a href="https://www.curseforge.com/minecraft/mc-mods/mffs">
-        <img src="https://cf.way2muchnoise.eu/238546.svg" alt="CurseForge Downloads" align="center">
-    </a>
-    <a href="https://www.curseforge.com/minecraft/mc-mods/mffs">
-        <img src="https://cf.way2muchnoise.eu/versions/238546.svg" alt="CurseForge MC Versions" align="center">
-    </a>
-    <a href="https://discord.gg/hEYxhN7">
-        <img src="https://discord.com/api/guilds/97599288397275136/widget.png?style=shield" alt="Discord" align="center"/>
-  </a>
-</p>
 
 ## About
 
-**Modular Force Field System** (or MFFS) is a mod that adds force fields, high tech machinery and defensive measures to
-Minecraft.
+**Modular Force Field System** (or MFFS) is a mod that adds force fields, high tech machinery and defensive measures to Minecraft.
 Ever tired of nuclear explosions blowing up your house or want to keep people out of your secret bases?
 **May the force (fields) be with you!**
 
-MFFS v3.0+ is a complete ground-up rewrite inspired by ThunderDark's MFFS mod.
+This is a backport of MFFS v3.0+ which itself is a rewrite inspired by ThunderDark's MFFS mod. The foundation and reference for this version was the 1.21/1.20 Forge/NeoForge versions.
 
-Downloads can be found on [CurseForge](https://www.curseforge.com/minecraft/mc-mods/mffs).
+This backport heavily utilized AI tools, but was thoroughly tested, and in some cases where the reference code used features that do not exist in minecraft 1.12.2, additional effort and features were added.
 
 ## Usage
 
@@ -36,14 +24,21 @@ field shapes, size scaling,
 position offset, and utility modules. For example, the upgrade to shock attacks, kill monsters, remove blocks, and
 protect tiles.
 
-Please report any bugs you find on our Issue Tracker found in this repository, or ask us in the discord if you're unsure.
+## Differences
+- Lighting -- The upstream mod uses the updated lighting system to defer updates, on 1.12.2 the lighting has always been known as being heavy and laggy, to address this we slimmed down the scope for the glow module to only light force fields making contact with physical blocks (by default) and process these updates client side in a queue.
+- Configurable -- We've made extra options for server owners to balance and tweak, such as easily disabling the steel ingot recipe, which other mods do a better job at.
+- Transitions -- Block translation difference checks. We avoid block costly block updates which do not need to be updated by comparing a difference between old and updated projections.
+- Safety -- We've added simply safety measures to prevent base owners from locking themselves out of their base, wasting time of server OPs to fix their mistake. Hostile and restrictive features require biometrics active, ensuring at least someone has the keys to the kingdom.
+- Feedback -- Instead of chat prints for getting close to an interdiction zone, we print a on screen message with a distance, so you have a better idea where not to go. Cached and calculated on the client!
+- Commands -- A feature hopefully you never need, /mffs command that allows OPs to clean up orphan force fields that would otherwise be very hard to remove.
 
 ### Contributing
 
-Contributions are welcome! If you're willing to help out with code, art or localization, feel free to submit a
-Pull Request or get in touch with us on Discord if you have any questions.
+Contributions are welcome, however if you use AI to code your changes, we expect you to pay attention to the edits it makes and to test everything it touches before submitting it. AI isn't a magic bullet, it messes stuff up all the time.
 
 ### Credits
+
+**1.12.2 Port** - Rsslone
 
 Block highlighting render code - [DarkKronicle's BetterBlockOutline renderer](https://github.com/DarkKronicle/BetterBlockOutline)
 
@@ -53,3 +48,11 @@ Block highlighting render code - [DarkKronicle's BetterBlockOutline renderer](ht
 **Code** - Thutmose, Briman  
 **Art** - Comply_cat_Ed, Sweet Walrus, mousecop, mr_hazard  
 **Original mod by** Thunderdark  
+
+## TemplateDevEnv
+
+Utilizes Cleanroom's template workspace for modding Minecraft 1.12.2. Licensed under MIT, it is made for public use.
+
+Runs on **Java 25**, **Gradle 9.2.1** + **[RetroFuturaGradle](https://github.com/GTNewHorizons/RetroFuturaGradle) 2.0.2** + **Forge 14.23.5.2847**.
+
+With **coremod and mixin support** that is easy to configure.

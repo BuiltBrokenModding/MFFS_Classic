@@ -1,0 +1,23 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "SSS",
+        "FFF",
+        "FEF"
+    ],
+    "key": {
+        "E": {
+            "item": "minecraft:ender_chest"
+        },
+        "F": {
+            "item": "mffs:focus_matrix"
+        },
+        "S": {
+            "item": "mffs:shock_module"
+        }
+    },
+    "result": {
+        "item": "mffs:interdiction_matrix",
+        "count": 1
+    }
+}

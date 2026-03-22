@@ -1,75 +1,72 @@
 package dev.su5ed.mffs.network;
 
-import com.mojang.logging.LogUtils;
 import dev.su5ed.mffs.MFFSMod;
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.neoforged.neoforge.capabilities.BlockCapability;
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
-import net.neoforged.neoforge.network.handling.IPayloadHandler;
-import net.neoforged.neoforge.network.registration.PayloadRegistrar;
-import org.slf4j.Logger;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import net.minecraftforge.fml.relauncher.Side;
 
 import java.util.Optional;
-import java.util.function.Supplier;
 
 public final class Network {
-    private static final String PROTOCOL_VERSION = "1";
-    private static final Logger LOGGER = LogUtils.getLogger();
+    public static SimpleNetworkWrapper CHANNEL;
 
-    public static void registerPackets(RegisterPayloadHandlersEvent event) {
-        PayloadRegistrar registrar = event.registrar(MFFSMod.MODID)
-            .versioned(PROTOCOL_VERSION);
-
-        registrar.playToServer(ToggleModePacket.TYPE, ToggleModePacket.STREAM_CODEC, mainThreadHandler(ToggleModePacket::handle));
-        registrar.playToServer(UpdateFrequencyPacket.TYPE, UpdateFrequencyPacket.STREAM_CODEC, mainThreadHandler(UpdateFrequencyPacket::handle));
-        registrar.playToServer(SwitchEnergyModePacket.TYPE, SwitchEnergyModePacket.STREAM_CODEC, mainThreadHandler(SwitchEnergyModePacket::handle));
-        registrar.playToServer(SwitchTransferModePacket.TYPE, SwitchTransferModePacket.STREAM_CODEC, mainThreadHandler(SwitchTransferModePacket::handle));
-        registrar.playToServer(InitialDataRequestPacket.TYPE, InitialDataRequestPacket.STREAM_CODEC, mainThreadHandler(InitialDataRequestPacket::handle));
-        registrar.playToServer(ToggleFieldPermissionPacket.TYPE, ToggleFieldPermissionPacket.STREAM_CODEC, mainThreadHandler(ToggleFieldPermissionPacket::handle));
-        registrar.playToServer(SwitchConfiscationModePacket.TYPE, SwitchConfiscationModePacket.STREAM_CODEC, mainThreadHandler(SwitchConfiscationModePacket::handle));
-        registrar.playToServer(SetItemInSlotPacket.TYPE, SetItemInSlotPacket.STREAM_CODEC, mainThreadHandler(SetItemInSlotPacket::handle));
-        registrar.playToServer(StructureDataRequestPacket.TYPE, StructureDataRequestPacket.STREAM_CODEC, mainThreadHandler(StructureDataRequestPacket::handle));
-
-        registrar.playToClient(UpdateBlockEntityPacket.TYPE, UpdateBlockEntityPacket.STREAM_CODEC, mainThreadHandler(() -> ClientPacketHandler::handleBlockEntityUpdatePacket));
-        registrar.playToClient(SetStructureShapePacket.TYPE, SetStructureShapePacket.STREAM_CODEC, mainThreadHandler(() -> ClientPacketHandler::handleSetStructureShapePacket));
-        registrar.playToClient(DrawBeamPacket.TYPE, DrawBeamPacket.STREAM_CODEC, mainThreadHandler(() -> ClientPacketHandler::handleDrawBeamPacket));
-        registrar.playToClient(UpdateAnimationSpeed.TYPE, UpdateAnimationSpeed.STREAM_CODEC, mainThreadHandler(() -> ClientPacketHandler::handleUpdateAnimationSpeedPacket));
-        registrar.playToClient(DrawHologramPacket.TYPE, DrawHologramPacket.STREAM_CODEC, mainThreadHandler(() -> ClientPacketHandler::handleDrawHologramPacket));
+    public static void init() {
+        CHANNEL = NetworkRegistry.INSTANCE.newSimpleChannel(MFFSMod.MODID);
+        int id = 0;
+        // Server-bound (sent from client to server)
+        CHANNEL.registerMessage(ToggleModePacket.Handler.class,              ToggleModePacket.class,              id++, Side.SERVER);
+        CHANNEL.registerMessage(UpdateFrequencyPacket.Handler.class,         UpdateFrequencyPacket.class,         id++, Side.SERVER);
+        CHANNEL.registerMessage(SwitchEnergyModePacket.Handler.class,        SwitchEnergyModePacket.class,        id++, Side.SERVER);
+        CHANNEL.registerMessage(SwitchTransferModePacket.Handler.class,      SwitchTransferModePacket.class,      id++, Side.SERVER);
+        CHANNEL.registerMessage(InitialDataRequestPacket.Handler.class,      InitialDataRequestPacket.class,      id++, Side.SERVER);
+        CHANNEL.registerMessage(ToggleFieldPermissionPacket.Handler.class,   ToggleFieldPermissionPacket.class,   id++, Side.SERVER);
+        CHANNEL.registerMessage(SwitchConfiscationModePacket.Handler.class,  SwitchConfiscationModePacket.class,  id++, Side.SERVER);
+        CHANNEL.registerMessage(SetItemInSlotPacket.Handler.class,           SetItemInSlotPacket.class,           id++, Side.SERVER);
+        CHANNEL.registerMessage(StructureDataRequestPacket.Handler.class,    StructureDataRequestPacket.class,    id++, Side.SERVER);
+        // Client-bound (sent from server to client)
+        CHANNEL.registerMessage(UpdateBlockEntityPacket.Handler.class,       UpdateBlockEntityPacket.class,       id++, Side.CLIENT);
+        CHANNEL.registerMessage(SetStructureShapePacket.Handler.class,       SetStructureShapePacket.class,       id++, Side.CLIENT);
+        CHANNEL.registerMessage(DrawBeamPacket.Handler.class,                DrawBeamPacket.class,                id++, Side.CLIENT);
+        CHANNEL.registerMessage(UpdateAnimationSpeed.Handler.class,          UpdateAnimationSpeed.class,          id++, Side.CLIENT);
+        CHANNEL.registerMessage(DrawHologramPacket.Handler.class,            DrawHologramPacket.class,            id++, Side.CLIENT);
+        CHANNEL.registerMessage(IMAZoneSyncPacket.Handler.class,             IMAZoneSyncPacket.class,             id++, Side.CLIENT);
     }
 
-    private static <T extends CustomPacketPayload> IPayloadHandler<T> mainThreadHandler(Supplier<IPayloadHandler<T>> supplier) {
-        return mainThreadHandler((payload, context) -> supplier.get().handle(payload, context));
-    }
-
-    private static <T extends CustomPacketPayload> IPayloadHandler<T> mainThreadHandler(IPayloadHandler<T> handler) {
-        return (payload, context) -> context.enqueueWork(() -> handler.handle(payload, context))
-            .exceptionally(thr -> {
-                LOGGER.error("Error handling payload", thr);
-                return null;
-            });
-    }
-
-    public static <T extends BlockEntity> Optional<T> findBlockEntity(BlockEntityType<T> type, Level level, BlockPos pos) {
-        return level.isLoaded(pos) ? level.getBlockEntity(pos, type) : Optional.empty();
-    }
-
+    /** Find a TileEntity by class at the given position. */
     @SuppressWarnings("unchecked")
-    public static <T> Optional<T> findBlockEntity(Class<T> type, Level level, BlockPos pos) {
-        return findBlockEntity(level, pos).map(be -> type.isInstance(be) ? (T) be : null);
+    public static <T> Optional<T> findTileEntity(Class<T> type, World world, BlockPos pos) {
+        if (!world.isBlockLoaded(pos)) return Optional.empty();
+        TileEntity te = world.getTileEntity(pos);
+        return type.isInstance(te) ? Optional.of((T) te) : Optional.empty();
     }
 
-    public static <T> Optional<T> findBlockEntity(BlockCapability<T, ?> type, Level level, BlockPos pos) {
-        return findBlockEntity(level, pos).flatMap(be -> Optional.ofNullable(level.getCapability(type, pos, null)));
+    /** Find any TileEntity at the given position. */
+    public static Optional<TileEntity> findTileEntity(World world, BlockPos pos) {
+        if (!world.isBlockLoaded(pos)) return Optional.empty();
+        return Optional.ofNullable(world.getTileEntity(pos));
     }
 
-    public static Optional<BlockEntity> findBlockEntity(Level level, BlockPos pos) {
-        return level.isLoaded(pos) ? Optional.ofNullable(level.getBlockEntity(pos)) : Optional.empty();
+    /** Send a packet from the client to the server. */
+    public static void sendToServer(IMessage message) {
+        CHANNEL.sendToServer(message);
     }
 
-    private Network() {
+    /** Send a packet from the server to a specific player. */
+    public static void sendTo(IMessage message, EntityPlayerMP player) {
+        CHANNEL.sendTo(message, player);
     }
+
+    /** Send a packet from the server to all players within range of a position. */
+    public static void sendToAllAround(IMessage message, World world, BlockPos pos, double range) {
+        CHANNEL.sendToAllAround(message, new NetworkRegistry.TargetPoint(
+            world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), range));
+    }
+
+    private Network() {}
 }
+

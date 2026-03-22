@@ -5,22 +5,16 @@ import dev.su5ed.mffs.api.module.ModuleAcceptor;
 import dev.su5ed.mffs.api.security.FieldPermission;
 import dev.su5ed.mffs.api.security.InterdictionMatrix;
 import dev.su5ed.mffs.network.DrawBeamPacket;
-import dev.su5ed.mffs.render.particle.BeamParticleOptions;
+import dev.su5ed.mffs.network.Network;
 import dev.su5ed.mffs.render.particle.ParticleColor;
 import dev.su5ed.mffs.setup.ModCapabilities;
-import dev.su5ed.mffs.setup.ModFluids;
 import dev.su5ed.mffs.setup.ModModules;
-import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.network.PacketDistributor;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 import one.util.streamex.StreamEx;
 
 import java.util.Collection;
@@ -32,13 +26,9 @@ import java.util.Optional;
  * @author Calclavia
  */
 public final class Fortron {
-    public static FluidStack getFortron(int amount) {
-        return new FluidStack(ModFluids.FORTRON_FLUID.get(), amount);
-    }
 
     public static void transferFortron(FortronStorage transmitter, Collection<? extends FortronStorage> receivers, TransferMode transferMode, int limit) {
         if (transmitter != null && receivers.size() > 1) {
-            // Check spread mode. Equal, Give All, Take All
             int totalFortron = 0;
             int totalCapacity = 0;
 
@@ -50,7 +40,6 @@ public final class Fortron {
             receivers.remove(transmitter);
 
             if (totalFortron > 0 && totalCapacity > 0) {
-                // Test each mode and based on the mode, spread Fortron energy.
                 switch (transferMode) {
                     case EQUALIZE -> {
                         for (FortronStorage machine : receivers) {
@@ -61,7 +50,6 @@ public final class Fortron {
                     }
                     case DISTRIBUTE -> {
                         final int amountToSet = totalFortron / receivers.size();
-
                         for (FortronStorage machine : receivers) {
                             doTransferFortron(transmitter, machine, amountToSet - machine.getStoredFortron(), limit);
                         }
@@ -70,7 +58,6 @@ public final class Fortron {
                         for (FortronStorage machine : receivers) {
                             double capacityPercentage = (double) machine.getFortronCapacity() / (double) totalCapacity;
                             int amountToSet = (int) (totalFortron * capacityPercentage);
-
                             if (amountToSet - machine.getStoredFortron() > 0) {
                                 doTransferFortron(transmitter, machine, amountToSet - machine.getStoredFortron(), limit);
                             }
@@ -78,13 +65,10 @@ public final class Fortron {
                     }
                     case FILL -> {
                         if (transmitter.getStoredFortron() < transmitter.getFortronCapacity()) {
-                            // The amount of energy required to be full.
                             int requiredFortron = transmitter.getFortronCapacity() - transmitter.getStoredFortron();
-
                             for (FortronStorage machine : receivers) {
                                 int amountToConsume = Math.min(requiredFortron, machine.getStoredFortron());
                                 int amountToSet = -machine.getStoredFortron() - amountToConsume;
-
                                 if (amountToConsume > 0) {
                                     doTransferFortron(transmitter, machine, amountToSet - machine.getStoredFortron(), limit);
                                 }
@@ -100,8 +84,8 @@ public final class Fortron {
      * Tries to transfer Fortron to a specific machine from this capacitor. Renders an animation on
      * the client side.
      *
-     * @param receiver : The machine to be transfered to.
-     * @param joules   : The amount of energy to be transfered.
+     * @param receiver : The machine to be transferred to.
+     * @param joules   : The amount of energy to be transferred.
      */
     public static void doTransferFortron(FortronStorage transmitter, FortronStorage receiver, int joules, int limit) {
         boolean isCamo = transmitter instanceof ModuleAcceptor acceptor && acceptor.hasModule(ModModules.CAMOUFLAGE);
@@ -112,44 +96,59 @@ public final class Fortron {
         }
     }
 
-    public static void renderBeam(ClientLevel level, Vec3 target, Vec3 position, ParticleColor color, int lifetime) {
-        level.addParticle(new BeamParticleOptions(target, color, lifetime), position.x(), position.y(), position.z(), 0, 0, 0);
+    /**
+     * Render a beam particle on the client side.
+     */
+    @net.minecraftforge.fml.relauncher.SideOnly(net.minecraftforge.fml.relauncher.Side.CLIENT)
+    public static void renderBeam(World world, Vec3d target, Vec3d position, ParticleColor color, int lifetime) {
+        net.minecraft.client.Minecraft mc = net.minecraft.client.Minecraft.getMinecraft();
+        dev.su5ed.mffs.render.particle.BeamParticle particle =
+            new dev.su5ed.mffs.render.particle.BeamParticle(world, position, target, color, lifetime);
+        mc.effectRenderer.addEffect(particle);
     }
 
-    public static void renderClientBeam(Level level, Vec3 target, Vec3 position, BlockPos chunkPos, ParticleColor color, int lifetime) {
+    /**
+     * Sends a draw-beam packet to all clients tracking the chunk at chunkPos.
+     */
+    public static void renderClientBeam(World world, Vec3d target, Vec3d position, BlockPos chunkPos, ParticleColor color, int lifetime) {
         DrawBeamPacket packet = new DrawBeamPacket(target, position, color, lifetime);
-        PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(chunkPos).getPos(), packet);
+        Network.sendToAllAround(packet, world, chunkPos, 128);
     }
 
-    public static boolean hasPermission(Level level, BlockPos pos, FieldPermission permission, Player player) {
-        InterdictionMatrix interdictionMatrix = getNearestInterdictionMatrix(level, pos);
+    public static boolean hasPermission(World world, BlockPos pos, FieldPermission permission, EntityPlayer player) {
+        InterdictionMatrix interdictionMatrix = getNearestInterdictionMatrix(world, pos);
         return interdictionMatrix == null || isPermittedByInterdictionMatrix(interdictionMatrix, player, permission);
     }
 
-    public static boolean hasPermission(Level level, BlockPos pos, InterdictionMatrix interdictionMatrix, Action action, Player player) {
+    public static boolean hasPermission(World world, BlockPos pos, InterdictionMatrix interdictionMatrix, Action action, EntityPlayer player) {
         boolean hasPermission = true;
-        if (action == Action.RIGHT_CLICK_BLOCK && level.getBlockEntity(pos) != null && interdictionMatrix.hasModule(ModModules.BLOCK_ACCESS)) {
+        if (action == Action.RIGHT_CLICK_BLOCK && world.getTileEntity(pos) != null && interdictionMatrix.hasModule(ModModules.BLOCK_ACCESS)) {
             hasPermission = isPermittedByInterdictionMatrix(interdictionMatrix, player, FieldPermission.USE_BLOCKS);
         }
-        if (hasPermission && interdictionMatrix.hasModule(ModModules.BLOCK_ALTER) && (player.getItemInHand(InteractionHand.MAIN_HAND) != null || action == Action.LEFT_CLICK_BLOCK)) {
+        if (hasPermission && interdictionMatrix.hasModule(ModModules.BLOCK_ALTER)
+                && (player.getHeldItemMainhand() != null || action == Action.LEFT_CLICK_BLOCK)) {
             hasPermission = isPermittedByInterdictionMatrix(interdictionMatrix, player, FieldPermission.PLACE_BLOCKS);
         }
         return hasPermission;
     }
 
-    public static InterdictionMatrix getNearestInterdictionMatrix(Level level, BlockPos pos) {
-        return StreamEx.of(FrequencyGrid.instance(level.isClientSide()).get())
+    public static InterdictionMatrix getNearestInterdictionMatrix(World world, BlockPos pos) {
+        return StreamEx.of(FrequencyGrid.instance(world.isRemote).get())
             .mapPartial(storage -> {
-                BlockEntity be = storage.getOwner();
-                return be.getLevel() == level ? Optional.ofNullable(level.getCapability(ModCapabilities.INTERDICTION_MATRIX, be.getBlockPos(), be.getBlockState(), be, null))
-                    .filter(interdictionMatrix -> interdictionMatrix.isActive() && pos.closerThan(be.getBlockPos(), interdictionMatrix.getActionRange()))
+                TileEntity te = storage.getOwner();
+                if (te.getWorld() != world) return Optional.empty();
+                InterdictionMatrix im = te.getCapability(ModCapabilities.INTERDICTION_MATRIX, null);
+                if (im == null) return Optional.empty();
+                double dist = Math.sqrt(te.getPos().distanceSq(pos));
+                return (im.isActive() && dist <= im.getActionRange())
+                    ? Optional.of(im)
                     : Optional.empty();
             })
             .findFirst()
             .orElse(null);
     }
 
-    public static boolean isPermittedByInterdictionMatrix(InterdictionMatrix interdictionMatrix, Player player, FieldPermission... permissions) {
+    public static boolean isPermittedByInterdictionMatrix(InterdictionMatrix interdictionMatrix, EntityPlayer player, FieldPermission... permissions) {
         if (interdictionMatrix != null && interdictionMatrix.isActive() && interdictionMatrix.getBiometricIdentifier() != null) {
             for (FieldPermission permission : permissions) {
                 if (!interdictionMatrix.getBiometricIdentifier().isAccessGranted(player, permission)) {
@@ -161,32 +160,38 @@ public final class Fortron {
     }
 
     private static void doTransferFortron(FortronStorage source, FortronStorage destination, int joules, int limit, boolean isCamo) {
-        // Take energy from receiver.
         int transfer = Math.min(Math.abs(joules), limit);
-        int transferred;
-        try (Transaction tx = Transaction.openRoot()) {
-            int available;
-            try (Transaction stx = Transaction.open(tx)) {
-                available = destination.insertFortron(source.extractFortron(transfer, stx), stx);
-            }
-            transferred = source.extractFortron(destination.insertFortron(available, tx), tx);
-            tx.commit();
+
+        // Simulate-check: how much can we extract and insert?
+        int canExtract = source.extractFortron(transfer, true);
+        int canInsert  = destination.insertFortron(canExtract, true);
+
+        if (canInsert <= 0) return;
+
+        // Actual transfer
+        int extracted     = source.extractFortron(canInsert, false);
+        int actualInsert  = destination.insertFortron(extracted, false);
+        int transferred   = Math.min(extracted, actualInsert);
+
+        // Return any excess that couldn't be inserted
+        if (actualInsert < extracted) {
+            source.insertFortron(extracted - actualInsert, false);
         }
 
         // Draw Beam Effect
         if (transferred > 0 && !isCamo) {
-            BlockEntity sourceBe = source.getOwner();
-            BlockPos sourcePos = sourceBe.getBlockPos();
-            Level level = sourceBe.getLevel();
-            Vec3 target = Vec3.atCenterOf(destination.getOwner().getBlockPos());
-            Vec3 position = Vec3.atCenterOf(sourcePos);
+            TileEntity sourceTe = source.getOwner();
+            BlockPos sourcePos = sourceTe.getPos();
+            World world = sourceTe.getWorld();
+            BlockPos destPos = destination.getOwner().getPos();
+            Vec3d target   = new Vec3d(destPos.getX() + 0.5, destPos.getY() + 0.5, destPos.getZ() + 0.5);
+            Vec3d position = new Vec3d(sourcePos.getX() + 0.5, sourcePos.getY() + 0.5, sourcePos.getZ() + 0.5);
             ParticleColor color = ParticleColor.BLUE_BEAM;
             int lifetime = 20;
-            if (level.isClientSide()) {
-                ClientLevel clientLevel = (ClientLevel) level;
-                renderBeam(clientLevel, target, position, color, lifetime);
+            if (world.isRemote) {
+                renderBeam(world, target, position, color, lifetime);
             } else {
-                renderClientBeam(level, target, position, sourcePos, color, lifetime);
+                renderClientBeam(world, target, position, sourcePos, color, lifetime);
             }
         }
     }

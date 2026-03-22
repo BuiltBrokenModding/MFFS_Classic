@@ -1,63 +1,63 @@
 package dev.su5ed.mffs.render;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
-import dev.su5ed.mffs.MFFSMod;
-import dev.su5ed.mffs.blockentity.FortronBlockEntity;
+import dev.su5ed.mffs.blockentity.CoercionDeriverBlockEntity;
+import dev.su5ed.mffs.compat.CodeChickenLibEmissiveCompat;
 import dev.su5ed.mffs.render.model.CoercionDeriverTopModel;
-import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
-import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.state.CameraRenderState;
-import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.Identifier;
-import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class CoercionDeriverRenderer implements BlockEntityRenderer<FortronBlockEntity, CoercionDeriverRenderer.CoercionDeriverRenderState> {
-    public static final Identifier COERCION_DERIVER_OFF_TEXTURE = MFFSMod.location("textures/model/coercion_deriver_off.png");
-    public static final Identifier COERCION_DERIVER_ON_TEXTURE = MFFSMod.location("textures/model/coercion_deriver_on.png");
-
-    private final ModelPart top;
-
-    public CoercionDeriverRenderer(BlockEntityRendererProvider.Context context) {
-        this.top = context.bakeLayer(CoercionDeriverTopModel.LAYER_LOCATION);
-    }
-    
-    public static class CoercionDeriverRenderState extends BlockEntityRenderState {
-        public boolean isActive;
-        public int animation;
-    }
+@SideOnly(Side.CLIENT)
+public class CoercionDeriverRenderer extends TileEntitySpecialRenderer<CoercionDeriverBlockEntity> {
+    private static final ResourceLocation TEXTURE_OFF      = new ResourceLocation("mffs", "textures/model/coercion_deriver_off.png");
+    private static final ResourceLocation TEXTURE_ON       = new ResourceLocation("mffs", "textures/model/coercion_deriver_on.png");
+    private static final ResourceLocation TEXTURE_EMISSIVE = new ResourceLocation("mffs", "textures/model/coercion_deriver_emissive.png");
+    private static final CoercionDeriverTopModel MODEL = new CoercionDeriverTopModel();
 
     @Override
-    public CoercionDeriverRenderState createRenderState() {
-        return new CoercionDeriverRenderState();
-    }
+    public void render(CoercionDeriverBlockEntity te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
+        if (te.getWorld() != null) {
+            CodeChickenLibEmissiveCompat.renderBlockEmissive(
+                te.getWorld().getBlockState(te.getPos()), x, y, z, TEXTURE_EMISSIVE, te.isActive());
+        }
 
-    @Override
-    public void extractRenderState(FortronBlockEntity blockEntity, CoercionDeriverRenderState renderState, float partialTick, Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
-        BlockEntityRenderer.super.extractRenderState(blockEntity, renderState, partialTick, cameraPosition, breakProgress);
+        bindTexture(te.isActive() ? TEXTURE_ON : TEXTURE_OFF);
 
-        renderState.isActive = blockEntity.isActive();
-        renderState.animation = blockEntity.getAnimation();
-    }
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(x + 0.5, y + 1.95, z + 0.5);
+        GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
+        GlStateManager.scale(1.3F, 1.3F, 1.3F);
+        MODEL.render(te.getAnimation(), 0.0625F);
+        GlStateManager.popMatrix();
 
-    @Override
-    public void submit(CoercionDeriverRenderState renderState, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState cameraRenderState) {
-        Identifier texture = renderState.isActive ? COERCION_DERIVER_ON_TEXTURE : COERCION_DERIVER_OFF_TEXTURE;
+        if (te.isActive() && CodeChickenLibEmissiveCompat.isBlockEmissiveAvailable()) {
+            float prevLightX = OpenGlHelper.lastBrightnessX;
+            float prevLightY = OpenGlHelper.lastBrightnessY;
 
-        poseStack.pushPose();
-        poseStack.translate(0.5, 1.96, 0.5);
-        poseStack.mulPose(Axis.ZP.rotationDegrees(180f));
-        poseStack.scale(1.3f, 1.3f, 1.3f);
-        poseStack.mulPose(Axis.YP.rotationDegrees(renderState.animation));
+            RenderHelper.disableStandardItemLighting();
+            GlStateManager.enableBlend();
+            GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+            GlStateManager.depthMask(false);
+            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240F, 240F);
 
-        nodeCollector.submitModelPart(this.top, poseStack, RenderTypes.entityTranslucent(texture), renderState.lightCoords, OverlayTexture.NO_OVERLAY, null);
+            bindTexture(TEXTURE_EMISSIVE);
 
-        poseStack.popPose();
+            GlStateManager.pushMatrix();
+            GlStateManager.translate(x + 0.5, y + 1.95, z + 0.5);
+            GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
+            GlStateManager.scale(1.3F, 1.3F, 1.3F);
+            MODEL.render(te.getAnimation(), 0.0625F);
+            GlStateManager.popMatrix();
+
+            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, prevLightX, prevLightY);
+            GlStateManager.depthMask(true);
+            GlStateManager.disableBlend();
+            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+            RenderHelper.enableStandardItemLighting();
+        }
     }
 }

@@ -3,69 +3,87 @@ package dev.su5ed.mffs.screen;
 import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.api.security.FieldPermission;
 import dev.su5ed.mffs.menu.BiometricIdentifierMenu;
+import dev.su5ed.mffs.network.Network;
 import dev.su5ed.mffs.network.ToggleFieldPermissionPacket;
 import dev.su5ed.mffs.util.ModUtil;
-import it.unimi.dsi.fastutil.ints.IntIntPair;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
-import net.minecraft.world.entity.player.Inventory;
-import net.neoforged.neoforge.client.network.ClientPacketDistributor;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.util.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class BiometricIdentifierScreen extends FortronScreen<BiometricIdentifierMenu> {
-    public static final Identifier BACKGROUND = MFFSMod.location("textures/gui/biometric_identifier.png");
+    public static final ResourceLocation BACKGROUND = new ResourceLocation(MFFSMod.MODID, "textures/gui/biometric_identifier.png");
 
-    private final List<AbstractWidget> permissionButtons = new ArrayList<>();
+    /**
+     * Display order for the 7 permission buttons laid out in a 4+3 grid.
+     */
+    private static final FieldPermission[] PERM_DISPLAY_ORDER = {
+        FieldPermission.WARP,
+        FieldPermission.USE_BLOCKS,
+        FieldPermission.PLACE_BLOCKS,
+        FieldPermission.BYPASS_DEFENSE,
+        FieldPermission.BYPASS_CONFISCATION,
+        FieldPermission.REMOTE_CONTROL,
+        FieldPermission.CONFIGURE_SECURITY_CENTER,
+    };
 
-    public BiometricIdentifierScreen(BiometricIdentifierMenu menu, Inventory playerInventory, Component title) {
-        super(menu, playerInventory, title, BACKGROUND);
+    private final List<IconToggleButton> permissionButtons = new ArrayList<>();
 
-        this.frequencyBoxPos = IntIntPair.of(109, 92);
-        this.frequencyLabelPos = IntIntPair.of(87, 80);
-        this.fortronEnergyBarPos = IntIntPair.of(87, 66);
+    public BiometricIdentifierScreen(BiometricIdentifierMenu menu, InventoryPlayer playerInventory) {
+        super(menu, playerInventory, BACKGROUND);
+        this.frequencyBoxX = 109;
+        this.frequencyBoxY = 92;
+        this.frequencyLabelX = 87;
+        this.frequencyLabelY = 80;
+        this.fortronEnergyBarX = 87;
+        this.fortronEnergyBarY = 66;
         this.fortronEnergyBarWidth = 82;
     }
 
     @Override
-    protected void init() {
-        super.init();
+    public void initGui() {
+        super.initGui();
 
-        for (int i = 0, x = 0, y = 0; i < FieldPermission.values().length; i++) {
-            x++;
-            FieldPermission permission = FieldPermission.values()[i];
-            AbstractWidget widget = addWidget(new IconToggleButton(this.width / 2 - 21 + 20 * x, this.height / 2 - 87 + 20 * y, 18, 18, ModUtil.translateTooltip(permission), 18, 18 * i,
-                () -> this.menu.hasPermission(permission), value -> togglePermission(permission, !value)));
+        this.permissionButtons.clear();
+        // Row 0 holds the first 4 permissions, row 1 holds the remaining 3.
+        for (int i = 0; i < PERM_DISPLAY_ORDER.length; i++) {
+            int row = i < 4 ? 0 : 1;
+            int col = i < 4 ? i : i - 4;
+            FieldPermission permission = PERM_DISPLAY_ORDER[i];
+            IconToggleButton widget = new IconToggleButton(
+                this.width / 2 - 21 + 20 * (col + 1), this.height / 2 - 87 + 20 * row, 18, 18,
+                ModUtil.translateTooltip(permission),
+                18, 18 * permission.ordinal(),
+                () -> ((BiometricIdentifierMenu) this.inventorySlots).hasPermission(permission),
+                value -> togglePermission(permission, !value)
+            );
             this.permissionButtons.add(widget);
-            if (i % 3 == 0 && i != 0) {
-                x = 0;
-                y++;
-            }
+            this.buttonList.add(widget);
         }
     }
 
     @Override
-    protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
-        super.renderBg(guiGraphics, partialTick, mouseX, mouseY);
-
-        if (!this.menu.blockEntity.rightsSlot.isEmpty()) {
-            this.permissionButtons.forEach(button -> button.render(guiGraphics, mouseX, mouseY, partialTick));
+    protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
+        super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
+        // Permission buttons only visible when rightsSlot has an item
+        BiometricIdentifierMenu menu = (BiometricIdentifierMenu) this.inventorySlots;
+        for (IconToggleButton btn : this.permissionButtons) {
+            btn.visible = !menu.blockEntity.rightsSlot.isEmpty();
         }
     }
 
     @Override
-    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        super.renderLabels(guiGraphics, mouseX, mouseY);
-
-        drawWithTooltip(guiGraphics, 28, 50, GuiColors.DARK_GREY, "rights");
-        drawWithTooltip(guiGraphics, 28, 70, GuiColors.DARK_GREY, "copy");
-        drawWithTooltip(guiGraphics, 28, 95, GuiColors.DARK_GREY, "master");
+    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+        drawWithTooltip(28, 50, GuiColors.DARK_GREY, "rights");
+        drawWithTooltip(28, 70, GuiColors.DARK_GREY, "copy");
+        drawWithTooltip(28, 95, GuiColors.DARK_GREY, "master");
     }
 
     public void togglePermission(FieldPermission permission, boolean value) {
-        ClientPacketDistributor.sendToServer(new ToggleFieldPermissionPacket(this.menu.blockEntity.getBlockPos(), permission, value));
+        Network.sendToServer(new ToggleFieldPermissionPacket(
+            ((BiometricIdentifierMenu) this.inventorySlots).blockEntity.getPos(), permission, value));
     }
 }
+

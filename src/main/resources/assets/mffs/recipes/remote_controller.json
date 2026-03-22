@@ -1,0 +1,24 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        " R ",
+        "SBS",
+        "SBS"
+    ],
+    "key": {
+        "B": {
+            "item": "mffs:battery"
+        },
+        "R": {
+            "item": "minecraft:redstone"
+        },
+        "S": {
+            "type": "forge:ore_dict",
+            "ore": "ingotSteel"
+        }
+    },
+    "result": {
+        "item": "mffs:remote_controller",
+        "count": 1
+    }
+}

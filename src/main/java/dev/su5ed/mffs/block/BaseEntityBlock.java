@@ -1,104 +1,113 @@
 package dev.su5ed.mffs.block;
 
 import dev.su5ed.mffs.blockentity.BaseBlockEntity;
-import net.minecraft.core.BlockPos;
-import net.minecraft.resources.Identifier;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.storage.loot.LootParams;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
-import net.minecraft.world.phys.BlockHitResult;
-import org.jetbrains.annotations.Nullable;
+import dev.su5ed.mffs.blockentity.BaseTileEntity;
+import net.minecraft.block.Block;
+import net.minecraft.block.ITileEntityProvider;
+import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyBool;
+import net.minecraft.block.state.BlockStateContainer;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Supplier;
 
-import static dev.su5ed.mffs.MFFSMod.location;
+public abstract class BaseEntityBlock extends Block implements ITileEntityProvider {
 
-public class BaseEntityBlock extends Block implements EntityBlock {
-    public static final Identifier CONTENT_KEY = location("content");
-    public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
+    /** True when the machine is active/powered — used in blockstate model. */
+    public static final PropertyBool ACTIVE = PropertyBool.create("active");
 
-    private final Supplier<? extends BlockEntityType<? extends BaseBlockEntity>> provider;
+    protected final Supplier<? extends TileEntity> provider;
 
-    public BaseEntityBlock(Properties properties, Supplier<? extends BlockEntityType<? extends BaseBlockEntity>> provider) {
-        super(properties);
-
+    /**
+     * @param material   1.12.2 Block material
+     * @param provider   Supplier that creates a fresh TileEntity instance.
+     */
+    public BaseEntityBlock(Material material, Supplier<? extends TileEntity> provider) {
+        super(material);
         this.provider = provider;
-        registerDefaultState(this.stateDefinition.any().setValue(ACTIVE, false));
+        this.setDefaultState(this.blockState.getBaseState().withProperty(ACTIVE, false));
+    }
+
+    /**
+     * Override in concrete blocks to open the block's GUI.
+     * Call {@code player.openGui(MFFSMod.INSTANCE, guiId, worldIn, pos.getX(), pos.getY(), pos.getZ())}
+     * with the appropriate GUI id constant from {@link dev.su5ed.mffs.setup.ModMenus}.
+     */
+    @Override
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state,
+                                    EntityPlayer playerIn, EnumHand hand, EnumFacing facing,
+                                    float hitX, float hitY, float hitZ) {
+        return false;
     }
 
     @Override
-    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
-        return getBlockEntity(level, pos)
-            .map(be -> be.useWithoutItem(state, level, pos, player, hit))
-            .orElseGet(() -> super.useWithoutItem(state, level, pos, player, hit));
+    protected BlockStateContainer createBlockState() {
+        return new BlockStateContainer(this, ACTIVE);
     }
 
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        super.createBlockStateDefinition(builder);
-        builder.add(ACTIVE);
-    }
-
-    @Nullable
-    @Override
-    public BlockState getStateForPlacement(BlockPlaceContext pContext) {
-        return super.getStateForPlacement(pContext)
-            .setValue(ACTIVE, false);
+    public IBlockState getStateForPlacement(World worldIn, BlockPos pos, EnumFacing facing,
+                                            float hitX, float hitY, float hitZ,
+                                            int meta, EntityLivingBase placer) {
+        return this.getDefaultState().withProperty(ACTIVE, false);
     }
 
     @Override
-    public List<ItemStack> getDrops(BlockState state, LootParams.Builder params) {
-        BlockEntity be = params.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
-        if (be instanceof BaseBlockEntity base) {
-            params.withDynamicDrop(CONTENT_KEY, consumer -> {
-                List<ItemStack> drops = new ArrayList<>();
-                base.provideAdditionalDrops(drops);
-                drops.forEach(consumer);
-            });
+    public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos,
+                         IBlockState state, int fortune) {
+        super.getDrops(drops, world, pos, state, fortune);
+        TileEntity te = world.getTileEntity(pos);
+        if (te instanceof BaseBlockEntity base) {
+            List<ItemStack> extraDrops = new ArrayList<>();
+            base.provideAdditionalDrops(extraDrops);
+            drops.addAll(extraDrops);
         }
-        return super.getDrops(state, params);
     }
 
-    @Nullable
     @Override
-    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return this.provider.get().create(pos, state);
+    public boolean hasTileEntity(IBlockState state) {
+        return true;
     }
 
-    @Nullable
     @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
-        return (lvl, pos, stt, te) -> {
-            if (te instanceof BaseBlockEntity machine) {
-                if (lvl.isClientSide()) {
-                    machine.tickClient();
-                } else {
-                    machine.tickServer();
-                }
-            }
-        };
+    public TileEntity createNewTileEntity(World worldIn, int meta) {
+        return this.provider.get();
     }
 
-    private Optional<? extends BaseBlockEntity> getBlockEntity(BlockGetter world, BlockPos pos) {
-        BlockEntity be = world.getBlockEntity(pos);
-        return be instanceof BaseBlockEntity machineBe
-            ? Optional.of(machineBe)
-            : Optional.empty();
+    /**
+     * Called when the block is broken (both survival and creative).
+     * Runs {@link BaseTileEntity#preRemoveSideEffects} before the tile entity is removed,
+     * then delegates to {@code super.breakBlock} which removes the TE from the world.
+     */
+    @Override
+    public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
+        TileEntity te = worldIn.getTileEntity(pos);
+        if (te instanceof BaseTileEntity base) {
+            base.preRemoveSideEffects(pos);
+        }
+        super.breakBlock(worldIn, pos, state);
+    }
+
+    /** Meta bit 0 = ACTIVE flag. Subclasses that add extra properties must override both. */
+    @Override
+    public IBlockState getStateFromMeta(int meta) {
+        return this.getDefaultState().withProperty(ACTIVE, (meta & 1) == 1);
+    }
+
+    @Override
+    public int getMetaFromState(IBlockState state) {
+        return state.getValue(ACTIVE) ? 1 : 0;
     }
 }

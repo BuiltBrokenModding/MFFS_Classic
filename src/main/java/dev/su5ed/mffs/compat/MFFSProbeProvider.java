@@ -2,81 +2,106 @@ package dev.su5ed.mffs.compat;
 
 import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.blockentity.ForceFieldBlockEntity;
-import mcjty.theoneprobe.api.*;
+import dev.su5ed.mffs.blockentity.FortronBlockEntity;
+import mcjty.theoneprobe.api.IBlockDisplayOverride;
+import mcjty.theoneprobe.api.IProbeHitData;
+import mcjty.theoneprobe.api.IProbeInfo;
+import mcjty.theoneprobe.api.IProbeInfoProvider;
+import mcjty.theoneprobe.api.ITheOneProbe;
+import mcjty.theoneprobe.api.ProbeMode;
 import mcjty.theoneprobe.apiimpl.ProbeHitData;
-import mcjty.theoneprobe.apiimpl.elements.ElementProgress;
 import mcjty.theoneprobe.apiimpl.providers.DefaultProbeInfoProvider;
 import mcjty.theoneprobe.config.Config;
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.world.World;
 
-// TODO
-public class MFFSProbeProvider {
-    private static final Identifier ID = MFFSMod.location("probe");
+import java.util.function.Function;
 
+/**
+ * TheOneProbe integration for MFFS (1.12.2).
+ *
+ * Registered via FML IMC in {@link MFFSMod#postInit} using
+ * {@code FMLInterModComms.sendFunctionMessage("theoneprobe", "getTheOneProbe", ...)}.
+ * TOP instantiates this class and calls {@link #apply(ITheOneProbe)} to register
+ * both the info provider (FE / Fortron readouts) and the display override
+ * (shows camouflaged block name/icon instead of "Force Field").
+ */
+public class MFFSProbeProvider implements IBlockDisplayOverride, IProbeInfoProvider, Function<ITheOneProbe, Void> {
+    private static final String ID = MFFSMod.MODID + ":probe";
+
+    @Override
     public Void apply(ITheOneProbe probe) {
-//        probe.registerBlockDisplayOverride(this);
+        probe.registerProvider(this);
+        probe.registerBlockDisplayOverride(this);
         return null;
     }
 
-    public boolean overrideStandardInfo(ProbeMode mode, IProbeInfo info, Player player, Level level, BlockState blockState, IProbeHitData data) {
+    // -------------------------------------------------------------------------
+    // IBlockDisplayOverride: show camouflage block info instead of force field
+    // -------------------------------------------------------------------------
+
+    @Override
+    public boolean overrideStandardInfo(ProbeMode mode, IProbeInfo probeInfo, EntityPlayer player,
+            World world, IBlockState blockState, IProbeHitData data) {
         BlockPos pos = data.getPos();
-        // Override info for camouflaged blocks
-        if (level.getChunkAt(pos).getBlockEntity(pos, LevelChunk.EntityCreationType.CHECK) instanceof ForceFieldBlockEntity forceField) {
-            BlockState camo = forceField.getCamouflage();
+        TileEntity te = world.getTileEntity(pos);
+        if (te instanceof ForceFieldBlockEntity) {
+            IBlockState camo = ((ForceFieldBlockEntity) te).getCamouflage();
             if (camo != null) {
-                // TODO Test?
-                ItemStack clone = camo.getCloneItemStack(pos, level, true, player);
-                DefaultProbeInfoProvider.showStandardBlockInfo(Config.getRealConfig(), mode, info, camo, camo.getBlock(), level, pos, player, new ProbeHitData(data.getPos(), data.getHitVec(), data.getSideHit(), clone));
+                RayTraceResult fakeHit = new RayTraceResult(data.getHitVec(), data.getSideHit(), pos);
+                ItemStack clone = camo.getBlock().getPickBlock(camo, fakeHit, world, pos, player);
+                DefaultProbeInfoProvider.showStandardBlockInfo(Config.getRealConfig(), mode, probeInfo,
+                    camo, camo.getBlock(), world, pos, player,
+                    new ProbeHitData(pos, data.getHitVec(), data.getSideHit(), clone));
                 return true;
             }
         }
         return false;
     }
 
-//    @Override
-//    public Identifier getID() {
-//        return ID;
-//    }
+    // -------------------------------------------------------------------------
+    // IProbeInfoProvider: add FE and Fortron readouts
+    // -------------------------------------------------------------------------
 
-    public void addProbeInfo(ProbeMode mode, IProbeInfo info, Player player, Level level, BlockState blockState, IProbeHitData data) {
-//        BlockEntity be = level.getChunkAt(data.getPos()).getBlockEntity(data.getPos(), LevelChunk.EntityCreationType.CHECK);
-//        if (be != null) {
-//            if (be instanceof ElectricTileEntity electric) {
-//                // Special handling for FE as we don't want to expose the cap on the null side, but still show TOP info 
-//                IEnergyStorage storage = electric.getGlobalEnergyStorage();
-//                addEnergyInfo(info, Config.getRealConfig(), storage.getEnergyStored(), storage.getMaxEnergyStored());
-//            }
-//            // TODO Show Fortron
-//        }
+    @Override
+    public String getID() {
+        return ID;
     }
 
-    // Copy of DefaultProbeInfoProvider#addEnergyInfo because original method is private..
-    private void addEnergyInfo(IProbeInfo probeInfo, IProbeConfig config, long energy, long maxEnergy) {
-        if (config.getRFMode() == 1) {
-            probeInfo.progress(
-                energy,
-                maxEnergy,
-                probeInfo.defaultProgressStyle()
-                    .suffix("FE")
-                    .filledColor(Config.rfbarFilledColor)
-                    .alternateFilledColor(Config.rfbarAlternateFilledColor)
-                    .borderColor(Config.rfbarBorderColor)
-                    .numberFormat(Config.rfFormat.get())
-            );
-        } else {
-            probeInfo.text(
-                CompoundText.create()
-                    .style(TextStyleClass.PROGRESS)
-                    .text("FE: " + ElementProgress.format(energy, Config.rfFormat.get(), Component.literal("FE")))
-            );
+    @Override
+    public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, EntityPlayer player,
+            World world, IBlockState blockState, IProbeHitData data) {
+        TileEntity te = world.getTileEntity(data.getPos());
+        // Note: FE/RF bar is already rendered by TOP's built-in DefaultProbeInfoProvider
+        // via the IEnergyStorage capability. We only add the Fortron bar here.
+        if (te instanceof FortronBlockEntity) {
+            FortronBlockEntity fortron = (FortronBlockEntity) te;
+            int stored = fortron.fortronStorage.getStoredFortron();
+            int capacity = fortron.fortronStorage.getFortronCapacity();
+            if (capacity > 0) {
+                addFortronInfo(probeInfo, stored, capacity);
+            }
         }
     }
-}
 
+    // -------------------------------------------------------------------------
+    // Helpers
+    // -------------------------------------------------------------------------
+
+    private void addFortronInfo(IProbeInfo probeInfo, int stored, int capacity) {
+        probeInfo.progress(
+            stored,
+            capacity,
+            probeInfo.defaultProgressStyle()
+                .showText(true)
+                .suffix(" F")
+                .filledColor(0xFF00AAFF)
+                .alternateFilledColor(0xFF00CCFF)
+                .borderColor(0xFF004488));
+    }
+}

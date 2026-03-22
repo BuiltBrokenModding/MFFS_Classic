@@ -3,13 +3,33 @@ package dev.su5ed.mffs.setup;
 import dev.su5ed.mffs.api.module.InterdictionMatrixModule;
 import dev.su5ed.mffs.api.module.Module;
 import dev.su5ed.mffs.api.module.ModuleType;
-import dev.su5ed.mffs.util.module.*;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.item.ItemStack;
+import dev.su5ed.mffs.util.module.AntiPersonnelModule;
+import dev.su5ed.mffs.util.module.BaseInterdictionModule;
+import dev.su5ed.mffs.util.module.BaseModule;
+import dev.su5ed.mffs.util.module.ConfiscationModule;
+import dev.su5ed.mffs.util.module.DisintegrationModule;
+import dev.su5ed.mffs.util.module.DomeModule;
+import dev.su5ed.mffs.util.module.ExterminatingModule;
+import dev.su5ed.mffs.util.module.FusionModule;
+import dev.su5ed.mffs.util.module.ShockModule;
+import dev.su5ed.mffs.util.module.SpongeModule;
+import dev.su5ed.mffs.util.module.StabilizationModule;
+import dev.su5ed.mffs.util.module.WarnModule;
+import net.minecraft.entity.monster.EntityMob;
+import net.minecraft.entity.monster.IMob;
+import net.minecraft.entity.passive.EntityAnimal;
+import net.minecraft.item.ItemStack;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Registry of all MFFS module types.
+ */
 public final class ModModules {
+    // --- Field / general modules ---
     public static final ModuleType<Module> FUSION = create(FusionModule::new, 1.0F);
     public static final ModuleType<Module> SHOCK = create(ShockModule::new, 1.0F);
     public static final ModuleType<Module> SPEED = create(1.0F);
@@ -27,16 +47,19 @@ public final class ModModules {
     public static final ModuleType<Module> STABILIZAZION = create(StabilizationModule::new, 20.0F);
     public static final ModuleType<Module> INVERTER = create(15.0F);
 
+    // --- Interdiction matrix modules ---
     public static final ModuleType<InterdictionMatrixModule> WARN = createInterdiction(WarnModule::new);
     public static final ModuleType<InterdictionMatrixModule> BLOCK_ACCESS = createInterdiction(10.0F);
     public static final ModuleType<InterdictionMatrixModule> BLOCK_ALTER = createInterdiction(15.0F);
-    public static final ModuleType<InterdictionMatrixModule> ANTI_FRIENDLY = createInterdiction((type, stack) -> new ExterminatingModule(type, stack, target -> target instanceof Mob && target.getType().getCategory().isFriendly()));
-    public static final ModuleType<InterdictionMatrixModule> ANTI_HOSTILE = createInterdiction((type, stack) -> new ExterminatingModule(type, stack, target -> target instanceof Mob && !target.getType().getCategory().isFriendly()));
+    public static final ModuleType<InterdictionMatrixModule> ANTI_FRIENDLY = createInterdiction((type, stack) -> new ExterminatingModule(type, stack, target -> target instanceof EntityAnimal));
+    public static final ModuleType<InterdictionMatrixModule> ANTI_HOSTILE = createInterdiction((type, stack) -> new ExterminatingModule(type, stack, target -> target instanceof IMob));
     public static final ModuleType<InterdictionMatrixModule> ANTI_PERSONNEL = createInterdiction(AntiPersonnelModule::new);
     public static final ModuleType<InterdictionMatrixModule> ANTI_SPAWN = createInterdiction(10.0F);
     public static final ModuleType<InterdictionMatrixModule> CONFISCATION = createInterdiction(ConfiscationModule::new);
 
     private ModModules() {}
+
+    // --- Factory methods ---
 
     private static ModuleType<Module> create(ModuleFactory<Module> factory, float fortronCost) {
         return new BaseModuleType<>(factory, fortronCost, Module.Category.MATRIX);
@@ -70,15 +93,21 @@ public final class ModModules {
         return new BaseModuleType<>(factory, fortronCost, Module.Category.INTERDICTION);
     }
 
+    // --- Inner classes ---
+
     public static class BaseModuleType<T extends Module> implements ModuleType<T> {
-        private final float fortronCost;
+        private float fortronCost;
         private final Set<Module.Category> categories;
         private final ModuleFactory<T> factory;
 
         public BaseModuleType(ModuleFactory<T> factory, float fortronCost, Module.Category... categories) {
             this.factory = factory;
             this.fortronCost = fortronCost;
-            this.categories = Set.of(categories);
+            this.categories = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(categories)));
+        }
+
+        public void setFortronCost(float fortronCost) {
+            this.fortronCost = fortronCost;
         }
 
         @Override
@@ -96,7 +125,7 @@ public final class ModModules {
             return this.factory.create(this, stack);
         }
     }
-    
+
     public interface ModuleFactory<T extends Module> {
         T create(ModuleType<T> type, ItemStack stack);
     }

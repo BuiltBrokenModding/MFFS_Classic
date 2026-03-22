@@ -1,0 +1,17 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "F  ",
+        " F ",
+        "  F"
+    ],
+    "key": {
+        "F": {
+            "item": "mffs:focus_matrix"
+        }
+    },
+    "result": {
+        "item": "mffs:rotation_module",
+        "count": 4
+    }
+}

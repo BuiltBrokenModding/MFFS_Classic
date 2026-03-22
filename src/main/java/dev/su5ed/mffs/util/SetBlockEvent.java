@@ -1,25 +1,32 @@
 package dev.su5ed.mffs.util;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.event.level.LevelEvent;
+// 1.12.2 Backport: extends Forge Event; LevelAccessor → World; BlockState → IBlockState.
 
-public class SetBlockEvent extends LevelEvent {
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.common.eventhandler.Event;
+
+public class SetBlockEvent extends Event {
+    private final World world;
     private final BlockPos pos;
-    private final BlockState state;
+    private final IBlockState state;
 
-    public SetBlockEvent(LevelAccessor level, BlockPos pos, BlockState state) {
-        super(level);
+    public SetBlockEvent(World world, BlockPos pos, IBlockState state) {
+        this.world = world;
         this.pos = pos;
         this.state = state;
+    }
+
+    public World getWorld() {
+        return this.world;
     }
 
     public BlockPos getPos() {
         return this.pos;
     }
 
-    public BlockState getState() {
+    public IBlockState getState() {
         return this.state;
     }
 }

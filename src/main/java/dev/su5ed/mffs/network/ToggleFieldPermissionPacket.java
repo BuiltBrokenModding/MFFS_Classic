@@ -1,44 +1,60 @@
 package dev.su5ed.mffs.network;
 
-import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.api.security.FieldPermission;
 import dev.su5ed.mffs.blockentity.BiometricIdentifierBlockEntity;
-import dev.su5ed.mffs.util.ModUtil;
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.WorldServer;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-public record ToggleFieldPermissionPacket(BlockPos pos, FieldPermission permission, boolean value) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<ToggleFieldPermissionPacket> TYPE = new CustomPacketPayload.Type<>(MFFSMod.location("toggle_field_permission"));
-    public static final StreamCodec<RegistryFriendlyByteBuf, ToggleFieldPermissionPacket> STREAM_CODEC = StreamCodec.composite(
-        BlockPos.STREAM_CODEC,
-        ToggleFieldPermissionPacket::pos,
-        ModUtil.FIELD_PERMISSION_STREAM_CODEC,
-        ToggleFieldPermissionPacket::permission,
-        ByteBufCodecs.BOOL,
-        ToggleFieldPermissionPacket::value,
-        ToggleFieldPermissionPacket::new
-    );
+public class ToggleFieldPermissionPacket implements IMessage {
+    private BlockPos pos;
+    private FieldPermission permission;
+    private boolean value;
+
+    public ToggleFieldPermissionPacket() {}
+
+    public ToggleFieldPermissionPacket(BlockPos pos, FieldPermission permission, boolean value) {
+        this.pos        = pos;
+        this.permission = permission;
+        this.value      = value;
+    }
 
     @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
+    public void fromBytes(ByteBuf buf) {
+        PacketBuffer pb   = new PacketBuffer(buf);
+        this.pos          = pb.readBlockPos();
+        this.permission   = FieldPermission.values()[pb.readInt()];
+        this.value        = pb.readBoolean();
     }
 
-    public void handle(IPayloadContext ctx) {
-        Level level = ctx.player().level();
-        Network.findBlockEntity(BiometricIdentifierBlockEntity.class, level, this.pos)
-            .flatMap(BiometricIdentifierBlockEntity::getManipulatingCard)
-            .ifPresent(card -> {
-                if (this.value) {
-                    card.addPermission(this.permission);
-                } else {
-                    card.removePermission(this.permission);
-                }
-            });
+    @Override
+    public void toBytes(ByteBuf buf) {
+        PacketBuffer pb = new PacketBuffer(buf);
+        pb.writeBlockPos(this.pos);
+        pb.writeInt(this.permission.ordinal());
+        pb.writeBoolean(this.value);
+    }
+
+    public static class Handler implements IMessageHandler<ToggleFieldPermissionPacket, IMessage> {
+        @Override
+        public IMessage onMessage(ToggleFieldPermissionPacket message, MessageContext ctx) {
+            EntityPlayerMP player = ctx.getServerHandler().player;
+            WorldServer world = (WorldServer) player.world;
+            world.addScheduledTask(() ->
+                Network.findTileEntity(BiometricIdentifierBlockEntity.class, world, message.pos)
+                    .flatMap(BiometricIdentifierBlockEntity::getManipulatingCard)
+                    .ifPresent(card -> {
+                        if (message.value) card.addPermission(message.permission);
+                        else               card.removePermission(message.permission);
+                    })
+            );
+            return null;
+        }
     }
 }
+

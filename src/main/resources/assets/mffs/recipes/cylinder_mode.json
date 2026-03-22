@@ -1,0 +1,17 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "S",
+        "S",
+        "S"
+    ],
+    "key": {
+        "S": {
+            "item": "mffs:sphere_mode"
+        }
+    },
+    "result": {
+        "item": "mffs:cylinder_mode",
+        "count": 1
+    }
+}

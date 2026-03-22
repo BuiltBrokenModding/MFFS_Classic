@@ -4,86 +4,115 @@ import dev.su5ed.mffs.api.EventForceManipulate;
 import dev.su5ed.mffs.api.security.FieldPermission;
 import dev.su5ed.mffs.api.security.InterdictionMatrix;
 import dev.su5ed.mffs.blockentity.FortronBlockEntity;
+import dev.su5ed.mffs.blockentity.InterdictionMatrixBlockEntity;
 import dev.su5ed.mffs.setup.ModBlocks;
 import dev.su5ed.mffs.setup.ModModules;
-import dev.su5ed.mffs.setup.ModObjects;
 import dev.su5ed.mffs.util.Fortron;
-import dev.su5ed.mffs.util.FrequencyGrid;
 import dev.su5ed.mffs.util.ModUtil;
-import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.bus.api.ICancellableEvent;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
-import net.neoforged.neoforge.event.entity.living.MobSpawnEvent;
-import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
-import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.World;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.living.LivingSpawnEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.eventhandler.Event;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 public class ForgeEventHandler {
 
     @SubscribeEvent
-    public static void serverStarting(ServerStartingEvent event) {
-        FrequencyGrid.reinitiate();
-    }
-
-    @SubscribeEvent
-    public static void eventPreForceManipulate(EventForceManipulate.EventPreForceManipulate event) {
-        BlockEntity be = event.getLevel().getBlockEntity(event.getBeforePos());
-
-        if (be instanceof FortronBlockEntity fortronBlockEntity) {
+    public void eventPreForceManipulate(EventForceManipulate.EventPreForceManipulate event) {
+        TileEntity te = event.getWorld().getTileEntity(event.getBeforePos());
+        if (te instanceof FortronBlockEntity fortronBlockEntity) {
             fortronBlockEntity.setMarkSendFortron(false);
         }
     }
 
     @SubscribeEvent
-    public static void onPlayerRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
-        onPlayerInteract(event, Fortron.Action.RIGHT_CLICK_BLOCK);
+    public void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
+        onPlayerInteractInternal(event, event.getEntityPlayer(), event.getWorld(), event.getPos(), Fortron.Action.RIGHT_CLICK_BLOCK);
     }
 
     @SubscribeEvent
-    public static void onPlayerLeftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
-        if (event.getLevel().getBlockState(event.getPos()).is(ModBlocks.FORCE_FIELD.get())) {
+    public void onLeftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
+        World world = event.getWorld();
+        BlockPos pos = event.getPos();
+        // If the block is a force field, cancel the interaction entirely
+        if (world.getBlockState(pos).getBlock() == ModBlocks.FORCE_FIELD) {
             event.setCanceled(true);
         } else {
-            onPlayerInteract(event, Fortron.Action.LEFT_CLICK_BLOCK);
+            onPlayerInteractInternal(event, event.getEntityPlayer(), world, pos, Fortron.Action.LEFT_CLICK_BLOCK);
         }
     }
 
     @SubscribeEvent
-    public static void livingSpawnEvent(MobSpawnEvent.PositionCheck event) {
-        InterdictionMatrix interdictionMatrix = Fortron.getNearestInterdictionMatrix(event.getEntity().level(), BlockPos.containing(event.getX(), event.getY(), event.getZ()));
+    public void livingSpawnEvent(LivingSpawnEvent.CheckSpawn event) {
+        BlockPos pos = new BlockPos(MathHelper.floor(event.getX()), MathHelper.floor(event.getY()), MathHelper.floor(event.getZ()));
+        InterdictionMatrix interdictionMatrix = Fortron.getNearestInterdictionMatrix(event.getWorld(), pos);
         if (interdictionMatrix != null && interdictionMatrix.hasModule(ModModules.ANTI_SPAWN)) {
-            event.setResult(MobSpawnEvent.PositionCheck.Result.FAIL);
+            event.setResult(Event.Result.DENY);
         }
     }
 
     @SubscribeEvent
-    public static void onPlayerJoinLevel(EntityJoinLevelEvent event) {
-        if (event.getEntity() instanceof ServerPlayer serverPlayer && MFFSConfig.COMMON.giveGuidebookOnFirstJoin.get()) {
-            ModObjects.GUIDEBOOK_TRIGGER.get().trigger(serverPlayer);
+    public void onEntityJoinWorld(EntityJoinWorldEvent event) {
+        if (!MFFSConfig.giveGuidebookOnFirstJoin) return;
+        if (event.getWorld().isRemote) return;
+        if (!(event.getEntity() instanceof EntityPlayerMP)) return;
+        if (!Loader.isModLoaded("patchouli")) return;
+
+        EntityPlayerMP player = (EntityPlayerMP) event.getEntity();
+        NBTTagCompound data = player.getEntityData();
+        if (data.getBoolean("mffs_receivedHandbook")) return;
+
+        Item bookItem = ForgeRegistries.ITEMS.getValue(new ResourceLocation("patchouli", "guide_book"));
+        if (bookItem == null) return;
+
+        data.setBoolean("mffs_receivedHandbook", true);
+
+        ItemStack stack = new ItemStack(bookItem);
+        NBTTagCompound tag = new NBTTagCompound();
+        tag.setString("patchouli:book", MFFSMod.MODID + ":handbook");
+        stack.setTagCompound(tag);
+        player.inventory.addItemStackToInventory(stack);
+    }
+
+    /**
+     * When a player logs into the server, push all currently-active Interdiction Matrix zones
+     */
+    @SubscribeEvent
+    public void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
+        if (!(event.player instanceof EntityPlayerMP)) return;
+        EntityPlayerMP player = (EntityPlayerMP) event.player;
+        World world = player.world;
+        for (TileEntity te : world.loadedTileEntityList) {
+            if (te instanceof InterdictionMatrixBlockEntity im) {
+                im.sendZoneSyncTo(player);
+            }
         }
     }
 
-    private static void onPlayerInteract(PlayerInteractEvent event, Fortron.Action action) {
-        if (event instanceof ICancellableEvent cancellableEvent) {
-            Player player = event.getEntity();
-            if (!player.isCreative()) {
-                Level level = event.getLevel();
-                BlockPos pos = event.getPos();
-                InterdictionMatrix interdictionMatrix = Fortron.getNearestInterdictionMatrix(level, pos);
-                if (interdictionMatrix != null) {
-                    BlockState state = level.getBlockState(pos);
-                    if (state.is(ModBlocks.BIOMETRIC_IDENTIFIER.get()) && Fortron.isPermittedByInterdictionMatrix(interdictionMatrix, player, FieldPermission.CONFIGURE_SECURITY_CENTER)) {
-                        return;
-                    }
-                    if (!Fortron.hasPermission(level, pos, interdictionMatrix, action, player)) {
-                        player.displayClientMessage(ModUtil.translate("info", "interdiction_matrix.no_permission", interdictionMatrix.getTitle()), false);
-                        cancellableEvent.setCanceled(true);
-                    }
+    private void onPlayerInteractInternal(PlayerInteractEvent event, EntityPlayer player, World world, BlockPos pos, Fortron.Action action) {
+        if (!player.isCreative()) {
+            InterdictionMatrix interdictionMatrix = Fortron.getNearestInterdictionMatrix(world, pos);
+            if (interdictionMatrix != null) {
+                if (world.getBlockState(pos).getBlock() == ModBlocks.BIOMETRIC_IDENTIFIER
+                    && Fortron.isPermittedByInterdictionMatrix(interdictionMatrix, player, FieldPermission.CONFIGURE_SECURITY_CENTER)) {
+                    return;
+                }
+                if (!Fortron.hasPermission(world, pos, interdictionMatrix, action, player)) {
+                    player.sendStatusMessage(ModUtil.translate("info", "interdiction_matrix.no_permission", interdictionMatrix.getTitle()), false);
+                    event.setCanceled(true);
                 }
             }
         }

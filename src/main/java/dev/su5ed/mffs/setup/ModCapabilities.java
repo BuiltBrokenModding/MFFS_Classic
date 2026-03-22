@@ -1,86 +1,84 @@
 package dev.su5ed.mffs.setup;
 
-import dev.su5ed.mffs.MFFSMod;
+// =============================================================================
+// 1.12.2 Backport: Capability registration
+// =============================================================================
+
+import dev.su5ed.mffs.api.fortron.FortronStorage;
 import dev.su5ed.mffs.api.Projector;
 import dev.su5ed.mffs.api.card.FrequencyCard;
 import dev.su5ed.mffs.api.card.IdentificationCard;
-import dev.su5ed.mffs.api.fortron.FortronStorage;
 import dev.su5ed.mffs.api.module.ModuleType;
 import dev.su5ed.mffs.api.module.ProjectorMode;
 import dev.su5ed.mffs.api.security.BiometricIdentifier;
 import dev.su5ed.mffs.api.security.InterdictionMatrix;
-import dev.su5ed.mffs.blockentity.ElectricTileEntity;
-import dev.su5ed.mffs.blockentity.FortronBlockEntity;
-import dev.su5ed.mffs.blockentity.InventoryBlockEntity;
-import dev.su5ed.mffs.item.*;
-import net.minecraft.world.level.block.Block;
-import net.neoforged.neoforge.capabilities.BlockCapability;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.capabilities.ItemCapability;
-import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.transfer.energy.ItemAccessEnergyHandler;
-import one.util.streamex.StreamEx;
+import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.common.capabilities.CapabilityInject;
 
+@Mod.EventBusSubscriber(modid = "mffs")
 public final class ModCapabilities {
-    // BlockEntity caps
-    public static final BlockCapability<FortronStorage, Void> FORTRON = BlockCapability.createVoid(MFFSMod.location("fortron"), FortronStorage.class);
-    public static final BlockCapability<Projector, Void> PROJECTOR = BlockCapability.createVoid(MFFSMod.location("projector"), Projector.class);
-    public static final BlockCapability<BiometricIdentifier, Void> BIOMETRIC_IDENTIFIER = BlockCapability.createVoid(MFFSMod.location("biometric_identifier"), BiometricIdentifier.class);
-    public static final BlockCapability<InterdictionMatrix, Void> INTERDICTION_MATRIX = BlockCapability.createVoid(MFFSMod.location("interdiction_matrix"), InterdictionMatrix.class);
 
-    // Item caps
-    public static final ItemCapability<ModuleType, Void> MODULE_TYPE = ItemCapability.createVoid(MFFSMod.location("module_type"), ModuleType.class);
-    public static final ItemCapability<ProjectorMode, Void> PROJECTOR_MODE = ItemCapability.createVoid(MFFSMod.location("projector_mode"), ProjectorMode.class);
-    public static final ItemCapability<IdentificationCard, Void> IDENTIFICATION_CARD = ItemCapability.createVoid(MFFSMod.location("identification_card"), IdentificationCard.class);
-    public static final ItemCapability<FrequencyCard, Void> FREQUENCY_CARD = ItemCapability.createVoid(MFFSMod.location("frequency_card"), FrequencyCard.class);
+    // Capability tokens - injected by Forge via @CapabilityInject after registration
+    @CapabilityInject(FortronStorage.class)
+    public static Capability<FortronStorage> FORTRON = null;
 
-    public static void registerCaps(RegisterCapabilitiesEvent event) {
-        Block[] modMachines = new Block[]{ModBlocks.COERCION_DERIVER.get(), ModBlocks.FORTRON_CAPACITOR.get(), ModBlocks.PROJECTOR.get(), ModBlocks.BIOMETRIC_IDENTIFIER.get(), ModBlocks.INTERDICTION_MATRIX.get()};
+    @CapabilityInject(Projector.class)
+    public static Capability<Projector> PROJECTOR = null;
 
-        event.registerBlock(
-            FORTRON,
-            (level, pos, state, be, context) -> be != null ? ((FortronBlockEntity) be).fortronStorage : null,
-            modMachines
-        );
-        event.registerBlock(
-            Capabilities.Fluid.BLOCK,
-            (level, pos, state, be, context) -> be != null ? ((FortronBlockEntity) be).fortronStorage.getFortronTank() : null,
-            modMachines
-        );
-        event.registerBlock(
-            Capabilities.Item.BLOCK,
-            (level, pos, state, be, context) -> ((InventoryBlockEntity) be).getItems(),
-            modMachines
-        );
-        event.registerBlockEntity(PROJECTOR, ModObjects.PROJECTOR_BLOCK_ENTITY.get(), (be, unused) -> be);
-        event.registerBlockEntity(BIOMETRIC_IDENTIFIER, ModObjects.BIOMETRIC_IDENTIFIER_BLOCK_ENTITY.get(), (be, unused) -> be);
-        event.registerBlockEntity(INTERDICTION_MATRIX, ModObjects.INTERDICTION_MATRIX_BLOCK_ENTITY.get(), (be, unused) -> be);
-        event.registerBlockEntity(
-            Capabilities.Energy.BLOCK,
-            ModObjects.COERCION_DERIVER_BLOCK_ENTITY.get(),
-            ElectricTileEntity::getEnergy
-        );
+    @CapabilityInject(BiometricIdentifier.class)
+    public static Capability<BiometricIdentifier> BIOMETRIC_IDENTIFIER = null;
 
-        event.registerItem(Capabilities.Energy.ITEM, (stack, access) -> {
-            BatteryItem batteryItem = (BatteryItem) stack.getItem();
-            return new ItemAccessEnergyHandler(access, ModDataComponentTypes.ENERGY.get(), batteryItem.getCapacity(), batteryItem.getMaxTransfer());
-        }, ModItems.BATTERY);
-        event.registerItem(FREQUENCY_CARD, (stack, unused) -> new FrequencyCardItem.FrequencyCardHandler(stack), ModItems.FREQUENCY_CARD);
-        event.registerItem(IDENTIFICATION_CARD, (stack, unused) -> new IdentificationCardItem.IdentificationCardAttachment(stack), ModItems.ID_CARD);
-        event.registerItem(
-            PROJECTOR_MODE,
-            (stack, unused) -> ((ProjectorModeItem) stack.getItem()).getProjectorMode(),
-            ModItems.CUBE_MODE, ModItems.SPHERE_MODE, ModItems.TUBE_MODE, ModItems.PYRAMID_MODE, ModItems.CYLINDER_MODE
-        );
-        event.registerItem(PROJECTOR_MODE, (stack, unused) -> ((CustomProjectorModeItem) stack.getItem()).new CustomProjectorModeCapability(stack), ModItems.CUSTOM_MODE);
-        event.registerItem(MODULE_TYPE,
-            (stack, unused) -> ((ModuleItem<?>) stack.getItem()).getModule(),
-            StreamEx.of(ModItems.ITEMS.getEntries())
-                .map(DeferredHolder::get)
-                .select(ModuleItem.class)
-                .toArray(ModuleItem[]::new)
-        );
+    @CapabilityInject(InterdictionMatrix.class)
+    public static Capability<InterdictionMatrix> INTERDICTION_MATRIX = null;
+
+    @CapabilityInject(ModuleType.class)
+    public static Capability<ModuleType> MODULE_TYPE = null;
+
+    @CapabilityInject(ProjectorMode.class)
+    public static Capability<ProjectorMode> PROJECTOR_MODE = null;
+
+    @CapabilityInject(IdentificationCard.class)
+    public static Capability<IdentificationCard> IDENTIFICATION_CARD = null;
+
+    @CapabilityInject(FrequencyCard.class)
+    public static Capability<FrequencyCard> FREQUENCY_CARD = null;
+
+    /**
+     * Call from {@link dev.su5ed.mffs.MFFSMod#preInit} to register all MFFS capabilities.
+     * TileEntities/Items expose capabilities via ICapabilityProvider.getCapability().
+     * The IStorage implementations are no-ops since we handle serialization in TileEntity NBT.
+     */
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public static void register() {
+        registerNoOp(FortronStorage.class);
+        registerNoOp(Projector.class);
+        registerNoOp(BiometricIdentifier.class);
+        registerNoOp(InterdictionMatrix.class);
+        registerNoOp(ModuleType.class);
+        registerNoOp(ProjectorMode.class);
+        registerNoOp(IdentificationCard.class);
+        registerNoOp(FrequencyCard.class);
+    }
+
+    /**
+     * Registers a capability with no-op IStorage and null factory.
+     * Storage is handled by TileEntity NBT; items handle their own capability data.
+     */
+    @SuppressWarnings("unchecked")
+    private static <T> void registerNoOp(Class<T> capClass) {
+        CapabilityManager.INSTANCE.register(capClass, new net.minecraftforge.common.capabilities.Capability.IStorage<T>() {
+            @Override
+            public net.minecraft.nbt.NBTBase writeNBT(Capability<T> capability, T instance, net.minecraft.util.EnumFacing side) {
+                return null;
+            }
+
+            @Override
+            public void readNBT(Capability<T> capability, T instance, net.minecraft.util.EnumFacing side, net.minecraft.nbt.NBTBase nbt) {
+            }
+        }, () -> null);
     }
 
     private ModCapabilities() {}

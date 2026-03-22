@@ -2,7 +2,7 @@ package dev.su5ed.mffs.api.card;
 
 import com.mojang.authlib.GameProfile;
 import dev.su5ed.mffs.api.security.FieldPermission;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.entity.player.EntityPlayer;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
@@ -23,7 +23,7 @@ public interface IdentificationCard {
 
     void setIdentity(GameProfile profile);
     
-    boolean checkIdentity(Player player);
+    boolean checkIdentity(EntityPlayer player);
     
     void copyTo(IdentificationCard other);
 }

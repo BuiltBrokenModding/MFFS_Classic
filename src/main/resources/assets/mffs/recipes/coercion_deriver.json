@@ -1,0 +1,24 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "S S",
+        "SFS",
+        "SBS"
+    ],
+    "key": {
+        "B": {
+            "item": "mffs:battery"
+        },
+        "F": {
+            "item": "mffs:focus_matrix"
+        },
+        "S": {
+            "type": "forge:ore_dict",
+            "ore": "ingotSteel"
+        }
+    },
+    "result": {
+        "item": "mffs:coercion_deriver",
+        "count": 1
+    }
+}

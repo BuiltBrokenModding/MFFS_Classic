@@ -4,13 +4,13 @@
     "category": "mffs:projector_modules",
     "pages": [
         {
-            "type": "patchouli:spotlight",
+            "type": "spotlight",
             "item": "mffs:dome_module",
             "link_recipe": true,
-            "text": "The $(5)Dome Module$() can be placed in the matrix slots of a $(l:mffs:machines/projector)Force Field Projector$() to cut off all projected blocks below the Y level of the projector, creating a dome shape."
+            "text": "The $(5)Dome Module$() can be placed in the matrix slots of a $(l:machines/projector)Force Field Projector$() to cut off all projected blocks below the Y level of the projector, creating a dome shape."
         },
         {
-            "type": "patchouli:crafting",
+            "type": "crafting",
             "recipe": "mffs:dome_module",
             "text": "Crafting the $(5)Dome Module$()."
         }

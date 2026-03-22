@@ -1,86 +1,93 @@
 package dev.su5ed.mffs.render;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
-import dev.su5ed.mffs.MFFSMod;
+import dev.su5ed.mffs.block.BiometricIdentifierBlock;
 import dev.su5ed.mffs.blockentity.BiometricIdentifierBlockEntity;
+import dev.su5ed.mffs.compat.CodeChickenLibEmissiveCompat;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
-import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.state.CameraRenderState;
-import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.core.Direction;
-import net.minecraft.data.AtlasIds;
-import net.minecraft.resources.Identifier;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.opengl.GL11;
 
-public class BiometricIdentifierRenderer implements BlockEntityRenderer<BiometricIdentifierBlockEntity, BiometricIdentifierRenderer.BiometricIdentifierRenderState> {
-    public static final Identifier HOLO_SCREEN_TEXTURE = Identifier.fromNamespaceAndPath(MFFSMod.MODID, "model/holo_screen");
-    private static final RenderType RENDER_TYPE = ModRenderType.HOLO_QUAD.apply(TextureAtlas.LOCATION_BLOCKS);
+// Renders a holographic screen quad above the Biometric Identifier when active.
+// Uses TESR (TileEntitySpecialRenderer) for 1.12.2.
 
-    public BiometricIdentifierRenderer(BlockEntityRendererProvider.Context context) {
-    }
-
-    public static final class BiometricIdentifierRenderState extends BlockEntityRenderState {
-        public boolean shouldRender;
-        public Direction facing;
-        public int animation;
-    }
+@SideOnly(Side.CLIENT)
+public class BiometricIdentifierRenderer extends TileEntitySpecialRenderer<BiometricIdentifierBlockEntity> {
+    private static final ResourceLocation HOLO_SCREEN_TEXTURE = new ResourceLocation("mffs", "textures/model/holo_screen.png");
+    private static final ResourceLocation EMISSIVE_TEXTURE     = new ResourceLocation("mffs", "textures/model/biometric_identifier_emissive.png");
+    // holo_screen.png is a 32x288 spritesheet (9 frames of 32x32).
+    // frametime=2 matches the .mcmeta.
+    private static final int HOLO_FRAME_COUNT = 9;
+    private static final int HOLO_FRAME_TIME  = 2; // ticks per frame
 
     @Override
-    public BiometricIdentifierRenderState createRenderState() {
-        return new BiometricIdentifierRenderState();
-    }
-
-    @Override
-    public void extractRenderState(BiometricIdentifierBlockEntity blockEntity, BiometricIdentifierRenderState renderState, float partialTick, Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
-        BlockEntityRenderer.super.extractRenderState(blockEntity, renderState, partialTick, cameraPosition, breakProgress);
-
-        BlockState state = blockEntity.getBlockState();
-        renderState.shouldRender = blockEntity.hasLevel() && blockEntity.isActive();
-        renderState.facing = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
-        renderState.animation = blockEntity.getAnimation();
-    }
-
-    @Override
-    public void submit(BiometricIdentifierRenderState renderState, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState cameraRenderState) {
-        if (renderState.shouldRender) {
-            Direction facing = renderState.facing;
-
-            poseStack.pushPose();
-            poseStack.translate(0.5D, 0.5D, 0.5D);
-            poseStack.mulPose(Axis.YN.rotationDegrees(facing.toYRot()));
-            poseStack.mulPose(Axis.XP.rotationDegrees(25));
-            float offset = 0.4F * (0.5F - quadraticCurve(Math.min(0.05F + renderState.animation / 50F, 0.5F)));
-            float alpha = Math.max(0, Math.min(-1F + renderState.animation / 4F, 1));
-            poseStack.translate(-0.5, -0.65 - offset, -0.5 - offset * 0.6);
-            poseStack.translate(0.5, 0.5, 0.5);
-            poseStack.scale(0.85F, 0.85F, 0.85F);
-            poseStack.translate(-0.5, -0.5, -0.5);
-
-            nodeCollector.submitCustomGeometry(
-                poseStack,
-                RENDER_TYPE,
-                (pose, screenConsumer) -> {
-                    TextureAtlasSprite sprite = Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.BLOCKS).getSprite(HOLO_SCREEN_TEXTURE);
-
-                    screenConsumer.addVertex(pose, 0.0F, 1.0F, 1.0F).setColor(1.0F, 1.0F, 1.0F, alpha).setUv(sprite.getU0(), sprite.getV1());
-                    screenConsumer.addVertex(pose, 1.0F, 1.0F, 1.0F).setColor(1.0F, 1.0F, 1.0F, alpha).setUv(sprite.getU1(), sprite.getV1());
-                    screenConsumer.addVertex(pose, 1.0F, 1.0F, 0.0F).setColor(1.0F, 1.0F, 1.0F, alpha).setUv(sprite.getU1(), sprite.getV0());
-                    screenConsumer.addVertex(pose, 0.0F, 1.0F, 0.0F).setColor(1.0F, 1.0F, 1.0F, alpha).setUv(sprite.getU0(), sprite.getV0());
-                }
-            );
-
-            poseStack.popPose();
+    public void render(BiometricIdentifierBlockEntity te, double x, double y, double z,
+                       float partialTicks, int destroyStage, float alpha) {
+        if (te.getWorld() != null) {
+            CodeChickenLibEmissiveCompat.renderBlockEmissive(
+                te.getWorld().getBlockState(te.getPos()), x, y, z, EMISSIVE_TEXTURE, te.isActive());
         }
+        if (!te.hasWorld() || !te.isActive()) return;
+
+        EnumFacing facing = te.getWorld().getBlockState(te.getPos())
+            .getValue(BiometricIdentifierBlock.FACING);
+        int animation = te.getAnimation();
+
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(x + 0.5, y + 0.5, z + 0.5);
+
+        // Rotate to face the block's horizontal direction
+        GlStateManager.rotate(-facing.getHorizontalAngle(), 0, 1, 0);
+
+        // Tilt the screen 25° forward
+        GlStateManager.rotate(25, 1, 0, 0);
+
+        // Slide-out animation (quadratic curve)
+        float offset = 0.4F * (0.5F - quadraticCurve(Math.min(0.05F + animation / 50F, 0.5F)));
+        float screenAlpha = Math.max(0, Math.min(-1F + animation / 4F, 1));
+
+        GlStateManager.translate(-0.5, -0.65 - offset, -0.5 - offset * 0.6);
+        GlStateManager.translate(0.5, 0.5, 0.5);
+        GlStateManager.scale(0.85F, 0.85F, 0.85F);
+        GlStateManager.translate(-0.5, -0.5, -0.5);
+
+        // Set up standard alpha blending (matches 1.21 HOLO_QUAD pipeline: TRANSLUCENT)
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+        GlStateManager.depthMask(false);
+        GlStateManager.disableLighting();
+
+        // Bind the holographic screen texture
+        Minecraft.getMinecraft().getTextureManager().bindTexture(HOLO_SCREEN_TEXTURE);
+
+        // Select current animation frame from the spritesheet
+        int currentFrame = (int)((te.getWorld().getTotalWorldTime() / HOLO_FRAME_TIME) % HOLO_FRAME_COUNT);
+        float vMin = (float) currentFrame / HOLO_FRAME_COUNT;
+        float vMax = (float)(currentFrame + 1) / HOLO_FRAME_COUNT;
+
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder buffer = tessellator.getBuffer();
+
+        // Draw a single quad at y=1 plane facing upward (tilted by the rotation above)
+        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
+        buffer.pos(0.0, 1.0, 1.0).tex(0, vMax).color(1.0F, 1.0F, 1.0F, screenAlpha).endVertex();
+        buffer.pos(1.0, 1.0, 1.0).tex(1, vMax).color(1.0F, 1.0F, 1.0F, screenAlpha).endVertex();
+        buffer.pos(1.0, 1.0, 0.0).tex(1, vMin).color(1.0F, 1.0F, 1.0F, screenAlpha).endVertex();
+        buffer.pos(0.0, 1.0, 0.0).tex(0, vMin).color(1.0F, 1.0F, 1.0F, screenAlpha).endVertex();
+        tessellator.draw();
+
+        // Restore GL state
+        GlStateManager.enableLighting();
+        GlStateManager.depthMask(true);
+        GlStateManager.disableBlend();
+        GlStateManager.popMatrix();
     }
 
     private static float quadraticCurve(float t) {

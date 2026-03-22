@@ -4,13 +4,13 @@
     "category": "mffs:interdiction_modules",
     "pages": [
         {
-            "type": "patchouli:spotlight",
+            "type": "spotlight",
             "item": "mffs:anti_personnel_module",
             "link_recipe": true,
-            "text": "The $(5)Anti-Personnel Module$() is an optional module for the $(l:mffs:machines/interdiction_matrix)Interdiction Matrix$(). With this module installed, the Matrix will automatically detect unauthorised players that enter its action range and kill them - almost instantly. Friendly and hostile mobs are not harmed."
+            "text": "The $(5)Anti-Personnel Module$() is an optional module for the $(l:machines/interdiction_matrix)Interdiction Matrix$(). With this module installed, the Matrix will automatically detect unauthorised players that enter its action range and kill them - almost instantly."
         },
         {
-            "type": "patchouli:crafting",
+            "type": "crafting",
             "recipe": "mffs:anti_personnel_module",
             "text": "Crafting the $(5)Anti-Personnel Module$()."
         }

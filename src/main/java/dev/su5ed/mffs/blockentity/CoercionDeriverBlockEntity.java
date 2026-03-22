@@ -3,25 +3,13 @@ package dev.su5ed.mffs.blockentity;
 import dev.su5ed.mffs.MFFSConfig;
 import dev.su5ed.mffs.menu.CoercionDeriverMenu;
 import dev.su5ed.mffs.setup.ModModules;
-import dev.su5ed.mffs.setup.ModObjects;
-import dev.su5ed.mffs.setup.ModTags;
 import dev.su5ed.mffs.util.ModUtil;
 import dev.su5ed.mffs.util.inventory.InventorySlot;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
-import net.neoforged.neoforge.transfer.access.ItemAccess;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.energy.CapabilityEnergy;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
@@ -37,18 +25,20 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity {
     public final List<InventorySlot> upgradeSlots;
 
     // NOTE: Tructated to short when syncing to the client
-    private int processTime;
+    private int    processTime;
+    private double activeCatalystMultiplier = 0.0;
     private EnergyMode energyMode = EnergyMode.DERIVE;
 
     public int fortronProducedLastTick = 0;
 
-    public CoercionDeriverBlockEntity(BlockPos pos, BlockState state) {
-        super(ModObjects.COERCION_DERIVER_BLOCK_ENTITY.get(), pos, state, DEFAULT_FE_CAPACITY);
+    public CoercionDeriverBlockEntity() {
+        super(DEFAULT_FE_CAPACITY);
 
-        this.batterySlot = addSlot("battery", InventorySlot.Mode.BOTH, stack -> stack.getCapability(Capabilities.Energy.ITEM, ItemAccess.forStack(stack)) != null);
-        this.fuelSlot = addSlot("fuel", InventorySlot.Mode.BOTH, stack -> stack.is(ModTags.FORTRON_FUEL));
+        this.batterySlot = addSlot("battery", InventorySlot.Mode.BOTH, stack -> stack.getCapability(CapabilityEnergy.ENERGY, null) != null);
+        this.fuelSlot = addSlot("fuel", InventorySlot.Mode.BOTH, stack -> MFFSConfig.getCatalystEntry(stack) != null);
         this.upgradeSlots = createUpgradeSlots(3);
         this.energy.setMaxTransfer(getMaxFETransferRate());
+        this.energy.setCapacity(getScaledFECapacity());
     }
 
     public EnergyMode getEnergyMode() {
@@ -61,6 +51,10 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity {
 
     public int getMaxFETransferRate() {
         return (int) (DEFAULT_FE_CAPACITY + DEFAULT_FE_CAPACITY * (getModuleCount(ModModules.SPEED) / 8.0F)); //TODO config
+    }
+
+    public int getScaledFECapacity() {
+        return (int) (DEFAULT_FE_CAPACITY + DEFAULT_FE_CAPACITY * (getModuleCount(ModModules.SPEED) / 8.0));
     }
 
     public boolean isInversed() {
@@ -77,7 +71,12 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity {
 
     @Override
     public int getBaseFortronTankCapacity() {
-        return 30; //TODO config
+        return MFFSConfig.coercionDriverInitialTankCapacity;
+    }
+
+    @Override
+    protected int getCapacityBoostPerModule() {
+        return MFFSConfig.coercionDriverTankCapacityPerModule;
     }
 
     @Override
@@ -91,6 +90,7 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity {
         super.onInventoryChanged();
 
         this.energy.setMaxTransfer(getMaxFETransferRate());
+        this.energy.setCapacity(getScaledFECapacity());
     }
 
     @Override
@@ -101,14 +101,16 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity {
         this.fortronProducedLastTick = 0;
 
         if (isActive()) {
-            if (isInversed() && MFFSConfig.COMMON.enableElectricity.get()) {
+            if (isInversed() && MFFSConfig.enableElectricity) {
                 convertFortronIntoEnergy();
                 chargeItemFromSelf(this.batterySlot.getItem());
                 outputEnergyToNearbyTiles();
             } else if (this.fortronStorage.getStoredFortron() < this.fortronStorage.getFortronCapacity()) {
-                dischargeItemIntoSelf(this.batterySlot.getItem()); //TODO shouldn't this be disabled with enableElectricity flag
+                dischargeItemIntoSelf(this.batterySlot.getItem());
 
-                if (this.energy.canExtract(MFFSConfig.COMMON.coercionDriverFePerFortron.get()) || !MFFSConfig.COMMON.enableElectricity.get() && hasFuel()) {
+                // Check if we can afford the effective cost for at least 1 Fortron.
+                if (this.energy.extractEnergy(getEffectiveCostPerFortron(), true) >= getEffectiveCostPerFortron()
+                    || !MFFSConfig.enableElectricity && (hasFuel() || hasQueuedFuel())) {
                     produceFortron();
                     consumeFuel();
                 }
@@ -117,116 +119,142 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity {
     }
 
     private void consumeFuel() {
-        // TODO Fuel display
-        if (this.processTime == 0 && hasFuel()) {
-            this.fuelSlot.getItem().shrink(1);
-            this.processTime = MFFSConfig.COMMON.catalystBurnTime.get() * Math.max(getModuleCount(ModModules.SCALE) / 20, 1); //TODO why 20
+        // Start a new catalyst item when the current burn ends and more is queued in the slot.
+        // activeCatalystMultiplier and burnTicks are taken from the item's config entry
+        if (this.processTime == 0 && hasQueuedFuel()) {
+            ItemStack fuelItem = this.fuelSlot.getItem();
+            MFFSConfig.CatalystEntry entry = MFFSConfig.getCatalystEntry(fuelItem);
+            if (entry != null) {
+                fuelItem.shrink(1);
+                int scaleFactor = Math.max(getModuleCount(ModModules.SCALE) / 20, 1);
+                this.processTime = entry.burnTicks * scaleFactor;
+                this.activeCatalystMultiplier = entry.multiplier;
+            }
         }
-        this.processTime = Math.max(--this.processTime, 0);
+        // Advance the burn timer. This is only called when the deriver is actually
+        // producing Fortron, so catalyst ticks do NOT drain while the tank is full.
+        if (this.processTime > 0) {
+            this.processTime--;
+            if (this.processTime == 0) {
+                this.activeCatalystMultiplier = 0.0;
+            }
+        }
     }
 
     private void produceFortron() {
         int fortronOutput = calculateFortronProduction();
-        try (Transaction tx = Transaction.openRoot()) {
-            int fortronStored = fortronProducedLastTick = this.fortronStorage.insertFortron(fortronOutput, tx);
-            int asEnergy = fortronStored * MFFSConfig.COMMON.coercionDriverFePerFortron.get();
-            this.energy.extract(asEnergy, tx);
-            tx.commit();
-        }
+
+        int fortronStored = this.fortronStorage.insertFortron(fortronOutput, false);
+        this.fortronProducedLastTick = fortronStored;
+        // Proportional cost: each Fortron costs getEffectiveCostPerFortron() FE.
+        int asEnergy = fortronStored * getEffectiveCostPerFortron();
+        this.energy.extractEnergy(asEnergy, false);
     }
 
     /**
-     * Predicted fortron to be produced next energy tick
-     *
-     * @return fortron(ml)
+     * Returns the effective FE cost per Fortron unit, reduced by speed modules.
+     * <p>
+     * Each Speed Module applies a flat percentage discount configured via
+     * {@code MFFSConfig.coercionDriverFePerFortronSpeedDiscount} (default 1%).
+     * The total discount is capped at 99% so cost never reaches zero.
+     * <p>
+     * Example with default 1% discount per module and 400 FE/Fortron base:
+     *   0 modules: 400 FE/Fortron (0% discount)
+     *   1 module:  396 FE/Fortron (1% discount)
+     *   8 modules: 368 FE/Fortron (8% discount)
+     */
+    public int getEffectiveCostPerFortron() {
+        int speedCount = getModuleCount(ModModules.SPEED);
+        int discountPercent = Math.min(99, speedCount * MFFSConfig.coercionDriverFePerFortronSpeedDiscount);
+        return Math.max(1, MFFSConfig.coercionDriverFePerFortron * (100 - discountPercent) / 100);
+    }
+
+    /**
+     * Predicted fortron to be produced next energy tick.
+     * @return fortron(F)
      */
     public int calculateFortronProduction() {
         final int spaceLeft = this.fortronStorage.getFortronCapacity() - this.fortronStorage.getStoredFortron();
-        final int maxFortronFromEnergy = this.energy.getAmountAsInt() / MFFSConfig.COMMON.coercionDriverFePerFortron.get();
+        final int effectiveCost = getEffectiveCostPerFortron();
+        final int maxFortronFromEnergy = this.energy.getEnergyStored() / effectiveCost;
         return Math.min(maxFortronFromEnergy, Math.min(getMaxFortronProducedPerTick(), spaceLeft));
     }
 
     private void convertFortronIntoEnergy() {
-        final int energyPerFortron = MFFSConfig.COMMON.coercionDriverFePerFortron.get() - MFFSConfig.COMMON.coercionDriverFortronToFeLoss.get();
+        final int energyPerFortron = MFFSConfig.coercionDriverFePerFortron - MFFSConfig.coercionDriverFortronToFeLoss;
 
-        // Only run if we can withdraw at least 1 fortron
-        if (this.energy.getAmountAsInt() + energyPerFortron < this.energy.getCapacityAsInt()) {
-            try (Transaction tx = Transaction.openRoot()) {
-                //Calculate upper limits per tick
-                int maxFortronOut;
-                try (Transaction stx = Transaction.open(tx)) {
-                    maxFortronOut = this.fortronStorage.extractFortron(getMaxFortronProducedPerTick(), stx);
-                }
-                int maxEnergyOut = maxFortronOut * energyPerFortron;
+        if (this.energy.getEnergyStored() + energyPerFortron < this.energy.getMaxEnergyStored()) {
+            int maxFortronOut = this.fortronStorage.extractFortron(getMaxFortronProducedPerTick(), true);
+            int maxEnergyOut = maxFortronOut * energyPerFortron;
 
-                //Calculate amount of energy that can actually be moved
-                final int maxEnergyReceived;
-                try (Transaction stx = Transaction.open(tx)) {
-                    maxEnergyReceived = this.energy.insert(maxEnergyOut, stx);
-                }
+            // Simulate receive: how much energy can we actually accept?
+            int maxEnergyReceived = this.energy.receiveEnergy(maxEnergyOut, true);
 
-                // Calculate actual values to move, round down to avoid material loss
-                final int fortronToRemove = (int) Math.floor(maxEnergyReceived / (float) energyPerFortron);
+            // Calculate actual values to move, round down to avoid material loss
+            final int fortronToRemove = (int) Math.floor(maxEnergyReceived / (float) energyPerFortron);
 
-                // Apply values
-                final int extracted = this.fortronStorage.extractFortron(fortronToRemove, tx);
-                this.energy.insert(extracted * energyPerFortron, tx);
-
-                tx.commit();
-            }
+            // Apply values
+            final int extracted = this.fortronStorage.extractFortron(fortronToRemove, false);
+            this.energy.receiveEnergy(extracted * energyPerFortron, false);
         }
     }
 
     /**
      * Upper limit on fortron produced per tick
      *
-     * @return fortron(ml) per tick
+     * @return fortron(F) per tick
      */
     public int getMaxFortronProducedPerTick() {
         if (isActive()) {
-            final int perTick = MFFSConfig.COMMON.coercionDriverFortronPerTick.get();
-            final int speedBonus = MFFSConfig.COMMON.coercionDriverFortronPerTickSpeedModule.get() * getModuleCount(ModModules.SPEED);
+            final int perTick = MFFSConfig.coercionDriverFortronPerSecond / 20;
+            final int speedBonus = (MFFSConfig.coercionDriverFortronPerSecondSpeedModule / 20) * getModuleCount(ModModules.SPEED);
             final int production = perTick + speedBonus;
-            final double catMultiplier = this.hasFuel() ? Math.max(MFFSConfig.COMMON.catalystMultiplier.get(), 0) : 0;
+            final double catMultiplier = hasFuel() ? Math.max(this.activeCatalystMultiplier, 0) : 0;
             return production + (int) Math.floor(production * catMultiplier);
         }
         return 0;
     }
 
+    /** Returns true while a catalyst is actively burning (processTime > 0). */
     public boolean hasFuel() {
-        return !this.fuelSlot.isEmpty();
+        return this.processTime > 0;
     }
 
-    @Nullable
-    @Override
-    public AbstractContainerMenu createMenu(int containerId, Inventory inventory, Player player) {
-        return new CoercionDeriverMenu(containerId, this.worldPosition, player, inventory);
-    }
-
-    @Override
-    protected void saveTag(ValueOutput output) {
-        super.saveTag(output);
-
-        output.putInt("processTime", this.processTime);
-        output.putString("energyMode", this.energyMode.name());
+    /** Returns true if there is a valid catalyst item queued in the fuel slot ready to be consumed. */
+    private boolean hasQueuedFuel() {
+        return !this.fuelSlot.isEmpty() && MFFSConfig.getCatalystEntry(this.fuelSlot.getItem()) != null;
     }
 
     @Override
-    protected void loadTag(ValueInput input) {
-        super.loadTag(input);
+    protected void saveTag(NBTTagCompound compound) {
+        super.saveTag(compound);
 
-        this.processTime = input.getInt("processTime").orElse(0);
-        this.energyMode = input.getString("energyMode").map(EnergyMode::valueOf).orElse(EnergyMode.DERIVE);
+        compound.setInteger("processTime", this.processTime);
+        compound.setDouble("activeCatalystMultiplier", this.activeCatalystMultiplier);
+        compound.setString("energyMode", this.energyMode.name());
     }
 
     @Override
-    public Set<Direction> getEnergyInputSides() {
-        return EnumSet.allOf(Direction.class);
+    protected void loadTag(NBTTagCompound compound) {
+        super.loadTag(compound);
+
+        this.processTime = compound.getInteger("processTime");
+        this.activeCatalystMultiplier = compound.getDouble("activeCatalystMultiplier");
+        String energyModeName = compound.getString("energyMode");
+        if (!energyModeName.isEmpty()) {
+            try { this.energyMode = EnergyMode.valueOf(energyModeName); } catch (IllegalArgumentException ignored) {}
+        }
+    }
+
+    // Sides accepting energy capability.
+    @Override
+    public Set<EnumFacing> getEnergyInputSides() {
+        return EnumSet.allOf(EnumFacing.class);
     }
 
     @Override
-    public Set<Direction> getEnergyOutputSides() {
-        return EnumSet.allOf(Direction.class);
+    public Set<EnumFacing> getEnergyOutputSides() {
+        return EnumSet.allOf(EnumFacing.class);
     }
 
     public enum EnergyMode {
@@ -234,13 +262,12 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity {
         INTEGRATE;  // FORT -> FE
 
         private static final EnergyMode[] VALUES = values();
-        public static final StreamCodec<FriendlyByteBuf, EnergyMode> STREAM_CODEC = NeoForgeStreamCodecs.enumCodec(EnergyMode.class);
 
         public EnergyMode next() {
             return VALUES[(ordinal() + 1) % VALUES.length];
         }
 
-        public MutableComponent translate() {
+        public net.minecraft.util.text.ITextComponent translate() {
             return ModUtil.translate("info", "coercion_deriver.mode." + name().toLowerCase(Locale.ROOT));
         }
     }

@@ -1,0 +1,26 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        " S ",
+        "PFL",
+        " S "
+    ],
+    "key": {
+        "F": {
+            "item": "mffs:focus_matrix"
+        },
+        "P": {
+            "item": "minecraft:cooked_porkchop"
+        },
+        "S": {
+            "item": "minecraft:slime_ball"
+        },
+        "L": {
+            "item": "minecraft:leather"
+        }
+    },
+    "result": {
+        "item": "mffs:anti_friendly_module",
+        "count": 1
+    }
+}

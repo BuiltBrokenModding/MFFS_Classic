@@ -1,32 +1,31 @@
 package dev.su5ed.mffs.item;
 
+import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.api.card.CoordLink;
 import dev.su5ed.mffs.api.fortron.FortronStorage;
 import dev.su5ed.mffs.api.security.FieldPermission;
-import dev.su5ed.mffs.menu.FortronMenu;
 import dev.su5ed.mffs.render.particle.ParticleColor;
+import dev.su5ed.mffs.setup.GuiIds;
 import dev.su5ed.mffs.setup.ModCapabilities;
-import dev.su5ed.mffs.setup.ModDataComponentTypes;
 import dev.su5ed.mffs.util.Fortron;
 import dev.su5ed.mffs.util.FrequencyGrid;
 import dev.su5ed.mffs.util.ModUtil;
-import net.minecraft.ChatFormatting;
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.MenuProvider;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -36,128 +35,167 @@ import java.util.Objects;
 
 public class RemoteControllerItem extends BaseItem implements CoordLink {
 
-    public RemoteControllerItem(Properties properties) {
-        super(new ExtendedItemProperties(properties.stacksTo(1)).description());
+    public RemoteControllerItem() {
+        super(true); // show description
+        setMaxStackSize(1);
     }
 
+    /** Shift + right-click on a MFFS machine: link the remote to that block. */
     @Override
-    public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
-        Level level = context.getLevel();
-        Player player = context.getPlayer();
-        if (!level.isClientSide() && player.isShiftKeyDown()) {
-            BlockPos pos = context.getClickedPos();
-            BlockEntity be = level.getBlockEntity(pos);
-            if (be != null && level.getCapability(ModCapabilities.FORTRON, be.getBlockPos(), be.getBlockState(), be, null) != null) {
+    public EnumActionResult onItemUse(EntityPlayer playerIn, World worldIn, BlockPos pos,
+                                      EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+        if (!worldIn.isRemote && playerIn.isSneaking()) {
+            ItemStack stack = playerIn.getHeldItem(hand);
+            TileEntity te = worldIn.getTileEntity(pos);
+            if (te != null && te.hasCapability(ModCapabilities.FORTRON, null)) {
                 setLink(stack, pos);
-                BlockState state = level.getBlockState(pos);
-                player.displayClientMessage(ModUtil.translate("info", "link", state.getBlock().getName(), pos.toShortString()).withStyle(ChatFormatting.AQUA), true);
-                return InteractionResult.SUCCESS;
+                net.minecraft.block.state.IBlockState state = worldIn.getBlockState(pos);
+                playerIn.sendStatusMessage(
+                    new TextComponentTranslation("info.mffs.link",
+                        state.getBlock().getLocalizedName(),
+                        posToString(pos))
+                    .setStyle(new net.minecraft.util.text.Style().setColor(TextFormatting.AQUA)),
+                    true);
+                return EnumActionResult.SUCCESS;
             }
         }
-        return InteractionResult.PASS;
+        return EnumActionResult.PASS;
     }
 
+    /** Right-click in air (no shift): open the linked machine's GUI remotely. */
     @Override
-    public InteractionResult use(Level level, Player player, InteractionHand usedHand) {
-        ItemStack stack = player.getItemInHand(usedHand);
-        if (!level.isClientSide() && !player.isShiftKeyDown()) {
+    public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) {
+        ItemStack stack = playerIn.getHeldItem(handIn);
+        if (!worldIn.isRemote && !playerIn.isSneaking()) {
+            // If the player already has a container open, do nothing.
+            if (playerIn.openContainer != playerIn.inventoryContainer) {
+                return new ActionResult<>(EnumActionResult.PASS, stack);
+            }
+
             BlockPos pos = getLink(stack);
 
-            if (pos != null && level.isLoaded(pos)) {
-                BlockEntity be = level.getBlockEntity(pos);
+            if (pos != null && worldIn.isBlockLoaded(pos)) {
+                TileEntity te = worldIn.getTileEntity(pos);
 
-                if (be instanceof MenuProvider menuProvider && (Fortron.hasPermission(level, pos, FieldPermission.USE_BLOCKS, player) || Fortron.hasPermission(level, pos, FieldPermission.REMOTE_CONTROL, player))) {
-                    double requiredEnergy = ModUtil.distance(player.blockPosition(), pos) * (FluidType.BUCKET_VOLUME / 100.0);
-                    int frequency = Objects.requireNonNull(level.getCapability(ModCapabilities.FORTRON, be.getBlockPos(), be.getBlockState(), be, null)).getFrequency();
-                    if (drawEnergy(level, player.blockPosition(), player.position().add(0, player.getEyeHeight() - 0.2, 0), frequency, (int) requiredEnergy)) {
-                        player.openMenu(new RemoteMenuProvider(menuProvider), pos);
-                        return InteractionResult.SUCCESS;
+                if (te != null && te.hasCapability(ModCapabilities.FORTRON, null)
+                        && (Fortron.hasPermission(worldIn, pos, FieldPermission.USE_BLOCKS, playerIn)
+                            || Fortron.hasPermission(worldIn, pos, FieldPermission.REMOTE_CONTROL, playerIn))) {
+
+                    double distance = ModUtil.distance(playerIn.getPosition(), pos);
+                    double requiredEnergy = distance * (1000.0 / 100.0);
+                    // Search radius must cover at least the distance to the target machine
+                    int searchRadius = Math.max(50, (int) Math.ceil(distance));
+                    int frequency = Objects.requireNonNull(
+                        te.getCapability(ModCapabilities.FORTRON, null)).getFrequency();
+
+                    Vec3d eyePos = playerIn.getPositionVector().add(0, playerIn.getEyeHeight() - 0.2, 0);
+                    if (drawEnergy(worldIn, playerIn.getPosition(), eyePos, frequency, (int) requiredEnergy, searchRadius)) {
+                        // Open the GUI of the target block (determined by MFFSGuiHandler based on TileEntity type)
+                        playerIn.openGui(MFFSMod.INSTANCE, GuiIds.REMOTE_CONTROLLER, worldIn,
+                            pos.getX(), pos.getY(), pos.getZ());
+                        return new ActionResult<>(EnumActionResult.SUCCESS, stack);
                     }
 
-                    player.displayClientMessage(ModUtil.translate("info", "cannot_harness", Math.round(requiredEnergy)).withStyle(ChatFormatting.RED), true);
+                    playerIn.sendStatusMessage(
+                        new TextComponentTranslation("info.mffs.cannot_harness", Math.round(requiredEnergy))
+                            .setStyle(new net.minecraft.util.text.Style().setColor(TextFormatting.RED)),
+                        true);
                 }
             }
         }
-        return InteractionResult.PASS;
+        return new ActionResult<>(EnumActionResult.PASS, stack);
     }
 
-//    @Override
-//    public void appendHoverTextPre(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
-//         TODO Store name in link?
-//        BlockPos pos = getLink(stack);
-//        if (level != null && pos != null) {
-//            BlockEntity be = level.getBlockEntity(pos);
-//            if (be != null && level.getCapability(ModCapabilities.FORTRON, be.getBlockPos(), be.getBlockState(), be, null) != null) {
-//                tooltipComponents.add(ModUtil.translate("info", "link",
-//                    be.getBlockState().getBlock().getName().withStyle(ChatFormatting.GREEN),
-//                    Component.literal(pos.toShortString()).withStyle(ChatFormatting.GRAY)).withStyle(ChatFormatting.DARK_GRAY));
-//            }
-//        }
-//    }
+    // -----------------------------------------------------------------------
+    // Tooltip — show linked position if present
+    // -----------------------------------------------------------------------
 
-    @Nullable
     @Override
+    @SideOnly(Side.CLIENT)
+    protected void addInformationPre(ItemStack stack, @Nullable World worldIn, List<String> tooltip,
+                                     ITooltipFlag flagIn) {
+        super.addInformationPre(stack, worldIn, tooltip, flagIn);
+        BlockPos pos = getLink(stack);
+        if (pos != null && worldIn != null) {
+            TileEntity te = worldIn.getTileEntity(pos);
+            if (te != null && te.hasCapability(ModCapabilities.FORTRON, null)) {
+                net.minecraft.block.state.IBlockState state = worldIn.getBlockState(pos);
+                tooltip.add(TextFormatting.DARK_GRAY + net.minecraft.client.resources.I18n.format(
+                    "info.mffs.link",
+                    TextFormatting.GREEN + state.getBlock().getLocalizedName(),
+                    TextFormatting.GRAY + posToString(pos)));
+            } else {
+                tooltip.add(TextFormatting.DARK_GRAY + net.minecraft.client.resources.I18n.format(
+                    "info.mffs.link",
+                    TextFormatting.RED + "?",
+                    TextFormatting.GRAY + posToString(pos)));
+            }
+        }
+    }
+
+    // -----------------------------------------------------------------------
+    // CoordLink implementation — NBT (BlockPos.toLong / fromLong)
+    // -----------------------------------------------------------------------
+
+    @Override
+    @Nullable
     public BlockPos getLink(ItemStack stack) {
-        return stack.get(ModDataComponentTypes.REMOTE_LINK_POS);
+        if (!stack.hasTagCompound() || !stack.getTagCompound().hasKey("link")) return null;
+        return BlockPos.fromLong(stack.getTagCompound().getLong("link"));
     }
 
     @Override
     public void setLink(ItemStack stack, BlockPos pos) {
-        stack.set(ModDataComponentTypes.REMOTE_LINK_POS, pos);
+        ModUtil.getOrCreateTag(stack).setLong("link", pos.toLong());
     }
 
-    private boolean drawEnergy(Level level, BlockPos pos, Vec3 target, int frequency, int energy) {
-        List<FortronStorage> fortronTiles = FrequencyGrid.instance().get(level, pos, 50, frequency);
-        fortronTiles.sort(Comparator.comparingDouble(fortron -> fortron.getOwner().getBlockPos().distToCenterSqr(target)));
+    // -----------------------------------------------------------------------
+    // Fortron energy draw — simulate-then-commit (replaces Transaction pattern)
+    // -----------------------------------------------------------------------
+
+    private boolean drawEnergy(World world, BlockPos playerPos, Vec3d eyeTarget,
+                                int frequency, int energy, int searchRadius) {
+        List<FortronStorage> fortronTiles = FrequencyGrid.instance(world.isRemote).get(world, playerPos, searchRadius, frequency);
+        // Sort by distance to the player's eye position
+        fortronTiles.sort(Comparator.comparingDouble(fortron -> {
+            BlockPos fp = fortron.getOwner().getPos();
+            return new Vec3d(fp.getX() + 0.5, fp.getY() + 0.5, fp.getZ() + 0.5)
+                .squareDistanceTo(eyeTarget);
+        }));
+
+        // First pass: simulate to find enough providers
         int total = 0;
         List<FortronStorage> transmitters = new ArrayList<>();
-        // Find providers
         for (FortronStorage fortron : fortronTiles) {
             int required = energy - total;
-            int receivedEnergy;
-            try (Transaction tx = Transaction.openRoot()) {
-                receivedEnergy = fortron.extractFortron(required, tx);
-            }
-            if (receivedEnergy > 0) {
+            int available = fortron.extractFortron(required, true); // simulate
+            if (available > 0) {
                 transmitters.add(fortron);
             }
-            total += receivedEnergy;
-            if (total >= energy) {
-                break;
-            }
+            total += available;
+            if (total >= energy) break;
         }
+
         if (total >= energy) {
+            // Second pass: actually consume
             total = 0;
-            // Draw energy
             for (FortronStorage fortron : transmitters) {
                 int required = energy - total;
-                try (Transaction tx = Transaction.openRoot()) {
-                    total += fortron.extractFortron(required, tx);
-                    tx.commit();
-                }
-                BlockPos fortronPos = fortron.getOwner().getBlockPos();
-                Fortron.renderClientBeam(level, target, Vec3.atCenterOf(fortronPos), fortronPos, ParticleColor.BLUE_BEAM, 20);
+                total += fortron.extractFortron(required, false); // consume
+                BlockPos fortronPos = fortron.getOwner().getPos();
+                Vec3d center = new Vec3d(fortronPos.getX() + 0.5, fortronPos.getY() + 0.5, fortronPos.getZ() + 0.5);
+                Fortron.renderClientBeam(world, eyeTarget, center, fortronPos, ParticleColor.BLUE_BEAM, 20);
             }
             return true;
         }
         return false;
     }
 
-    private record RemoteMenuProvider(MenuProvider wrapped) implements MenuProvider {
+    // -----------------------------------------------------------------------
+    // Helpers
+    // -----------------------------------------------------------------------
 
-        @Override
-        public Component getDisplayName() {
-            return this.wrapped.getDisplayName();
-        }
-
-        @Nullable
-        @Override
-        public AbstractContainerMenu createMenu(int containerId, Inventory playerInventory, Player player) {
-            AbstractContainerMenu menu = this.wrapped.createMenu(containerId, playerInventory, player);
-            if (menu instanceof FortronMenu<?> fortronMenu) {
-                fortronMenu.setRemoteAccess(true);
-            }
-            return menu;
-        }
+    private static String posToString(BlockPos pos) {
+        return pos.getX() + ", " + pos.getY() + ", " + pos.getZ();
     }
 }

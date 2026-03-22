@@ -1,119 +1,190 @@
 package dev.su5ed.mffs.setup;
 
+// =============================================================================
+// 1.12.2 Backport: Item registration
+// =============================================================================
+
 import dev.su5ed.mffs.MFFSMod;
+import dev.su5ed.mffs.MFFSConfig;
 import dev.su5ed.mffs.api.module.InterdictionMatrixModule;
 import dev.su5ed.mffs.api.module.Module;
 import dev.su5ed.mffs.api.module.ModuleType;
-import dev.su5ed.mffs.api.module.ProjectorMode;
 import dev.su5ed.mffs.item.*;
-import dev.su5ed.mffs.item.BaseItem.ExtendedItemProperties;
-import dev.su5ed.mffs.util.ModUtil;
 import dev.su5ed.mffs.util.projector.ModProjectorModes;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.registries.DeferredBlock;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredItem;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.registries.IForgeRegistry;
 
-import java.util.function.Consumer;
-
+@Mod.EventBusSubscriber(modid = MFFSMod.MODID)
 public final class ModItems {
-    public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MFFSMod.MODID);
-    private static final DeferredRegister<CreativeModeTab> ITEM_GROUPS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MFFSMod.MODID);
 
-    public static final DeferredItem<Item> PROJECTOR_ITEM = fromBlock(ModBlocks.PROJECTOR);
-    public static final DeferredItem<Item> COERCION_DERIVER_ITEM = fromBlock(ModBlocks.COERCION_DERIVER);
-    public static final DeferredItem<Item> FORTRON_CAPACITOR_ITEM = fromBlock(ModBlocks.FORTRON_CAPACITOR);
-    public static final DeferredItem<Item> BIOMETRIC_IDENTIFIER_ITEM = fromBlock(ModBlocks.BIOMETRIC_IDENTIFIER);
-    public static final DeferredItem<Item> INTERDICTION_MATRIX_ITEM = fromBlock(ModBlocks.INTERDICTION_MATRIX);
-    public static final DeferredItem<Item> REMOTE_CONTROLLER_ITEM = ITEMS.registerItem("remote_controller", RemoteControllerItem::new);
+    // Creative tab - all MFFS items appear here
+    public static final CreativeTabs ITEM_GROUP = new CreativeTabs(MFFSMod.MODID + ".main") {
+        @Override
+        public ItemStack createIcon() {
+            return PROJECTOR_ITEM != null ? new ItemStack(PROJECTOR_ITEM) : ItemStack.EMPTY;
+        }
+    };
 
-    public static final DeferredItem<Item> FOCUS_MATRIX = ITEMS.registerItem("focus_matrix", Item::new);
-    public static final DeferredItem<ProjectorModeItem> CUBE_MODE = projectorMode("cube_mode", ModProjectorModes.CUBE);
-    public static final DeferredItem<ProjectorModeItem> SPHERE_MODE = projectorMode("sphere_mode", ModProjectorModes.SPHERE);
-    public static final DeferredItem<ProjectorModeItem> TUBE_MODE = projectorMode("tube_mode", ModProjectorModes.TUBE);
-    public static final DeferredItem<ProjectorModeItem> PYRAMID_MODE = projectorMode("pyramid_mode", ModProjectorModes.PYRAMID);
-    public static final DeferredItem<ProjectorModeItem> CYLINDER_MODE = projectorMode("cylinder_mode", ModProjectorModes.CYLINDER);
-    public static final DeferredItem<CustomProjectorModeItem> CUSTOM_MODE = ITEMS.registerItem("custom_mode", CustomProjectorModeItem::new);
-    public static final DeferredItem<ModuleItem<Module>> TRANSLATION_MODULE = module("translation_module", ModModules.TRANSLATION, ExtendedItemProperties::description);
-    public static final DeferredItem<ModuleItem<Module>> SCALE_MODULE = module("scale_module", ModModules.SCALE, ExtendedItemProperties::description);
-    public static final DeferredItem<ModuleItem<Module>> ROTATION_MODULE = module("rotation_module", ModModules.ROTATION, ExtendedItemProperties::description);
-    public static final DeferredItem<ModuleItem<Module>> SPEED_MODULE = module("speed_module", ModModules.SPEED, ExtendedItemProperties::description);
-    public static final DeferredItem<ModuleItem<Module>> CAPACITY_MODULE = module("capacity_module", ModModules.CAPACITY, ExtendedItemProperties::description);
-    public static final DeferredItem<ModuleItem<Module>> FUSION_MODULE = module("fusion_module", ModModules.FUSION, ModItems::singleWithDescription);
-    public static final DeferredItem<ModuleItem<Module>> DOME_MODULE = module("dome_module", ModModules.DOME, ExtendedItemProperties::description);
-    public static final DeferredItem<ModuleItem<Module>> CAMOUFLAGE_MODULE = module("camouflage_module", ModModules.CAMOUFLAGE, ModItems::singleWithDescription);
-    public static final DeferredItem<ModuleItem<Module>> DISINTEGRATION_MODULE = module("disintegration_module", ModModules.DISINTEGRATION, ModItems::singleWithDescription);
-    public static final DeferredItem<ModuleItem<Module>> SHOCK_MODULE = module("shock_module", ModModules.SHOCK, ExtendedItemProperties::description);
-    public static final DeferredItem<ModuleItem<Module>> GLOW_MODULE = module("glow_module", ModModules.GLOW, ExtendedItemProperties::description);
-    public static final DeferredItem<ModuleItem<Module>> SPONGE_MODULE = module("sponge_module", ModModules.SPONGE, ModItems::singleWithDescription);
-    public static final DeferredItem<ModuleItem<Module>> STABILIZATION_MODULE = module("stabilization_module", ModModules.STABILIZAZION, ModItems::singleWithDescription);
-    public static final DeferredItem<ModuleItem<Module>> COLLECTION_MODULE = module("collection_module", ModModules.COLLECTION, ModItems::singleWithDescription);
-    public static final DeferredItem<ModuleItem<Module>> INVERTER_MODULE = module("inverter_module", ModModules.INVERTER, ModItems::singleWithDescription);
-    public static final DeferredItem<ModuleItem<Module>> SILENCE_MODULE = module("silence_module", ModModules.SILENCE, ModItems::singleWithDescription);
-    public static final DeferredItem<ModuleItem<InterdictionMatrixModule>> WARN_MODULE = interdictionMatrixModule("warn_module", ModModules.WARN);
-    public static final DeferredItem<ModuleItem<InterdictionMatrixModule>> BLOCK_ACCESS_MODULE = interdictionMatrixModule("block_access_module", ModModules.BLOCK_ACCESS);
-    public static final DeferredItem<ModuleItem<InterdictionMatrixModule>> BLOCK_ALTER_MODULE = interdictionMatrixModule("block_alter_module", ModModules.BLOCK_ALTER);
-    public static final DeferredItem<ModuleItem<InterdictionMatrixModule>> ANTI_FRIENDLY_MODULE = interdictionMatrixModule("anti_friendly_module", ModModules.ANTI_FRIENDLY);
-    public static final DeferredItem<ModuleItem<InterdictionMatrixModule>> ANTI_HOSTILE_MODULE = interdictionMatrixModule("anti_hostile_module", ModModules.ANTI_HOSTILE);
-    public static final DeferredItem<ModuleItem<InterdictionMatrixModule>> ANTI_PERSONNEL_MODULE = interdictionMatrixModule("anti_personnel_module", ModModules.ANTI_PERSONNEL);
-    public static final DeferredItem<ModuleItem<InterdictionMatrixModule>> ANTI_SPAWN_MODULE = interdictionMatrixModule("anti_spawn_module", ModModules.ANTI_SPAWN);
-    public static final DeferredItem<ModuleItem<InterdictionMatrixModule>> CONFISCATION_MODULE = interdictionMatrixModule("confiscation_module", ModModules.CONFISCATION);
-    public static final DeferredItem<Item> BLANK_CARD = ITEMS.registerItem("blank_card", Item::new);
-    public static final DeferredItem<Item> ID_CARD = ITEMS.registerItem("id_card", IdentificationCardItem::new);
-    public static final DeferredItem<Item> INFINITE_POWER_CARD = ITEMS.registerItem("infinite_power_card", properties -> new BaseItem(new ExtendedItemProperties(properties.stacksTo(1)).description()));
-    public static final DeferredItem<Item> FREQUENCY_CARD = ITEMS.registerItem("frequency_card", FrequencyCardItem::new);
-    public static final DeferredItem<Item> STEEL_COMPOUND = ITEMS.registerItem("steel_compound", Item::new);
-    public static final DeferredItem<Item> STEEL_INGOT = ITEMS.registerItem("steel_ingot", Item::new);
-    public static final DeferredItem<BatteryItem> BATTERY = ITEMS.registerItem("battery", BatteryItem::new);
+    // Static item references - populated during RegistryEvent.Register<Item>
+    public static Item PROJECTOR_ITEM;
+    public static Item COERCION_DERIVER_ITEM;
+    public static Item FORTRON_CAPACITOR_ITEM;
+    public static Item BIOMETRIC_IDENTIFIER_ITEM;
+    public static Item INTERDICTION_MATRIX_ITEM;
+    public static RemoteControllerItem REMOTE_CONTROLLER_ITEM;
+    public static Item FOCUS_MATRIX;
+    public static ProjectorModeItem CUBE_MODE;
+    public static ProjectorModeItem SPHERE_MODE;
+    public static ProjectorModeItem TUBE_MODE;
+    public static ProjectorModeItem PYRAMID_MODE;
+    public static ProjectorModeItem CYLINDER_MODE;
+    public static CustomProjectorModeItem CUSTOM_MODE;
+    public static ModuleItem<Module> TRANSLATION_MODULE;
+    public static ModuleItem<Module> SCALE_MODULE;
+    public static ModuleItem<Module> ROTATION_MODULE;
+    public static ModuleItem<Module> SPEED_MODULE;
+    public static ModuleItem<Module> CAPACITY_MODULE;
+    public static ModuleItem<Module> FUSION_MODULE;
+    public static ModuleItem<Module> DOME_MODULE;
+    public static ModuleItem<Module> CAMOUFLAGE_MODULE;
+    public static ModuleItem<Module> DISINTEGRATION_MODULE;
+    public static ModuleItem<Module> SHOCK_MODULE;
+    public static ModuleItem<Module> GLOW_MODULE;
+    public static ModuleItem<Module> SPONGE_MODULE;
+    public static ModuleItem<Module> STABILIZATION_MODULE;
+    public static ModuleItem<Module> COLLECTION_MODULE;
+    public static ModuleItem<Module> INVERTER_MODULE;
+    public static ModuleItem<Module> SILENCE_MODULE;
+    public static InterdictionMatrixModuleItem WARN_MODULE;
+    public static InterdictionMatrixModuleItem BLOCK_ACCESS_MODULE;
+    public static InterdictionMatrixModuleItem BLOCK_ALTER_MODULE;
+    public static InterdictionMatrixModuleItem ANTI_FRIENDLY_MODULE;
+    public static InterdictionMatrixModuleItem ANTI_HOSTILE_MODULE;
+    public static InterdictionMatrixModuleItem ANTI_PERSONNEL_MODULE;
+    public static InterdictionMatrixModuleItem ANTI_SPAWN_MODULE;
+    public static InterdictionMatrixModuleItem CONFISCATION_MODULE;
+    public static Item BLANK_CARD;
+    public static IdentificationCardItem ID_CARD;
+    public static BaseItem INFINITE_POWER_CARD;
+    public static FrequencyCardItem FREQUENCY_CARD;
+    public static Item STEEL_COMPOUND;
+    public static Item STEEL_INGOT;
+    public static BatteryItem BATTERY;
 
-    public static final DeferredItem<Item> REDSTONE_TORCH_OFF = ITEMS.registerItem("redstone_torch_off", Item::new);
+    @SubscribeEvent
+    public static void registerItems(RegistryEvent.Register<Item> event) {
+        IForgeRegistry<Item> registry = event.getRegistry();
 
-    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> ITEM_GROUP = ITEM_GROUPS.register("main", () -> CreativeModeTab.builder()
-        .title(ModUtil.translate("itemGroup", "main"))
-        .icon(() -> new ItemStack(PROJECTOR_ITEM.get()))
-        .displayItems((parameters, output) -> {
-            for (DeferredHolder<Item, ? extends Item> entry : ITEMS.getEntries()) {
-                if (entry != REDSTONE_TORCH_OFF) {
-                    output.accept(entry.get());
-                }
-            }
-        })
-        .build());
-    
-    public static void init(IEventBus bus) {
-        ITEMS.register(bus);
-        ITEM_GROUPS.register(bus);
+        // Block items (ItemBlock wrappers) — no ItemBlock for FORCE_FIELD (not player-obtainable)
+        PROJECTOR_ITEM            = register(registry, new ItemBlock(ModBlocks.PROJECTOR), "projector");
+        COERCION_DERIVER_ITEM     = register(registry, new ItemBlock(ModBlocks.COERCION_DERIVER), "coercion_deriver");
+        FORTRON_CAPACITOR_ITEM    = register(registry, new ItemBlock(ModBlocks.FORTRON_CAPACITOR), "fortron_capacitor");
+        BIOMETRIC_IDENTIFIER_ITEM = register(registry, new ItemBlock(ModBlocks.BIOMETRIC_IDENTIFIER), "biometric_identifier");
+        INTERDICTION_MATRIX_ITEM  = register(registry, new ItemBlock(ModBlocks.INTERDICTION_MATRIX), "interdiction_matrix");
+
+        // Tools / cards
+        REMOTE_CONTROLLER_ITEM = register(registry, new RemoteControllerItem(), "remote_controller");
+        FREQUENCY_CARD         = register(registry, new FrequencyCardItem(), "frequency_card");
+        ID_CARD                = register(registry, new IdentificationCardItem(), "id_card");
+        BLANK_CARD             = register(registry, new Item(), "blank_card");
+        INFINITE_POWER_CARD    = register(registry, singleItem(true), "infinite_power_card");
+        FOCUS_MATRIX           = register(registry, new Item(), "focus_matrix");
+        
+        // Steel items — disabled by default as other mods provide them
+        if (!MFFSConfig.disableSteelItems) {
+            STEEL_COMPOUND         = register(registry, new Item(), "steel_compound");
+            STEEL_INGOT            = register(registry, new Item(), "steel_ingot");
+        }
+        
+        BATTERY                = register(registry, new BatteryItem(), "battery");
+
+        // Projector modes
+        CUBE_MODE     = register(registry, new ProjectorModeItem(ModProjectorModes.CUBE), "cube_mode");
+        SPHERE_MODE   = register(registry, new ProjectorModeItem(ModProjectorModes.SPHERE), "sphere_mode");
+        TUBE_MODE     = register(registry, new ProjectorModeItem(ModProjectorModes.TUBE), "tube_mode");
+        PYRAMID_MODE  = register(registry, new ProjectorModeItem(ModProjectorModes.PYRAMID), "pyramid_mode");
+        CYLINDER_MODE = register(registry, new ProjectorModeItem(ModProjectorModes.CYLINDER), "cylinder_mode");
+        CUSTOM_MODE   = register(registry, new CustomProjectorModeItem(), "custom_mode");
+
+        // Field / general modules (gated by per-module config)
+        if (MFFSConfig.isModuleEnabled("translation_module"))
+            TRANSLATION_MODULE = register(registry, new ModuleItem<>(ModModules.TRANSLATION), "translation_module");
+        if (MFFSConfig.isModuleEnabled("scale_module"))
+            SCALE_MODULE = register(registry, new ModuleItem<>(ModModules.SCALE), "scale_module");
+        if (MFFSConfig.isModuleEnabled("rotation_module"))
+            ROTATION_MODULE = register(registry, new ModuleItem<>(ModModules.ROTATION), "rotation_module");
+        if (MFFSConfig.isModuleEnabled("speed_module"))
+            SPEED_MODULE = register(registry, new ModuleItem<>(ModModules.SPEED), "speed_module");
+        if (MFFSConfig.isModuleEnabled("capacity_module"))
+            CAPACITY_MODULE = register(registry, new ModuleItem<>(ModModules.CAPACITY), "capacity_module");
+        if (MFFSConfig.isModuleEnabled("fusion_module"))
+            FUSION_MODULE = register(registry, singleModule(ModModules.FUSION), "fusion_module");
+        if (MFFSConfig.isModuleEnabled("dome_module"))
+            DOME_MODULE = register(registry, new ModuleItem<>(ModModules.DOME), "dome_module");
+        if (MFFSConfig.isModuleEnabled("camouflage_module"))
+            CAMOUFLAGE_MODULE = register(registry, singleModule(ModModules.CAMOUFLAGE), "camouflage_module");
+        if (MFFSConfig.isModuleEnabled("disintegration_module"))
+            DISINTEGRATION_MODULE = register(registry, singleModule(ModModules.DISINTEGRATION), "disintegration_module");
+        if (MFFSConfig.isModuleEnabled("shock_module"))
+            SHOCK_MODULE = register(registry, new ModuleItem<>(ModModules.SHOCK), "shock_module");
+        if (MFFSConfig.isModuleEnabled("glow_module"))
+            GLOW_MODULE = register(registry, new ModuleItem<>(ModModules.GLOW), "glow_module");
+        if (MFFSConfig.isModuleEnabled("sponge_module"))
+            SPONGE_MODULE = register(registry, singleModule(ModModules.SPONGE), "sponge_module");
+        if (MFFSConfig.isModuleEnabled("stabilization_module"))
+            STABILIZATION_MODULE = register(registry, singleModule(ModModules.STABILIZAZION), "stabilization_module");
+        if (MFFSConfig.isModuleEnabled("collection_module"))
+            COLLECTION_MODULE = register(registry, singleModule(ModModules.COLLECTION), "collection_module");
+        if (MFFSConfig.isModuleEnabled("inverter_module"))
+            INVERTER_MODULE = register(registry, singleModule(ModModules.INVERTER), "inverter_module");
+        if (MFFSConfig.isModuleEnabled("silence_module"))
+            SILENCE_MODULE = register(registry, singleModule(ModModules.SILENCE), "silence_module");
+
+        // Interdiction matrix modules (gated by per-module config)
+        if (MFFSConfig.isModuleEnabled("warn_module"))
+            WARN_MODULE = register(registry, new InterdictionMatrixModuleItem(ModModules.WARN), "warn_module");
+        if (MFFSConfig.isModuleEnabled("block_access_module"))
+            BLOCK_ACCESS_MODULE = register(registry, new InterdictionMatrixModuleItem(ModModules.BLOCK_ACCESS), "block_access_module");
+        if (MFFSConfig.isModuleEnabled("block_alter_module"))
+            BLOCK_ALTER_MODULE = register(registry, new InterdictionMatrixModuleItem(ModModules.BLOCK_ALTER), "block_alter_module");
+        if (MFFSConfig.isModuleEnabled("anti_friendly_module"))
+            ANTI_FRIENDLY_MODULE = register(registry, new InterdictionMatrixModuleItem(ModModules.ANTI_FRIENDLY), "anti_friendly_module");
+        if (MFFSConfig.isModuleEnabled("anti_hostile_module"))
+            ANTI_HOSTILE_MODULE = register(registry, new InterdictionMatrixModuleItem(ModModules.ANTI_HOSTILE), "anti_hostile_module");
+        if (MFFSConfig.isModuleEnabled("anti_personnel_module"))
+            ANTI_PERSONNEL_MODULE = register(registry, new InterdictionMatrixModuleItem(ModModules.ANTI_PERSONNEL), "anti_personnel_module");
+        if (MFFSConfig.isModuleEnabled("anti_spawn_module"))
+            ANTI_SPAWN_MODULE = register(registry, new InterdictionMatrixModuleItem(ModModules.ANTI_SPAWN), "anti_spawn_module");
+        if (MFFSConfig.isModuleEnabled("confiscation_module"))
+            CONFISCATION_MODULE = register(registry, new InterdictionMatrixModuleItem(ModModules.CONFISCATION), "confiscation_module");
     }
 
-    private static DeferredItem<Item> fromBlock(DeferredBlock<?> block) {
-        return ITEMS.registerItem(block.getId().getPath(), properties -> new BlockItem(block.get(), properties.useBlockDescriptionPrefix()));
+    /** Creates a ModuleItem with maxStackSize=1 (for modules that can only be used once). */
+    private static ModuleItem<Module> singleModule(ModuleType<Module> type) {
+        ModuleItem<Module> item = new ModuleItem<>(type);
+        item.setMaxStackSize(1);
+        return item;
     }
 
-    private static DeferredItem<ModuleItem<InterdictionMatrixModule>> interdictionMatrixModule(String name, ModuleType<InterdictionMatrixModule> module) {
-        return ITEMS.registerItem(name, properties -> new InterdictionMatrixModuleItem(new ExtendedItemProperties(properties).description(), module));
+    /** Creates a BaseItem with maxStackSize=1 (for single-use cards). */
+    private static BaseItem singleItem(boolean showDescription) {
+        BaseItem item = new BaseItem(showDescription);
+        item.setMaxStackSize(1);
+        return item;
     }
 
-    private static DeferredItem<ModuleItem<Module>> module(String name, ModuleType<Module> module, Consumer<ExtendedItemProperties> props) {
-        return ITEMS.registerItem(name, properties -> {
-            ExtendedItemProperties ext = new ExtendedItemProperties(properties);
-            props.accept(ext);
-            return new ModuleItem<>(ext, module);
-        });
-    }
-
-    private static DeferredItem<ProjectorModeItem> projectorMode(String name, ProjectorMode projectorMode) {
-        return ITEMS.registerItem(name, properties -> new ProjectorModeItem(properties, projectorMode));
-    }
-    
-    public static void singleWithDescription(ExtendedItemProperties properties) {
-        properties.description();
-        properties.getProperties().stacksTo(1);
+    private static <T extends Item> T register(IForgeRegistry<Item> registry, T item, String name) {
+        item.setRegistryName(MFFSMod.MODID, name);
+        item.setTranslationKey("mffs." + name);
+        item.setCreativeTab(ITEM_GROUP);
+        registry.register(item);
+        return item;
     }
 
     private ModItems() {}

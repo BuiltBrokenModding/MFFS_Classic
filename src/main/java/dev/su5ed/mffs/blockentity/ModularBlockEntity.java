@@ -9,12 +9,7 @@ import dev.su5ed.mffs.setup.ModModules;
 import dev.su5ed.mffs.util.ModUtil;
 import dev.su5ed.mffs.util.ObjectCache;
 import dev.su5ed.mffs.util.inventory.InventorySlot;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.minecraft.item.ItemStack;
 import one.util.streamex.IntStreamEx;
 import one.util.streamex.StreamEx;
 import org.jetbrains.annotations.Nullable;
@@ -37,22 +32,19 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
      */
     private final Map<String, Object> cache = Collections.synchronizedMap(new HashMap<>());
 
-    protected ModularBlockEntity(BlockEntityType<? extends BaseBlockEntity> type, BlockPos pos, BlockState state) {
-        this(type, pos, state, 5);
+    protected ModularBlockEntity() {
+        this(5000);
     }
 
-    protected ModularBlockEntity(BlockEntityType<? extends BaseBlockEntity> type, BlockPos pos, BlockState state, int capacityBoost) {
-        super(type, pos, state);
+    protected ModularBlockEntity(int capacityBoost) {
+        super();
 
         this.capacityBoost = capacityBoost;
     }
 
     public void consumeCost() {
         if (getFortronCost() > 0) {
-            try (Transaction tx = Transaction.openRoot()) {
-                this.fortronStorage.extractFortron(getFortronCost(), tx);
-                tx.commit();
-            }
+            this.fortronStorage.extractFortron(getFortronCost(), false);
         }
     }
 
@@ -62,21 +54,23 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
 
     @Override
     public int getBaseFortronTankCapacity() {
-        return 500;
+        return 500000;
     }
 
     @Override
     public void onLoad() {
         super.onLoad();
+        clearCache();
         updateFortronTankCapacity();
     }
 
     @Override
     protected void onInventoryChanged() {
         super.onInventoryChanged();
-        updateFortronTankCapacity();
-        // Clears the cache.
+        // Module counts are cached and may have been read during tick logic.
+        // Clear first so capacity recalculation uses the latest slot contents.
         clearCache();
+        updateFortronTankCapacity();
     }
 
     @Override
@@ -102,15 +96,15 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
     }
 
     public Set<Module> getModuleInstances() {
-        return cached(MODULE_INSTANCE_CACHE_KEY, () -> getModuleItemsStream(List.of())
-            .<Module>mapPartial(stack -> Optional.ofNullable(stack.getCapability(ModCapabilities.MODULE_TYPE))
+        return cached(MODULE_INSTANCE_CACHE_KEY, () -> getModuleItemsStream(Collections.emptyList())
+            .<Module>mapPartial(stack -> Optional.ofNullable(stack.getCapability(ModCapabilities.MODULE_TYPE, null))
                 .map(moduleType -> moduleType.createModule(stack)))
             .toSet());
     }
 
     @Override
     public StreamEx<ItemStack> getAllModuleItemsStream() {
-        return getModuleItemsStream(List.of());
+        return getModuleItemsStream(Collections.emptyList());
     }
 
     /**
@@ -128,7 +122,7 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
 
     @SuppressWarnings("unchecked")
     protected <T> T cached(String key, Supplier<T> calculation) {
-        if (MFFSConfig.COMMON.useCache.get()) {
+        if (MFFSConfig.useCache) {
             synchronized (this.cache) {
                 Object value = this.cache.get(key);
                 if (value == null) {
@@ -144,7 +138,7 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
 
     protected int doGetFortronCost() {
         double cost = StreamEx.of(getModuleStacks())
-            .mapToDouble(stack -> stack.getCount() * Optional.ofNullable(stack.getCapability(ModCapabilities.MODULE_TYPE))
+            .mapToDouble(stack -> stack.getCount() * Optional.ofNullable(stack.getCapability(ModCapabilities.MODULE_TYPE, null))
                 .map(module -> (double) module.getFortronCost(getAmplifier()))
                 .orElse(0.0))
             .sum();
@@ -169,8 +163,13 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
             .toList();
     }
 
+    /** Returns the Fortron capacity (in F) added per Capacity Module. Subclasses may override to read from config. */
+    protected int getCapacityBoostPerModule() {
+        return this.capacityBoost;
+    }
+
     private void updateFortronTankCapacity() {
-        int capacity = (getModuleCount(ModModules.CAPACITY) * this.capacityBoost + getBaseFortronTankCapacity()) * FluidType.BUCKET_VOLUME;
+        int capacity = getModuleCount(ModModules.CAPACITY) * getCapacityBoostPerModule() + getBaseFortronTankCapacity();
         this.fortronStorage.setCapacity(capacity);
     }
 

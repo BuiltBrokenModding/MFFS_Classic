@@ -1,25 +1,33 @@
 package dev.su5ed.mffs.setup;
 
+// =============================================================================
+// 1.12.2 Backport: Sound registration
+// =============================================================================
+
 import dev.su5ed.mffs.MFFSMod;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.sounds.SoundEvent;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.registries.IForgeRegistry;
 
-import static dev.su5ed.mffs.MFFSMod.location;
-
+@Mod.EventBusSubscriber(modid = MFFSMod.MODID)
 public final class ModSounds {
-    private static final DeferredRegister<SoundEvent> SOUND_EVENTS = DeferredRegister.create(BuiltInRegistries.SOUND_EVENT, MFFSMod.MODID);
 
-    public static final DeferredHolder<SoundEvent, SoundEvent> FIELD = registerSound("field");
+    public static SoundEvent FIELD;
 
-    public static void init(IEventBus bus) {
-        SOUND_EVENTS.register(bus);
+    @SubscribeEvent
+    public static void registerSounds(RegistryEvent.Register<SoundEvent> event) {
+        IForgeRegistry<SoundEvent> registry = event.getRegistry();
+        FIELD = registerSound(registry, "field");
     }
 
-    private static DeferredHolder<SoundEvent, SoundEvent> registerSound(String name) {
-        return SOUND_EVENTS.register(name, () -> SoundEvent.createVariableRangeEvent(location(name)));
+    private static SoundEvent registerSound(IForgeRegistry<SoundEvent> registry, String name) {
+        ResourceLocation rl = new ResourceLocation(MFFSMod.MODID, name);
+        SoundEvent sound = new SoundEvent(rl).setRegistryName(rl);
+        registry.register(sound);
+        return sound;
     }
 
     private ModSounds() {}

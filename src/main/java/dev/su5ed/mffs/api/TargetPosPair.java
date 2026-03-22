@@ -1,6 +1,8 @@
 package dev.su5ed.mffs.api;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.phys.Vec3;
+import com.github.bsideup.jabel.Desugar;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 
-public record TargetPosPair(BlockPos pos, Vec3 original) {}
+@Desugar
+public record TargetPosPair(BlockPos pos, Vec3d original) {}

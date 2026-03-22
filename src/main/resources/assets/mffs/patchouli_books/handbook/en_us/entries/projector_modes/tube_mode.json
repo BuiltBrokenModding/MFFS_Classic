@@ -4,23 +4,23 @@
     "category": "mffs:projector_modes",
     "pages": [
         {
-            "type": "patchouli:spotlight",
+            "type": "spotlight",
             "item": "mffs:tube_mode",
             "link_recipe": true,
             "text": "By default, the $(2)Tube Mode$() sets the Projector to generate a force field in the shape of a square tube (or tetragonal prism) that is exactly 1 block thick. A tube shaped field consists of four solid sides that run parallel along the horizontal plane. The front and back sides of the Projector represent the open faces of the force field tube."
         },
         {
-            "type": "patchouli:crafting",
+            "type": "crafting",
             "recipe": "mffs:tube_mode",
             "text": "Crafting the $(2)Tube Mode$()."
         },
         {
-            "type": "patchouli:text",
+            "type": "text",
             "title": "Field Adjustment",
-            "text": "Placing a $(l:mffs:upgrade_modules/scale_module)$(5)Scale Module$() into an item slot marked by a directional arrow will scale the field by 1 block in only that direction. For example, to increase the height of a force field by 1 block; add a $(l:mffs:upgrade_modules/scale_module)$(5)Scale Module$() into an item slot marked by a directional arrow pointing towards the top-left or top-right of the GUI screen."
+            "text": "Placing a $(l:upgrade_modules/scale_module)$(5)Scale Module$() into an item slot marked by a directional arrow will scale the field by 1 block in only that direction. For example, to increase the height of a force field by 1 block; add a $(l:upgrade_modules/scale_module)$(5)Scale Module$() into an item slot marked by a directional arrow pointing towards the top-left or top-right of the GUI screen."
         },
         {
-            "type": "patchouli:image",
+            "type": "image",
             "images": [
                 "mffs:textures/gui/handbook/tube_mode.png"
             ],

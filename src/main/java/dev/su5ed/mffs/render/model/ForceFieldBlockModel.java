@@ -3,65 +3,84 @@ package dev.su5ed.mffs.render.model;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import com.mojang.datafixers.util.Pair;
 import dev.su5ed.mffs.api.ForceFieldBlock;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.model.BlockModelPart;
-import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.core.BlockPos;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.BlockAndTintGetter;
-import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.client.model.DelegateBlockStateModel;
-import net.neoforged.neoforge.model.data.ModelData;
+import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.client.MinecraftForgeClient;
+import net.minecraftforge.common.property.IExtendedBlockState;
 
-import java.util.ArrayList;
+import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.List;
 
-public class ForceFieldBlockModel extends DelegateBlockStateModel {
-    private final BlockStateModel defaultModel;
-    private final LoadingCache<BlockState, BlockStateModel> cache = CacheBuilder.newBuilder()
-        .build(new CacheLoader<>() {
+/**
+ * Wraps the default force field baked model. During chunk meshing, reads the
+ * camouflage block state from {@link IExtendedBlockState} and returns the
+ * camouflage block's quads instead of the default force field quads.
+ */
+public class ForceFieldBlockModel implements IBakedModel {
+    private final IBakedModel defaultModel;
+    private final LoadingCache<IBlockState, IBakedModel> cache = CacheBuilder.newBuilder()
+        .build(new CacheLoader<IBlockState, IBakedModel>() {
             @Override
-            public BlockStateModel load(BlockState state) {
-                return Minecraft.getInstance().getBlockRenderer().getBlockModel(state);
+            public IBakedModel load(IBlockState state) {
+                return Minecraft.getMinecraft().getBlockRendererDispatcher().getModelForState(state);
             }
         });
 
-    public ForceFieldBlockModel(BlockStateModel defaultModel) {
-        super(defaultModel);
+    public ForceFieldBlockModel(IBakedModel defaultModel) {
         this.defaultModel = defaultModel;
     }
 
     @Override
-    public void collectParts(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, List<BlockModelPart> parts) {
-        ModelData data = level.getModelData(pos);
-        Pair<BlockStateModel, BlockState> model = getCamouflageModel(state, data);
-
-        List<BlockModelPart> toWrap = new ArrayList<>();
-        BlockState fakeState = model.getSecond();
-        model.getFirst().collectParts(level, pos, fakeState, random, toWrap);
-        for (BlockModelPart part : toWrap) {
-            parts.add(new DelegateBlockModelPart(part, fakeState));
+    public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand) {
+        if (state instanceof IExtendedBlockState) {
+            IBlockState camoState = ((IExtendedBlockState) state).getValue(ForceFieldBlock.CAMOUFLAGE_PROPERTY);
+            if (camoState != null) {
+                BlockRenderLayer currentLayer = MinecraftForgeClient.getRenderLayer();
+                if (currentLayer != null && camoState.getBlock().canRenderInLayer(camoState, currentLayer)) {
+                    return this.cache.getUnchecked(camoState).getQuads(camoState, side, rand);
+                }
+                return Collections.emptyList();
+            }
         }
+        // No camo — render default force field quads only in the TRANSLUCENT pass
+        BlockRenderLayer currentLayer = MinecraftForgeClient.getRenderLayer();
+        if (currentLayer == null || currentLayer == BlockRenderLayer.TRANSLUCENT) {
+            return this.defaultModel.getQuads(state, side, rand);
+        }
+        return Collections.emptyList();
     }
 
     @Override
-    public TextureAtlasSprite particleIcon(BlockAndTintGetter level, BlockPos pos, BlockState state) {
-        ModelData data = level.getModelData(pos);
-        Pair<BlockStateModel, BlockState> model = getCamouflageModel(null, data);
-        return model.getFirst().particleIcon(level, pos, state);
+    public boolean isAmbientOcclusion() { return true; }
+
+    @Override
+    public boolean isGui3d() { return false; }
+
+    @Override
+    public boolean isBuiltInRenderer() { return false; }
+
+    @Override
+    public TextureAtlasSprite getParticleTexture() {
+        return this.defaultModel.getParticleTexture();
     }
 
-    private Pair<BlockStateModel, BlockState> getCamouflageModel(BlockState state, ModelData data) {
-        BlockState camoState = data.get(ForceFieldBlock.CAMOUFLAGE_BLOCK);
-        if (camoState != null) {
-            BlockStateModel model = this.cache.getUnchecked(camoState);
-            if (model != this) {
-                return Pair.of(model, camoState);
-            }
-        }
-        return Pair.of(this.defaultModel, state);
+    @Override
+    @SuppressWarnings("deprecation")
+    public ItemCameraTransforms getItemCameraTransforms() {
+        return ItemCameraTransforms.DEFAULT;
+    }
+
+    @Override
+    public ItemOverrideList getOverrides() {
+        return ItemOverrideList.NONE;
     }
 }

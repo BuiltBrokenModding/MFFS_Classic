@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "active=false": {
+      "model": "mffs:coercion_deriver"
+    },
+    "active=true": {
+      "model": "mffs:coercion_deriver_active"
+    }
+  }
+}

@@ -1,0 +1,28 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        " D ",
+        "FFF",
+        "SBS"
+    ],
+    "key": {
+        "B": {
+            "item": "mffs:battery"
+        },
+        "D": {
+            "type": "forge:ore_dict",
+            "ore": "gemDiamond"
+        },
+        "F": {
+            "item": "mffs:focus_matrix"
+        },
+        "S": {
+            "type": "forge:ore_dict",
+            "ore": "ingotSteel"
+        }
+    },
+    "result": {
+        "item": "mffs:projector",
+        "count": 1
+    }
+}

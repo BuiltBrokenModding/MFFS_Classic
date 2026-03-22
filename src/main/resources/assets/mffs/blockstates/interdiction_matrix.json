@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "active=false": {
+      "model": "mffs:interdiction_matrix"
+    },
+    "active=true": {
+      "model": "mffs:interdiction_matrix_active"
+    }
+  }
+}

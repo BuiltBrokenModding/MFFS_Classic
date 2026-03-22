@@ -2,15 +2,15 @@
     "name": "Fortron",
     "icon": "mffs:battery",
     "category": "mffs:getting_started",
-    "sortnum": 3,
+    "sortnum": 2,
     "pages": [
         {
-            "type": "patchouli:text",
-            "text": "Fortron is a form of energy that MFFS machines use as a source of power. It is produced and stored initially by the $(l:mffs:machines/coercion_deriver)Coercion Deriver$() to then be transferred to other machines by the $(l:mffs:machines/fortron_capacitor)Fortron Capacitor$()."
+            "type": "text",
+            "text": "Fortron is a form of energy that MFFS machines use as a source of power. It is produced and stored initially by the $(l:machines/coercion_deriver)Coercion Deriver$() to then be transferred to other machines by the $(l:machines/fortron_capacitor)Fortron Capacitor$()."
         },
         {
-            "type": "patchouli:text",
-            "text": "Another source of Fortron energy is a creative-only item known as the $(5)Infinite Power Card$(). It can be placed directly into a $(l:mffs:machines/fortron_capacitor)Fortron Capacitor$() (left most item slot) to provide an infinite supply of Fortron. Fortron is able to exist as a liquid. It may be pumped directly from a Capacitor and manipulated in the same way Water or Lava can."
+            "type": "text",
+            "text": "Fortron is very energy dense, so you will need an ample supply of energy to generate a usable amount of Fortron per second. You can can view the FE/RF to Fortron conversion rate in the $(l:machines/coercion_deriver)Coercion Deriver$() energy tooltips."
         }
     ]
 }

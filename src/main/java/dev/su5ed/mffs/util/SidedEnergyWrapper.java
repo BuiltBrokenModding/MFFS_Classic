@@ -1,32 +1,44 @@
 package dev.su5ed.mffs.util;
 
-import net.neoforged.neoforge.transfer.energy.DelegatingEnergyHandler;
-import net.neoforged.neoforge.transfer.energy.EnergyHandler;
-import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import net.minecraftforge.energy.IEnergyStorage;
 
-public class SidedEnergyWrapper extends DelegatingEnergyHandler {
+/**
+ * Implements {@link IEnergyStorage} and delegates all calls to a
+ * wrapped storage instance, short-circuiting {@link #receiveEnergy} /
+ * {@link #extractEnergy} when the respective flag is {@code false}.
+ */
+public class SidedEnergyWrapper implements IEnergyStorage {
+    private final IEnergyStorage wrapped;
     private final boolean canExtract;
     private final boolean canReceive;
 
-    public SidedEnergyWrapper(EnergyHandler wrapped, boolean canExtract, boolean canReceive) {
-        super(wrapped);
+    public SidedEnergyWrapper(IEnergyStorage wrapped, boolean canExtract, boolean canReceive) {
+        this.wrapped    = wrapped;
         this.canExtract = canExtract;
         this.canReceive = canReceive;
     }
 
     @Override
-    public int insert(int amount, TransactionContext transaction) {
-        if (!this.canReceive) {
-            return 0;
-        }
-        return super.insert(amount, transaction);
+    public int receiveEnergy(int maxReceive, boolean simulate) {
+        if (!this.canReceive) return 0;
+        return this.wrapped.receiveEnergy(maxReceive, simulate);
     }
 
     @Override
-    public int extract(int amount, TransactionContext transaction) {
-        if (!this.canExtract) {
-            return 0;
-        }
-        return super.extract(amount, transaction);
+    public int extractEnergy(int maxExtract, boolean simulate) {
+        if (!this.canExtract) return 0;
+        return this.wrapped.extractEnergy(maxExtract, simulate);
     }
+
+    @Override
+    public int getEnergyStored()    { return this.wrapped.getEnergyStored(); }
+
+    @Override
+    public int getMaxEnergyStored() { return this.wrapped.getMaxEnergyStored(); }
+
+    @Override
+    public boolean canExtract() { return this.canExtract && this.wrapped.canExtract(); }
+
+    @Override
+    public boolean canReceive() { return this.canReceive && this.wrapped.canReceive(); }
 }

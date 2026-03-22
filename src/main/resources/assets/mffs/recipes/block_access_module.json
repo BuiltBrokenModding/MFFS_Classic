@@ -1,0 +1,23 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        " C ",
+        "IFI",
+        " C "
+    ],
+    "key": {
+        "C": {
+            "item": "minecraft:chest"
+        },
+        "F": {
+            "item": "mffs:focus_matrix"
+        },
+        "I": {
+            "item": "minecraft:iron_block"
+        }
+    },
+    "result": {
+        "item": "mffs:block_access_module",
+        "count": 1
+    }
+}

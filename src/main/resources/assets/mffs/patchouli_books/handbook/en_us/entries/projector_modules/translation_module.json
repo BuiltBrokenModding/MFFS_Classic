@@ -4,13 +4,13 @@
     "category": "mffs:projector_modules",
     "pages": [
         {
-            "type": "patchouli:spotlight",
+            "type": "spotlight",
             "item": "mffs:translation_module",
             "link_recipe": true,
-            "text": "The $(5)Translation Module$() can be placed in the field slots of the $(l:mffs:machines/projector)Force Field Projector$() to offset the projected field's position. You can move the force field in each direction by placing $(5)Translation Module$()s in the respective field slot for that side. Each module moves the field by 1 block."
+            "text": "The $(5)Translation Module$() can be placed in the field slots of the $(l:machines/projector)Force Field Projector$() to offset the projected field's position. You can move the force field in each direction by placing $(5)Translation Module$()s in the respective field slot for that side. Each module moves the field by 1 block."
         },
         {
-            "type": "patchouli:crafting",
+            "type": "crafting",
             "recipe": "mffs:translation_module",
             "text": "Crafting the $(5)Translation Module$()."
         }

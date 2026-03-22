@@ -1,68 +1,122 @@
 package dev.su5ed.mffs.screen;
 
 import dev.su5ed.mffs.menu.FortronMenu;
+import dev.su5ed.mffs.network.Network;
 import dev.su5ed.mffs.network.ToggleModePacket;
 import dev.su5ed.mffs.network.UpdateFrequencyPacket;
 import dev.su5ed.mffs.util.ModUtil;
-import it.unimi.dsi.fastutil.ints.IntIntPair;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
-import net.minecraft.world.entity.player.Inventory;
-import net.neoforged.neoforge.client.network.ClientPacketDistributor;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Container;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
+
+import java.io.IOException;
 
 public abstract class FortronScreen<T extends FortronMenu<?>> extends BaseScreen<T> {
-    protected IntIntPair frequencyBoxPos = IntIntPair.of(0, 0);
-    protected IntIntPair frequencyLabelPos = IntIntPair.of(0, 0);
-    protected IntIntPair fortronEnergyBarPos = IntIntPair.of(0, 0);
-    protected int fortronEnergyBarWidth;
+    // Positions relative to guiLeft/guiTop
+    protected int frequencyBoxX = 0, frequencyBoxY = 0;
+    protected int frequencyLabelX = 0, frequencyLabelY = 0;
+    protected int fortronEnergyBarX = 0, fortronEnergyBarY = 0;
+    protected int fortronEnergyBarWidth = 0;
 
-    private NumericEditBox frequency;
+    protected NumericEditBox frequency;
+    private FortronChargeWidget chargeWidget;
+    private ToggleButton toggleButton;
 
-    public FortronScreen(T menu, Inventory playerInventory, Component title, Identifier background) {
-        super(menu, playerInventory, title, background);
+    public FortronScreen(T menu, InventoryPlayer playerInventory, ResourceLocation background) {
+        super(menu, playerInventory, background);
     }
 
     @Override
-    protected void init() {
-        super.init();
+    public void initGui() {
+        super.initGui();
 
-        addRenderableWidget(new ToggleButton(this.width / 2 - 82, this.height / 2 - 104, this.menu.blockEntity::isActive,
-            () -> ClientPacketDistributor.sendToServer(new ToggleModePacket(this.menu.blockEntity.getBlockPos(), !this.menu.blockEntity.isActive()))));
+        // Toggle active button (top-left area)
+        this.toggleButton = new ToggleButton(
+            this.width / 2 - 82, this.height / 2 - 104,
+            this.inventorySlots instanceof FortronMenu<?> fm ? fm.blockEntity::isActive : () -> false,
+            () -> {
+                boolean newActive = !(((FortronMenu<?>) this.inventorySlots).blockEntity.isActive());
+                Network.sendToServer(new ToggleModePacket(
+                    ((FortronMenu<?>) this.inventorySlots).blockEntity.getPos(), newActive));
+            }
+        );
+        this.buttonList.add(this.toggleButton);
 
-        this.frequency = new NumericEditBox(this.font, this.leftPos + this.frequencyBoxPos.leftInt(), this.topPos + this.frequencyBoxPos.rightInt(), 50, 12, ModUtil.translate("screen", "frequency"));
+        // Frequency edit box
+        this.frequency = new NumericEditBox(
+            this.fontRenderer,
+            this.guiLeft + this.frequencyBoxX, this.guiTop + this.frequencyBoxY,
+            50, 12,
+            ModUtil.translate("screen", "frequency")
+        );
         this.frequency.setCanLoseFocus(true);
-        this.frequency.setBordered(true);
-        this.frequency.setEditable(true);
-        this.frequency.setMaxLength(6);
+        this.frequency.setEnableBackgroundDrawing(true);
+        this.frequency.setEnabled(true);
+        this.frequency.setMaxStringLength(6);
         updateFrequencyValue();
-        addWidget(this.frequency);
-        this.menu.setFrequencyChangeListener(this::updateFrequencyValue);
+        ((FortronMenu<?>) this.inventorySlots).setFrequencyChangeListener(this::updateFrequencyValue);
 
-        addRenderableWidget(new FortronChargeWidget(this.leftPos + this.fortronEnergyBarPos.leftInt(), this.topPos + this.fortronEnergyBarPos.rightInt(), this.fortronEnergyBarWidth, 11, Component.empty(),
-            () -> this.menu.blockEntity.fortronStorage.getStoredFortron() / (double) this.menu.blockEntity.fortronStorage.getFortronCapacity()));
+        // Fortron charge widget
+        this.chargeWidget = new FortronChargeWidget(
+            this.guiLeft + this.fortronEnergyBarX, this.guiTop + this.fortronEnergyBarY,
+            this.fortronEnergyBarWidth, 11,
+            () -> {
+                FortronMenu<?> fm = (FortronMenu<?>) this.inventorySlots;
+                double cap = fm.blockEntity.fortronStorage.getFortronCapacity();
+                return cap > 0 ? fm.blockEntity.fortronStorage.getStoredFortron() / cap : 0.0;
+            }
+        );
+        this.buttonList.add(this.chargeWidget);
     }
 
     private void updateFrequencyValue() {
         this.frequency.setResponder(null);
-        this.frequency.setValue(Integer.toString(this.menu.blockEntity.fortronStorage.getFrequency()));
+        this.frequency.setValue(Integer.toString(((FortronMenu<?>) this.inventorySlots).blockEntity.fortronStorage.getFrequency()));
         this.frequency.setResponder(this::onFrequencyChanged);
     }
 
-    @Override
-    public void renderFg(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        this.frequency.render(guiGraphics, mouseX, mouseY, partialTick);
+    private void onFrequencyChanged() {
+        String str = this.frequency.getValue();
+        int freq = str.isEmpty() ? 0 : Integer.parseInt(str);
+        Network.sendToServer(new UpdateFrequencyPacket(((FortronMenu<?>) this.inventorySlots).blockEntity.getPos(), freq));
     }
 
     @Override
-    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        super.renderLabels(guiGraphics, mouseX, mouseY);
-
-        drawWithTooltip(guiGraphics, this.frequencyLabelPos.leftInt(), this.frequencyLabelPos.rightInt(), GuiColors.DARK_GREY, this.frequency.getMessage(), ModUtil.translate("screen", "frequency.tooltip"));
+    public void renderFg(int mouseX, int mouseY, float partialTick) {
+        this.frequency.drawTextBox();
     }
 
-    private void onFrequencyChanged(String str) {
-        int frequency = str.isEmpty() ? 0 : Integer.parseInt(str);
-        ClientPacketDistributor.sendToServer(new UpdateFrequencyPacket(this.menu.blockEntity.getBlockPos(), frequency));
+    @Override
+    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+        // Frequency label with tooltip
+        drawWithTooltip(
+            this.frequencyLabelX, this.frequencyLabelY, GuiColors.DARK_GREY,
+            ModUtil.translate("screen", "frequency"),
+            ModUtil.translate("screen", "frequency.tooltip")
+        );
+    }
+
+    @Override
+    protected void keyTyped(char typedChar, int keyCode) throws IOException {
+        if (this.frequency.isFocused()) {
+            this.frequency.textboxKeyTyped(typedChar, keyCode);
+        } else {
+            super.keyTyped(typedChar, keyCode);
+        }
+    }
+
+    @Override
+    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+        this.frequency.mouseClicked(mouseX, mouseY, mouseButton);
+        super.mouseClicked(mouseX, mouseY, mouseButton);
+    }
+
+    @Override
+    public void updateScreen() {
+        super.updateScreen();
+        this.frequency.updateCursorCounter();
     }
 }
+

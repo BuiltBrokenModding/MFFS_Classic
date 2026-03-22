@@ -1,0 +1,5 @@
+{
+  "variants": {
+    "normal": { "model": "mffs:force_field" }
+  }
+}

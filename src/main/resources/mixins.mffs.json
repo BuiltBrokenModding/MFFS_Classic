@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "minVersion": "0.8.5",
+  "package": "${mixin_package}",
+  "compatibilityLevel": "JAVA_8",
+  "refmap": "${mixin_refmap}",
+  "target": "@env(DEFAULT)",
+  "mixins": [
+      "LevelMixin"
+  ],
+  "server": [],
+  "client": [],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

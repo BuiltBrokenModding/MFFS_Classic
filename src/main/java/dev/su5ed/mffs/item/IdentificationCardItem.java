@@ -4,99 +4,162 @@ import com.mojang.authlib.GameProfile;
 import dev.su5ed.mffs.api.card.IdentificationCard;
 import dev.su5ed.mffs.api.security.FieldPermission;
 import dev.su5ed.mffs.setup.ModCapabilities;
-import dev.su5ed.mffs.setup.ModDataComponentTypes;
 import dev.su5ed.mffs.util.ModUtil;
-import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
-import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Consumer;
+import java.util.UUID;
 
 public class IdentificationCardItem extends BaseItem {
 
-    public IdentificationCardItem(Properties properties) {
-        super(new ExtendedItemProperties(properties.stacksTo(1)).description());
+    public IdentificationCardItem() {
+        super(true); // show description
+        setMaxStackSize(1);
     }
 
+    /** Shift + right-click in air: toggle own identity on/off the card. */
     @Override
-    public InteractionResult use(Level level, Player player, InteractionHand usedHand) {
-        if (player.isShiftKeyDown()) {
-            ItemStack stack = player.getItemInHand(usedHand);
-
-            IdentificationCard card = stack.getCapability(ModCapabilities.IDENTIFICATION_CARD);
-            if (!level.isClientSide()) {
+    public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) {
+        if (playerIn.isSneaking()) {
+            ItemStack stack = playerIn.getHeldItem(handIn);
+            IdentificationCard card = stack.getCapability(ModCapabilities.IDENTIFICATION_CARD, null);
+            if (card != null && !worldIn.isRemote) {
                 if (card.getIdentity() != null) {
                     card.setIdentity(null);
-                    player.displayClientMessage(ModUtil.translate("info", "identity_cleared"), true);
+                    playerIn.sendStatusMessage(
+                        new TextComponentTranslation("info.mffs.identity_cleared"), true);
                 } else {
-                    setCardIdentity(card, player, player.getGameProfile());
+                    setCardIdentity(card, playerIn, playerIn.getGameProfile());
                 }
             }
-            return InteractionResult.CONSUME;
+            return new ActionResult<>(EnumActionResult.SUCCESS, stack);
         }
-        return super.use(level, player, usedHand);
+        return new ActionResult<>(EnumActionResult.PASS, playerIn.getHeldItem(handIn));
     }
 
+    /** Shift + right-click on a player entity: copy that player's profile to the card. */
     public static void onLivingEntityInteract(PlayerInteractEvent.EntityInteract event) {
         ItemStack stack = event.getItemStack();
-        Player player = event.getEntity();
+        EntityPlayer player = (EntityPlayer) event.getEntity();
         Entity target = event.getTarget();
-        if (player.isShiftKeyDown() && target instanceof Player targetPlayer) {
-            IdentificationCard card = stack.getCapability(ModCapabilities.IDENTIFICATION_CARD);
+        if (player.isSneaking() && target instanceof EntityPlayer targetPlayer) {
+            IdentificationCard card = stack.getCapability(ModCapabilities.IDENTIFICATION_CARD, null);
             if (card != null) {
-                if (!player.level().isClientSide()) {
+                if (!player.world.isRemote) {
                     setCardIdentity(card, player, targetPlayer.getGameProfile());
                 }
                 event.setCanceled(true);
-                event.setCancellationResult(InteractionResult.SUCCESS);
             }
         }
     }
 
-    private static void setCardIdentity(IdentificationCard card, Player user, GameProfile profile) {
+    private static void setCardIdentity(IdentificationCard card, EntityPlayer user, GameProfile profile) {
         card.setIdentity(profile);
-        user.displayClientMessage(ModUtil.translate("info", "identity_set", Component.literal(profile.name()).withStyle(ChatFormatting.GREEN)), true);
+        user.sendStatusMessage(
+            new TextComponentTranslation("info.mffs.identity_set",
+                new TextComponentString(profile.getName())
+                    .setStyle(new Style().setColor(TextFormatting.GREEN))),
+            true);
     }
 
     @Override
-    protected void appendHoverTextPre(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
-        super.appendHoverTextPre(stack, context, tooltipDisplay, tooltipAdder, flag);
-
-        IdentificationCard card = stack.getCapability(ModCapabilities.IDENTIFICATION_CARD);
+    @SideOnly(Side.CLIENT)
+    protected void addInformationPre(ItemStack stack, @Nullable World worldIn, List<String> tooltip,
+                                     net.minecraft.client.util.ITooltipFlag flagIn) {
+        super.addInformationPre(stack, worldIn, tooltip, flagIn);
+        IdentificationCard card = stack.getCapability(ModCapabilities.IDENTIFICATION_CARD, null);
         if (card != null) {
             GameProfile identity = card.getIdentity();
             if (identity != null) {
-                tooltipAdder.accept(ModUtil.translate("info", "identity",
-                    Component.literal(identity.name()).withStyle(ChatFormatting.GREEN)).withStyle(ChatFormatting.DARK_GRAY));
+                tooltip.add(TextFormatting.DARK_GRAY + I18n.format("info.mffs.identity",
+                    TextFormatting.GREEN + identity.getName()));
+            } else {
+                tooltip.add(TextFormatting.DARK_GRAY + I18n.format("info.mffs.identity",
+                    TextFormatting.YELLOW + I18n.format("info.mffs.identity.everyone")));
             }
-            List<FieldPermission> perms = List.copyOf(card.getPermissions());
-            if (!perms.isEmpty()) {
-                MutableComponent permsComponent = ModUtil.translate(perms.getFirst());
-                for (int i = 1; i < perms.size(); i++) {
-                    permsComponent.append(", ").append(ModUtil.translate(perms.get(i)));
+            Set<FieldPermission> permsSet = new HashSet<>(card.getPermissions());
+            if (!permsSet.isEmpty()) {
+                tooltip.add(TextFormatting.DARK_GRAY + I18n.format("info.mffs.perms"));
+                for (FieldPermission perm : FieldPermission.values()) {
+                    if (permsSet.contains(perm)) {
+                        tooltip.add(TextFormatting.GREEN + "  " + I18n.format(
+                            "info.mffs.field_permission." + perm.name().toLowerCase()));
+                    }
                 }
-                tooltipAdder.accept(permsComponent.withStyle(ChatFormatting.DARK_GRAY));
             }
         }
     }
 
-    public record IdentificationCardAttachment(ItemStack stack) implements IdentificationCard {
-        private Set<FieldPermission> getPermissionsSet() {
-            return new HashSet<>(this.stack.getOrDefault(ModDataComponentTypes.ID_CARD_PERMISSIONS, List.of()));
+    /** Provide IdentificationCard capability for item stacks of this type. */
+    @Override
+    @Nullable
+    public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable NBTTagCompound nbt) {
+        return new IdentificationCardProvider(stack);
+    }
+
+    // -----------------------------------------------------------------------
+    // NBT storage helpers
+    // -----------------------------------------------------------------------
+
+    /**
+     * Identity stored as GameProfile data (name + UUID strings).
+     * Permissions stored as integer bitmask (bit N = FieldPermission.values()[N]).
+     */
+    public static class IdentificationCardHandler implements IdentificationCard {
+        private static final String NBT_PROFILE_NAME = "profile_name";
+        private static final String NBT_PROFILE_ID   = "profile_id";
+        private static final String NBT_PERMISSIONS  = "permissions";
+
+        private final ItemStack stack;
+
+        public IdentificationCardHandler(ItemStack stack) {
+            this.stack = stack;
+        }
+
+        @Override
+        @Nullable
+        public GameProfile getIdentity() {
+            NBTTagCompound tag = this.stack.getTagCompound();
+            if (tag == null || !tag.hasKey(NBT_PROFILE_NAME)) return null;
+            String name = tag.getString(NBT_PROFILE_NAME);
+            String idStr = tag.getString(NBT_PROFILE_ID);
+            UUID uuid = idStr.isEmpty() ? null : UUID.fromString(idStr);
+            return new GameProfile(uuid, name.isEmpty() ? null : name);
+        }
+
+        @Override
+        public void setIdentity(@Nullable GameProfile profile) {
+            NBTTagCompound tag = ModUtil.getOrCreateTag(this.stack);
+            if (profile == null) {
+                tag.removeTag(NBT_PROFILE_NAME);
+                tag.removeTag(NBT_PROFILE_ID);
+            } else {
+                tag.setString(NBT_PROFILE_NAME, profile.getName() != null ? profile.getName() : "");
+                tag.setString(NBT_PROFILE_ID, profile.getId() != null ? profile.getId().toString() : "");
+            }
         }
 
         @Override
@@ -106,16 +169,16 @@ public class IdentificationCardItem extends BaseItem {
 
         @Override
         public void addPermission(FieldPermission permission) {
-            Set<FieldPermission> permissions = getPermissionsSet();
-            permissions.add(permission);
-            this.stack.set(ModDataComponentTypes.ID_CARD_PERMISSIONS, List.copyOf(permissions));
+            Set<FieldPermission> set = getPermissionsSet();
+            set.add(permission);
+            savePermissions(set);
         }
 
         @Override
         public void removePermission(FieldPermission permission) {
-            Set<FieldPermission> permissions = getPermissionsSet();
-            permissions.remove(permission);
-            this.stack.set(ModDataComponentTypes.ID_CARD_PERMISSIONS, List.copyOf(permissions));
+            Set<FieldPermission> set = getPermissionsSet();
+            set.remove(permission);
+            savePermissions(set);
         }
 
         @Override
@@ -125,22 +188,11 @@ public class IdentificationCardItem extends BaseItem {
 
         @Override
         public void setPermissions(Collection<FieldPermission> permissions) {
-            this.stack.set(ModDataComponentTypes.ID_CARD_PERMISSIONS, List.copyOf(Set.copyOf(permissions)));
-        }
-
-        @Nullable
-        @Override
-        public GameProfile getIdentity() {
-            return this.stack.get(ModDataComponentTypes.ID_CARD_PROFILE);
+            savePermissions(new HashSet<>(permissions));
         }
 
         @Override
-        public void setIdentity(GameProfile profile) {
-            this.stack.set(ModDataComponentTypes.ID_CARD_PROFILE, profile);
-        }
-
-        @Override
-        public boolean checkIdentity(Player player) {
+        public boolean checkIdentity(EntityPlayer player) {
             GameProfile profile = getIdentity();
             return profile == null || player.getGameProfile().equals(profile);
         }
@@ -149,6 +201,47 @@ public class IdentificationCardItem extends BaseItem {
         public void copyTo(IdentificationCard other) {
             other.setIdentity(getIdentity());
             other.setPermissions(getPermissions());
+        }
+
+        private Set<FieldPermission> getPermissionsSet() {
+            NBTTagCompound tag = this.stack.getTagCompound();
+            int bits = tag != null ? tag.getInteger(NBT_PERMISSIONS) : 0;
+            Set<FieldPermission> set = new HashSet<>();
+            FieldPermission[] values = FieldPermission.values();
+            for (int i = 0; i < values.length && i < 32; i++) {
+                if ((bits & (1 << i)) != 0) set.add(values[i]);
+            }
+            return set;
+        }
+
+        private void savePermissions(Set<FieldPermission> permissions) {
+            int bits = 0;
+            for (FieldPermission fp : permissions) {
+                bits |= (1 << fp.ordinal());
+            }
+            ModUtil.getOrCreateTag(this.stack).setInteger(NBT_PERMISSIONS, bits);
+        }
+    }
+
+    private static class IdentificationCardProvider implements ICapabilityProvider {
+        private final ItemStack stack;
+        private IdentificationCardHandler handler;
+
+        IdentificationCardProvider(ItemStack stack) { this.stack = stack; }
+
+        @Override
+        public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
+            return capability == ModCapabilities.IDENTIFICATION_CARD;
+        }
+
+        @Override
+        @Nullable
+        public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
+            if (capability == ModCapabilities.IDENTIFICATION_CARD && ModCapabilities.IDENTIFICATION_CARD != null) {
+                if (this.handler == null) this.handler = new IdentificationCardHandler(this.stack);
+                return ModCapabilities.IDENTIFICATION_CARD.cast(this.handler);
+            }
+            return null;
         }
     }
 }

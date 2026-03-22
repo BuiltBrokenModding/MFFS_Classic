@@ -1,9 +1,9 @@
 package dev.su5ed.mffs.util;
 
-import net.minecraft.network.chat.Component;
+import net.minecraft.util.text.ITextComponent;
 
 import java.util.List;
 
 public interface TooltipSlot {
-    List<Component> getTooltips();
+    List<ITextComponent> getTooltips();
 }

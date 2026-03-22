@@ -1,33 +1,55 @@
 package dev.su5ed.mffs.network;
 
-import dev.su5ed.mffs.MFFSMod;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.world.WorldServer;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-public record SetItemInSlotPacket(int slot, ItemStack stack) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<SetItemInSlotPacket> TYPE = new CustomPacketPayload.Type<>(MFFSMod.location("set_slot_item"));
-    public static final StreamCodec<RegistryFriendlyByteBuf, SetItemInSlotPacket> STREAM_CODEC = StreamCodec.composite(
-        ByteBufCodecs.INT,
-        SetItemInSlotPacket::slot,
-        ItemStack.STREAM_CODEC,
-        SetItemInSlotPacket::stack,
-        SetItemInSlotPacket::new
-    );
+public class SetItemInSlotPacket implements IMessage {
+    private int slot;
+    private ItemStack stack;
 
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
+    public SetItemInSlotPacket() {}
+
+    public SetItemInSlotPacket(int slot, ItemStack stack) {
+        this.slot  = slot;
+        this.stack = stack;
     }
 
-    public void handle(IPayloadContext ctx) {
-        Player player = ctx.player();
-        if (player.containerMenu != null) {
-            player.containerMenu.getSlot(this.slot).set(this.stack);
+    @Override
+    public void fromBytes(ByteBuf buf) {
+        PacketBuffer pb = new PacketBuffer(buf);
+        this.slot  = pb.readInt();
+        try {
+            this.stack = pb.readItemStack();
+        } catch (java.io.IOException e) {
+            this.stack = ItemStack.EMPTY;
+        }
+    }
+
+    @Override
+    public void toBytes(ByteBuf buf) {
+        PacketBuffer pb = new PacketBuffer(buf);
+        pb.writeInt(this.slot);
+        pb.writeItemStack(this.stack);
+    }
+
+    public static class Handler implements IMessageHandler<SetItemInSlotPacket, IMessage> {
+        @Override
+        public IMessage onMessage(SetItemInSlotPacket message, MessageContext ctx) {
+            EntityPlayerMP player = ctx.getServerHandler().player;
+            WorldServer world = (WorldServer) player.world;
+            world.addScheduledTask(() -> {
+                if (player.openContainer != null) {
+                    player.openContainer.getSlot(message.slot).putStack(message.stack);
+                }
+            });
+            return null;
         }
     }
 }
+

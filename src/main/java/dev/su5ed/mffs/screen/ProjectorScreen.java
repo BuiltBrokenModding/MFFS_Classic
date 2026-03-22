@@ -3,34 +3,55 @@ package dev.su5ed.mffs.screen;
 import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.menu.ProjectorMenu;
 import dev.su5ed.mffs.util.ModUtil;
-import it.unimi.dsi.fastutil.ints.IntIntPair;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
-import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextFormatting;
 
 public class ProjectorScreen extends FortronScreen<ProjectorMenu> {
-    public static final Identifier BACKGROUND = MFFSMod.location("textures/gui/projector.png");
+    public static final ResourceLocation BACKGROUND = new ResourceLocation(MFFSMod.MODID, "textures/gui/projector.png");
 
-    public ProjectorScreen(ProjectorMenu menu, Inventory playerInventory, Component title) {
-        super(menu, playerInventory, title, BACKGROUND);
-
-        this.frequencyBoxPos = IntIntPair.of(48, 91);
-        this.frequencyLabelPos = IntIntPair.of(9, 78);
-        this.fortronEnergyBarPos = IntIntPair.of(8, 120);
+    public ProjectorScreen(ProjectorMenu menu, InventoryPlayer playerInventory) {
+        super(menu, playerInventory, BACKGROUND);
+        this.frequencyBoxX = 48;
+        this.frequencyBoxY = 91;
+        this.frequencyLabelX = 9;
+        this.frequencyLabelY = 78;
+        this.fortronEnergyBarX = 8;
+        this.fortronEnergyBarY = 120;
         this.fortronEnergyBarWidth = 107;
     }
 
     @Override
-    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        super.renderLabels(guiGraphics, mouseX, mouseY);
+    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 
-        drawWithTooltip(guiGraphics, 32, 20, GuiColors.DARK_GREY, "matrix");
-        drawWithTooltip(guiGraphics, 8, 110, GuiColors.DARK_GREY, "fortron", this.menu.blockEntity.fortronStorage.getStoredFortron(), this.menu.blockEntity.fortronStorage.getFortronCapacity());
-        int cost = this.menu.getClientFortronCost() * 20;
+        ProjectorMenu menu = (ProjectorMenu) this.inventorySlots;
+
+        drawWithTooltip(32, 20, GuiColors.DARK_GREY, "matrix");
+        drawWithTooltip(8, 110, GuiColors.DARK_GREY, "fortron",
+            menu.blockEntity.fortronStorage.getStoredFortron(),
+            menu.blockEntity.fortronStorage.getFortronCapacity());
+
+        int cost = menu.getClientFortronCost() * 20;
         if (cost > 0) {
-            guiGraphics.drawString(this.font, ModUtil.translate("screen", "fortron_cost", "-", cost).withStyle(ChatFormatting.DARK_RED), 117, 121, GuiColors.DARK_GREY, false);
+            String costText = TextFormatting.DARK_RED
+                + ModUtil.translate("screen", "fortron_cost", "-", cost).getUnformattedText();
+            this.fontRenderer.drawString(costText, 117, 122, GuiColors.DARK_GREY);
+        }
+
+        if (menu.getClientBiometricWarning()) {
+            int wx = 162, wy = 5;
+            float scale = 1.25f;
+            addTooltipRegion(wx, wy, (int) (this.fontRenderer.getStringWidth("⚠") * scale), (int) (this.fontRenderer.FONT_HEIGHT * scale),
+                ModUtil.translate("info", "projector.biometric_warning"));
+            if ((System.currentTimeMillis() / 500) % 2 == 0) {
+                GlStateManager.pushMatrix();
+                GlStateManager.translate(wx, wy, 0);
+                GlStateManager.scale(scale, scale, 1.0f);
+                this.fontRenderer.drawString(TextFormatting.RED + "⚠", 0, 0, 0xFFFFFF);
+                GlStateManager.popMatrix();
+            }
         }
     }
 }

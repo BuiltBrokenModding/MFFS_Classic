@@ -1,0 +1,18 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "RCR"
+    ],
+    "key": {
+        "C": {
+            "item": "mffs:blank_card"
+        },
+        "R": {
+            "item": "minecraft:redstone"
+        }
+    },
+    "result": {
+        "item": "mffs:id_card",
+        "count": 1
+    }
+}

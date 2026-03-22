@@ -1,33 +1,51 @@
 package dev.su5ed.mffs.network;
 
-import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.blockentity.CoercionDeriverBlockEntity;
-import dev.su5ed.mffs.setup.ModObjects;
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.WorldServer;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-public record SwitchEnergyModePacket(BlockPos pos, CoercionDeriverBlockEntity.EnergyMode mode) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<SwitchEnergyModePacket> TYPE = new CustomPacketPayload.Type<>(MFFSMod.location("switch_energy_mode"));
-    public static final StreamCodec<RegistryFriendlyByteBuf, SwitchEnergyModePacket> STREAM_CODEC = StreamCodec.composite(
-        BlockPos.STREAM_CODEC,
-        SwitchEnergyModePacket::pos,
-        CoercionDeriverBlockEntity.EnergyMode.STREAM_CODEC,
-        SwitchEnergyModePacket::mode,
-        SwitchEnergyModePacket::new
-    );
+public class SwitchEnergyModePacket implements IMessage {
+    private BlockPos pos;
+    private CoercionDeriverBlockEntity.EnergyMode mode;
+
+    public SwitchEnergyModePacket() {}
+
+    public SwitchEnergyModePacket(BlockPos pos, CoercionDeriverBlockEntity.EnergyMode mode) {
+        this.pos  = pos;
+        this.mode = mode;
+    }
 
     @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
+    public void fromBytes(ByteBuf buf) {
+        PacketBuffer pb = new PacketBuffer(buf);
+        this.pos  = pb.readBlockPos();
+        this.mode = CoercionDeriverBlockEntity.EnergyMode.values()[pb.readInt()];
     }
 
-    public void handle(IPayloadContext ctx) {
-        Level level = ctx.player().level();
-        Network.findBlockEntity(ModObjects.COERCION_DERIVER_BLOCK_ENTITY.get(), level, this.pos)
-            .ifPresent(be -> be.setEnergyMode(this.mode));
+    @Override
+    public void toBytes(ByteBuf buf) {
+        PacketBuffer pb = new PacketBuffer(buf);
+        pb.writeBlockPos(this.pos);
+        pb.writeInt(this.mode.ordinal());
+    }
+
+    public static class Handler implements IMessageHandler<SwitchEnergyModePacket, IMessage> {
+        @Override
+        public IMessage onMessage(SwitchEnergyModePacket message, MessageContext ctx) {
+            EntityPlayerMP player = ctx.getServerHandler().player;
+            WorldServer world = (WorldServer) player.world;
+            world.addScheduledTask(() ->
+                Network.findTileEntity(CoercionDeriverBlockEntity.class, world, message.pos)
+                    .ifPresent(be -> be.setEnergyMode(message.mode))
+            );
+            return null;
+        }
     }
 }
+

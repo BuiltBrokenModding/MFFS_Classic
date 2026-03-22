@@ -2,13 +2,12 @@ package dev.su5ed.mffs.menu;
 
 import dev.su5ed.mffs.api.security.FieldPermission;
 import dev.su5ed.mffs.blockentity.BiometricIdentifierBlockEntity;
-import dev.su5ed.mffs.setup.ModMenus;
-import dev.su5ed.mffs.setup.ModObjects;
 import dev.su5ed.mffs.util.inventory.SlotActive;
 import dev.su5ed.mffs.util.inventory.SlotInventory;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import one.util.streamex.EntryStream;
 
 import java.util.HashSet;
@@ -17,8 +16,8 @@ import java.util.Set;
 public class BiometricIdentifierMenu extends FortronMenu<BiometricIdentifierBlockEntity> {
     private final Set<FieldPermission> fieldPermissions = new HashSet<>();
 
-    public BiometricIdentifierMenu(int containerId, BlockPos pos, Player player, Inventory playerInventory) {
-        super(ModMenus.BIOMETRIC_IDENTIFIER_MENU.get(), ModObjects.BIOMETRIC_IDENTIFIER_BLOCK_ENTITY.get(), containerId, pos, player, playerInventory);
+    public BiometricIdentifierMenu(World world, BlockPos pos, EntityPlayer player, InventoryPlayer playerInventory) {
+        super(world, pos, player, playerInventory);
 
         layoutPlayerInventorySlots(8, 135);
 
@@ -27,16 +26,17 @@ public class BiometricIdentifierMenu extends FortronMenu<BiometricIdentifierBloc
         addInventorySlot(new SlotInventory(this.blockEntity.copySlot, 8, 66));
         addInventorySlot(new SlotActive(this.blockEntity.masterSlot, 8, 91, this.blockEntity));
         EntryStream.of(this.blockEntity.identitySlots)
-            .forKeyValue((i, slot) -> addInventorySlot(new SlotActive(slot, 8 + i * 18, 111, this.blockEntity)));
+            .forKeyValue((i, slot) -> addInventorySlot(
+                new SlotActive(slot, 8 + i * 18, 111, this.blockEntity)));
 
+        // Track permission bitmask: read from card (server), write to local field (client)
         addDataSlot(
             () -> this.blockEntity.getManipulatingCard()
                 .map(card -> {
                     int perms = 0;
                     for (int i = 0; i < FieldPermission.values().length; i++) {
                         perms <<= 1;
-                        int value = card.hasPermission(FieldPermission.values()[i]) ? 1 : 0;
-                        perms |= value;
+                        perms |= card.hasPermission(FieldPermission.values()[i]) ? 1 : 0;
                     }
                     return perms;
                 })
@@ -54,6 +54,6 @@ public class BiometricIdentifierMenu extends FortronMenu<BiometricIdentifierBloc
     }
 
     public boolean hasPermission(FieldPermission permission) {
-        return fieldPermissions.contains(permission);
+        return this.fieldPermissions.contains(permission);
     }
 }

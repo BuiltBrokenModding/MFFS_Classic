@@ -4,21 +4,14 @@ import dev.su5ed.mffs.MFFSConfig;
 import dev.su5ed.mffs.api.card.IdentificationCard;
 import dev.su5ed.mffs.api.security.BiometricIdentifier;
 import dev.su5ed.mffs.api.security.FieldPermission;
-import dev.su5ed.mffs.menu.BiometricIdentifierMenu;
 import dev.su5ed.mffs.setup.ModCapabilities;
-import dev.su5ed.mffs.setup.ModObjects;
 import dev.su5ed.mffs.util.ModUtil;
 import dev.su5ed.mffs.util.inventory.CopyingIdentificationCard;
 import dev.su5ed.mffs.util.inventory.InventorySlot;
-import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
 import one.util.streamex.IntStreamEx;
-import one.util.streamex.StreamEx;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,10 +22,9 @@ public class BiometricIdentifierBlockEntity extends FortronBlockEntity implement
     public final InventorySlot copySlot;
     public final List<InventorySlot> identitySlots;
 
-    public BiometricIdentifierBlockEntity(BlockPos pos, BlockState state) {
-        super(ModObjects.BIOMETRIC_IDENTIFIER_BLOCK_ENTITY.get(), pos, state);
+    public BiometricIdentifierBlockEntity() {
+        super();
 
-        // TODO: Restrict slot access to GUI
         this.masterSlot = addSlot("master", InventorySlot.Mode.BOTH, ModUtil::isIdentificationCard);
         this.rightsSlot = addSlot("rights", InventorySlot.Mode.BOTH, ModUtil::isIdentificationCard);
         this.copySlot = addSlot("copy", InventorySlot.Mode.BOTH, ModUtil::isIdentificationCard, this::copyCard);
@@ -42,16 +34,29 @@ public class BiometricIdentifierBlockEntity extends FortronBlockEntity implement
     }
 
     @Override
+    public boolean hasCapability(net.minecraftforge.common.capabilities.Capability<?> capability, @javax.annotation.Nullable net.minecraft.util.EnumFacing facing) {
+        if (capability == ModCapabilities.BIOMETRIC_IDENTIFIER) return true;
+        return super.hasCapability(capability, facing);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> T getCapability(net.minecraftforge.common.capabilities.Capability<T> capability, @javax.annotation.Nullable net.minecraft.util.EnumFacing facing) {
+        if (capability == ModCapabilities.BIOMETRIC_IDENTIFIER) return (T) this;
+        return super.getCapability(capability, facing);
+    }
+
+    @Override
     public Optional<IdentificationCard> getManipulatingCard() {
-        return Optional.ofNullable(this.rightsSlot.getItem().getCapability(ModCapabilities.IDENTIFICATION_CARD))
-            .map(card -> Optional.ofNullable(this.copySlot.getItem().getCapability(ModCapabilities.IDENTIFICATION_CARD))
+        return Optional.ofNullable(this.rightsSlot.getItem().getCapability(ModCapabilities.IDENTIFICATION_CARD, null))
+            .map(card -> Optional.ofNullable(this.copySlot.getItem().getCapability(ModCapabilities.IDENTIFICATION_CARD, null))
                 .<IdentificationCard>map(copy -> new CopyingIdentificationCard(card, copy))
                 .orElse(card));
     }
 
     private void copyCard(ItemStack stack) {
-        Optional.ofNullable(this.rightsSlot.getItem().getCapability(ModCapabilities.IDENTIFICATION_CARD))
-            .ifPresent(card -> Optional.ofNullable(stack.getCapability(ModCapabilities.IDENTIFICATION_CARD))
+        Optional.ofNullable(this.rightsSlot.getItem().getCapability(ModCapabilities.IDENTIFICATION_CARD, null))
+            .ifPresent(card -> Optional.ofNullable(stack.getCapability(ModCapabilities.IDENTIFICATION_CARD, null))
                 .ifPresent(card::copyTo));
     }
 
@@ -77,23 +82,34 @@ public class BiometricIdentifierBlockEntity extends FortronBlockEntity implement
     }
 
     @Override
-    public boolean isAccessGranted(Player player, FieldPermission permission) {
-        return !isActive() || canOpBypass(player) || StreamEx.of(this.masterSlot)
-            .append(this.identitySlots)
-            .anyMatch(slot -> {
-                IdentificationCard card = slot.getItem().getCapability(ModCapabilities.IDENTIFICATION_CARD);
-                return card != null && card.checkIdentity(player);
-            });
+    public boolean isAccessGranted(EntityPlayer player, FieldPermission permission) {
+        if (!isActive()) return false;
+        if (canOpBypass(player)) return true;
+
+        // Named cards (specific identity) take priority over blank wildcard cards.
+        // First pass: look for a card that explicitly names this player.
+        for (InventorySlot slot : this.identitySlots) {
+            IdentificationCard card = slot.getItem().getCapability(ModCapabilities.IDENTIFICATION_CARD, null);
+            if (card != null && card.getIdentity() != null && card.checkIdentity(player)) {
+                // Found a card that specifically targets this player — its permissions are definitive.
+                return card.hasPermission(permission);
+            }
+        }
+
+        // Second pass: no named card matched; fall back to blank (everyone) wildcard cards.
+        for (InventorySlot slot : this.identitySlots) {
+            IdentificationCard card = slot.getItem().getCapability(ModCapabilities.IDENTIFICATION_CARD, null);
+            if (card != null && card.getIdentity() == null) {
+                return card.hasPermission(permission);
+            }
+        }
+
+        return false;
     }
 
-    @Override
-    public AbstractContainerMenu createMenu(int containerId, Inventory playerInventory, Player player) {
-        return new BiometricIdentifierMenu(containerId, this.worldPosition, player, playerInventory);
-    }
-
-    public static boolean canOpBypass(Player player) {
-        return player instanceof ServerPlayer serverPlayer
-            && MFFSConfig.COMMON.allowOpBiometryOverride.get()
-            && serverPlayer.server.getPlayerList().isOp(player.nameAndId());
+    public static boolean canOpBypass(EntityPlayer player) {
+        return player instanceof EntityPlayerMP serverPlayer
+            && MFFSConfig.allowOpBiometryOverride
+            && serverPlayer.server.getPlayerList().canSendCommands(serverPlayer.getGameProfile());
     }
 }

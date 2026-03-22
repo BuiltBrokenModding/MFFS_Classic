@@ -1,9 +1,12 @@
 package dev.su5ed.mffs.util.inventory;
 
+// 1.12.2 Backport: CopyingIdentificationCard
+// Player → EntityPlayer (per updated IdentificationCard interface)
+
 import com.mojang.authlib.GameProfile;
 import dev.su5ed.mffs.api.card.IdentificationCard;
 import dev.su5ed.mffs.api.security.FieldPermission;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.entity.player.EntityPlayer;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
@@ -58,7 +61,7 @@ public class CopyingIdentificationCard implements IdentificationCard {
     }
 
     @Override
-    public boolean checkIdentity(Player player) {
+    public boolean checkIdentity(EntityPlayer player) {
         return this.card.checkIdentity(player);
     }
 

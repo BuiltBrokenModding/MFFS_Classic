@@ -1,82 +1,42 @@
 package dev.su5ed.mffs.util.projector;
 
-import com.google.common.base.Suppliers;
-import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.su5ed.mffs.MFFSMod;
+import dev.su5ed.mffs.network.Network;
 import dev.su5ed.mffs.network.SetStructureShapePacket;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraft.world.level.saveddata.SavedDataType;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.shapes.BooleanOp;
-import net.minecraft.world.phys.shapes.Shapes;
-import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.network.PacketDistributor;
-import one.util.streamex.EntryStream;
-import one.util.streamex.StreamEx;
+import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
+import net.minecraft.world.storage.WorldSavedData;
+import net.minecraftforge.common.util.Constants;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
-import java.util.function.Supplier;
+import java.util.Set;
 
-public class CustomStructureSavedData extends SavedData {
-    private static final String NAME = MFFSMod.MODID + "_custom_structures";
-    public static final Codec<AABB> AABB_CODEC = RecordCodecBuilder.create(instance -> instance.group(
-        Codec.DOUBLE.fieldOf("minX").forGetter(a -> a.minX),
-        Codec.DOUBLE.fieldOf("minY").forGetter(a -> a.minY),
-        Codec.DOUBLE.fieldOf("minZ").forGetter(a -> a.minZ),
-        Codec.DOUBLE.fieldOf("maxX").forGetter(a -> a.maxX),
-        Codec.DOUBLE.fieldOf("maxY").forGetter(a -> a.maxY),
-        Codec.DOUBLE.fieldOf("maxZ").forGetter(a -> a.maxZ)
-    ).apply(instance, AABB::new));
-    public static final StreamCodec<FriendlyByteBuf, AABB> AABB_STREAM_CODEC = StreamCodec.composite(
-        ByteBufCodecs.DOUBLE, a -> a.minX,
-        ByteBufCodecs.DOUBLE, a -> a.minY,
-        ByteBufCodecs.DOUBLE, a -> a.minZ,
-        ByteBufCodecs.DOUBLE, a -> a.maxX,
-        ByteBufCodecs.DOUBLE, a -> a.maxY,
-        ByteBufCodecs.DOUBLE, a -> a.maxZ,
-        AABB::new
-    );
-    public static final Codec<VoxelShape> VOXEL_SHAPE_CODEC = AABB_CODEC.listOf().xmap(CustomStructureSavedData::shapeFromAABBs, VoxelShape::toAabbs);
-    public static final StreamCodec<FriendlyByteBuf, VoxelShape> VOXEL_SHAPE_STREAM_CODEC = AABB_STREAM_CODEC.apply(ByteBufCodecs.list()).map(CustomStructureSavedData::shapeFromAABBs, VoxelShape::toAabbs);
-    public static final Codec<Map<String, Structure>> STRUCTURES_CODEC = Codec.unboundedMap(Codec.STRING, Structure.CODEC);
-    public static final Codec<CustomStructureSavedData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-        STRUCTURES_CODEC.fieldOf("structures").forGetter(CustomStructureSavedData::getStructures)
-    ).apply(instance, CustomStructureSavedData::new));
-
-    public static final SavedDataType<CustomStructureSavedData> TYPE = new SavedDataType<>(
-        NAME,
-        CustomStructureSavedData::new,
-        CODEC,
-        null
-    );
+/**
+ * Persists custom projector mode structures via WorldSavedData.
+ */
+public class CustomStructureSavedData extends WorldSavedData {
+    public static final String NAME = MFFSMod.MODID + "_custom_structures";
 
     private final Map<String, Structure> structures = new HashMap<>();
 
     public CustomStructureSavedData() {
-        setDirty();
+        super(NAME);
     }
 
-    public CustomStructureSavedData(Map<String, Structure> structures) {
-        this.structures.putAll(structures);
-    }
-
-    public Map<String, Structure> getStructures() {
-        return this.structures;
+    public CustomStructureSavedData(String name) {
+        super(name);
     }
 
     @Nullable
@@ -84,148 +44,242 @@ public class CustomStructureSavedData extends SavedData {
         return this.structures.get(id);
     }
 
-    public void clear(Level level, ServerPlayer serverPlayer, String id) {
+    public void clear(World world, EntityPlayerMP player, String id) {
         this.structures.remove(id);
-        sendToClient(level.dimension(), id, null, serverPlayer);
+        markDirty();
+        sendToClient(world.provider.getDimension(), id, null, player);
     }
 
     private Structure getOrCreate(String id) {
         return this.structures.computeIfAbsent(id, s -> new Structure());
     }
 
-    public void join(String id, Level level, ServerPlayer serverPlayer, BlockPos min, BlockPos max, boolean add) {
+    public void join(String id, World world, EntityPlayerMP player, BlockPos min, BlockPos max, boolean add) {
         Structure structure = getOrCreate(id);
-        BooleanOp op = add ? BooleanOp.OR : BooleanOp.ONLY_FIRST;
-        VoxelShape normalShape = Shapes.joinUnoptimized(structure.normalShape, Shapes.create(AABB.encapsulatingFullBlocks(min, max)), op);
-        VoxelShape shape = Shapes.joinUnoptimized(structure.shape, Shapes.create(AABB.encapsulatingFullBlocks(min, normalizeAxis(min, max))), op);
 
-        AABB area = AABB.encapsulatingFullBlocks(min, max);
-        for (int x = (int) area.minX; x <= area.maxX; x++) {
-            for (int y = (int) area.minY; y <= area.maxY; y++) {
-                for (int z = (int) area.minZ; z <= area.maxZ; z++) {
+        // Calculate the area bounds
+        int minX = Math.min(min.getX(), max.getX());
+        int minY = Math.min(min.getY(), max.getY());
+        int minZ = Math.min(min.getZ(), max.getZ());
+        int maxX = Math.max(min.getX(), max.getX());
+        int maxY = Math.max(min.getY(), max.getY());
+        int maxZ = Math.max(min.getZ(), max.getZ());
+
+        // Add or remove block positions and record their states
+        for (int x = minX; x <= maxX; x++) {
+            for (int y = minY; y <= maxY; y++) {
+                for (int z = minZ; z <= maxZ; z++) {
                     BlockPos pos = new BlockPos(x, y, z);
-                    BlockState state = level.getBlockState(pos);
-                    if (!state.isAir()) {
-                        if (add) {
+                    if (add) {
+                        structure.shape.add(pos);
+                        IBlockState state = world.getBlockState(pos);
+                        if (!state.getBlock().isAir(state, world, pos)) {
                             structure.blocks.put(pos, state);
-                        } else {
-                            structure.blocks.remove(pos);
                         }
+                    } else {
+                        structure.shape.remove(pos);
+                        structure.blocks.remove(pos);
                     }
                 }
             }
         }
-
-        Structure newStruct = new Structure(shape, normalShape, structure.blocks);
-        this.structures.put(id, newStruct);
-        setDirty();
-        sendToClient(level.dimension(), id, normalShape, serverPlayer);
-    }
-
-    private static void sendToClient(ResourceKey<Level> key, String id, VoxelShape shape, ServerPlayer player) {
-        PacketDistributor.sendToPlayer(player, new SetStructureShapePacket(key, id, shape));
-    }
-
-    private static BlockPos normalizeAxis(BlockPos min, BlockPos max) {
-        if (min.getX() == max.getX()) {
-            max = max.east();
-        }
-        if (min.getY() == max.getY()) {
-            max = max.above();
-        }
-        if (min.getZ() == max.getZ()) {
-            max = max.south();
-        }
-        return max;
+        structure.invalidateCache();
+        markDirty();
+        sendToClient(world.provider.getDimension(), id, structure.shape, player);
     }
 
     public void remove(String id, BlockPos pos) {
         Structure structure = get(id);
         if (structure != null) {
             structure.blocks.remove(pos);
-            setDirty();
+            structure.shape.remove(pos);
+            structure.invalidateCache();
+            markDirty();
         }
     }
 
-    public static VoxelShape shapeFromAABBs(List<AABB> aabbs) {
-        VoxelShape shape = Shapes.empty();
-        for (AABB area : aabbs) {
-            VoxelShape partial = Shapes.create(area);
-            shape = Shapes.joinUnoptimized(shape, partial, BooleanOp.OR);
-        }
-        return shape;
+    private static void sendToClient(int dimension, String id, @Nullable Set<BlockPos> shape, EntityPlayerMP player) {
+        SetStructureShapePacket packet = new SetStructureShapePacket(dimension, id, shape != null ? shape : Collections.emptySet());
+        Network.sendTo(packet, player);
     }
+
+    // -----------------------------------------------------------------------
+    // WorldSavedData NBT serialization
+    // -----------------------------------------------------------------------
+
+    @Override
+    public void readFromNBT(NBTTagCompound nbt) {
+        this.structures.clear();
+        NBTTagCompound structuresTag = nbt.getCompoundTag("structures");
+        for (String key : structuresTag.getKeySet()) {
+            NBTTagCompound structTag = structuresTag.getCompoundTag(key);
+            Structure structure = new Structure();
+
+            // Read shape positions
+            NBTTagList shapeList = structTag.getTagList("shape", Constants.NBT.TAG_LONG);
+            for (NBTBase tag : shapeList) {
+                if (tag instanceof net.minecraft.nbt.NBTTagLong longTag) {
+                    structure.shape.add(BlockPos.fromLong(longTag.getLong()));
+                }
+            }
+
+            // Read blocks
+            NBTTagList blocksList = structTag.getTagList("blocks", Constants.NBT.TAG_COMPOUND);
+            for (int i = 0; i < blocksList.tagCount(); i++) {
+                NBTTagCompound blockTag = blocksList.getCompoundTagAt(i);
+                BlockPos pos = BlockPos.fromLong(blockTag.getLong("pos"));
+                Block block = Block.REGISTRY.getObject(new ResourceLocation(blockTag.getString("block")));
+                if (block != null) {
+                    int meta = blockTag.getInteger("meta");
+                    structure.blocks.put(pos, block.getStateFromMeta(meta));
+                }
+            }
+
+            this.structures.put(key, structure);
+        }
+    }
+
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
+        NBTTagCompound structuresTag = new NBTTagCompound();
+        for (Map.Entry<String, Structure> entry : this.structures.entrySet()) {
+            NBTTagCompound structTag = new NBTTagCompound();
+            Structure structure = entry.getValue();
+
+            // Write shape positions
+            NBTTagList shapeList = new NBTTagList();
+            for (BlockPos pos : structure.shape) {
+                shapeList.appendTag(new net.minecraft.nbt.NBTTagLong(pos.toLong()));
+            }
+            structTag.setTag("shape", shapeList);
+
+            // Write blocks
+            NBTTagList blocksList = new NBTTagList();
+            for (Map.Entry<BlockPos, IBlockState> blockEntry : structure.blocks.entrySet()) {
+                NBTTagCompound blockTag = new NBTTagCompound();
+                blockTag.setLong("pos", blockEntry.getKey().toLong());
+                ResourceLocation regName = Block.REGISTRY.getNameForObject(blockEntry.getValue().getBlock());
+                if (regName != null) {
+                    blockTag.setString("block", regName.toString());
+                    blockTag.setInteger("meta", blockEntry.getValue().getBlock().getMetaFromState(blockEntry.getValue()));
+                    blocksList.appendTag(blockTag);
+                }
+            }
+            structTag.setTag("blocks", blocksList);
+
+            structuresTag.setTag(entry.getKey(), structTag);
+        }
+        nbt.setTag("structures", structuresTag);
+        return nbt;
+    }
+
+    // -----------------------------------------------------------------------
+    // Structure inner class
+    // -----------------------------------------------------------------------
 
     public static class Structure {
-        public static final Codec<Map<BlockPos, BlockState>> BLOCK_MAP_CODEC = Codec.pair(BlockPos.CODEC.fieldOf("pos").codec(), BlockState.CODEC.fieldOf("state").codec()).listOf()
-            .xmap(pairs -> StreamEx.of(pairs)
-                    .mapToEntry(Pair::getFirst, Pair::getSecond)
-                    .toMap(),
-                map -> EntryStream.of(map)
-                    .mapKeyValue(Pair::of)
-                    .toList());
-        public static final Codec<Structure> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            VOXEL_SHAPE_CODEC.fieldOf("shape").forGetter(Structure::shape),
-            VOXEL_SHAPE_CODEC.fieldOf("normalShape").forGetter(Structure::normalShape),
-            BLOCK_MAP_CODEC.fieldOf("blocks").forGetter(Structure::blocks)
-        ).apply(instance, Structure::new));
-
-        private final VoxelShape shape;
-        private final VoxelShape normalShape;
-        private final Map<BlockPos, BlockState> blocks;
-        private final Supplier<Map<BlockPos, BlockState>> relativeBlocks = Suppliers.memoize(this::computeRelativeBlocks);
+        final Set<BlockPos> shape = new HashSet<>();
+        final Map<BlockPos, IBlockState> blocks = new HashMap<>();
         @Nullable
-        private Map<Vec3, BlockState> realBlocks;
+        private Set<BlockPos> relativeShape;
+        @Nullable
+        private Set<Vec3d> realShape;
+        @Nullable
+        private Map<BlockPos, IBlockState> relativeBlocks;
+        @Nullable
+        private Map<Vec3d, IBlockState> realBlocks;
 
-        public Structure() {
-            this(Shapes.empty(), Shapes.empty(), new HashMap<>());
-        }
-
-        public Structure(VoxelShape shape, VoxelShape normalShape, Map<BlockPos, BlockState> blocks) {
-            this.shape = shape;
-            this.normalShape = normalShape;
-            this.blocks = blocks;
-        }
-
-        public VoxelShape shape() {
+        public Set<BlockPos> shape() {
             return shape;
         }
 
-        public VoxelShape normalShape() {
-            return normalShape;
-        }
-
-        public Map<BlockPos, BlockState> blocks() {
-            return blocks;
-        }
-
-        public Map<BlockPos, BlockState> getRelativeBlocks() {
-            return this.relativeBlocks.get();
-        }
-
-        public Map<Vec3, BlockState> getRealBlocks() {
+        public Map<Vec3d, IBlockState> getRealBlocks() {
             if (this.realBlocks == null) {
-                Map<Vec3, BlockState> map = new HashMap<>();
-                for (Map.Entry<BlockPos, BlockState> entry : getRelativeBlocks().entrySet()) {
-                    map.put(Vec3.atLowerCornerOf(entry.getKey()), entry.getValue());
+                Map<Vec3d, IBlockState> map = new HashMap<>();
+                for (Map.Entry<BlockPos, IBlockState> entry : getRelativeBlocks().entrySet()) {
+                    map.put(new Vec3d(entry.getKey().getX(), entry.getKey().getY(), entry.getKey().getZ()), entry.getValue());
                 }
                 this.realBlocks = map;
             }
             return this.realBlocks;
         }
 
-        private Map<BlockPos, BlockState> computeRelativeBlocks() {
-            BlockPos median = BlockPos.containing(
-                (this.shape.min(Direction.Axis.X) + this.shape.max(Direction.Axis.X)) / 2.0,
-                (this.shape.min(Direction.Axis.Y) + this.shape.max(Direction.Axis.Y)) / 2.0,
-                (this.shape.min(Direction.Axis.Z) + this.shape.max(Direction.Axis.Z)) / 2.0
-            );
-            // Use classic for loop in an effort to improve performance
-            Map<BlockPos, BlockState> map = new HashMap<>();
-            for (Map.Entry<BlockPos, BlockState> entry : this.blocks.entrySet()) {
-                map.put(entry.getKey().subtract(median), entry.getValue());
+        public Set<Vec3d> getRealShape() {
+            if (this.realShape == null) {
+                Set<Vec3d> set = new HashSet<>();
+                for (BlockPos pos : getRelativeShape()) {
+                    set.add(new Vec3d(pos.getX(), pos.getY(), pos.getZ()));
+                }
+                this.realShape = set;
+            }
+            return this.realShape;
+        }
+
+        public Set<BlockPos> getRelativeShape() {
+            if (this.relativeShape == null) {
+                this.relativeShape = computeRelativeShape();
+            }
+            return this.relativeShape;
+        }
+
+        public Map<BlockPos, IBlockState> getRelativeBlocks() {
+            if (this.relativeBlocks == null) {
+                this.relativeBlocks = computeRelativeBlocks();
+            }
+            return this.relativeBlocks;
+        }
+
+        void invalidateCache() {
+            this.relativeShape = null;
+            this.realShape = null;
+            this.relativeBlocks = null;
+            this.realBlocks = null;
+        }
+
+        private Set<BlockPos> computeRelativeShape() {
+            if (this.shape.isEmpty()) return Collections.emptySet();
+
+            BlockPos center = computeCenter();
+            Set<BlockPos> set = new HashSet<>();
+            for (BlockPos pos : this.shape) {
+                set.add(pos.subtract(center));
+            }
+            return set;
+        }
+
+        private Map<BlockPos, IBlockState> computeRelativeBlocks() {
+            if (this.shape.isEmpty()) return Collections.emptyMap();
+
+            BlockPos center = computeCenter();
+
+            Map<BlockPos, IBlockState> map = new HashMap<>();
+            for (Map.Entry<BlockPos, IBlockState> entry : this.blocks.entrySet()) {
+                map.put(entry.getKey().subtract(center), entry.getValue());
             }
             return map;
+        }
+
+        private BlockPos computeCenter() {
+            // Use bounding-box center matching 1.21's VoxelShape bounds.
+            // VoxelShape.max(axis) = blockMax + 1. We add +1 here to match.
+            int minX = Integer.MAX_VALUE, minY = Integer.MAX_VALUE, minZ = Integer.MAX_VALUE;
+            int maxX = Integer.MIN_VALUE, maxY = Integer.MIN_VALUE, maxZ = Integer.MIN_VALUE;
+            for (BlockPos pos : this.shape) {
+                if (pos.getX() < minX) minX = pos.getX();
+                if (pos.getY() < minY) minY = pos.getY();
+                if (pos.getZ() < minZ) minZ = pos.getZ();
+                if (pos.getX() > maxX) maxX = pos.getX();
+                if (pos.getY() > maxY) maxY = pos.getY();
+                if (pos.getZ() > maxZ) maxZ = pos.getZ();
+            }
+            if (minX == maxX) maxX++;
+            if (minY == maxY) maxY++;
+            if (minZ == maxZ) maxZ++;
+            return new BlockPos(
+                (int) Math.floor((minX + maxX + 1) / 2.0),
+                (int) Math.floor((minY + maxY + 1) / 2.0),
+                (int) Math.floor((minZ + maxZ + 1) / 2.0)
+            );
         }
     }
 }

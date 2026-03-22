@@ -3,16 +3,14 @@ package dev.su5ed.mffs.util.module;
 import dev.su5ed.mffs.api.Projector;
 import dev.su5ed.mffs.api.TargetPosPair;
 import dev.su5ed.mffs.api.module.ModuleType;
-import dev.su5ed.mffs.setup.ModTags;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.LiquidBlock;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.material.FluidState;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockLiquid;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.minecraftforge.fluids.IFluidBlock;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,8 +19,6 @@ import java.util.List;
 
 public class SpongeModule extends BaseModule {
     private final List<BlockPos> removingBlocks = new ArrayList<>();
-    private final List<BlockPos> unWaterLoggingBlocks = new ArrayList<>();
-    private final List<BlockPos> unWaterAquaticPlants = new ArrayList<>();
 
     public SpongeModule(ModuleType<?> type, ItemStack stack) {
         super(type, stack);
@@ -31,27 +27,23 @@ public class SpongeModule extends BaseModule {
     @Override
     public void beforeSelect(Projector projector, Collection<? extends TargetPosPair> field) {
         super.beforeSelect(projector, field);
-
         if (projector.getTicks() % 60 == 0) {
             List<BlockPos> interiorPoints = new ArrayList<>(projector.getInteriorPoints());
             Collections.shuffle(interiorPoints);
             int maxRemove = 50 + projector.getProjectionSpeed() * 20;
-            for (int i = 0, count = 0; i < interiorPoints.size() && count < maxRemove; i++) {
+            int count = 0;
+            for (int i = 0; i < interiorPoints.size() && count < maxRemove; i++) {
                 BlockPos pos = interiorPoints.get(i);
-                BlockState state = projector.getCachedBlockState(pos);
+                World world = projector.be().getWorld();
+                IBlockState state = world.getBlockState(pos);
                 Block block = state.getBlock();
-                FluidState fluidState = state.getFluidState();
-                if (block instanceof LiquidBlock && !fluidState.isEmpty()) {
+                // 1.12.2: check for vanilla liquid blocks and Forge fluid blocks
+                if (block instanceof BlockLiquid || block instanceof IFluidBlock) {
                     this.removingBlocks.add(pos);
-                    if (fluidState.isSource()) {
+                    // Count source blocks
+                    if (block instanceof BlockLiquid && state.getValue(BlockLiquid.LEVEL) == 0) {
                         count++;
                     }
-                }
-                if (state.hasProperty(BlockStateProperties.WATERLOGGED)) {
-                    this.unWaterLoggingBlocks.add(pos);
-                }
-                if (this.isAquaticPlant(state) && !fluidState.isEmpty()) {
-                    this.unWaterAquaticPlants.add(pos);
                 }
             }
         }
@@ -59,31 +51,10 @@ public class SpongeModule extends BaseModule {
 
     @Override
     public void beforeProject(Projector projector) {
-        Level level = projector.be().getLevel();
+        World world = projector.be().getWorld();
         for (BlockPos pos : this.removingBlocks) {
-            level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
-        }
-        for (BlockPos pos : this.unWaterLoggingBlocks) {
-            BlockState state = level.getBlockState(pos);
-            if (state.hasProperty(BlockStateProperties.WATERLOGGED)) {
-                level.setBlockAndUpdate(pos, state.setValue(BlockStateProperties.WATERLOGGED, false));
-            }
-        }
-        // Handle underwater aquatic plants and drop items as if broken naturally
-        for (BlockPos pos : this.unWaterAquaticPlants) {
-            BlockState state = level.getBlockState(pos);
-            FluidState fluidState = state.getFluidState();
-            if (!fluidState.isEmpty()) {
-                Block.dropResources(state, level, pos);
-                level.removeBlock(pos, false);
-            }
+            world.setBlockState(pos, Blocks.AIR.getDefaultState());
         }
         this.removingBlocks.clear();
-        this.unWaterLoggingBlocks.clear();
-        this.unWaterAquaticPlants.clear();
-    }
-
-    private boolean isAquaticPlant(BlockState state) {
-        return state.is(ModTags.FORCEFIELD_REPLACEABLE);
     }
 }

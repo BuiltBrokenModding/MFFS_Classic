@@ -1,41 +1,35 @@
 package dev.su5ed.mffs.blockentity;
 
+import dev.su5ed.mffs.MFFSConfig;
 import dev.su5ed.mffs.api.card.CoordLink;
 import dev.su5ed.mffs.api.fortron.FortronCapacitor;
 import dev.su5ed.mffs.api.fortron.FortronStorage;
-import dev.su5ed.mffs.menu.FortronCapacitorMenu;
 import dev.su5ed.mffs.setup.ModCapabilities;
 import dev.su5ed.mffs.setup.ModItems;
 import dev.su5ed.mffs.setup.ModModules;
-import dev.su5ed.mffs.setup.ModObjects;
 import dev.su5ed.mffs.util.Fortron;
 import dev.su5ed.mffs.util.FrequencyGrid;
 import dev.su5ed.mffs.util.ModUtil;
 import dev.su5ed.mffs.util.TransferMode;
 import dev.su5ed.mffs.util.inventory.InventorySlot;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.MenuProvider;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public class FortronCapacitorBlockEntity extends ModularBlockEntity implements FortronCapacitor, MenuProvider {
+public class FortronCapacitorBlockEntity extends ModularBlockEntity implements FortronCapacitor {
     public final InventorySlot secondaryCard;
     public final List<InventorySlot> upgradeSlots;
 
     private TransferMode transferMode = TransferMode.EQUALIZE;
 
-    public FortronCapacitorBlockEntity(BlockPos pos, BlockState state) {
-        super(ModObjects.FORTRON_CAPACITOR_BLOCK_ENTITY.get(), pos, state, 10);
+    public FortronCapacitorBlockEntity() {
+        super(10);
 
-        this.secondaryCard = addSlot("secondaryCard", InventorySlot.Mode.BOTH, stack -> ModUtil.isCard(stack) || stack.is(ModItems.INFINITE_POWER_CARD.get()), this::onFrequencySlotChanged);
+        this.secondaryCard = addSlot("secondaryCard", InventorySlot.Mode.BOTH,
+            stack -> ModUtil.isCard(stack) || stack.getItem() == ModItems.INFINITE_POWER_CARD,
+            this::onFrequencySlotChanged);
         this.upgradeSlots = createUpgradeSlots(3);
     }
 
@@ -45,12 +39,17 @@ public class FortronCapacitorBlockEntity extends ModularBlockEntity implements F
 
     public void setTransferMode(TransferMode transferMode) {
         this.transferMode = transferMode;
-        setChanged();
+        markDirty();
     }
 
     @Override
     public int getBaseFortronTankCapacity() {
-        return 700;
+        return MFFSConfig.fortronCapacitorInitialTankCapacity;
+    }
+
+    @Override
+    protected int getCapacityBoostPerModule() {
+        return MFFSConfig.fortronCapacitorTankCapacityPerModule;
     }
 
     @Override
@@ -68,19 +67,24 @@ public class FortronCapacitorBlockEntity extends ModularBlockEntity implements F
     public void tickServer() {
         super.tickServer();
 
-        consumeCost();
-
-        // Distribute fortron across the network
-        if (isActive() && getTicks() % 10 == 0) {
+        // Distribute fortron across the network (and bill maintenance) only when active.
+        if (isActive() && getTicks() % MFFSConfig.FORTRON_TRANSFER_TICKS == 0) {
+            this.fortronStorage.extractFortron(getFortronCost() * MFFSConfig.FORTRON_TRANSFER_TICKS, false);
             Set<FortronStorage> machines = new HashSet<>();
 
             for (ItemStack stack : getCards()) {
-                if (stack.is(ModItems.INFINITE_POWER_CARD.get())) {
+                if (stack.getItem() == ModItems.INFINITE_POWER_CARD) {
                     this.fortronStorage.setStoredFortron(this.fortronStorage.getFortronCapacity());
                 }
                 else if (stack.getItem() instanceof CoordLink coordLink) {
                     Optional.ofNullable(coordLink.getLink(stack))
-                        .map(linkPosition -> this.level.getCapability(ModCapabilities.FORTRON, linkPosition, null))
+                        .map(linkPosition -> {
+                            var te = this.world.getTileEntity(linkPosition);
+                            if (te != null && te.hasCapability(ModCapabilities.FORTRON, null)) {
+                                return (FortronStorage) te.getCapability(ModCapabilities.FORTRON, null);
+                            }
+                            return null;
+                        })
                         .ifPresent(fortron -> {
                             machines.add(this.fortronStorage);
                             machines.add(fortron);
@@ -94,42 +98,37 @@ public class FortronCapacitorBlockEntity extends ModularBlockEntity implements F
 
     @Override
     public Collection<FortronStorage> getDevicesByFrequency() {
-        return FrequencyGrid.instance().get(this.level, this.worldPosition, getTransmissionRange(), this.fortronStorage.getFrequency());
+        return FrequencyGrid.instance(this.world.isRemote).get(this.world, this.pos, getTransmissionRange(), this.fortronStorage.getFrequency());
     }
 
     @Override
     public List<ItemStack> getCards() {
-        return List.of(this.frequencySlot.getItem(), this.secondaryCard.getItem());
+        return Arrays.asList(this.frequencySlot.getItem(), this.secondaryCard.getItem());
     }
 
     @Override
     public int getTransmissionRange() {
-        return 15 + getModuleCount(ModModules.SCALE);
+        return MFFSConfig.fortronCapacitorInitialRange + MFFSConfig.fortronCapacitorRangePerModule * getModuleCount(ModModules.SCALE);
     }
 
     @Override
     public int getTransmissionRate() {
-        return 250 + 50 * getModuleCount(ModModules.SPEED);
+        return MFFSConfig.fortronCapacitorInitialTransmissionRate + MFFSConfig.fortronCapacitorTransmissionRatePerModule * getModuleCount(ModModules.SPEED);
     }
 
     @Override
-    protected void saveCommonTag(ValueOutput output) {
-        super.saveCommonTag(output);
-        output.putString("transferMode", this.transferMode.name());
+    protected void saveCommonTag(NBTTagCompound compound) {
+        super.saveCommonTag(compound);
+        compound.setString("transferMode", this.transferMode.name());
     }
 
     @Override
-    protected void loadCommonTag(ValueInput input) {
-        super.loadCommonTag(input);
+    protected void loadCommonTag(NBTTagCompound compound) {
+        super.loadCommonTag(compound);
 
-        input.getString("transferMode")
-            .map(TransferMode::valueOf)
-            .ifPresent(t -> this.transferMode = t);
-    }
-
-    @Nullable
-    @Override
-    public AbstractContainerMenu createMenu(int containerId, Inventory inventory, Player player) {
-        return new FortronCapacitorMenu(containerId, this.worldPosition, player, inventory);
+        String modeName = compound.getString("transferMode");
+        if (!modeName.isEmpty()) {
+            try { this.transferMode = TransferMode.valueOf(modeName); } catch (IllegalArgumentException ignored) {}
+        }
     }
 }

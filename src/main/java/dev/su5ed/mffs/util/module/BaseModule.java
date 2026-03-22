@@ -4,13 +4,17 @@ import dev.su5ed.mffs.api.Projector;
 import dev.su5ed.mffs.api.TargetPosPair;
 import dev.su5ed.mffs.api.module.Module;
 import dev.su5ed.mffs.api.module.ModuleType;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
+import net.minecraft.entity.Entity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 import java.util.Collection;
 
+/**
+ * Base implementation of {@link Module} with no-op defaults.
+ * 1.12.2 Backport: Level→World, Entity namespace changed.
+ */
 public class BaseModule implements Module {
     protected final ModuleType<?> type;
     protected final ItemStack stack;
@@ -42,7 +46,7 @@ public class BaseModule implements Module {
     }
 
     @Override
-    public boolean onCollideWithForceField(Level level, BlockPos pos, Entity entity) {
+    public boolean onCollideWithForceField(World world, BlockPos pos, Entity entity) {
         return false;
     }
 
