@@ -198,9 +198,7 @@ public class ForceFieldBlockImpl extends Block implements ForceFieldBlock, ITile
                     }
                 }
                 boolean applyDamage = !(entity instanceof EntityPlayer player)
-                    || (!player.capabilities.isCreativeMode && !isAuthorizedPlayer)
-                    || (!isSneaking(entity) && !MFFSConfig.allowWalkThroughForceFields
-                        && !MFFSConfig.disableForceFieldDamageForAuthorizedPlayers);
+                    || (!player.capabilities.isCreativeMode && !isAuthorizedPlayer);
                 if (applyDamage) {
                     entity.attackEntityFrom(new DamageSource(ModObjects.FIELD_SHOCK_DAMAGE_TYPE), Integer.MAX_VALUE);
                 }

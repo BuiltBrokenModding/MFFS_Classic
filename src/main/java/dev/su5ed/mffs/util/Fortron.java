@@ -27,52 +27,66 @@ import java.util.Optional;
  */
 public final class Fortron {
 
+    /**
+     * Transfers Fortron between the transmitter and all receivers according to the given mode.
+     * Each individual transfer is capped by {@code limit}.  The transmitter must be present in
+     * the {@code receivers} collection (it will be removed before processing).
+     *
+     * <p>Matches the 1.20.1 reference implementation: simple single-pass per mode,
+     * per-link limit, no budget phases.
+     *
+     * @param transmitter the hub device (capacitor) driving the transfer
+     * @param receivers   all devices on the network <b>including</b> the transmitter
+     * @param transferMode EQUALIZE, DISTRIBUTE, DRAIN, or FILL
+     * @param limit       maximum Fortron moved per individual link
+     */
     public static void transferFortron(FortronStorage transmitter, Collection<? extends FortronStorage> receivers, TransferMode transferMode, int limit) {
-        if (transmitter != null && receivers.size() > 1) {
-            int totalFortron = 0;
-            int totalCapacity = 0;
+        if (transmitter == null || receivers.size() <= 1) return;
 
-            for (FortronStorage storage : receivers) {
-                totalFortron += storage.getStoredFortron();
-                totalCapacity += storage.getFortronCapacity();
+        // Snapshot totals while the transmitter is still in the collection.
+        int totalFortron = 0;
+        int totalCapacity = 0;
+        for (FortronStorage storage : receivers) {
+            totalFortron += storage.getStoredFortron();
+            totalCapacity += storage.getFortronCapacity();
+        }
+
+        receivers.remove(transmitter);
+
+        if (totalFortron <= 0 || totalCapacity <= 0) return;
+
+        switch (transferMode) {
+            case EQUALIZE -> {
+                for (FortronStorage machine : receivers) {
+                    double capacityPercentage = (double) machine.getFortronCapacity() / (double) totalCapacity;
+                    int amountToSet = (int) (totalFortron * capacityPercentage);
+                    doTransferFortron(transmitter, machine, amountToSet - machine.getStoredFortron(), limit);
+                }
             }
-
-            receivers.remove(transmitter);
-
-            if (totalFortron > 0 && totalCapacity > 0) {
-                switch (transferMode) {
-                    case EQUALIZE -> {
-                        for (FortronStorage machine : receivers) {
-                            double capacityPercentage = (double) machine.getFortronCapacity() / (double) totalCapacity;
-                            int amountToSet = (int) (totalFortron * capacityPercentage);
+            case DISTRIBUTE -> {
+                int amountToSet = totalFortron / receivers.size();
+                for (FortronStorage machine : receivers) {
+                    doTransferFortron(transmitter, machine, amountToSet - machine.getStoredFortron(), limit);
+                }
+            }
+            case DRAIN -> {
+                for (FortronStorage machine : receivers) {
+                    double capacityPercentage = (double) machine.getFortronCapacity() / (double) totalCapacity;
+                    int amountToSet = (int) (totalFortron * capacityPercentage);
+                    int delta = amountToSet - machine.getStoredFortron();
+                    if (delta > 0) {
+                        doTransferFortron(transmitter, machine, delta, limit);
+                    }
+                }
+            }
+            case FILL -> {
+                if (transmitter.getStoredFortron() < transmitter.getFortronCapacity()) {
+                    int requiredFortron = transmitter.getFortronCapacity() - transmitter.getStoredFortron();
+                    for (FortronStorage machine : receivers) {
+                        int amountToConsume = Math.min(requiredFortron, machine.getStoredFortron());
+                        int amountToSet = -machine.getStoredFortron() - amountToConsume;
+                        if (amountToConsume > 0) {
                             doTransferFortron(transmitter, machine, amountToSet - machine.getStoredFortron(), limit);
-                        }
-                    }
-                    case DISTRIBUTE -> {
-                        final int amountToSet = totalFortron / receivers.size();
-                        for (FortronStorage machine : receivers) {
-                            doTransferFortron(transmitter, machine, amountToSet - machine.getStoredFortron(), limit);
-                        }
-                    }
-                    case DRAIN -> {
-                        for (FortronStorage machine : receivers) {
-                            double capacityPercentage = (double) machine.getFortronCapacity() / (double) totalCapacity;
-                            int amountToSet = (int) (totalFortron * capacityPercentage);
-                            if (amountToSet - machine.getStoredFortron() > 0) {
-                                doTransferFortron(transmitter, machine, amountToSet - machine.getStoredFortron(), limit);
-                            }
-                        }
-                    }
-                    case FILL -> {
-                        if (transmitter.getStoredFortron() < transmitter.getFortronCapacity()) {
-                            int requiredFortron = transmitter.getFortronCapacity() - transmitter.getStoredFortron();
-                            for (FortronStorage machine : receivers) {
-                                int amountToConsume = Math.min(requiredFortron, machine.getStoredFortron());
-                                int amountToSet = -machine.getStoredFortron() - amountToConsume;
-                                if (amountToConsume > 0) {
-                                    doTransferFortron(transmitter, machine, amountToSet - machine.getStoredFortron(), limit);
-                                }
-                            }
                         }
                     }
                 }

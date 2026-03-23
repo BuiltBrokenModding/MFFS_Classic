@@ -33,7 +33,7 @@ public class ProjectorScreen extends FortronScreen<ProjectorMenu> {
             menu.blockEntity.fortronStorage.getStoredFortron(),
             menu.blockEntity.fortronStorage.getFortronCapacity());
 
-        int cost = menu.getClientFortronCost() * 20;
+        int cost = menu.getClientFortronCost();
         if (cost > 0) {
             String costText = TextFormatting.DARK_RED
                 + ModUtil.translate("screen", "fortron_cost", "-", cost).getUnformattedText();

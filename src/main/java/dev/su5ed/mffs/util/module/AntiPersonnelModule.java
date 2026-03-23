@@ -12,6 +12,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.DamageSource;
 
 public class AntiPersonnelModule extends BaseInterdictionModule {
     public AntiPersonnelModule(ModuleType<?> type, ItemStack stack) {
@@ -34,7 +35,10 @@ public class AntiPersonnelModule extends BaseInterdictionModule {
                     interdictionMatrix.mergeIntoInventory(invStack);
                     player.inventory.setInventorySlotContents(i, ItemStack.EMPTY);
                 }
-                ModUtil.shockEntity(player, Integer.MAX_VALUE);
+                float damage = MFFSConfig.antiPersonnelDamagePerSecond
+                    * (MFFSConfig.interdictionMatrixActionTickRate / 20.0F)
+                    * this.stack.getCount();
+                player.attackEntityFrom(DamageSource.GENERIC, damage);
                 // Drain fortron
                 TileEntity be = interdictionMatrix.be();
                 if (be.hasCapability(ModCapabilities.FORTRON, null)) {

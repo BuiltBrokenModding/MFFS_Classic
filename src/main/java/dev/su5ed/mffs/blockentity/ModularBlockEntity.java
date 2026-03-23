@@ -44,7 +44,7 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
 
     public void consumeCost() {
         if (getFortronCost() > 0) {
-            this.fortronStorage.extractFortron(getFortronCost(), false);
+            this.fortronStorage.extractFortron(getFortronCost() / 20, false);
         }
     }
 
@@ -108,7 +108,7 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
     }
 
     /**
-     * Returns Fortron cost per tick.
+     * Returns Fortron cost per second (F/s). Billing code divides by 20 when extracting per-tick.
      */
     @Override
     public int getFortronCost() {

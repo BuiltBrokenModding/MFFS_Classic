@@ -67,9 +67,11 @@ public class FortronCapacitorBlockEntity extends ModularBlockEntity implements F
     public void tickServer() {
         super.tickServer();
 
-        // Distribute fortron across the network (and bill maintenance) only when active.
+        // Bill own module maintenance every tick (independent of transfer cycle).
+        consumeCost();
+
+        // Distribute Fortron across the network on the transfer cycle.
         if (isActive() && getTicks() % MFFSConfig.FORTRON_TRANSFER_TICKS == 0) {
-            this.fortronStorage.extractFortron(getFortronCost() * MFFSConfig.FORTRON_TRANSFER_TICKS, false);
             Set<FortronStorage> machines = new HashSet<>();
 
             for (ItemStack stack : getCards()) {
@@ -92,7 +94,9 @@ public class FortronCapacitorBlockEntity extends ModularBlockEntity implements F
                 }
             }
 
-            Fortron.transferFortron(this.fortronStorage, machines.isEmpty() ? getDevicesByFrequency() : machines, this.transferMode, getTransmissionRate());
+            // Convert F/s → F/cycle for the transfer limit.
+            int limitPerCycle = getTransmissionRate() * MFFSConfig.FORTRON_TRANSFER_TICKS / 20;
+            Fortron.transferFortron(this.fortronStorage, machines.isEmpty() ? getDevicesByFrequency() : machines, this.transferMode, limitPerCycle);
         }
     }
 

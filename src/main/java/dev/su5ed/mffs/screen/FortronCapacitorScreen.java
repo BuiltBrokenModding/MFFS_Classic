@@ -52,7 +52,7 @@ public class FortronCapacitorScreen extends FortronScreen<FortronCapacitorMenu> 
         this.fontRenderer.drawString(ModUtil.translate("screen", "linked_devices",
             menu.blockEntity.getDevicesByFrequency().size()).getFormattedText(), 8, 28, GuiColors.DARK_GREY);
         this.fontRenderer.drawString(ModUtil.translate("screen", "transmission_rate",
-            menu.blockEntity.getTransmissionRate() * 2).getFormattedText(), 8, 40, GuiColors.DARK_GREY);
+            menu.blockEntity.getTransmissionRate()).getFormattedText(), 8, 40, GuiColors.DARK_GREY);
         this.fontRenderer.drawString(ModUtil.translate("screen", "range",
             menu.blockEntity.getTransmissionRange()).getFormattedText(), 8, 52, GuiColors.DARK_GREY);
 
@@ -61,6 +61,6 @@ public class FortronCapacitorScreen extends FortronScreen<FortronCapacitorMenu> 
             menu.blockEntity.fortronStorage.getStoredFortron(),
             menu.blockEntity.fortronStorage.getFortronCapacity()).getFormattedText(), 8, 105, GuiColors.DARK_GREY);
         this.fontRenderer.drawString(ModUtil.translate("screen", "fortron_cost", "-",
-            menu.getClientFortronCost() * 20).getFormattedText(), 120, 117, 0xAA0000);
+            menu.getClientFortronCost()).getFormattedText(), 120, 117, 0xAA0000);
     }
 }

@@ -126,7 +126,7 @@ public final class ModItems {
         if (MFFSConfig.isModuleEnabled("fusion_module"))
             FUSION_MODULE = register(registry, singleModule(ModModules.FUSION), "fusion_module");
         if (MFFSConfig.isModuleEnabled("dome_module"))
-            DOME_MODULE = register(registry, new ModuleItem<>(ModModules.DOME), "dome_module");
+            DOME_MODULE = register(registry, singleModule(ModModules.DOME), "dome_module");
         if (MFFSConfig.isModuleEnabled("camouflage_module"))
             CAMOUFLAGE_MODULE = register(registry, singleModule(ModModules.CAMOUFLAGE), "camouflage_module");
         if (MFFSConfig.isModuleEnabled("disintegration_module"))
@@ -150,9 +150,9 @@ public final class ModItems {
         if (MFFSConfig.isModuleEnabled("warn_module"))
             WARN_MODULE = register(registry, new InterdictionMatrixModuleItem(ModModules.WARN), "warn_module");
         if (MFFSConfig.isModuleEnabled("block_access_module"))
-            BLOCK_ACCESS_MODULE = register(registry, new InterdictionMatrixModuleItem(ModModules.BLOCK_ACCESS), "block_access_module");
+            BLOCK_ACCESS_MODULE = register(registry, singleIMModule(ModModules.BLOCK_ACCESS), "block_access_module");
         if (MFFSConfig.isModuleEnabled("block_alter_module"))
-            BLOCK_ALTER_MODULE = register(registry, new InterdictionMatrixModuleItem(ModModules.BLOCK_ALTER), "block_alter_module");
+            BLOCK_ALTER_MODULE = register(registry, singleIMModule(ModModules.BLOCK_ALTER), "block_alter_module");
         if (MFFSConfig.isModuleEnabled("anti_friendly_module"))
             ANTI_FRIENDLY_MODULE = register(registry, new InterdictionMatrixModuleItem(ModModules.ANTI_FRIENDLY), "anti_friendly_module");
         if (MFFSConfig.isModuleEnabled("anti_hostile_module"))
@@ -160,9 +160,16 @@ public final class ModItems {
         if (MFFSConfig.isModuleEnabled("anti_personnel_module"))
             ANTI_PERSONNEL_MODULE = register(registry, new InterdictionMatrixModuleItem(ModModules.ANTI_PERSONNEL), "anti_personnel_module");
         if (MFFSConfig.isModuleEnabled("anti_spawn_module"))
-            ANTI_SPAWN_MODULE = register(registry, new InterdictionMatrixModuleItem(ModModules.ANTI_SPAWN), "anti_spawn_module");
+            ANTI_SPAWN_MODULE = register(registry, singleIMModule(ModModules.ANTI_SPAWN), "anti_spawn_module");
         if (MFFSConfig.isModuleEnabled("confiscation_module"))
-            CONFISCATION_MODULE = register(registry, new InterdictionMatrixModuleItem(ModModules.CONFISCATION), "confiscation_module");
+            CONFISCATION_MODULE = register(registry, singleIMModule(ModModules.CONFISCATION), "confiscation_module");
+    }
+
+    /** Creates an InterdictionMatrixModuleItem with maxStackSize=1. */
+    private static InterdictionMatrixModuleItem singleIMModule(ModuleType<InterdictionMatrixModule> type) {
+        InterdictionMatrixModuleItem item = new InterdictionMatrixModuleItem(type);
+        item.setMaxStackSize(1);
+        return item;
     }
 
     /** Creates a ModuleItem with maxStackSize=1 (for modules that can only be used once). */

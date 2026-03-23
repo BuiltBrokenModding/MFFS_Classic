@@ -1,5 +1,6 @@
 package dev.su5ed.mffs.util;
 
+import dev.su5ed.mffs.MFFSConfig;
 import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.api.module.Module;
 import dev.su5ed.mffs.api.module.ModuleType;
@@ -191,10 +192,44 @@ public final class ModUtil {
     }
 
     /**
-     * Deals shock damage to an entity.
+     * Deals shock damage to an entity (integer overload, used by anti-personnel/exterminating modules).
      */
     public static void shockEntity(Entity entity, int damage) {
         entity.attackEntityFrom(DamageSource.GENERIC, damage);
+    }
+
+    /**
+     * Deals shock damage to an entity using a float amount.
+     * If {@code damage} is zero or less, applies a knockback impulse away from {@code sourcePos}
+     * with the given {@code knockbackStrength} instead.
+     */
+    public static void shockEntity(Entity entity, float damage, BlockPos sourcePos, float knockbackStrength) {
+        if (damage > 0F) {
+            entity.attackEntityFrom(DamageSource.GENERIC, damage);
+        }
+        if (knockbackStrength > 0F) {
+            double dx = entity.posX - (sourcePos.getX() + 0.5);
+            double dy = entity.posY - (sourcePos.getY() + 0.5);
+            double dz = entity.posZ - (sourcePos.getZ() + 0.5);
+            double len = Math.sqrt(dx * dx + dy * dy + dz * dz);
+            if (len > 1e-4) {
+                dx /= len;
+                dy /= len;
+                dz /= len;
+            } else {
+                // Directly on top — push upward
+                dy = 1.0;
+            }
+            if (MFFSConfig.doSpace) {
+                // ~80° from horizontal: sin(80°)≈0.985 vertical, cos(80°)≈0.174 outward nudge
+                final double VERT  = 0.985;
+                final double HORIZ = 0.174;
+                entity.addVelocity(dx * HORIZ * knockbackStrength * 0.1, VERT * knockbackStrength * 0.1, dz * HORIZ * knockbackStrength * 0.1);
+            } else {
+                entity.addVelocity(dx * knockbackStrength * 0.1, dy * knockbackStrength * 0.1 + knockbackStrength * 0.085, dz * knockbackStrength * 0.1);
+            }
+            entity.isAirBorne = true;
+        }
     }
 
     /**

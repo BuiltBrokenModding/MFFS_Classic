@@ -59,7 +59,7 @@ public class InterdictionMatrixScreen extends FortronScreen<InterdictionMatrixMe
 
         int fortronCostColor = 0xAA0000;
         this.fontRenderer.drawString(ModUtil.translate("screen", "fortron_cost", "-",
-            menu.getClientFortronCost() * 20).getFormattedText(), 120, 122, fortronCostColor);
+            menu.getClientFortronCost()).getFormattedText(), 120, 122, fortronCostColor);
 
         if (menu.getClientBiometricWarning()) {
             int wx = 162, wy = 5;

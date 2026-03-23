@@ -86,6 +86,10 @@ public class BiometricIdentifierBlockEntity extends FortronBlockEntity implement
         if (!isActive()) return false;
         if (canOpBypass(player)) return true;
 
+        // The master card holder has all permissions implicitly.
+        IdentificationCard masterCard = this.masterSlot.getItem().getCapability(ModCapabilities.IDENTIFICATION_CARD, null);
+        if (masterCard != null && masterCard.checkIdentity(player)) return true;
+
         // Named cards (specific identity) take priority over blank wildcard cards.
         // First pass: look for a card that explicitly names this player.
         for (InventorySlot slot : this.identitySlots) {

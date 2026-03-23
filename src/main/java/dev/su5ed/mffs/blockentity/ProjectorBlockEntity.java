@@ -177,22 +177,24 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
                         }
                     },
                     stack -> {
-                        // Limit speed modules across all upgrade slots to the configured maximum.
+                        // Limit speed and shock modules across all upgrade slots to their configured maximums.
                         ModuleType<?> type = stack.getCapability(ModCapabilities.MODULE_TYPE, null);
-                        if (type != ModModules.SPEED) return stack.getMaxStackSize();
+                        final int maxAllowed;
+                        if (type == ModModules.SPEED) maxAllowed = MFFSConfig.maxSpeedModulesProjector;
+                        else if (type == ModModules.SHOCK) maxAllowed = MFFSConfig.shockModuleMaxSlotCount;
+                        else return stack.getMaxStackSize();
                         List<InventorySlot> allUpgradeSlots = upgradeSlotListRef.get();
                         if (allUpgradeSlots == null) return stack.getMaxStackSize();
-                        // Count speed modules already present in every OTHER upgrade slot.
                         int totalInOthers = allUpgradeSlots.stream()
                             .filter(slot -> slot != ref[0])
                             .mapToInt(slot -> {
                                 ItemStack content = slot.getItem();
                                 if (content.isEmpty()) return 0;
                                 ModuleType<?> slotType = content.getCapability(ModCapabilities.MODULE_TYPE, null);
-                                return slotType == ModModules.SPEED ? content.getCount() : 0;
+                                return slotType == type ? content.getCount() : 0;
                             })
                             .sum();
-                        return Math.max(0, Math.min(MFFSConfig.maxSpeedModulesProjector - totalInOthers, stack.getMaxStackSize()));
+                        return Math.max(0, Math.min(maxAllowed - totalInOthers, stack.getMaxStackSize()));
                     });
                 return ref[0];
             })
@@ -267,12 +269,13 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
         int fortronCost = getFortronCost();
         // Speed up the rotor when:
         //   1. The projector is active with a mode present.
-        //   2. There is something to process
-        //   3. The Fortron reserve meets the sustained-state threshold
+        //   2. There is something to process (field blocks, pending removals, or scheduled events).
+        //   3. The Fortron reserve can cover at least one tick of operation.
+        //      Uses canConsumeFieldCost to verify the projector can still afford operation.
         if (isActive() && getMode().isPresent()
                 && (!this.projectedBlocks.isEmpty() || !this.pendingRemoval.isEmpty() || !this.scheduledEvents.isEmpty())
-                && this.fortronStorage.getStoredFortron() >= fortronCost * MFFSConfig.FORTRON_TRANSFER_TICKS) {
-            speed *= fortronCost / 8.0F;
+                && canConsumeFieldCost(fortronCost / 20)) {
+            speed *= fortronCost / 160.0F;
         }
         return Math.min(300, speed);
     }
@@ -347,12 +350,14 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
         }
 
         int fortronCost = getFortronCost();
-        if (isActive() && getMode().isPresent() && canConsumeFieldCost(fortronCost)) {
-            // Bill maintenance cost as a burst, aligned with the network transfer window.
-            // Same total drain as per-tick but in sync with when Fortron actually moves.
-            if (getTicks() % MFFSConfig.FORTRON_TRANSFER_TICKS == 0) {
-                this.fortronStorage.extractFortron(fortronCost * MFFSConfig.FORTRON_TRANSFER_TICKS, false);
-            }
+        boolean canOperate = isActive() && getMode().isPresent() && canConsumeFieldCost(fortronCost / 20);
+
+        // Per-tick billing: deduct maintenance cost every tick when operating.
+        if (canOperate) {
+            consumeCost();
+        }
+
+        if (canOperate) {
 
             if (getTicks() % MFFSConfig.projectionCycleTicks == 0) {
                 // One-shot orphan detection: runs once per load after the async calculation first
@@ -388,8 +393,8 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
                 } else if (this.semaphore.isInStage(ProjectionStage.STANDBY)) {
                     reCalculateForceField();
                 } else if (this.semaphore.isReady() && this.semaphore.isComplete(ProjectionStage.SELECTING)
-                        && this.fortronStorage.getStoredFortron() >= fortronCost * MFFSConfig.FORTRON_TRANSFER_TICKS) {
-                    // Only project when the tank still holds a full billing burst's worth of Fortron
+                        && this.fortronStorage.getStoredFortron() >= fortronCost * MFFSConfig.FORTRON_TRANSFER_TICKS / 20) {
+                    // Only project when the tank still holds a comfortable Fortron reserve
                     projectField();
                 }
 
@@ -401,7 +406,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
             }
 
             if (getTicks() % (2 * 20) == 0 && !hasModule(ModModules.SILENCE)
-                    && this.fortronStorage.getStoredFortron() >= fortronCost * MFFSConfig.FORTRON_TRANSFER_TICKS) {
+                    && this.fortronStorage.getStoredFortron() >= fortronCost * MFFSConfig.FORTRON_TRANSFER_TICKS / 20) {
                 // Only play the field sound when in a fully sustained state
                 this.world.playSound(null, this.pos, ModSounds.FIELD, SoundCategory.BLOCKS, 0.4F, 1 - this.world.rand.nextFloat() * 0.1F);
             }
@@ -481,7 +486,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
 
     @Override
     protected int doGetFortronCost() {
-        return super.doGetFortronCost() + 5;
+        return super.doGetFortronCost() + 100; // 100 F/s base projector upkeep
     }
 
     /**
@@ -689,7 +694,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
 
             if (!isOwnField) {
                 // Stop placing when Fortron would drop below the full-cycle reserve threshold.
-                if (this.fortronStorage.getStoredFortron() <= getFortronCost() * Math.max(MFFSConfig.projectionCycleTicks, 11)) break fieldLoop;
+                if (this.fortronStorage.getStoredFortron() <= getFortronCost() * Math.max(MFFSConfig.projectionCycleTicks, 11) / 20) break fieldLoop;
                 this.world.setBlockState(pos, state, 0);
                 // Set the controlling projector of the force field block to this one
                 net.minecraft.tileentity.TileEntity te = this.world.getTileEntity(pos);

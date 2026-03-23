@@ -3,6 +3,7 @@ package dev.su5ed.mffs.blockentity;
 import dev.su5ed.mffs.MFFSConfig;
 import dev.su5ed.mffs.api.module.InterdictionMatrixModule;
 import dev.su5ed.mffs.api.module.Module;
+import dev.su5ed.mffs.api.module.ModuleType;
 import dev.su5ed.mffs.api.security.BiometricIdentifier;
 import dev.su5ed.mffs.api.security.FieldPermission;
 import dev.su5ed.mffs.api.security.InterdictionMatrix;
@@ -26,6 +27,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class InterdictionMatrixBlockEntity extends ModularBlockEntity implements InterdictionMatrix {
     public final InventorySlot secondaryCard;
@@ -42,7 +44,40 @@ public class InterdictionMatrixBlockEntity extends ModularBlockEntity implements
         this.secondaryCard = addSlot("secondaryCard", InventorySlot.Mode.BOTH,
             stack -> ModUtil.isCard(stack) || stack.getItem() == ModItems.INFINITE_POWER_CARD,
             this::onFrequencySlotChanged);
-        this.upgradeSlots = createUpgradeSlots(8, Module.Category.INTERDICTION, stack -> {});
+
+        // Build upgrade slots with a cross-slot capacity cap for Warn Modules.
+        AtomicReference<List<InventorySlot>> upgradeSlotListRef = new AtomicReference<>();
+        this.upgradeSlots = IntStreamEx.range(8)
+            .mapToObj(i -> {
+                InventorySlot[] ref = new InventorySlot[1];
+                ref[0] = addSlot("upgrade_" + i, InventorySlot.Mode.BOTH,
+                    stack -> ModUtil.isModule(stack, Module.Category.INTERDICTION),
+                    stack -> {},
+                    stack -> {
+                        ModuleType<?> type = stack.getCapability(ModCapabilities.MODULE_TYPE, null);
+                        final int maxAllowed;
+                        if      (type == ModModules.WARN)           maxAllowed = MFFSConfig.maxWarnModulesIM;
+                        else if (type == ModModules.ANTI_FRIENDLY)  maxAllowed = MFFSConfig.antiFriendlyModuleMaxSlotCount;
+                        else if (type == ModModules.ANTI_HOSTILE)   maxAllowed = MFFSConfig.antiHostileModuleMaxSlotCount;
+                        else if (type == ModModules.ANTI_PERSONNEL) maxAllowed = MFFSConfig.antiPersonnelModuleMaxSlotCount;
+                        else return stack.getMaxStackSize();
+                        List<InventorySlot> allUpgradeSlots = upgradeSlotListRef.get();
+                        if (allUpgradeSlots == null) return stack.getMaxStackSize();
+                        int totalInOthers = allUpgradeSlots.stream()
+                            .filter(slot -> slot != ref[0])
+                            .mapToInt(slot -> {
+                                ItemStack content = slot.getItem();
+                                if (content.isEmpty()) return 0;
+                                ModuleType<?> slotType = content.getCapability(ModCapabilities.MODULE_TYPE, null);
+                                return slotType == type ? content.getCount() : 0;
+                            })
+                            .sum();
+                        return Math.max(0, Math.min(maxAllowed - totalInOthers, stack.getMaxStackSize()));
+                    });
+                return ref[0];
+            })
+            .toList();
+        upgradeSlotListRef.set(this.upgradeSlots);
         this.bannedItemSlots = IntStreamEx.range(9)
             .mapToObj(i -> addVirtualSlot("banned_item_" + i))
             .toList();
@@ -62,11 +97,39 @@ public class InterdictionMatrixBlockEntity extends ModularBlockEntity implements
     }
 
     public int getWarningRange() {
-        return getModuleCount(ModModules.WARN) + getActionRange() + 3;
+        return Math.min(getModuleCount(ModModules.WARN), MFFSConfig.maxWarnModulesIM) + getActionRange() + MFFSConfig.interdictionMatrixMinWarnRange;
     }
 
     public int getActionRange() {
         return getModuleCount(ModModules.SCALE);
+    }
+
+    /**
+     * When the Warn Module has a negative Fortron cost (i.e. it acts as a discount),
+     * clamp that discount so it only reduces the Scale Module subtotal. This prevents
+     * Warn Modules from accidentally discounting Speed, Shock, or other module costs.
+     * If the Warn Module cost is >= 0, normal base-class summation is used.
+     */
+    @Override
+    protected int doGetFortronCost() {
+        float warnCostPerSecond = ModModules.WARN.getFortronCost(getAmplifier());
+        if (warnCostPerSecond >= 0) return super.doGetFortronCost();
+
+        // Sum every module except Warn modules (all values in F/s).
+        double costWithoutWarn = StreamEx.of(getModuleStacks())
+            .filter(stack -> stack.getCapability(ModCapabilities.MODULE_TYPE, null) != ModModules.WARN)
+            .mapToDouble(stack -> {
+                ModuleType<?> type = stack.getCapability(ModCapabilities.MODULE_TYPE, null);
+                return type != null ? stack.getCount() * (double) type.getFortronCost(getAmplifier()) : 0.0;
+            })
+            .sum();
+
+        // Warn discount is capped at the Scale Module subtotal; cannot erode other costs.
+        double scaleSubtotal = getModuleCount(ModModules.SCALE) * (double) ModModules.SCALE.getFortronCost(getAmplifier());
+        double warnDiscount = getModuleCount(ModModules.WARN) * (double) warnCostPerSecond; // negative F/s
+        double cappedWarnDiscount = Math.max(warnDiscount, -scaleSubtotal);
+
+        return (int) Math.round(costWithoutWarn + cappedWarnDiscount);
     }
 
     @Override
@@ -137,11 +200,15 @@ public class InterdictionMatrixBlockEntity extends ModularBlockEntity implements
             sendZoneSync();
         }
 
+        // Per-tick billing: deduct maintenance cost every tick.
+        if (powered) {
+            consumeCost();
+        }
+
         // Actions (confiscation, damage, etc.) on the configurable action tick rate.
+        // Only run actions if we can still afford the per-tick cost (i.e. still solvent).
         if (getTicks() % Math.max(1, MFFSConfig.interdictionMatrixActionTickRate) == 0 && powered) {
-            int extracted = this.fortronStorage.extractFortron(getFortronCost() * Math.max(1, MFFSConfig.interdictionMatrixActionTickRate), true);
-            if (extracted > 0) {
-                this.fortronStorage.extractFortron(getFortronCost() * Math.max(1, MFFSConfig.interdictionMatrixActionTickRate), false);
+            if (this.fortronStorage.extractFortron(getFortronCost() / 20, true) >= getFortronCost() / 20) {
                 scanActions();
             }
         }
