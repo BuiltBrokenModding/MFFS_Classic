@@ -9,7 +9,7 @@ import dev.su5ed.mffs.util.ModUtil;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.DamageSource;
+import dev.su5ed.mffs.util.InterdictionDamageSource;
 
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -27,7 +27,7 @@ public class ExterminatingModule extends BaseInterdictionModule {
     @Override
     public boolean onDefend(InterdictionMatrix interdictionMatrix, EntityLivingBase target) {
         if (this.predicate.test(target)) {
-            target.attackEntityFrom(DamageSource.GENERIC, this.damagePerAction.get() * this.stack.getCount());
+            target.attackEntityFrom(new InterdictionDamageSource(interdictionMatrix), this.damagePerAction.get() * this.stack.getCount());
             if (MFFSConfig.interdictionMatrixMobKillEnergy > 0) {
                 TileEntity be = interdictionMatrix.be();
                 if (be.hasCapability(ModCapabilities.FORTRON, null)) {

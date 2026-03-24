@@ -31,6 +31,7 @@ protect tiles.
 - Safety -- We've added simply safety measures to prevent base owners from locking themselves out of their base, wasting time of server OPs to fix their mistake. Hostile and restrictive features require biometrics active, ensuring at least someone has the keys to the kingdom.
 - Feedback -- Instead of chat prints for getting close to an interdiction zone, we print a on screen message with a distance, so you have a better idea where not to go. Cached and calculated on the client!
 - Commands -- A feature hopefully you never need, /mffs command that allows OPs to clean up orphan force fields that would otherwise be very hard to remove.
+- Interdiction Drop Collection -- With different configuration modes, by default mob drops drop like normal but can be collected with a collection module.
 
 ### Contributing
 

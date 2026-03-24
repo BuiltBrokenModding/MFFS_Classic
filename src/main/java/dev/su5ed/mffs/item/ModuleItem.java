@@ -27,7 +27,7 @@ public class ModuleItem<T extends Module> extends BaseItem {
     protected final ModuleType<T> module;
 
     public ModuleItem(ModuleType<T> module) {
-        super(false); // description=false; module items don't have description text
+        super(true); // show shift-for-description tooltip
         this.module = module;
     }
 
@@ -54,9 +54,6 @@ public class ModuleItem<T extends Module> extends BaseItem {
                 TextFormatting.GREEN + "+" + FORTRON_COST_FORMAT.format(-cost)));
             if (GuiScreen.isShiftKeyDown()) {
                 tooltip.add(TextFormatting.GRAY + I18n.format("info.mffs.module.warn.discount_hint"));
-            } else {
-                tooltip.add(TextFormatting.DARK_GRAY + I18n.format("info.mffs.show_details",
-                    TextFormatting.GRAY + I18n.format("info.mffs.key.shift")));
             }
         } else {
             // Positive cost = Fortron drain; display as "-x F/s"
@@ -68,8 +65,10 @@ public class ModuleItem<T extends Module> extends BaseItem {
             addDamagePerSecondTooltip(tooltip, MFFSConfig.antiPersonnelDamagePerSecond);
         } else if (this.module == dev.su5ed.mffs.setup.ModModules.ANTI_FRIENDLY) {
             addDamagePerSecondTooltip(tooltip, MFFSConfig.antiFriendlyDamagePerSecond);
+            addDropModeTooltip(tooltip);
         } else if (this.module == dev.su5ed.mffs.setup.ModModules.ANTI_HOSTILE) {
             addDamagePerSecondTooltip(tooltip, MFFSConfig.antiHostileDamagePerSecond);
+            addDropModeTooltip(tooltip);
         } else if (this.module == dev.su5ed.mffs.setup.ModModules.BLOCK_ALTER) {
             tooltip.add(TextFormatting.YELLOW + I18n.format("info.mffs.module.block_alter.requires_biometric"));
         } else if (this.module == dev.su5ed.mffs.setup.ModModules.BLOCK_ACCESS) {
@@ -84,6 +83,12 @@ public class ModuleItem<T extends Module> extends BaseItem {
     protected void addDamagePerSecondTooltip(List<String> tooltip, float damagePerSecond) {
         tooltip.add(TextFormatting.GOLD + I18n.format("info.mffs.module.damage_per_second",
             TextFormatting.YELLOW + FORTRON_COST_FORMAT.format(damagePerSecond)));
+    }
+
+    /** Adds a tooltip line showing the current interdiction mob drop mode from config. */
+    private void addDropModeTooltip(List<String> tooltip) {
+        String langKey = "info.mffs.module.drop_mode." + MFFSConfig.interdictionMobDropMode.name().toLowerCase();
+        tooltip.add(TextFormatting.DARK_GRAY + I18n.format(langKey));
     }
 
     private static class ModuleTypeProvider implements ICapabilityProvider {

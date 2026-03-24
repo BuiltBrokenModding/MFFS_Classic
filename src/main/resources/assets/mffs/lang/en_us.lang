@@ -67,11 +67,16 @@ info.mffs.show_details=Hold %s for details
 info.mffs.key.shift=Shift
 info.mffs.fortron_usage=Fortron: %s F/s
 info.mffs.module.warn.discount_hint=Positive values provide discount on installed Scale Module costs.
+info.mffs.module.drop_mode.normal=Mob drops behave normally.
+info.mffs.module.drop_mode.collection_optional=Drops go to adjacent chest with Collection Module.
+info.mffs.module.drop_mode.collection_required=Drops require Collection Module + chest.
+info.mffs.module.drop_mode.disabled=All mob drops are disabled.
 info.mffs.handbook.title=Force Field Handbook
 info.mffs.handbook.landing_text=Welcome to the in-game MFFS user guide, designed to help you navigate the complex world of Force Field technology. Force Fields, high tech machinery and defensive measures are all included. Let's get started!
 
 # Death messages
 death.attack.mffs.field_shock=%1$s was disintegrated by a force field.
+death.attack.mffs.interdiction=%1$s was eliminated by an Interdiction Matrix.
 
 # Blocks (1.12.2: tile.<unlocalizedName>.name)
 tile.mffs.machine_block.name=Base Machine Block
@@ -135,7 +140,7 @@ item.mffs.fusion_module.description=Joins overlapping force fields of the same f
 item.mffs.dome_module.name=Dome Module
 item.mffs.dome_module.description=Removes the bottom half of the force field
 item.mffs.collection_module.name=Collection Module
-item.mffs.collection_module.description=Collects dropped blocks from the disintegration module.
+item.mffs.collection_module.description=Collects dropped blocks from the disintegration module, or mob drops when used in an Interdiction Matrix.
 item.mffs.stabilization_module.name=Stabilization Module
 item.mffs.stabilization_module.description=Stabilizes the projected force field and crystallizes the field into solid blocks. Place a chest next the projector with blocks to stablize the field.
 item.mffs.inverter_module.name=Inverter Module

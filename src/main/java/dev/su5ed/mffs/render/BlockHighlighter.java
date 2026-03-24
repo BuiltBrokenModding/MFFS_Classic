@@ -18,8 +18,11 @@ import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.opengl.GL11;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -75,11 +78,54 @@ public final class BlockHighlighter {
     }
 
     /**
-     * Highlight many block positions as a voxel shape.
-     * Useful for sparse/irregular patterns where a single AABB would be misleading.
+     * Pre-compute contour edges from a set of block positions so they can be rendered
+     * every frame without re-doing the expensive neighbor/toggle logic.
      */
-    public static void highlightBlocks(float partialTick, Collection<BlockPos> blocks, @Nullable Color fillColor) {
-        if (blocks.isEmpty()) return;
+    public static PreparedOutline prepare(Collection<BlockPos> blocks) {
+        if (blocks.isEmpty()) return PreparedOutline.EMPTY;
+
+        Set<Long> occupied = new HashSet<>(blocks.size());
+        for (BlockPos pos : blocks) {
+            occupied.add(pos.toLong());
+        }
+
+        Set<Segment> edgesDown  = new HashSet<>();
+        Set<Segment> edgesUp    = new HashSet<>();
+        Set<Segment> edgesNorth = new HashSet<>();
+        Set<Segment> edgesSouth = new HashSet<>();
+        Set<Segment> edgesWest  = new HashSet<>();
+        Set<Segment> edgesEast  = new HashSet<>();
+
+        for (BlockPos pos : blocks) {
+            int x = pos.getX();
+            int y = pos.getY();
+            int z = pos.getZ();
+
+            if (!occupied.contains(new BlockPos(x, y - 1, z).toLong())) toggleFaceEdgesDown(edgesDown, x, y, z);
+            if (!occupied.contains(new BlockPos(x, y + 1, z).toLong())) toggleFaceEdgesUp(edgesUp, x, y, z);
+            if (!occupied.contains(new BlockPos(x, y, z - 1).toLong())) toggleFaceEdgesNorth(edgesNorth, x, y, z);
+            if (!occupied.contains(new BlockPos(x, y, z + 1).toLong())) toggleFaceEdgesSouth(edgesSouth, x, y, z);
+            if (!occupied.contains(new BlockPos(x - 1, y, z).toLong())) toggleFaceEdgesWest(edgesWest, x, y, z);
+            if (!occupied.contains(new BlockPos(x + 1, y, z).toLong())) toggleFaceEdgesEast(edgesEast, x, y, z);
+        }
+
+        Set<Segment> contour = new HashSet<>();
+        contour.addAll(edgesDown);
+        contour.addAll(edgesUp);
+        contour.addAll(edgesNorth);
+        contour.addAll(edgesSouth);
+        contour.addAll(edgesWest);
+        contour.addAll(edgesEast);
+
+        return new PreparedOutline(Collections.unmodifiableList(new ArrayList<>(contour)));
+    }
+
+    /**
+     * Render a pre-computed outline. All the expensive contour logic was already done
+     * by {@link #prepare(Collection)} — this only submits GL vertices.
+     */
+    public static void renderPrepared(float partialTick, PreparedOutline outline, @Nullable Color fillColor) {
+        if (outline.edges.isEmpty()) return;
 
         double[] cam = getCameraPos(partialTick);
         double camX = cam[0];
@@ -97,78 +143,15 @@ public final class BlockHighlighter {
         Tessellator tess = Tessellator.getInstance();
         BufferBuilder buf = tess.getBuffer();
 
-        Set<Long> occupied = new HashSet<>(blocks.size());
-        for (BlockPos pos : blocks) {
-            occupied.add(pos.toLong());
-        }
-
-        // Toggle edges per face direction so coplanar internal edges cancel out.
-        Set<Segment> edgesDown = new HashSet<>();
-        Set<Segment> edgesUp = new HashSet<>();
-        Set<Segment> edgesNorth = new HashSet<>();
-        Set<Segment> edgesSouth = new HashSet<>();
-        Set<Segment> edgesWest = new HashSet<>();
-        Set<Segment> edgesEast = new HashSet<>();
-
-        for (BlockPos pos : blocks) {
-            int x = pos.getX();
-            int y = pos.getY();
-            int z = pos.getZ();
-
-            if (!occupied.contains(new BlockPos(x, y - 1, z).toLong())) {
-                toggleFaceEdgesDown(edgesDown, x, y, z);
-            }
-            if (!occupied.contains(new BlockPos(x, y + 1, z).toLong())) {
-                toggleFaceEdgesUp(edgesUp, x, y, z);
-            }
-            if (!occupied.contains(new BlockPos(x, y, z - 1).toLong())) {
-                toggleFaceEdgesNorth(edgesNorth, x, y, z);
-            }
-            if (!occupied.contains(new BlockPos(x, y, z + 1).toLong())) {
-                toggleFaceEdgesSouth(edgesSouth, x, y, z);
-            }
-            if (!occupied.contains(new BlockPos(x - 1, y, z).toLong())) {
-                toggleFaceEdgesWest(edgesWest, x, y, z);
-            }
-            if (!occupied.contains(new BlockPos(x + 1, y, z).toLong())) {
-                toggleFaceEdgesEast(edgesEast, x, y, z);
-            }
-        }
-
-        Set<Segment> contourEdges = new HashSet<>();
-        contourEdges.addAll(edgesDown);
-        contourEdges.addAll(edgesUp);
-        contourEdges.addAll(edgesNorth);
-        contourEdges.addAll(edgesSouth);
-        contourEdges.addAll(edgesWest);
-        contourEdges.addAll(edgesEast);
-
-        if (fillColor != null) {
-            buf.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
-            for (BlockPos pos : blocks) {
-                double minX = pos.getX() - 0.001 - camX;
-                double minY = pos.getY() - 0.001 - camY;
-                double minZ = pos.getZ() - 0.001 - camZ;
-                double maxX = pos.getX() + 1.001 - camX;
-                double maxY = pos.getY() + 1.001 - camY;
-                double maxZ = pos.getZ() + 1.001 - camZ;
-                drawBox(buf, minX, minY, minZ, maxX, maxY, maxZ, fillColor);
-            }
-            tess.draw();
-        }
-
         GL11.glEnable(GL11.GL_LINE_SMOOTH);
         GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_NICEST);
         GL11.glLineWidth(OUTLINE_WIDTH);
 
         buf.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
-        for (Segment edge : contourEdges) {
-            buf.pos(edge.x1 - camX, edge.y1 - camY, edge.z1 - camZ)
-                .color(OUTLINE_COLOR.red(), OUTLINE_COLOR.green(), OUTLINE_COLOR.blue(), OUTLINE_COLOR.alpha())
-                .endVertex();
-            buf.pos(edge.x2 - camX, edge.y2 - camY, edge.z2 - camZ)
-                .color(OUTLINE_COLOR.red(), OUTLINE_COLOR.green(), OUTLINE_COLOR.blue(), OUTLINE_COLOR.alpha())
-                .endVertex();
+        float r = OUTLINE_COLOR.red(), g = OUTLINE_COLOR.green(), b = OUTLINE_COLOR.blue(), a = OUTLINE_COLOR.alpha();
+        for (Segment edge : outline.edges) {
+            buf.pos(edge.x1 - camX, edge.y1 - camY, edge.z1 - camZ).color(r, g, b, a).endVertex();
+            buf.pos(edge.x2 - camX, edge.y2 - camY, edge.z2 - camZ).color(r, g, b, a).endVertex();
         }
         tess.draw();
 
@@ -180,6 +163,25 @@ public final class BlockHighlighter {
         GlStateManager.enableDepth();
         GlStateManager.disableBlend();
         GlStateManager.popMatrix();
+    }
+
+    /**
+     * Pre-computed contour edge data for a voxel shape. Created once via
+     * {@link #prepare(Collection)}, then rendered cheaply every frame via
+     * {@link #renderPrepared(float, PreparedOutline, Color)}.
+     */
+    public static final class PreparedOutline {
+        static final PreparedOutline EMPTY = new PreparedOutline(Collections.emptyList());
+
+        private final List<Segment> edges;
+
+        private PreparedOutline(List<Segment> edges) {
+            this.edges = edges;
+        }
+
+        public boolean isEmpty() {
+            return this.edges.isEmpty();
+        }
     }
 
     private static void toggleFaceEdgesDown(Set<Segment> set, int x, int y, int z) {

@@ -18,9 +18,14 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 import one.util.streamex.IntStreamEx;
 import one.util.streamex.StreamEx;
 import org.jetbrains.annotations.Nullable;
@@ -319,5 +324,28 @@ public class InterdictionMatrixBlockEntity extends ModularBlockEntity implements
         super.saveCommonTag(compound);
 
         compound.setString("confiscationMode", this.confiscationMode.name());
+    }
+
+    /**
+     * Tries to insert a stack into adjacent inventories; any remainder is voided
+     * rather than spawned as an entity in the world.
+     */
+    @Override
+    public boolean mergeIntoInventory(ItemStack stack) {
+        if (!this.world.isRemote && !stack.isEmpty()) {
+            ItemStack remainder = stack.copy();
+            for (EnumFacing side : EnumFacing.values()) {
+                TileEntity neighbor = this.world.getTileEntity(this.pos.offset(side));
+                IItemHandler handler = neighbor != null
+                    ? neighbor.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side.getOpposite())
+                    : null;
+                if (handler != null) {
+                    remainder = ItemHandlerHelper.insertItemStacked(handler, remainder, false);
+                    if (remainder.isEmpty()) break;
+                }
+            }
+            // Overflow is intentionally voided — no EntityItem spawned.
+        }
+        return true;
     }
 }

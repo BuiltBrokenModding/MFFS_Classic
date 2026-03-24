@@ -7,11 +7,6 @@ Interdiction Matrix mode to use in-field instead of its own scale.
     Min scale modules could be required.
     Option could be from center of force field projection.
         Might not apply to custom shapes well.
-    Option to disable mob drops from interdiction kills without collection module.
-Implement advancments, or entirely remove.
-Implement better tooltips. (Mostly Done)
-    Modules with configurations, show the configuration value to user. i.e speed value / cost / ect.
-Check collection and confiscation modules pair?
 Glow modules apply artificial lighting to block surfaces inside a force field.
 Beacon Effects in-zone.
 Harvest speedup?

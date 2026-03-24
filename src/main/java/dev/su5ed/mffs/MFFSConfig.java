@@ -110,6 +110,8 @@ public final class MFFSConfig {
     public static int    interdictionMatrixInitialTankCapacity   = 500000;
     /** Fortron tank capacity added per Capacity Module in F. */
     public static int    interdictionMatrixTankCapacityPerModule = 5000;
+    /** Controls what happens to mob drops when the Interdiction Matrix kills a mob. */
+    public static InterdictionDropMode interdictionMobDropMode = InterdictionDropMode.COLLECTION_OPTIONAL;
 
     // -------------------------------------------------------------------------
     // Projector
@@ -503,6 +505,20 @@ public final class MFFSConfig {
         interdictionMatrixTankCapacityPerModule = configuration.getInt("tankCapacityPerModule", "interdiction_matrix",
             interdictionMatrixTankCapacityPerModule, 0, Integer.MAX_VALUE,
             "Fortron tank capacity added per Capacity Module in F.");
+        String dropModeStr = configuration.getString("mobDropMode", "interdiction_matrix",
+            InterdictionDropMode.NORMAL.name(),
+            "Controls what happens to mob drops when the Interdiction Matrix kills a mob.\n"
+            + "NORMAL = drops as normal, no collection feature.\n"
+            + "COLLECTION_OPTIONAL = mob drops normally, but Collection Module routes drops to an adjacent chest (overflow voided).\n"
+            + "COLLECTION_REQUIRED = no drops unless a Collection Module is installed (overflow voided).\n"
+            + "DISABLED = no drops at all.",
+            InterdictionDropMode.names());
+        try {
+            interdictionMobDropMode = InterdictionDropMode.valueOf(dropModeStr);
+        } catch (IllegalArgumentException e) {
+            LOGGER.warn("Invalid interdictionMobDropMode '{}', defaulting to NORMAL", dropModeStr);
+            interdictionMobDropMode = InterdictionDropMode.NORMAL;
+        }
 
         // -- Projector --
         baseProjectionSpeed = configuration.getInt("baseProjectionSpeed", "projector", baseProjectionSpeed, 1, Integer.MAX_VALUE,
@@ -628,4 +644,25 @@ public final class MFFSConfig {
     }
 
     private MFFSConfig() {}
+
+    public enum InterdictionDropMode {
+        NORMAL,
+        COLLECTION_OPTIONAL,
+        COLLECTION_REQUIRED,
+        DISABLED;
+
+        private static final String[] NAMES;
+
+        static {
+            InterdictionDropMode[] values = values();
+            NAMES = new String[values.length];
+            for (int i = 0; i < values.length; i++) {
+                NAMES[i] = values[i].name();
+            }
+        }
+
+        public static String[] names() {
+            return NAMES.clone();
+        }
+    }
 }

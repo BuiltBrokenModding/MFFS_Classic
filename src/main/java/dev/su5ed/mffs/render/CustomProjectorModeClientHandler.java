@@ -30,8 +30,8 @@ public final class CustomProjectorModeClientHandler {
     private static final float MAX_ALPHA    = BlockHighlighter.LIGHT_RED.alpha();
     private static final int   PERIOD_TICKS = 30;
 
-    // Map: dimension ID → (structure ID → shape positions)
-    private static final Map<Integer, Map<String, Set<BlockPos>>> STRUCTURE_SHAPES = new HashMap<>();
+    // Map: dimension ID → (structure ID → pre-computed outline)
+    private static final Map<Integer, Map<String, BlockHighlighter.PreparedOutline>> STRUCTURE_SHAPES = new HashMap<>();
 
     private CustomProjectorModeClientHandler() {}
 
@@ -39,32 +39,35 @@ public final class CustomProjectorModeClientHandler {
     // Shape cache – called by SetStructureShapePacket
     // -------------------------------------------------------------------------
 
-    /** Called by SetStructureShapePacket to update client-side shape data. */
+    /**
+     * Called by SetStructureShapePacket to update client-side shape data.
+     * The expensive contour computation happens here (once), not per frame.
+     */
     public static void setShape(int dimension, String structId, @Nullable Set<BlockPos> shape) {
-        Map<String, Set<BlockPos>> map = STRUCTURE_SHAPES.computeIfAbsent(dimension, d -> new HashMap<>());
+        Map<String, BlockHighlighter.PreparedOutline> map = STRUCTURE_SHAPES.computeIfAbsent(dimension, d -> new HashMap<>());
         if (shape != null) {
-            map.put(structId, shape);
+            map.put(structId, BlockHighlighter.prepare(shape));
         } else {
             map.remove(structId);
         }
     }
 
-    /** Get a cached shape, or null if not yet received from server. */
+    /** Get a cached pre-computed outline, or null if not yet received from server. */
     @Nullable
-    public static Set<BlockPos> getShape(int dimension, String structId) {
-        Map<String, Set<BlockPos>> map = STRUCTURE_SHAPES.get(dimension);
+    public static BlockHighlighter.PreparedOutline getOutline(int dimension, String structId) {
+        Map<String, BlockHighlighter.PreparedOutline> map = STRUCTURE_SHAPES.get(dimension);
         return map != null ? map.get(structId) : null;
     }
 
     /**
-     * Return the cached shape for the item stack's pattern ID, or request it
+     * Return the cached outline for the item stack's pattern ID, or request it
      * from the server if not yet cached.
      */
     @Nullable
-    private static Set<BlockPos> getOrRequestShape(ItemStack stack, int dimensionId) {
+    private static BlockHighlighter.PreparedOutline getOrRequestOutline(ItemStack stack, int dimensionId) {
         String id = ModItems.CUSTOM_MODE.getId(stack);
         if (id == null) return null;
-        Map<String, Set<BlockPos>> map = STRUCTURE_SHAPES.get(dimensionId);
+        Map<String, BlockHighlighter.PreparedOutline> map = STRUCTURE_SHAPES.get(dimensionId);
         if (map == null || !map.containsKey(id)) {
             Network.CHANNEL.sendToServer(new StructureDataRequestPacket(id));
             // Mark as pending so we don't spam the server
@@ -135,9 +138,9 @@ public final class CustomProjectorModeClientHandler {
         String id = ModItems.CUSTOM_MODE.getId(stack);
         if (id != null) {
             int dimensionId = mc.world.provider.getDimension();
-            Set<BlockPos> shape = getOrRequestShape(stack, dimensionId);
-            if (shape != null && !shape.isEmpty()) {
-                BlockHighlighter.highlightBlocks(partialTick, shape, null);
+            BlockHighlighter.PreparedOutline outline = getOrRequestOutline(stack, dimensionId);
+            if (outline != null && !outline.isEmpty()) {
+                BlockHighlighter.renderPrepared(partialTick, outline, null);
             }
         }
     }

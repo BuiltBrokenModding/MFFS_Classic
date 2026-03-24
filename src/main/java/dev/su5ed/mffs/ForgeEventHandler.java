@@ -8,9 +8,11 @@ import dev.su5ed.mffs.blockentity.InterdictionMatrixBlockEntity;
 import dev.su5ed.mffs.setup.ModBlocks;
 import dev.su5ed.mffs.setup.ModModules;
 import dev.su5ed.mffs.util.Fortron;
+import dev.su5ed.mffs.util.InterdictionDamageSource;
 import dev.su5ed.mffs.util.ModUtil;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -20,6 +22,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.Loader;
@@ -53,6 +56,44 @@ public class ForgeEventHandler {
         } else {
             onPlayerInteractInternal(event, event.getEntityPlayer(), world, pos, Fortron.Action.LEFT_CLICK_BLOCK);
         }
+    }
+
+    @SubscribeEvent
+    public void onLivingDrops(LivingDropsEvent event) {
+        if (!(event.getSource() instanceof InterdictionDamageSource)) return;
+        // Only handle mob drops — never interfere with player death drops
+        if (event.getEntityLiving() instanceof EntityPlayer) return;
+
+        InterdictionDamageSource source = (InterdictionDamageSource) event.getSource();
+        InterdictionMatrix im = source.getInterdictionMatrix();
+        MFFSConfig.InterdictionDropMode mode = MFFSConfig.interdictionMobDropMode;
+
+        switch (mode) {
+            case NORMAL:
+                return;
+            case DISABLED:
+                event.setCanceled(true);
+                return;
+            case COLLECTION_OPTIONAL:
+                if (im.hasModule(ModModules.COLLECTION)) {
+                    collectDrops(im, event);
+                }
+                return;
+            case COLLECTION_REQUIRED:
+                if (im.hasModule(ModModules.COLLECTION)) {
+                    collectDrops(im, event);
+                } else {
+                    event.setCanceled(true);
+                }
+                return;
+        }
+    }
+
+    private void collectDrops(InterdictionMatrix im, LivingDropsEvent event) {
+        for (EntityItem entityItem : event.getDrops()) {
+            im.mergeIntoInventory(entityItem.getItem());
+        }
+        event.setCanceled(true);
     }
 
     @SubscribeEvent
