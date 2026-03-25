@@ -68,6 +68,17 @@ public class ForgeEventHandler {
         InterdictionMatrix im = source.getInterdictionMatrix();
         MFFSConfig.InterdictionDropMode mode = MFFSConfig.interdictionMobDropMode;
 
+        // Drain kill energy once on actual mob death
+        if (MFFSConfig.interdictionMatrixMobKillEnergy > 0) {
+            net.minecraft.tileentity.TileEntity be = im.be();
+            if (be.hasCapability(dev.su5ed.mffs.setup.ModCapabilities.FORTRON, null)) {
+                dev.su5ed.mffs.api.fortron.FortronStorage fortron = be.getCapability(dev.su5ed.mffs.setup.ModCapabilities.FORTRON, null);
+                if (fortron != null) {
+                    fortron.extractFortron(MFFSConfig.interdictionMatrixMobKillEnergy, false);
+                }
+            }
+        }
+
         switch (mode) {
             case NORMAL:
                 return;

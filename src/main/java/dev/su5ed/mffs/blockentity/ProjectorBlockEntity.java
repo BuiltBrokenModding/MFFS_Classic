@@ -391,7 +391,18 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
                         return null;
                     });
                 } else if (this.semaphore.isInStage(ProjectionStage.STANDBY)) {
-                    reCalculateForceField();
+                    // If the projector was just powered back on while a power-off drain is still
+                    // in progress (projectedBlocks empty, pendingRemoval non-empty), reclaim the
+                    // queued blocks into projectedBlocks and use the soft-destroy diff path.
+                    // This prevents the drain loop from removing blocks that will immediately be
+                    // re-placed, so only blocks absent from the new field geometry are drained.
+                    if (this.projectedBlocks.isEmpty() && !this.pendingRemoval.isEmpty()) {
+                        this.projectedBlocks.addAll(this.pendingRemoval);
+                        this.pendingRemoval.clear();
+                        softDestroyField();
+                    } else {
+                        reCalculateForceField();
+                    }
                 } else if (this.semaphore.isReady() && this.semaphore.isComplete(ProjectionStage.SELECTING)
                         && this.fortronStorage.getStoredFortron() >= fortronCost * MFFSConfig.FORTRON_TRANSFER_TICKS / 20) {
                     // Only project when the tank still holds a comfortable Fortron reserve
@@ -440,6 +451,14 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
                 if (this.world.getBlockState(orphan).getBlock() == ModBlocks.FORCE_FIELD) {
                     net.minecraft.tileentity.TileEntity ote = this.world.getTileEntity(orphan);
                     if (ote instanceof ForceFieldBlockEntity offe && this.pos.equals(offe.getProjectorPos())) {
+                        // Zero client block-light before removal so clients don't see lingering
+                        // glow/light on a block that is about to become air.
+                        if (getModuleCount(ModModules.GLOW) > 0) {
+                            NBTTagCompound zeroTag = offe.getCustomUpdateTag();
+                            zeroTag.setInteger("clientBlockLight", 0);
+                            Network.sendToAllAround(new UpdateBlockEntityPacket(orphan, zeroTag),
+                                this.world, this.pos, computeFieldSendRadius());
+                        }
                         this.world.setBlockToAir(orphan);
                     }
                 }
@@ -931,11 +950,6 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
         List<BlockPos> toRemoveList = new ArrayList<>(toRemove);
         Collections.shuffle(toRemoveList);
 
-        // Zero lights only on blocks being removed.
-        if (!toRemoveList.isEmpty() && getModuleCount(ModModules.GLOW) > 0) {
-            zeroFieldBlockLights(toRemove);
-        }
-
         // Queue removals and update projectedBlocks.
         this.pendingRemoval.addAll(toRemoveList);
         this.projectedBlocks.removeAll(toRemove);
@@ -964,26 +978,6 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
             }
             Collections.shuffle(camoToRefresh);
             this.pendingCamoRefresh.addAll(camoToRefresh);
-        }
-    }
-
-    /**
-     * Sends {@code clientBlockLight=0} to every force field block in {@code positions}.
-     * Called before a soft-destroy to prevent orphan glow on blocks sitting in the
-     * pending-removal queue.  Reclaimed blocks receive a corrected value during the
-     * next {@code projectField()} pass.
-     * This is probably not the best way to handle this, will look into it later.
-     */
-    private void zeroFieldBlockLights(Set<BlockPos> positions) {
-        if (this.world == null || this.world.isRemote || positions.isEmpty()) return;
-        double radius = computeFieldSendRadius();
-        for (BlockPos pos : new HashSet<>(positions)) {
-            net.minecraft.tileentity.TileEntity te = this.world.getTileEntity(pos);
-            if (te instanceof ForceFieldBlockEntity be) {
-                NBTTagCompound zeroTag = be.getCustomUpdateTag();
-                zeroTag.setInteger("clientBlockLight", 0);
-                Network.sendToAllAround(new UpdateBlockEntityPacket(pos, zeroTag), this.world, this.pos, radius);
-            }
         }
     }
 

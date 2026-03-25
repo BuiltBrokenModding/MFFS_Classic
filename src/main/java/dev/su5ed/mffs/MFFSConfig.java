@@ -537,7 +537,8 @@ public final class MFFSConfig {
             "Maximum total number of Warn Modules insertable into an Interdiction Matrix. Example: 64 permits a full stack across the upgrade slots.");
         projectionCycleTicks = configuration.getInt("projectionCycleTicks", "projector", projectionCycleTicks, 1, 100,
             "How often (in ticks) the main async projection cycle runs (calculate + select + project).\n"
-            + "Example: 10 runs the cycle every 0.5 s; 20 runs it once per second.");
+            + "Example: 10 runs the cycle every 0.5 s; 20 runs it once per second.\n"
+            + "It's advised to change projection speed and speed module factor first for best performance.");
         enableFastFill = configuration.getBoolean("enableFastFill", "projector", enableFastFill,
             "When true, the projector sweeps its full calculated field each projection cycle and fills gaps immediately (e.g. terrain dug out under the field). "
             + "Useful in PvP scenarios. Disable on servers with large fields to reduce per-tick overhead.");
