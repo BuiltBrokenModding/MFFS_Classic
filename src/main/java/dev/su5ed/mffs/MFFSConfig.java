@@ -111,7 +111,7 @@ public final class MFFSConfig {
     /** Fortron tank capacity added per Capacity Module in F. */
     public static int    interdictionMatrixTankCapacityPerModule = 5000;
     /** Controls what happens to mob drops when the Interdiction Matrix kills a mob. */
-    public static InterdictionDropMode interdictionMobDropMode = InterdictionDropMode.COLLECTION_OPTIONAL;
+    public static InterdictionDropMode interdictionMobDropMode = InterdictionDropMode.COLLECTION_REQUIRED;
 
     // -------------------------------------------------------------------------
     // Projector
@@ -506,7 +506,7 @@ public final class MFFSConfig {
             interdictionMatrixTankCapacityPerModule, 0, Integer.MAX_VALUE,
             "Fortron tank capacity added per Capacity Module in F.");
         String dropModeStr = configuration.getString("mobDropMode", "interdiction_matrix",
-            InterdictionDropMode.NORMAL.name(),
+            InterdictionDropMode.COLLECTION_REQUIRED.name(),
             "Controls what happens to mob drops when the Interdiction Matrix kills a mob.\n"
             + "NORMAL = drops as normal, no collection feature.\n"
             + "COLLECTION_OPTIONAL = mob drops normally, but Collection Module routes drops to an adjacent chest (overflow voided).\n"
@@ -516,8 +516,8 @@ public final class MFFSConfig {
         try {
             interdictionMobDropMode = InterdictionDropMode.valueOf(dropModeStr);
         } catch (IllegalArgumentException e) {
-            LOGGER.warn("Invalid interdictionMobDropMode '{}', defaulting to NORMAL", dropModeStr);
-            interdictionMobDropMode = InterdictionDropMode.NORMAL;
+            LOGGER.warn("Invalid interdictionMobDropMode '{}', defaulting to COLLECTION_REQUIRED", dropModeStr);
+            interdictionMobDropMode = InterdictionDropMode.COLLECTION_REQUIRED;
         }
 
         // -- Projector --

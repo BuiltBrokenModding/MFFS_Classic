@@ -91,6 +91,14 @@ public abstract class FortronBlockEntity extends InventoryBlockEntity implements
     }
 
     @Override
+    public void invalidate() {
+        if (this.world != null) {
+            FrequencyGrid.instance(this.world.isRemote).unregister(this.fortronStorage);
+        }
+        super.invalidate();
+    }
+
+    @Override
     public void tickServer() {
         super.tickServer();
 

@@ -8,30 +8,24 @@
 Ever tired of nuclear explosions blowing up your house or want to keep people out of your secret bases?
 **May the force (fields) be with you!**
 
-This is a backport of MFFS v3.0+ which itself is a rewrite inspired by ThunderDark's MFFS mod. The foundation and reference for this version was the 1.21/1.20 Forge/NeoForge versions.
+This is a backport of MFFS v3.0+ which itself is a rewrite inspired by ThunderDark's MFFS mod. The foundation and reference for this version was the 1.21/1.20 Forge/NeoForge versions, however since this is essentially a seperate effort, neither this version or upstream versions are expected to have parody.
 
-This backport heavily utilized AI tools, but was thoroughly tested, and in some cases where the reference code used features that do not exist in minecraft 1.12.2, additional effort and features were added.
+*This backport heavily utilized AI tools, but was thoroughly tested, and in some cases where the reference code used features that do not exist in minecraft 1.12.2, additional effort and features were added.*
 
 ## Usage
 
-MFFS uses Fortron as its main power source for force fields. It contains a series of machines focused on converting
-energy to Forton for the use
-in generating force fields. The primary machine is the Force Field Projector which is powered by Fortron Capacitors
-(storage) and Coercion Derivers (generators).
+MFFS uses Fortron as its main power source for force fields. It contains a series of machines focused on converting energy to Forton for the use in generating force fields. The primary machine is the Force Field Projector which is powered by Fortron Capacitors (storage) and Coercion Derivers (generators).
 
-The projector can be modified with various cards and upgrades that improve its stats. These upgrades include several
-field shapes, size scaling,
-position offset, and utility modules. For example, the upgrade to shock attacks, kill monsters, remove blocks, and
-protect tiles.
+The projector can be modified with various cards and upgrades that improve its stats. These upgrades include several field shapes, size scaling, position offset, and utility modules. For example, the upgrade to shock attacks, kill monsters, remove blocks, and protect tiles.
 
 ## Differences
 - Lighting -- The upstream mod uses the updated lighting system to defer updates, on 1.12.2 the lighting has always been known as being heavy and laggy, to address this we slimmed down the scope for the glow module to only light force fields making contact with physical blocks (by default) and process these updates client side in a queue.
-- Configurable -- We've made extra options for server owners to balance and tweak, such as easily disabling the steel ingot recipe, which other mods do a better job at.
+- Configurable -- We've made extra options for server owners to balance and tweak, such as easily disabling the steel ingot recipes, adding custom cataylsts, and changing module costs and effects.
 - Transitions -- Block translation difference checks. We avoid block costly block updates which do not need to be updated by comparing a difference between old and updated projections.
-- Safety -- We've added simply safety measures to prevent base owners from locking themselves out of their base, wasting time of server OPs to fix their mistake. Hostile and restrictive features require biometrics active, ensuring at least someone has the keys to the kingdom.
+- Safety -- We've added simple safety measures to prevent base owners from locking themselves out of their base, wasting time of server OPs to fix their mistake. Hostile and restrictive features require active biometrics, ensuring at least someone has the keys to the kingdom.
 - Feedback -- Instead of chat prints for getting close to an interdiction zone, we print a on screen message with a distance, so you have a better idea where not to go. Cached and calculated on the client!
-- Commands -- A feature hopefully you never need, /mffs command that allows OPs to clean up orphan force fields that would otherwise be very hard to remove.
-- Interdiction Drop Collection -- With different configuration modes, by default mob drops drop like normal but can be collected with a collection module.
+- Interdiction Drop Collection -- With different configuration modes, by default a collection module is needed to get mob drops from interdiction mob kills, this is more performant for servers to not drop items on the ground.
+- Commands -- A feature hopefully you never need, /mffs command that allows OPs to clean up orphan force fields that would otherwise be very hard to remove. Better to have and not need.
 
 ### Contributing
 
