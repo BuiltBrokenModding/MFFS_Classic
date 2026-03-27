@@ -20,12 +20,16 @@ The projector can be modified with various cards and upgrades that improve its s
 
 ## Differences
 - Lighting -- The upstream mod uses the updated lighting system to defer updates, on 1.12.2 the lighting has always been known as being heavy and laggy, to address this we slimmed down the scope for the glow module to only light force fields making contact with physical blocks (by default) and process these updates client side in a queue.
-- Configurable -- We've made extra options for server owners to balance and tweak, such as easily disabling the steel ingot recipes, adding custom cataylsts, and changing module costs and effects.
+- Configurable -- We've made extra options for server owners to balance and tweak, such as easily disabling the steel ingot recipes, adding custom cataylsts, and changing module costs, effects, and even max stack sizes.
 - Transitions -- Block translation difference checks. We avoid block costly block updates which do not need to be updated by comparing a difference between old and updated projections.
 - Safety -- We've added simple safety measures to prevent base owners from locking themselves out of their base, wasting time of server OPs to fix their mistake. Hostile and restrictive features require active biometrics, ensuring at least someone has the keys to the kingdom.
 - Feedback -- Instead of chat prints for getting close to an interdiction zone, we print a on screen message with a distance, so you have a better idea where not to go. Cached and calculated on the client!
 - Interdiction Drop Collection -- With different configuration modes, by default a collection module is needed to get mob drops from interdiction mob kills, this is more performant for servers to not drop items on the ground.
 - Commands -- A feature hopefully you never need, /mffs command that allows OPs to clean up orphan force fields that would otherwise be very hard to remove. Better to have and not need.
+- Improved Tooltips -- While the mod still includes a Patchouli manual, we also add extra information via tooltips. Such as displaying a blank ID as "Everyone" as it functions as, or what some slots accept (i.e catalysts).
+- Interdiction Damage -- Instead of running effectively a /kill on the target, we apply a damage value, based on the stack size of the module.
+- Visuals -- Optional codechicken lib integration that applies some fancy glows on the machines.
+- Performant -- The mod has been refactored in many ways to save resources, do as little on thread work as possible, cache as much as possible, and offload to client when possible. It should look cool, be functional, but be quiet on a performance profile scan.
 
 ### Contributing
 

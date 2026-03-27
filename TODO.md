@@ -18,6 +18,4 @@
 ## Optimization
 
 ## Known Bugs
-- Look into rendering of power cables not showing emittions on deriver.
--     Draining cable too fast?
 - Items phase through bottoms of force fields

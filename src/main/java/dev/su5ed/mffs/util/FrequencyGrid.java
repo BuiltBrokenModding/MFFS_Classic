@@ -22,15 +22,18 @@ public class FrequencyGrid {
     private static FrequencyGrid CLIENT_INSTANCE = new FrequencyGrid();
     private static FrequencyGrid SERVER_INSTANCE = new FrequencyGrid();
 
+    private final Object lock = new Object();
     private final Set<FortronStorage> frequencyGrid = new HashSet<>();
 
     public <T extends FortronStorage> void register(T fortron) {
-        BlockPos pos = fortron.getOwner().getPos();
-        this.frequencyGrid.removeIf(frequency -> {
-            TileEntity owner = frequency.getOwner();
-            return frequency == null || owner.isInvalid() || owner.getPos().equals(pos);
-        });
-        this.frequencyGrid.add(fortron);
+        synchronized (this.lock) {
+            BlockPos pos = fortron.getOwner().getPos();
+            this.frequencyGrid.removeIf(frequency -> {
+                TileEntity owner = frequency.getOwner();
+                return frequency == null || owner.isInvalid() || owner.getPos().equals(pos);
+            });
+            this.frequencyGrid.add(fortron);
+        }
     }
 
     public static FrequencyGrid instance() {
@@ -42,12 +45,16 @@ public class FrequencyGrid {
     }
 
     public void unregister(FortronStorage tileEntity) {
-        this.frequencyGrid.remove(tileEntity);
-        cleanUp();
+        synchronized (this.lock) {
+            this.frequencyGrid.remove(tileEntity);
+            cleanUpLocked();
+        }
     }
 
     public Set<FortronStorage> get() {
-        return this.frequencyGrid;
+        synchronized (this.lock) {
+            return new HashSet<>(this.frequencyGrid);
+        }
     }
 
     public Set<FortronStorage> get(int frequency) {
@@ -66,6 +73,12 @@ public class FrequencyGrid {
     }
 
     public void cleanUp() {
+        synchronized (this.lock) {
+            cleanUpLocked();
+        }
+    }
+
+    private void cleanUpLocked() {
         this.frequencyGrid.removeIf(fortron -> fortron == null || fortron.getOwner().isInvalid());
     }
 
