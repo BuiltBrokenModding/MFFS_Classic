@@ -306,6 +306,10 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
         this.camoModulePresent = hasModule(ModModules.CAMOUFLAGE);
         if (!this.world.isRemote) {
             MinecraftForge.EVENT_BUS.register(this);
+            // Reset the calculation pipeline so that stale in-flight stages from a previous
+            // lifecycle (e.g. onLoad called twice on the same instance during chunk loading)
+            // don't cause "Attempted to switch stage before it was completed".
+            this.semaphore.reset();
             reCalculateForceField();
         }
     }
@@ -386,8 +390,18 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
                 // then chain into SELECTING so only genuinely-new positions are evaluated.
                 if (this.pendingDiffSnapshot != null && this.semaphore.isComplete(ProjectionStage.CALCULATING)) {
                     applyFieldDiff();
+                    prewarmProjectionCache();
                     runSelectionTask().exceptionally(throwable -> {
                         MFFSMod.LOGGER.error("Error selecting force field blocks after diff", throwable);
+                        return null;
+                    });
+                } else if (this.semaphore.isInStage(ProjectionStage.CALCULATING) && this.semaphore.isComplete(ProjectionStage.CALCULATING)) {
+                    // Normal (non-diff) calc completion: pre-warm the projection cache here on the
+                    // server thread so the async selectProjectablePositions task only gets cache
+                    // hits and never calls world.getBlockState off the server thread.
+                    prewarmProjectionCache();
+                    runSelectionTask().exceptionally(throwable -> {
+                        MFFSMod.LOGGER.error("Error selecting force field blocks", throwable);
                         return null;
                     });
                 } else if (this.semaphore.isInStage(ProjectionStage.STANDBY)) {
@@ -1074,8 +1088,12 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
             if (getModeStack().getItem() instanceof ObjectCache cache) {
                 cache.clearCache();
             }
+            // Do NOT chain into runSelectionTask here via thenCompose. That would cause
+            // selectProjectablePositions to run on a ForkJoinPool thread, which hits
+            // projectionCache.getUnchecked → canProjectPos → world.getBlockState off the server
+            // thread and can load chunks off-thread, corrupting WorldServer.tickUpdates state.
+            // Instead, tickServer detects CALCULATING completion and starts selection safely.
             runCalculationTask()
-                .thenCompose(v -> runSelectionTask())
                 .exceptionally(throwable -> {
                     MFFSMod.LOGGER.error("Error calculating force field blocks", throwable);
                     return null;
@@ -1251,6 +1269,18 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
             .toMutableList();
     }
 
+    /**
+     * Pre-warms the projection cache for all currently-calculated field positions.
+     * Must be called on the server thread so that cache misses (→ canProjectPos → world.getBlockState)
+     * happen safely.  After this call, the async selectProjectablePositions task will only get
+     * cache hits and never touch world state off-thread.
+     */
+    private void prewarmProjectionCache() {
+        for (TargetPosPair pair : getCalculatedFieldPositions()) {
+            this.projectionCache.getUnchecked(pair.pos());
+        }
+    }
+
     private CompletableFuture<?> runSelectionTask() {
         CompletableFuture<List<TargetPosPair>> future = this.semaphore.beginStage(ProjectionStage.SELECTING);
         CompletableFuture.supplyAsync(this::selectProjectablePositions).whenComplete((result, ex) -> {
@@ -1287,6 +1317,9 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
                     break fieldLoop;
                 }
             }
+            // Cache is pre-warmed on the server thread by prewarmProjectionCache() before this
+            // async task is launched, so getUnchecked will always be a cache hit here and will
+            // never call canProjectPos → world.getBlockState from off the server thread.
             if (this.projectionCache.getUnchecked(pos).getValue() && this.world.isBlockLoaded(pos)) {
                 projectable.add(pair);
                 constructionCount++;
