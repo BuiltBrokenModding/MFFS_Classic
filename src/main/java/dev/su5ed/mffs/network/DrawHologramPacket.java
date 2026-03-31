@@ -1,13 +1,11 @@
 package dev.su5ed.mffs.network;
 
+import dev.su5ed.mffs.MFFSMod;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.client.Minecraft;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class DrawHologramPacket implements IMessage {
     private Vec3d pos;
@@ -55,12 +53,10 @@ public class DrawHologramPacket implements IMessage {
         buf.writeDouble(v.z);
     }
 
-    @SideOnly(Side.CLIENT)
     public static class Handler implements IMessageHandler<DrawHologramPacket, IMessage> {
         @Override
         public IMessage onMessage(DrawHologramPacket message, MessageContext ctx) {
-            Minecraft mc = Minecraft.getMinecraft();
-            mc.addScheduledTask(() -> ClientPacketHandler.handleDrawHologramPacket(message));
+            MFFSMod.proxy.handleDrawHologram(message);
             return null;
         }
     }

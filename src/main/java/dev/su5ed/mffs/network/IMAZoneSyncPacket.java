@@ -1,14 +1,11 @@
 package dev.su5ed.mffs.network;
 
-import dev.su5ed.mffs.client.ClientZoneTracker;
+import dev.su5ed.mffs.MFFSMod;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.client.Minecraft;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Sent server → client whenever the Interdiction Matrix's zone configuration changes
@@ -64,18 +61,16 @@ public class IMAZoneSyncPacket implements IMessage {
         buf.writeBoolean(this.active);
     }
 
-    @SideOnly(Side.CLIENT)
+    public BlockPos getPos() { return new BlockPos(this.x, this.y, this.z); }
+    public int getActionRange() { return this.actionRange; }
+    public int getWarningRange() { return this.warningRange; }
+    public byte getZoneType() { return this.zoneType; }
+    public boolean isActive() { return this.active; }
+
     public static class Handler implements IMessageHandler<IMAZoneSyncPacket, IMessage> {
         @Override
         public IMessage onMessage(IMAZoneSyncPacket message, MessageContext ctx) {
-            Minecraft mc = Minecraft.getMinecraft();
-            mc.addScheduledTask(() -> ClientZoneTracker.updateZone(
-                new BlockPos(message.x, message.y, message.z),
-                message.actionRange,
-                message.warningRange,
-                message.zoneType,
-                message.active
-            ));
+            MFFSMod.proxy.handleIMAZoneSync(message);
             return null;
         }
     }

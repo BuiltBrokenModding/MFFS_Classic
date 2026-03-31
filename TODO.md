@@ -14,8 +14,10 @@
 -     Use the camo module or make a new module - module could support setting color without a dye.
 - Only send the interdiction warn zone to clients when isActive(); when biometrics is active.
 - Make the non-square camo filter an option instead of forced, some people are delusional.
+- Force Fields protect from gravitational anomalies
 
 ## Optimization
+- Use ConcurrentHashMap.newKeySet() instead of a lock in FrequencyGrid.
 
 ## Known Bugs
 - Items phase through bottoms of force fields

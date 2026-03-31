@@ -1,6 +1,7 @@
 package dev.su5ed.mffs;
 
 import dev.su5ed.mffs.network.Network;
+import dev.su5ed.mffs.proxy.CommonProxy;
 import dev.su5ed.mffs.setup.ModCapabilities;
 import dev.su5ed.mffs.setup.ModItems;
 import dev.su5ed.mffs.setup.ModObjects;
@@ -13,6 +14,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
+import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import dev.su5ed.mffs.command.MffsCommand;
@@ -37,7 +39,7 @@ import org.apache.logging.log4j.Logger;
 public final class MFFSMod {
     public static final String MODID   = "mffs";
     public static final String NAME    = "Modular Force Field System";
-    public static final String VERSION = "1.0.0";
+    public static final String VERSION = "${mod_version}";
 
     private static final String TOP_MODID = "theoneprobe";
 
@@ -45,6 +47,12 @@ public final class MFFSMod {
 
     @Instance
     public static MFFSMod INSTANCE;
+
+    @SidedProxy(
+        clientSide = "dev.su5ed.mffs.proxy.ClientProxy",
+        serverSide = "dev.su5ed.mffs.proxy.CommonProxy"
+    )
+    public static CommonProxy proxy;
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {

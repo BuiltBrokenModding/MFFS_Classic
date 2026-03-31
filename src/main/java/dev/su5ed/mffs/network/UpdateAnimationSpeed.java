@@ -1,15 +1,12 @@
 package dev.su5ed.mffs.network;
 
-import dev.su5ed.mffs.blockentity.ProjectorBlockEntity;
+import dev.su5ed.mffs.MFFSMod;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class UpdateAnimationSpeed implements IMessage {
     private BlockPos pos;
@@ -36,15 +33,13 @@ public class UpdateAnimationSpeed implements IMessage {
         pb.writeInt(this.animationSpeed);
     }
 
-    @SideOnly(Side.CLIENT)
+    public BlockPos getPos() { return this.pos; }
+    public int getAnimationSpeed() { return this.animationSpeed; }
+
     public static class Handler implements IMessageHandler<UpdateAnimationSpeed, IMessage> {
         @Override
         public IMessage onMessage(UpdateAnimationSpeed message, MessageContext ctx) {
-            Minecraft mc = Minecraft.getMinecraft();
-            mc.addScheduledTask(() ->
-                Network.findTileEntity(ProjectorBlockEntity.class, mc.world, message.pos)
-                    .ifPresent(be -> be.setClientAnimationSpeed(message.animationSpeed))
-            );
+            MFFSMod.proxy.handleUpdateAnimationSpeed(message);
             return null;
         }
     }

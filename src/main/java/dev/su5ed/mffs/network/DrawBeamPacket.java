@@ -1,14 +1,12 @@
 package dev.su5ed.mffs.network;
 
+import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.render.particle.ParticleColor;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.client.Minecraft;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class DrawBeamPacket implements IMessage {
     private Vec3d target;
@@ -56,12 +54,10 @@ public class DrawBeamPacket implements IMessage {
         buf.writeDouble(v.z);
     }
 
-    @SideOnly(Side.CLIENT)
     public static class Handler implements IMessageHandler<DrawBeamPacket, IMessage> {
         @Override
         public IMessage onMessage(DrawBeamPacket message, MessageContext ctx) {
-            Minecraft mc = Minecraft.getMinecraft();
-            mc.addScheduledTask(() -> ClientPacketHandler.handleDrawBeamPacket(message));
+            MFFSMod.proxy.handleDrawBeam(message);
             return null;
         }
     }

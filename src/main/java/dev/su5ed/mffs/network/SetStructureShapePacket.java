@@ -1,8 +1,7 @@
 package dev.su5ed.mffs.network;
 
-import dev.su5ed.mffs.render.CustomProjectorModeClientHandler;
+import dev.su5ed.mffs.MFFSMod;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagLong;
@@ -11,8 +10,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -62,14 +59,14 @@ public class SetStructureShapePacket implements IMessage {
         }
     }
 
-    @SideOnly(Side.CLIENT)
+    public int getDimension() { return this.dimension; }
+    public String getStructId() { return this.structId; }
+    public Set<BlockPos> getShape() { return this.shape; }
+
     public static class Handler implements IMessageHandler<SetStructureShapePacket, IMessage> {
         @Override
         public IMessage onMessage(SetStructureShapePacket message, MessageContext ctx) {
-            Minecraft mc = Minecraft.getMinecraft();
-            mc.addScheduledTask(() ->
-                CustomProjectorModeClientHandler.setShape(message.dimension, message.structId, message.shape)
-            );
+            MFFSMod.proxy.handleSetStructureShape(message);
             return null;
         }
     }
