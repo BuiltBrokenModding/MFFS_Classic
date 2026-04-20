@@ -16,11 +16,12 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class DisintegrationModule extends BaseModule {
-    private final List<BlockPos> activeBlocks = new ArrayList<>();
+    private final Set<BlockPos> activeBlocks = ConcurrentHashMap.newKeySet();
 
     public DisintegrationModule(ModuleType<?> type, ItemStack stack) {
         super(type, stack);

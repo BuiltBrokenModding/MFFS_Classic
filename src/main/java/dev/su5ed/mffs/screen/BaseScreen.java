@@ -43,6 +43,7 @@ public abstract class BaseScreen<T extends Container> extends GuiContainer {
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTick) {
+        this.drawDefaultBackground();
         this.tooltips.clear(); // repopulated each frame by drawGuiContainerForegroundLayer
         super.drawScreen(mouseX, mouseY, partialTick);
         renderFg(mouseX, mouseY, partialTick);

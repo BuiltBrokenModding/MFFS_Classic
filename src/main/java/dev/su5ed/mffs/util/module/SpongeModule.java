@@ -14,11 +14,12 @@ import net.minecraftforge.fluids.IFluidBlock;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
+import java.util.Collections;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class SpongeModule extends BaseModule {
-    private final List<BlockPos> removingBlocks = new ArrayList<>();
+    private final ConcurrentLinkedQueue<BlockPos> removingBlocks = new ConcurrentLinkedQueue<>();
 
     public SpongeModule(ModuleType<?> type, ItemStack stack) {
         super(type, stack);
@@ -52,9 +53,9 @@ public class SpongeModule extends BaseModule {
     @Override
     public void beforeProject(Projector projector) {
         World world = projector.be().getWorld();
-        for (BlockPos pos : this.removingBlocks) {
+        BlockPos pos;
+        while ((pos = this.removingBlocks.poll()) != null) {
             world.setBlockState(pos, Blocks.AIR.getDefaultState());
         }
-        this.removingBlocks.clear();
     }
 }

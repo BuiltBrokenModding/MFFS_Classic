@@ -18,6 +18,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
+import java.util.ArrayList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -147,7 +148,7 @@ public class ForgeEventHandler {
         if (!(event.player instanceof EntityPlayerMP)) return;
         EntityPlayerMP player = (EntityPlayerMP) event.player;
         World world = player.world;
-        for (TileEntity te : world.loadedTileEntityList) {
+        for (TileEntity te : new ArrayList<>(world.loadedTileEntityList)) {
             if (te instanceof InterdictionMatrixBlockEntity im) {
                 im.sendZoneSyncTo(player);
             }

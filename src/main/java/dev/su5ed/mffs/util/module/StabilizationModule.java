@@ -19,11 +19,11 @@ import net.minecraft.world.World;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class StabilizationModule extends BaseModule {
-    private final List<BlockPos> activeBlocks = new ArrayList<>();
+    private final Set<BlockPos> activeBlocks = ConcurrentHashMap.newKeySet();
 
     public StabilizationModule(ModuleType<?> type, ItemStack stack) {
         super(type, stack);

@@ -44,7 +44,7 @@ public final class ModModules {
     public static final ModuleType<Module> SILENCE = create(1.0F);
     public static final ModuleType<Module> SPONGE = create(SpongeModule::new, 1.0F);
     public static final ModuleType<Module> DOME = create(DomeModule::new, 0.5F, Module.Category.MATRIX);
-    public static final ModuleType<Module> COLLECTION = create(15.0F, Module.Category.INTERDICTION);
+    public static final ModuleType<Module> COLLECTION = create(15.0F, Module.Category.INTERDICTION, Module.Category.MATRIX);
     public static final ModuleType<Module> STABILIZAZION = create(StabilizationModule::new, 20.0F);
     public static final ModuleType<Module> INVERTER = create(15.0F);
 

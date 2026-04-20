@@ -17,6 +17,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import one.util.streamex.StreamEx;
 import org.jetbrains.annotations.Nullable;
+import net.minecraft.block.state.IBlockState;
 
 import java.util.List;
 import java.util.Optional;
@@ -67,7 +68,9 @@ public abstract class FortronBlockEntity extends InventoryBlockEntity implements
     @Override
     public boolean isActive() {
         if (this.world.isRemote) {
-            return this.world.getBlockState(this.pos).getValue(BaseEntityBlock.ACTIVE);
+            IBlockState state = this.world.getBlockState(this.pos);
+            if (!(state.getBlock() instanceof BaseEntityBlock)) return false;
+            return state.getValue(BaseEntityBlock.ACTIVE);
         }
         return this.active || this.world.isBlockPowered(this.pos);
     }
@@ -111,6 +114,7 @@ public abstract class FortronBlockEntity extends InventoryBlockEntity implements
 
         boolean active = isActive();
         net.minecraft.block.state.IBlockState state = this.world.getBlockState(this.pos);
+        if (!(state.getBlock() instanceof BaseEntityBlock)) return;
         if (state.getValue(BaseEntityBlock.ACTIVE) != active) {
             this.world.setBlockState(this.pos, state.withProperty(BaseEntityBlock.ACTIVE, active));
         }

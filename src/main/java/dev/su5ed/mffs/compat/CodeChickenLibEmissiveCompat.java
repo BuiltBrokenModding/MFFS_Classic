@@ -49,9 +49,6 @@ public final class CodeChickenLibEmissiveCompat {
         TextureAtlasSprite emissiveSprite = getEmissiveAtlasSprite(emissiveTexture);
         if (emissiveSprite == null) return;
 
-        float previousLightX = OpenGlHelper.lastBrightnessX;
-        float previousLightY = OpenGlHelper.lastBrightnessY;
-
         renderBlockEmissiveInternal(state, x, y, z, s -> emissiveSprite);
     }
 

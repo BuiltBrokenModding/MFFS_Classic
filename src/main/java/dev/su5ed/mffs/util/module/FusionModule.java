@@ -13,13 +13,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class FusionModule extends BaseModule {
-    private final List<BlockPos> removingBlocks = new ArrayList<>();
+    private final ConcurrentLinkedQueue<BlockPos> removingBlocks = new ConcurrentLinkedQueue<>();
 
     public FusionModule(ModuleType<?> type, ItemStack stack) {
         super(type, stack);
@@ -53,11 +52,11 @@ public class FusionModule extends BaseModule {
     @Override
     public void beforeProject(Projector projector) {
         World world = projector.be().getWorld();
-        for (BlockPos pos : this.removingBlocks) {
+        BlockPos pos;
+        while ((pos = this.removingBlocks.poll()) != null) {
             if (world.getBlockState(pos).getBlock() == ModBlocks.FORCE_FIELD) {
                 world.setBlockToAir(pos);
             }
         }
-        this.removingBlocks.clear();
     }
 }
