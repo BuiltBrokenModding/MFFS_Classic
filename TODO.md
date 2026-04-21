@@ -21,3 +21,4 @@
 
 ## Known Bugs
 - Items phase through bottoms of force fields
+- Rendering on projector disintegration/stabilization is flickery and generally bad.

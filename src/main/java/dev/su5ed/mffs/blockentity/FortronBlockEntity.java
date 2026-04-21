@@ -29,6 +29,11 @@ public abstract class FortronBlockEntity extends InventoryBlockEntity implements
 
     private boolean markSendFortron = true;
     private boolean active;
+    /**
+     * Server-thread-computed snapshot of {@link #isActive()}, updated each tick in
+     * {@link #tickServer()}. Safe to read from async threads without touching world state.
+     */
+    private volatile boolean cachedActiveState;
     protected int animation;
 
     protected FortronBlockEntity() {
@@ -75,6 +80,15 @@ public abstract class FortronBlockEntity extends InventoryBlockEntity implements
         return this.active || this.world.isBlockPowered(this.pos);
     }
 
+    /**
+     * Returns the last server-tick-computed active state. Safe to call from async threads
+     * because it never touches world state — it reads a {@code volatile} field updated by
+     * {@link #tickServer()} on the server thread each tick.
+     */
+    public boolean isCachedActive() {
+        return this.cachedActiveState;
+    }
+
     @Override
     public void setActive(boolean active) {
         this.active = active;
@@ -113,6 +127,8 @@ public abstract class FortronBlockEntity extends InventoryBlockEntity implements
         }
 
         boolean active = isActive();
+        // Update the async-safe cache before any async tasks can read it this tick.
+        this.cachedActiveState = active;
         net.minecraft.block.state.IBlockState state = this.world.getBlockState(this.pos);
         if (!(state.getBlock() instanceof BaseEntityBlock)) return;
         if (state.getValue(BaseEntityBlock.ACTIVE) != active) {

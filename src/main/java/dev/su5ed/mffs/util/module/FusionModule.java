@@ -36,7 +36,7 @@ public class FusionModule extends BaseModule {
             if (!owner.hasCapability(ModCapabilities.PROJECTOR, null)) continue;
             Projector compareProjector = owner.getCapability(ModCapabilities.PROJECTOR, null);
             if (compareProjector != null && compareProjector != projector
-                && owner.getWorld() == world && compareProjector.isActive()
+                && owner.getWorld() == world && compareProjector.isCachedActive()
                 && compareProjector.getMode().isPresent()) {
                 for (Iterator<? extends TargetPosPair> it = field.iterator(); it.hasNext(); ) {
                     BlockPos pos = it.next().pos();

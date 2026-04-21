@@ -28,6 +28,12 @@ public interface Projector extends ModuleAcceptor, BiometricIdentifierLink {
     boolean isActive();
 
     /**
+     * Returns the last server-tick-computed active state. Safe to call from async threads
+     * because it never touches world state.
+     */
+    boolean isCachedActive();
+
+    /**
      * Gets the mode of the projector, mainly the shape and size of it.
      */
     Optional<ProjectorMode> getMode();
