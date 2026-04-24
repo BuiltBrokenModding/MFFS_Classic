@@ -1,6 +1,10 @@
 # Changelog
 
-## [1.0.0] - 2023-09-15
+## [1.0.11] - 2026-04-26
 
-### Added
-- This is a default template changelog that follows the [KeepAChangelog Convention](https://keepachangelog.com/en/1.1.0/)
+### Fixed
+-   Fixed block hardness values on machine blocks, now set to 3.5 / Iron.
+-   Fixed block contents not dropping on removal. Creative / Survival should work as expected now.
+
+
+- Follows the [KeepAChangelog Convention](https://keepachangelog.com/en/1.1.0/)
