@@ -15,7 +15,7 @@ import net.minecraft.world.World;
 public class FortronCapacitorBlock extends BaseEntityBlock {
 
     public FortronCapacitorBlock() {
-        super(Material.GLASS, FortronCapacitorBlockEntity::new);
+        super(Material.ROCK, FortronCapacitorBlockEntity::new);
     }
 
     /** Not opaque — renders neighbors. Equivalent to 1.21.x noOcclusion(). */
