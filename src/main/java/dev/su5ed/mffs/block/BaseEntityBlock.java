@@ -18,6 +18,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import javax.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +39,9 @@ public abstract class BaseEntityBlock extends Block implements ITileEntityProvid
         super(material);
         this.provider = provider;
         this.setDefaultState(this.blockState.getBaseState().withProperty(ACTIVE, false));
+        this.setHardness(3.5f);
+        this.setResistance(10.0f);
+        this.setHarvestLevel("pickaxe", 1);
     }
 
     /**
@@ -68,11 +72,51 @@ public abstract class BaseEntityBlock extends Block implements ITileEntityProvid
     public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos,
                          IBlockState state, int fortune) {
         super.getDrops(drops, world, pos, state, fortune);
+        // Called for non-player destruction (explosions, mob griefing). For player breaks the TE
+        // is already null here — contents are handled in harvestBlock / onBlockHarvested instead.
         TileEntity te = world.getTileEntity(pos);
         if (te instanceof BaseBlockEntity base) {
             List<ItemStack> extraDrops = new ArrayList<>();
             base.provideAdditionalDrops(extraDrops);
             drops.addAll(extraDrops);
+        }
+    }
+
+    /**
+     * Drop inventory contents when a player breaks the block in creative mode.
+     * In creative, Forge never calls harvestBlock/getDrops, so we must spawn drops here
+     * while the tile entity is still accessible.
+     */
+    @Override
+    public void onBlockHarvested(World worldIn, BlockPos pos, IBlockState state, EntityPlayer player) {
+        if (player.capabilities.isCreativeMode) {
+            TileEntity te = worldIn.getTileEntity(pos);
+            if (te instanceof BaseBlockEntity base) {
+                List<ItemStack> drops = new ArrayList<>();
+                base.provideAdditionalDrops(drops);
+                for (ItemStack drop : drops) {
+                    spawnAsEntity(worldIn, pos, drop);
+                }
+            }
+        }
+        super.onBlockHarvested(worldIn, pos, state, player);
+    }
+
+    /**
+     * Drop inventory contents in survival mode using the TE reference saved by Forge before
+     * the block was removed. By the time getDrops runs, the TE has already been unlinked from
+     * the world, so we must drop contents here where the reference is still valid.
+     */
+    @Override
+    public void harvestBlock(World worldIn, EntityPlayer player, BlockPos pos, IBlockState state,
+                             @Nullable TileEntity te, ItemStack stack) {
+        super.harvestBlock(worldIn, player, pos, state, te, stack);
+        if (te instanceof BaseBlockEntity base) {
+            List<ItemStack> extraDrops = new ArrayList<>();
+            base.provideAdditionalDrops(extraDrops);
+            for (ItemStack drop : extraDrops) {
+                spawnAsEntity(worldIn, pos, drop);
+            }
         }
     }
 
