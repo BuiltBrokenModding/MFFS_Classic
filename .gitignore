@@ -21,18 +21,8 @@ build
 eclipse
 run
 runs
+/References
+/.vscode
 
 # Files from Forge MDK
 forge*changelog.txt
-/MFFS-1.20.1-Reference-Forge
-/MFFS-1.7.10-Reference
-/MFFS-1.21-Reference-NeoForge
-gradle-OLD.properties
-gradlew-OLD
-gradlew-OLD.bat
-README-OLD.md
-/Alfheim-main
-/Lumenized-master
-/CodeChickenLib-1.12.x
-/BetterBlockOutline-Reference
-/.vscode
