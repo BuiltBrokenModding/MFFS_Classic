@@ -157,6 +157,10 @@ public final class ModClientSetup {
                         if (camo != null) {
                             return event.getBlockColors().colorMultiplier(camo, access, pos, tintIndex);
                         }
+                        int dye = forceField.getDyeColor();
+                        if (dye != -1) {
+                            return dye;
+                        }
                     }
                 }
                 return 0x34FEFF; // default cyan tint matching reference

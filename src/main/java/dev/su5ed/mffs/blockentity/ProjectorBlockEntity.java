@@ -17,6 +17,8 @@ import dev.su5ed.mffs.network.Network;
 import dev.su5ed.mffs.network.UpdateAnimationSpeed;
 import dev.su5ed.mffs.network.UpdateBlockEntityPacket;
 import dev.su5ed.mffs.setup.*;
+import dev.su5ed.mffs.util.CamoResult;
+import dev.su5ed.mffs.util.DyeHelper;
 import dev.su5ed.mffs.util.ModUtil;
 import dev.su5ed.mffs.util.ObjectCache;
 import dev.su5ed.mffs.util.SetBlockEvent;
@@ -122,13 +124,17 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
     private boolean camoModulePresent;
 
     // Cached own-inventory camo result. null = not yet computed this inventory-change cycle.
-    // Uses Optional: empty() means "scanned, nothing found", present() means a valid block.
+    // Non-null (possibly CamoResult.EMPTY) means the internal slots were scanned.
     @Nullable
-    private Optional<IBlockState> cachedOwnCamo;
+    private CamoResult cachedInternalResult;
 
     // Cached neighbor camo data for the current projection pass. Null = not yet computed this pass.
     @Nullable
     private List<IBlockState> cachedNeighborWeightedList;
+
+    // Cached neighbor dye data for the current projection pass. Null = not yet computed this pass.
+    @Nullable
+    private List<Integer> cachedNeighborWeightedDyeList;
 
     public ProjectorBlockEntity() {
         super(50);
@@ -542,8 +548,9 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
         super.onInventoryChanged();
         // Refresh camo caches — hasModule() is already cleared by super.onInventoryChanged()
         this.camoModulePresent = hasModule(ModModules.CAMOUFLAGE);
-        this.cachedOwnCamo = null;
+        this.cachedInternalResult = null;
         this.cachedNeighborWeightedList = null;
+        this.cachedNeighborWeightedDyeList = null;
         // Re-check the projector block's own light level
         if (this.world != null && !this.world.isRemote) {
             this.world.checkLight(this.pos);
@@ -733,8 +740,9 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
                 net.minecraft.tileentity.TileEntity te = this.world.getTileEntity(pos);
                 if (te instanceof ForceFieldBlockEntity be) {
                     be.setProjector(this.pos);
-                    IBlockState camouflage = getCamoBlock(pair.original());
-                    be.setCamouflage(camouflage);
+                    CamoResult result = resolveCamoResult(pair.original());
+                    be.setCamouflage(result.blockState());
+                    be.setDyeColor(result.dyeColor());
                 }
                 // Only update after the projector has been set
                 this.world.notifyBlockUpdate(pos, state, state, 3);
@@ -742,8 +750,9 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
             } else {
                 // Reclaim existing block: update camouflage and push fresh clientBlockLight to clients
                 if (existingTe instanceof ForceFieldBlockEntity be) {
-                    IBlockState camouflage = getCamoBlock(pair.original());
-                    be.setCamouflage(camouflage);
+                    CamoResult result = resolveCamoResult(pair.original());
+                    be.setCamouflage(result.blockState());
+                    be.setDyeColor(result.dyeColor());
                     // Send from projector position so players near the projector receive updates
                     // for all FF blocks regardless of each block's distance from the player.
                     Network.sendToAllAround(new UpdateBlockEntityPacket(pos, be.getCustomUpdateTag()),
@@ -799,16 +808,18 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
      */
     private void refreshFieldVisuals() {
         if (this.world == null || this.world.isRemote) return;
-        // Invalidate per-pass camo caches so each block gets a fresh getCamoBlock() result.
-        this.cachedOwnCamo = null;
+        // Invalidate per-pass camo caches so each block gets a fresh resolveCamoResult() result.
+        this.cachedInternalResult = null;
         this.cachedNeighborWeightedList = null;
+        this.cachedNeighborWeightedDyeList = null;
         List<BlockPos> toRefresh = new ArrayList<>();
         for (BlockPos pos : new HashSet<>(this.projectedBlocks)) {
             net.minecraft.tileentity.TileEntity te = this.world.getTileEntity(pos);
             if (te instanceof ForceFieldBlockEntity be) {
                 // Update server-side state immediately so the TE is consistent before packets drain.
-                IBlockState newCamo = getCamoBlock(new net.minecraft.util.math.Vec3d(pos.getX(), pos.getY(), pos.getZ()));
-                be.setCamouflage(newCamo);
+                CamoResult result = resolveCamoResult(new net.minecraft.util.math.Vec3d(pos.getX(), pos.getY(), pos.getZ()));
+                be.setCamouflage(result.blockState());
+                be.setDyeColor(result.dyeColor());
                 toRefresh.add(pos);
             }
         }
@@ -982,10 +993,14 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
                 net.minecraft.tileentity.TileEntity te = this.world.getTileEntity(pos);
                 if (te instanceof ForceFieldBlockEntity be) {
                     Vec3d original = newFieldMap.get(pos);
-                    IBlockState newCamo = getCamoBlock(original);
+                    CamoResult result = resolveCamoResult(original);
+                    IBlockState newCamo = result.blockState();
+                    int newDye = result.dyeColor();
                     IBlockState oldCamo = be.getCamouflage();
-                    if (!Objects.equals(oldCamo, newCamo)) {
+                    int oldDye = be.getDyeColor();
+                    if (!Objects.equals(oldCamo, newCamo) || oldDye != newDye) {
                         be.setCamouflage(newCamo);
+                        be.setDyeColor(newDye);
                         camoToRefresh.add(pos);
                     }
                 }
@@ -1101,60 +1116,154 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
         }
     }
 
-    public IBlockState getCamoBlock(Vec3d pos) {
-        if (!this.world.isRemote && this.camoModulePresent) {
-            if (getModeStack().getItem() instanceof CustomProjectorModeItem custom) {
-                Map<Vec3d, IBlockState> map = custom.getFieldBlocks(this, getModeStack());
-                IBlockState block = map.get(pos);
-                if (block != null) {
-                    return block;
-                }
-            }
+    /**
+     * Resolves the camouflage/tint that should be applied to a force field block at
+     * the given (pre-translation) field position. Priority is strictly hierarchical:
+     * <ol>
+     *   <li>Custom projector mode per-position block override (block only).</li>
+     *   <li>Internal projector module slots — first block, else first dye. Any hit here
+     *       short-circuits and the attached inventory tier is skipped entirely.</li>
+     *   <li>Attached neighbor inventories — weighted random block (existing behavior),
+     *       else weighted random dye color.</li>
+     * </ol>
+     * Returns {@link CamoResult#EMPTY} when no camouflage module is installed or
+     * nothing is found, in which case the client renders the default cyan tint.
+     */
+    public CamoResult resolveCamoResult(Vec3d pos) {
+        if (this.world.isRemote || !this.camoModulePresent) return CamoResult.EMPTY;
 
-            Optional<IBlockState> ownCamo = this.cachedOwnCamo;
-            if (ownCamo == null) {
-                ownCamo = getAllModuleItemsStream()
-                    .mapPartial(ProjectorBlockEntity::getFilterBlock)
-                    .findFirst();
-                this.cachedOwnCamo = ownCamo;
+        if (getModeStack().getItem() instanceof CustomProjectorModeItem custom) {
+            Map<Vec3d, IBlockState> map = custom.getFieldBlocks(this, getModeStack());
+            IBlockState block = map.get(pos);
+            if (block != null) {
+                return CamoResult.ofBlock(block);
             }
-            if (ownCamo.isPresent()) {
-                return ownCamo.get();
-            }
-
-            return getWeightedCamoBlockFromNeighbors();
         }
-        return null;
+
+        CamoResult internal = this.cachedInternalResult;
+        if (internal == null) {
+            internal = resolveInternalSlots();
+            this.cachedInternalResult = internal;
+        }
+        if (!internal.isEmpty()) {
+            return internal;
+        }
+
+        IBlockState neighborBlock = getWeightedCamoBlockFromNeighbors();
+        if (neighborBlock != null) {
+            return CamoResult.ofBlock(neighborBlock);
+        }
+        int neighborDye = getWeightedDyeFromNeighbors();
+        if (neighborDye != -1) {
+            return CamoResult.ofDye(neighborDye);
+        }
+        return CamoResult.EMPTY;
     }
 
     /**
-     * Invalidates the per-pass neighbor camo cache so the next call to
-     * {@link #getWeightedCamoBlockFromNeighbors()} rescans adjacent inventories.
-     * Called at the start of each projection pass.
+     * Scans the projector's own module slots once: first valid block item wins,
+     * otherwise first valid dye item wins.
+     */
+    private CamoResult resolveInternalSlots() {
+        IBlockState foundBlock = null;
+        int foundDye = -1;
+        Iterator<ItemStack> it = getAllModuleItemsStream().iterator();
+        while (it.hasNext()) {
+            ItemStack stack = it.next();
+            if (foundBlock == null) {
+                Optional<IBlockState> block = getFilterBlock(stack);
+                if (block.isPresent()) {
+                    foundBlock = block.get();
+                    break; // block beats dye in the same tier
+                }
+            }
+            if (foundDye == -1) {
+                int color = DyeHelper.getDyeColor(stack);
+                if (color != -1) foundDye = color;
+            }
+        }
+        if (foundBlock != null) return CamoResult.ofBlock(foundBlock);
+        if (foundDye != -1) return CamoResult.ofDye(foundDye);
+        return CamoResult.EMPTY;
+    }
+
+    /**
+     * Invalidates the per-pass neighbor camo caches so the next call to
+     * {@link #getWeightedCamoBlockFromNeighbors()} / {@link #getWeightedDyeFromNeighbors()}
+     * rescans adjacent inventories. Called at the start of each projection pass.
      */
     private void invalidateNeighborCamoCache() {
         this.cachedNeighborWeightedList = null;
+        this.cachedNeighborWeightedDyeList = null;
     }
 
     @Nullable
     private IBlockState getWeightedCamoBlockFromNeighbors() {
         List<IBlockState> weightedList = this.cachedNeighborWeightedList;
         if (weightedList == null) {
-            Map<IBlockState, Integer> neighborsInventory = checkNeighbors();
-            if (neighborsInventory.isEmpty()) {
-                this.cachedNeighborWeightedList = Collections.emptyList();
-                return null;
-            }
-            weightedList = neighborsInventory.entrySet()
-                .stream()
-                .flatMap(e -> Collections.nCopies(e.getValue(), e.getKey()).stream())
-                .collect(Collectors.toList());
-            this.cachedNeighborWeightedList = weightedList;
+            scanNeighbors();
+            weightedList = this.cachedNeighborWeightedList;
         }
         if (weightedList.isEmpty()) {
             return null;
         }
         return weightedList.get(ThreadLocalRandom.current().nextInt(weightedList.size()));
+    }
+
+    /** @return a 0xRRGGBB dye color from neighbors weighted by stack count, or -1 if none. */
+    private int getWeightedDyeFromNeighbors() {
+        List<Integer> weightedList = this.cachedNeighborWeightedDyeList;
+        if (weightedList == null) {
+            scanNeighbors();
+            weightedList = this.cachedNeighborWeightedDyeList;
+        }
+        if (weightedList.isEmpty()) {
+            return -1;
+        }
+        return weightedList.get(ThreadLocalRandom.current().nextInt(weightedList.size()));
+    }
+
+    /**
+     * Single-pass neighbor inventory scan that populates both the weighted block list
+     * and the weighted dye list. Both lists are stored as non-null (possibly empty) so
+     * subsequent calls in the same projection pass short-circuit on the null check.
+     */
+    private void scanNeighbors() {
+        Map<IBlockState, Integer> blockCounts = new HashMap<>();
+        Map<Integer, Integer> dyeCounts = new HashMap<>();
+        if (!this.world.isRemote) {
+            for (EnumFacing side : EnumFacing.values()) {
+                net.minecraft.tileentity.TileEntity neighbor = this.world.getTileEntity(this.pos.offset(side));
+                if (neighbor == null) continue;
+                if (!neighbor.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side.getOpposite())) continue;
+                IItemHandler handler = neighbor.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side.getOpposite());
+                if (handler == null) continue;
+                for (int i = 0; i < handler.getSlots(); i++) {
+                    ItemStack stack = handler.getStackInSlot(i);
+                    if (stack.isEmpty()) continue;
+                    int count = stack.getCount();
+                    Optional<IBlockState> blockState = getFilterBlock(stack);
+                    if (blockState.isPresent()) {
+                        blockCounts.merge(blockState.get(), count, Integer::sum);
+                        continue;
+                    }
+                    int dye = DyeHelper.getDyeColor(stack);
+                    if (dye != -1) {
+                        dyeCounts.merge(dye, count, Integer::sum);
+                    }
+                }
+            }
+        }
+        this.cachedNeighborWeightedList = blockCounts.isEmpty()
+            ? Collections.emptyList()
+            : blockCounts.entrySet().stream()
+                .flatMap(e -> Collections.nCopies(e.getValue(), e.getKey()).stream())
+                .collect(Collectors.toList());
+        this.cachedNeighborWeightedDyeList = dyeCounts.isEmpty()
+            ? Collections.emptyList()
+            : dyeCounts.entrySet().stream()
+                .flatMap(e -> Collections.nCopies(e.getValue(), e.getKey()).stream())
+                .collect(Collectors.toList());
     }
 
     private CompletableFuture<?> runCalculationTask() {
@@ -1241,7 +1350,9 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
             net.minecraft.tileentity.TileEntity te = this.world.getTileEntity(pos);
             if (te instanceof ForceFieldBlockEntity be) {
                 be.setProjector(this.pos);
-                be.setCamouflage(getCamoBlock(pair.original()));
+                CamoResult result = resolveCamoResult(pair.original());
+                be.setCamouflage(result.blockState());
+                be.setDyeColor(result.dyeColor());
             }
             this.world.notifyBlockUpdate(pos, ffState, ffState, 3);
             this.fortronStorage.extractFortron(1, false);

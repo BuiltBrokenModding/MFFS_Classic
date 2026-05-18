@@ -27,6 +27,8 @@ public class ForceFieldBlockEntity extends BaseTileEntity {
 
     private BlockPos projector;
     private IBlockState camouflage;
+    /** 0xRRGGBB tint color when no camo block is set; -1 means default (cyan). */
+    private int dyeColor = -1;
     private int clientBlockLight;
     // Cached result of camouflage.getLightOpacity() so getLightOpacity() on the block
     // can return immediately after the TE lookup without re-entering the camo lookup chain.
@@ -63,6 +65,15 @@ public class ForceFieldBlockEntity extends BaseTileEntity {
         this.cachedLightOpacity = (camouflage != null && this.world != null)
             ? camouflage.getLightOpacity(this.world, this.pos)
             : 0;
+        markDirty();
+    }
+
+    public int getDyeColor() {
+        return this.dyeColor;
+    }
+
+    public void setDyeColor(int dyeColor) {
+        this.dyeColor = dyeColor;
         markDirty();
     }
 
@@ -117,6 +128,8 @@ public class ForceFieldBlockEntity extends BaseTileEntity {
             this.camouflage = null;
         }
 
+        this.dyeColor = tag.hasKey("dyeColor") ? tag.getInteger("dyeColor") : -1;
+
         // Defer world.checkLight to a rate-limited client tick drain instead of
         // calling it immediately — avoids synchronous BFS spikes on chunk load.
         PENDING_LIGHT_CHECKS.add(this.pos);
@@ -149,6 +162,9 @@ public class ForceFieldBlockEntity extends BaseTileEntity {
                 tag.setInteger("camouflageMeta", this.camouflage.getBlock().getMetaFromState(this.camouflage));
             }
         }
+        if (this.dyeColor != -1) {
+            tag.setInteger("dyeColor", this.dyeColor);
+        }
         return tag;
     }
 
@@ -165,6 +181,9 @@ public class ForceFieldBlockEntity extends BaseTileEntity {
                 compound.setString("camouflage", regName.toString());
                 compound.setInteger("camouflageMeta", this.camouflage.getBlock().getMetaFromState(this.camouflage));
             }
+        }
+        if (this.dyeColor != -1) {
+            compound.setInteger("dyeColor", this.dyeColor);
         }
     }
 
@@ -184,6 +203,7 @@ public class ForceFieldBlockEntity extends BaseTileEntity {
                 this.camouflage = block.getStateFromMeta(meta);
             }
         }
+        this.dyeColor = compound.hasKey("dyeColor") ? compound.getInteger("dyeColor") : -1;
     }
 
     public void updateRenderClient() {
