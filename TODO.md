@@ -10,8 +10,6 @@
 - Glow modules apply artificial lighting to block surfaces inside a force field.
 - Beacon Effects in-zone.
 - Harvest speedup?
-- Dye colors for force fields.
--     Use the camo module or make a new module - module could support setting color without a dye.
 - Only send the interdiction warn zone to clients when isActive(); when biometrics is active.
 - Make the non-square camo filter an option instead of forced, some people are delusional.
 - Force Fields protect from gravitational anomalies

@@ -1,4 +1,9 @@
 # Changelog
+## [1.1.0] - 2026-05-17
+### Added
+- New dyable force fields feature. Works similarly to block camo, uses same module.
+- New camo module tooltips.
+- Implemented FML Version checks using curse update API.
 
 ## [1.0.11] - 2026-04-26
 
