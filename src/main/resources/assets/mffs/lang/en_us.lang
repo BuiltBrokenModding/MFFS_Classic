@@ -56,6 +56,10 @@ info.mffs.module.anti_personnel.requires_biometric=⚠ Requires an active Biomet
 info.mffs.module.block_alter.requires_biometric=⚠ Requires an active Biometric Identifier
 info.mffs.module.block_access.requires_biometric=⚠ Requires an active Biometric Identifier
 info.mffs.module.shock.damage_per_module=Damage: %s ❤/s
+info.mffs.module.camouflage.detail.source=Internal slot: single block/dye replacement.
+info.mffs.module.camouflage.detail.source2=Adjacent chest: weighted random by stack count.
+info.mffs.module.camouflage.detail.priority=Internal inventory takes priority. Blocks beat dyes.
+info.mffs.module.camouflage.detail.refresh=To refresh an external chest, re-insert this module.
 info.mffs.module.damage_per_second=Damage: %s ❤/s
 info.mffs.interdiction_matrix.biometric_warning=§cError:§r Offensive modules require biometrics!
 info.mffs.projector.biometric_warning=§cWarning:§r No biometrics - Fields unrestricted!
@@ -114,7 +118,7 @@ item.mffs.custom_mode.too_far=Selected position is too far away! Must be at most
 
 # Module items
 item.mffs.camouflage_module.name=Camouflage Module
-item.mffs.camouflage_module.description=Applies a custom model to force field blocks.
+item.mffs.camouflage_module.description=Applies a custom block or dye to force fields.
 item.mffs.capacity_module.name=Capacity Module
 item.mffs.capacity_module.description=Increases the capacity of a certain device.
 item.mffs.disintegration_module.name=Disintegration Module

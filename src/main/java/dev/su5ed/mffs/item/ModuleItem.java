@@ -47,19 +47,6 @@ public class ModuleItem<T extends Module> extends BaseItem {
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip,
                                net.minecraft.client.util.ITooltipFlag flagIn) {
         super.addInformation(stack, worldIn, tooltip, flagIn);
-        float cost = this.module.getFortronCost(1);
-        if (cost < 0) {
-            // Negative cost = Fortron discount; display as "+x F/s"
-            tooltip.add(TextFormatting.DARK_GRAY + I18n.format("info.mffs.fortron_usage",
-                TextFormatting.GREEN + "+" + FORTRON_COST_FORMAT.format(-cost)));
-            if (GuiScreen.isShiftKeyDown()) {
-                tooltip.add(TextFormatting.GRAY + I18n.format("info.mffs.module.warn.discount_hint"));
-            }
-        } else {
-            // Positive cost = Fortron drain; display as "-x F/s"
-            tooltip.add(TextFormatting.DARK_GRAY + I18n.format("info.mffs.fortron_usage",
-                TextFormatting.GRAY + "-" + FORTRON_COST_FORMAT.format(cost)));
-        }
         if (this.module == dev.su5ed.mffs.setup.ModModules.ANTI_PERSONNEL) {
             tooltip.add(TextFormatting.YELLOW + I18n.format("info.mffs.module.anti_personnel.requires_biometric"));
             addDamagePerSecondTooltip(tooltip, MFFSConfig.antiPersonnelDamagePerSecond);
@@ -76,6 +63,26 @@ public class ModuleItem<T extends Module> extends BaseItem {
         } else if (this.module == dev.su5ed.mffs.setup.ModModules.SHOCK) {
             tooltip.add(TextFormatting.GOLD + I18n.format("info.mffs.module.shock.damage_per_module",
                 TextFormatting.YELLOW + FORTRON_COST_FORMAT.format(MFFSConfig.shockModuleDamagePerModule)));
+        } else if (this.module == dev.su5ed.mffs.setup.ModModules.CAMOUFLAGE) {
+            if (GuiScreen.isShiftKeyDown()) {
+                tooltip.add(TextFormatting.GRAY + I18n.format("info.mffs.module.camouflage.detail.source"));
+                tooltip.add(TextFormatting.GRAY + I18n.format("info.mffs.module.camouflage.detail.source2"));
+                tooltip.add(TextFormatting.GRAY + I18n.format("info.mffs.module.camouflage.detail.priority"));
+                tooltip.add(TextFormatting.YELLOW + I18n.format("info.mffs.module.camouflage.detail.refresh"));
+            }
+        }
+        float cost = this.module.getFortronCost(1);
+        if (cost < 0) {
+            // Negative cost = Fortron discount; display as "+x F/s"
+            tooltip.add(TextFormatting.DARK_GRAY + I18n.format("info.mffs.fortron_usage",
+                TextFormatting.GREEN + "+" + FORTRON_COST_FORMAT.format(-cost)));
+            if (GuiScreen.isShiftKeyDown()) {
+                tooltip.add(TextFormatting.GRAY + I18n.format("info.mffs.module.warn.discount_hint"));
+            }
+        } else {
+            // Positive cost = Fortron drain; display as "-x F/s"
+            tooltip.add(TextFormatting.DARK_GRAY + I18n.format("info.mffs.fortron_usage",
+                TextFormatting.GRAY + "-" + FORTRON_COST_FORMAT.format(cost)));
         }
     }
 
