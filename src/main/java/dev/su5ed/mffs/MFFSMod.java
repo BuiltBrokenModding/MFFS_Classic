@@ -37,9 +37,9 @@ import org.apache.logging.log4j.Logger;
     dependencies = "required-after:forge@[14.23.5.2847,);after:patchouli"
 )
 public final class MFFSMod {
-    public static final String MODID   = "mffs";
-    public static final String NAME    = "Modular Force Field System";
-    public static final String VERSION = "${mod_version}";
+    public static final String MODID   = Tags.MOD_ID;
+    public static final String NAME    = Tags.MOD_NAME;
+    public static final String VERSION = Tags.VERSION;
 
     private static final String TOP_MODID = "theoneprobe";
 
