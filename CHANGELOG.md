@@ -1,4 +1,8 @@
 # Changelog
+## [1.1.1] - 2026-06-06
+### Fixed
+- Another attempt at a CME issue with block light updates.
+
 ## [1.1.0] - 2026-05-17
 ### Added
 - New dyable force fields feature. Works similarly to block camo, uses same module.
