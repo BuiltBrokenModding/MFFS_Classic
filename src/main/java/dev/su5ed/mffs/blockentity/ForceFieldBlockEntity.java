@@ -11,9 +11,11 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 import java.util.Optional;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ForceFieldBlockEntity extends BaseTileEntity {
@@ -34,6 +36,13 @@ public class ForceFieldBlockEntity extends BaseTileEntity {
     // can return immediately after the TE lookup without re-entering the camo lookup chain.
     // 0 when no camouflage is set (force field is transparent).
     private int cachedLightOpacity;
+
+    // Static registries allowing ForceFieldBlockImpl.getLightOpacity / getLightValue to query
+    // per-position values without calling world.getTileEntity during Chunk.setBlockState
+    private static final ConcurrentHashMap<World, ConcurrentHashMap<Long, Integer>> OPACITY_REGISTRY =
+        new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<World, ConcurrentHashMap<Long, Integer>> CLIENT_LIGHT_REGISTRY =
+        new ConcurrentHashMap<>();
 
     public ForceFieldBlockEntity() {
         super();
@@ -60,11 +69,45 @@ public class ForceFieldBlockEntity extends BaseTileEntity {
         return this.cachedLightOpacity;
     }
 
+    /** Called by ForceFieldBlockImpl.getLightOpacity; avoids world.getTileEntity during setBlockState. */
+    public static int getStaticOpacity(World world, BlockPos pos) {
+        ConcurrentHashMap<Long, Integer> map = OPACITY_REGISTRY.get(world);
+        return map != null ? map.getOrDefault(pos.toLong(), 0) : 0;
+    }
+
+    /** Called by ForceFieldBlockImpl.getLightValue; avoids world.getTileEntity during setBlockState. */
+    public static int getStaticClientLight(World world, BlockPos pos) {
+        ConcurrentHashMap<Long, Integer> map = CLIENT_LIGHT_REGISTRY.get(world);
+        return map != null ? map.getOrDefault(pos.toLong(), 0) : 0;
+    }
+
+    private void registerInRegistries() {
+        if (this.world == null) return;
+        OPACITY_REGISTRY.computeIfAbsent(this.world, w -> new ConcurrentHashMap<>())
+                        .put(this.pos.toLong(), this.cachedLightOpacity);
+        ConcurrentHashMap<Long, Integer> lightMap =
+            CLIENT_LIGHT_REGISTRY.computeIfAbsent(this.world, w -> new ConcurrentHashMap<>());
+        if (this.clientBlockLight > 0) {
+            lightMap.put(this.pos.toLong(), this.clientBlockLight);
+        } else {
+            lightMap.remove(this.pos.toLong());
+        }
+    }
+
+    private void unregisterFromRegistries() {
+        if (this.world == null) return;
+        ConcurrentHashMap<Long, Integer> opMap = OPACITY_REGISTRY.get(this.world);
+        if (opMap != null) opMap.remove(this.pos.toLong());
+        ConcurrentHashMap<Long, Integer> lightMap = CLIENT_LIGHT_REGISTRY.get(this.world);
+        if (lightMap != null) lightMap.remove(this.pos.toLong());
+    }
+
     public void setCamouflage(IBlockState camouflage) {
         this.camouflage = camouflage;
         this.cachedLightOpacity = (camouflage != null && this.world != null)
             ? camouflage.getLightOpacity(this.world, this.pos)
             : 0;
+        registerInRegistries();
         markDirty();
     }
 
@@ -80,6 +123,11 @@ public class ForceFieldBlockEntity extends BaseTileEntity {
     @Override
     public void onLoad() {
         super.onLoad();
+        // Recompute cachedLightOpacity now that world/pos are set; loadTag runs before world is assigned.
+        if (this.camouflage != null) {
+            this.cachedLightOpacity = this.camouflage.getLightOpacity(this.world, this.pos);
+        }
+        registerInRegistries();
 
         if (this.world.isRemote) {
             InitialDataRequestPacket packet = new InitialDataRequestPacket(this.pos);
@@ -92,10 +140,17 @@ public class ForceFieldBlockEntity extends BaseTileEntity {
 
     @Override
     public void invalidate() {
+        unregisterFromRegistries();
         if (this.world != null && this.world.isRemote) {
             BlockEntityRenderDelegate.INSTANCE.removeDelegateOf(this);
         }
         super.invalidate();
+    }
+
+    @Override
+    public void onChunkUnload() {
+        unregisterFromRegistries();
+        super.onChunkUnload();
     }
 
     public Optional<Projector> getProjector() {
@@ -129,6 +184,11 @@ public class ForceFieldBlockEntity extends BaseTileEntity {
         }
 
         this.dyeColor = tag.hasKey("dyeColor") ? tag.getInteger("dyeColor") : -1;
+        // Sync cachedLightOpacity and push to registries so getLightOpacity is safe before
+        // the next world.checkLight call triggered by updateRenderClient() below.
+        this.cachedLightOpacity = (this.camouflage != null)
+            ? this.camouflage.getLightOpacity(this.world, this.pos) : 0;
+        registerInRegistries();
 
         // Defer world.checkLight to a rate-limited client tick drain instead of
         // calling it immediately — avoids synchronous BFS spikes on chunk load.

@@ -64,9 +64,11 @@ public class ForceFieldBlockImpl extends Block implements ForceFieldBlock, ITile
 
     @Override
     public int getLightOpacity(IBlockState state, IBlockAccess world, BlockPos pos) {
-        // Hot path: called by Chunk.setBlockState for every FF block placed during projection.
-        // Read the cached opacity from the TE (computed once in setCamouflage) rather than
-        // re-entering the getCamouflageBlock → world.getTileEntity → camo.getLightOpacity chain.
+        // Use the static registry instead of world.getTileEntity
+        if (world instanceof World actualWorld) {
+            return ForceFieldBlockEntity.getStaticOpacity(actualWorld, pos);
+        }
+
         TileEntity te = world.getTileEntity(pos);
         if (te instanceof ForceFieldBlockEntity ffe) {
             return ffe.getCachedLightOpacity();
@@ -99,6 +101,12 @@ public class ForceFieldBlockImpl extends Block implements ForceFieldBlock, ITile
         int spacing = Math.max(1, MFFSConfig.forceFieldLightSpacing);
         if ((pos.getX() + pos.getY() + pos.getZ()) % spacing != 0) return 0;
         if (MFFSConfig.simpleLighting && !isTouchingPhysicalBlock(world, pos)) return 0;
+
+        // Use static registry to avoid world.getTileEntity during Chunk.setBlockState.
+        if (world instanceof World actualWorld) {
+            int light = ForceFieldBlockEntity.getStaticClientLight(actualWorld, pos);
+            return light > 0 ? light : super.getLightValue(state, world, pos);
+        }
 
         return Optional.ofNullable(world.getTileEntity(pos))
             .map(te -> te instanceof ForceFieldBlockEntity f ? f.getClientBlockLight() : null)
