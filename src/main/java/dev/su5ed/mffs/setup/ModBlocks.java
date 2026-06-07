@@ -2,7 +2,9 @@ package dev.su5ed.mffs.setup;
 
 import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.block.*;
+import dev.su5ed.mffs.setup.ModItems;
 import net.minecraft.block.Block;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -28,6 +30,13 @@ public final class ModBlocks {
         FORCE_FIELD           = register(registry, new ForceFieldBlockImpl(), "force_field");
         BIOMETRIC_IDENTIFIER  = register(registry, new BiometricIdentifierBlock(), "biometric_identifier");
         INTERDICTION_MATRIX   = register(registry, new InterdictionMatrixBlock(), "interdiction_matrix");
+        
+        CreativeTabs tab = ModItems.ITEM_GROUP;
+        PROJECTOR.setCreativeTab(tab);
+        COERCION_DERIVER.setCreativeTab(tab);
+        FORTRON_CAPACITOR.setCreativeTab(tab);
+        BIOMETRIC_IDENTIFIER.setCreativeTab(tab);
+        INTERDICTION_MATRIX.setCreativeTab(tab);
     }
 
     private static <T extends Block> T register(IForgeRegistry<Block> registry, T block, String name) {
