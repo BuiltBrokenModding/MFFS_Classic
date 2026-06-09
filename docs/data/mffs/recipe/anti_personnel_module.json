@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "F": "mffs:focus_matrix",
+    "H": "mffs:anti_hostile_module",
+    "R": "mffs:anti_friendly_module"
+  },
+  "pattern": [
+    "RFH"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mffs:anti_personnel_module"
+  }
+}

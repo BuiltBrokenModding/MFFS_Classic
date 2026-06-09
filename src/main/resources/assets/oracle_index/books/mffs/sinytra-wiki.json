@@ -1,0 +1,11 @@
+{
+    "id": "mffs",
+    "modid": "mffs",
+    "platforms": {
+        "modrinth": "mffs",
+        "curseforge": "mffs"
+    },
+    "links": {
+        "website": "https://github.com/BuiltBrokenModding"
+    }
+}

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "F": "mffs:focus_matrix",
+    "R": "#c:dusts/redstone"
+  },
+  "pattern": [
+    "FFF",
+    "RRR",
+    "FFF"
+  ],
+  "result": {
+    "count": 2,
+    "id": "mffs:speed_module"
+  }
+}

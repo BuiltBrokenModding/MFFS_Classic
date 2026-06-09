@@ -190,5 +190,7 @@
   "advancements.mffs.camouflage.title": "Hidden in plain sight",
   "advancements.mffs.camouflage.description": "Craft a camouflage module",
   "advancements.mffs.custom_camouflage.title": "Enter the Matrix",
-  "advancements.mffs.custom_camouflage.description": "Use Custom Mode with Camouflage"
+  "advancements.mffs.custom_camouflage.description": "Use Custom Mode with Camouflage",
+
+  "oracle_index.title.mffs": "MFFS"
 }
