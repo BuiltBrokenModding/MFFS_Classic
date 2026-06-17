@@ -16,7 +16,12 @@
 
 ## Optimization
 - Use ConcurrentHashMap.newKeySet() instead of a lock in FrequencyGrid.
+- Test shape calculation at higher sizes, might be a bit heavy still.
 
 ## Known Bugs
 - Items phase through bottoms of force fields
 - Rendering on projector disintegration/stabilization is flickery and generally bad.
+
+# Uh??
+- Projector: large fields skip unloaded chunks during selection and may appear stalled once all loaded positions are filled. Consider queued retries or safe chunk ticketing??
+- Projector: investigate large-field `prewarmProjectionCache()` cost. Radius-64 spheres can synchronously scan hundreds of thousands of positions on the server thread.

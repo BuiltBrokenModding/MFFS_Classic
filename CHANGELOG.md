@@ -1,4 +1,9 @@
 # Changelog
+## [1.1.2] - 2026-06-17
+### Fixed
+- Fixed registration of mod blocks in creative menu.
+- Fix projections adding invalid y values, stalling larger fields from constructing.
+
 ## [1.1.1] - 2026-06-06
 ### Fixed
 - Another attempt at a CME issue with block light updates.
