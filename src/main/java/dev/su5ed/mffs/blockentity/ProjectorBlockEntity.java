@@ -1375,7 +1375,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
         return StreamEx.of(fieldPoints)
             .mapToEntry(pos -> rotationYaw != 0 || rotationPitch != 0 || rotationRoll != 0 ? ModUtil.rotateByAngleExact(pos, rotationYaw, rotationPitch, rotationRoll) : pos)
             .mapValues(pos -> pos.add(this.pos.getX(), this.pos.getY(), this.pos.getZ()).add(translation.getX(), translation.getY(), translation.getZ()))
-            .filterValues((Vec3d pos) -> pos.y <= this.world.getHeight())
+            .filterValues((Vec3d pos) -> pos.y < this.world.getHeight() && pos.y >= 0)
             .mapKeyValue((Vec3d original, Vec3d pos) -> new TargetPosPair(new BlockPos((int) Math.round(pos.x), (int) Math.round(pos.y), (int) Math.round(pos.z)), original))
             .toMutableList();
     }
