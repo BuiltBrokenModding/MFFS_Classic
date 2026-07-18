@@ -186,7 +186,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
             }
 
             if (getTicks() % (2 * 20) == 0 && !hasModule(ModModules.SILENCE)) {
-                this.level.playSound(null, this.worldPosition, ModSounds.FIELD.get(), SoundSource.BLOCKS, 0.4F, 1 - this.level.random.nextFloat() * 0.1F);
+                this.level.playSound(null, this.worldPosition, ModSounds.FIELD.get(), SoundSource.BLOCKS, 0.4F, 1 - this.level.getRandom().nextFloat() * 0.1F);
             }
         } else {
             destroyField();

@@ -2,50 +2,38 @@ import me.modmuss50.mpp.ReleaseType
 
 plugins {
     `maven-publish`
-    id("net.neoforged.moddev") version "2.0.140"
-    id("me.modmuss50.mod-publish-plugin") version "0.8.+"
+    id("net.neoforged.moddev") version "2.0.141"
+    id("me.modmuss50.mod-publish-plugin") version "2.1.1"
     id("wtf.gofancy.git-changelog") version "1.1.+"
-    id("org.moddedmc.wiki.toolkit") version "0.4.+"
+    id("org.moddedmc.wiki.toolkit") version "0.4.1"
 }
 
 group = "dev.su5ed.mffs"
 version = changelog.getVersionFromTag()
 
-val curseForgeId: String by project
-val modrinthId: String by project
-val versionJei: String by project
-val versionTOP: String by project
-val versionPatchouli: String by project
-val versionStreamex: String by project
+val curseForgeId = project.property("curseForgeId") as String
+val modrinthId = project.property("modrinthId") as String
+val versionJei = project.property("versionJei") as String
+val versionPatchouli = project.property("versionPatchouli") as String
+val versionStreamex = project.property("versionStreamex") as String
 
-val versionMc: String by project
-val neoVersion: String by project
-val parchmentVersion: String by project
-val modId: String by project
+val versionMc = project.property("versionMc") as String
+val neoVersion = project.property("neoVersion") as String
+val modId = project.property("modId") as String
 
 val CI: Provider<String> = providers.environmentVariable("CI")
 
-java.toolchain.languageVersion.set(JavaLanguageVersion.of(21))
+java.toolchain.languageVersion.set(JavaLanguageVersion.of(25))
 
 println("Configured version: $version, Java: ${System.getProperty("java.version")}, JVM: ${System.getProperty("java.vm.version")} (${System.getProperty("java.vendor")}), Arch: ${System.getProperty("os.arch")}")
 neoForge {
     version = neoVersion
-    accessTransformers {
-        from(project.file("src/main/resources/META-INF/accesstransformer.cfg"))
-    }
-    parchment {
-        mappingsVersion = parchmentVersion
-        minecraftVersion = versionMc
-    }
-    runs {
-        configureEach {
-            systemProperty("forge.logging.markers", "REGISTRIES")
-            systemProperty("forge.logging.console.level", "debug")
-        }
 
+    accessTransformers.from("src/main/resources/META-INF/accesstransformer.cfg")
+
+    runs {
         create("client") {
             client()
-            // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
             systemProperty("neoforge.enabledGameTestNamespaces", modId)
         }
 
@@ -68,7 +56,7 @@ neoForge {
             )
         }
     }
-    mods { 
+    mods {
         create("mffs") {
             sourceSet(sourceSets.main.get())
         }
@@ -77,7 +65,7 @@ neoForge {
 
 wiki {
     docs {
-        register("mffs") {             
+        register("mffs") {
             root = file("docs/mffs")
         }
     }
@@ -98,10 +86,6 @@ repositories {
         name = "Modmaven"
         url = uri("https://modmaven.dev/")
     }
-    maven {
-        name = "TOP"
-        url = uri("https://maven.k-4u.nl")
-    }
     mavenCentral()
 }
 
@@ -109,12 +93,11 @@ dependencies {
     implementation(jarJar(group = "one.util", name = "streamex", version = versionStreamex))
 
     // compile against the JEI API but do not include it at runtime     
-    compileOnly("mezz.jei:jei-1.21.11-common-api:$versionJei")
-    compileOnly("mezz.jei:jei-1.21.11-neoforge-api:$versionJei")
+    compileOnly("mezz.jei:jei-26.1.2-common-api:$versionJei")
+    compileOnly("mezz.jei:jei-26.1.2-neoforge-api:$versionJei")
     // at runtime, use the full JEI jar for NeoForge
-    runtimeOnly("mezz.jei:jei-1.21.11-neoforge:$versionJei")
+    runtimeOnly("mezz.jei:jei-26.1.2-neoforge:$versionJei")
 
-    compileOnly(group = "mcjty.theoneprobe", name = "theoneprobe", version = versionTOP) { isTransitive = false }
 //    runtimeOnly("org.sinytra:item-asset-export-neoforge:1.0.2+1.21")
 }
 
@@ -145,6 +128,8 @@ publishMods {
         projectId.set(curseForgeId)
         minecraftVersions.add(versionMc)
         displayName.set("MFFS $versionMc-${project.version}")
+        client.set(true)
+        server.set(true)
     }
     modrinth {
         accessToken.set(providers.environmentVariable("MODRINTH_TOKEN"))

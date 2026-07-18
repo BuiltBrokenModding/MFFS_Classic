@@ -1,22 +1,21 @@
 package dev.su5ed.mffs.render.particle;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import dev.su5ed.mffs.render.TranslucentNodeStorage;
 import dev.su5ed.mffs.setup.ModBlocks;
-import dev.su5ed.mffs.util.TranslucentVertexConsumer;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.particle.ParticleGroup;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
-import net.minecraft.client.renderer.block.ModelBlockRenderer;
-import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.block.BlockModelRenderState;
+import net.minecraft.client.renderer.block.model.BlockDisplayContext;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.state.CameraRenderState;
-import net.minecraft.client.renderer.state.ParticleGroupRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.state.level.ParticleGroupRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
@@ -48,10 +47,7 @@ public class MovingHolograpParticleGroup extends ParticleGroup<MovingHologramPar
 
         @Override
         public void submit(SubmitNodeCollector nodeCollector, CameraRenderState cameraRenderState) {
-            BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
-
             BlockState state = ModBlocks.FORCE_FIELD.get().defaultBlockState();
-            BlockStateModel model = blockRenderer.getBlockModel(state);
 
             for (MovingHologramParticleData particle : this.particles) {
                 PoseStack pose = new PoseStack();
@@ -79,27 +75,14 @@ public class MovingHolograpParticleGroup extends ParticleGroup<MovingHologramPar
 
                 int alpha = (int) (255 * op * 2);
 
-                nodeCollector.submitCustomGeometry(pose, RenderTypes.translucentMovingBlock(), (poseStack, consumer) -> {
-                    TranslucentVertexConsumer wrapped = new TranslucentVertexConsumer(consumer, alpha);
-                    ModelBlockRenderer.renderModel(
-                        poseStack.copy(),
-                        wrapped,
-                        model,
-                        particle.color.getRed(),
-                        particle.color.getGreen(),
-                        particle.color.getBlue(),
-                        LightTexture.FULL_BRIGHT,
-                        OverlayTexture.NO_OVERLAY
-                    );
-                });
+                TranslucentNodeStorage storage = new TranslucentNodeStorage(nodeCollector, RenderTypes.translucentMovingBlock(), particle.color, alpha);
+
+                BlockModelRenderState renderState = new BlockModelRenderState();
+                Minecraft.getInstance().getBlockModelResolver().update(renderState, state, BlockDisplayContext.create());
+                renderState.submit(pose, storage, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0);
 
                 pose.popPose();
             }
-        }
-
-        @Override
-        public void clear() {
-            ParticleGroupRenderState.super.clear();
         }
     }
 }

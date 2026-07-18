@@ -87,10 +87,10 @@ public abstract class FortronMenu<T extends FortronBlockEntity & Activatable> ex
     }
 
     @Override
-    public void clicked(int slotId, int button, ClickType clickType, Player player) {
+    public void clicked(int slotId, int button, ContainerInput clickType, Player player) {
         if (slotId >= 0 && slotId < this.slots.size()) {
             Slot slot = getSlot(slotId);
-            if (slot instanceof SlotInventoryFilter && clickType == ClickType.PICKUP) {
+            if (slot instanceof SlotInventoryFilter && clickType == ContainerInput.PICKUP) {
                 ItemStack stack = getCarried();
                 if (button == 0) {
                     slot.set(stack.copyWithCount(1));

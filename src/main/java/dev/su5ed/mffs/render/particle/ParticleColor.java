@@ -2,6 +2,7 @@ package dev.su5ed.mffs.render.particle;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.ARGB;
 import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 
 public enum ParticleColor {
@@ -11,7 +12,7 @@ public enum ParticleColor {
     WHITE(1, 1, 1);
 
     public static final StreamCodec<FriendlyByteBuf, ParticleColor> STREAM_CODEC = NeoForgeStreamCodecs.enumCodec(ParticleColor.class);
-    
+
     private final float red;
     private final float green;
     private final float blue;
@@ -26,11 +27,23 @@ public enum ParticleColor {
         return this.red;
     }
 
+    public int getRedAsInt() {
+        return ARGB.as8BitChannel(this.red);
+    }
+
     public float getGreen() {
         return this.green;
     }
 
+    public int getGreenAsInt() {
+        return ARGB.as8BitChannel(this.green);
+    }
+
     public float getBlue() {
         return this.blue;
+    }
+
+    public int getBlueAsInt() {
+        return ARGB.as8BitChannel(this.blue);
     }
 }

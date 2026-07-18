@@ -7,7 +7,7 @@ import dev.su5ed.mffs.network.SwitchConfiscationModePacket;
 import dev.su5ed.mffs.util.ModUtil;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
@@ -40,14 +40,14 @@ public class InterdictionMatrixScreen extends FortronScreen<InterdictionMatrixMe
     }
 
     @Override
-    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        super.renderLabels(guiGraphics, mouseX, mouseY);
+    protected void extractLabels(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+        super.extractLabels(guiGraphics, mouseX, mouseY);
 
-        guiGraphics.drawString(this.font, ModUtil.translate("screen", "warn_range", this.menu.blockEntity.getWarningRange()), 35, 19, GuiColors.DARK_GREY, false);
-        guiGraphics.drawString(this.font, ModUtil.translate("screen", "action_range", this.menu.blockEntity.getActionRange()), 100, 19, GuiColors.DARK_GREY, false);
-        guiGraphics.drawString(this.font, ModUtil.translate("screen", "filter_mode"), 9, 32, GuiColors.DARK_GREY, false);
+        guiGraphics.text(this.font, ModUtil.translate("screen", "warn_range", this.menu.blockEntity.getWarningRange()), 35, 19, GuiColors.DARK_GREY, false);
+        guiGraphics.text(this.font, ModUtil.translate("screen", "action_range", this.menu.blockEntity.getActionRange()), 100, 19, GuiColors.DARK_GREY, false);
+        guiGraphics.text(this.font, ModUtil.translate("screen", "filter_mode"), 9, 32, GuiColors.DARK_GREY, false);
 
         drawWithTooltip(guiGraphics, 8, 110, GuiColors.DARK_GREY, "fortron", this.menu.blockEntity.fortronStorage.getStoredFortron(), this.menu.blockEntity.fortronStorage.getFortronCapacity());
-        guiGraphics.drawString(this.font, ModUtil.translate("screen", "fortron_cost", "-", this.menu.getClientFortronCost() * 20), 120, 121, ChatFormatting.DARK_RED.getColor(), false);
+        guiGraphics.text(this.font, ModUtil.translate("screen", "fortron_cost", "-", this.menu.getClientFortronCost() * 20), 120, 121, ChatFormatting.DARK_RED.getColor(), false);
     }
 }

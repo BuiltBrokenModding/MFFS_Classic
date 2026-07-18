@@ -6,7 +6,7 @@ import dev.su5ed.mffs.menu.BiometricIdentifierMenu;
 import dev.su5ed.mffs.network.ToggleFieldPermissionPacket;
 import dev.su5ed.mffs.util.ModUtil;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -48,17 +48,17 @@ public class BiometricIdentifierScreen extends FortronScreen<BiometricIdentifier
     }
 
     @Override
-    protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
-        super.renderBg(guiGraphics, partialTick, mouseX, mouseY);
-
+    public void extractBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
+        super.extractBackground(guiGraphics, mouseX, mouseY, partialTick);
+        
         if (!this.menu.blockEntity.rightsSlot.isEmpty()) {
-            this.permissionButtons.forEach(button -> button.render(guiGraphics, mouseX, mouseY, partialTick));
+            this.permissionButtons.forEach(button -> button.extractRenderState(guiGraphics, mouseX, mouseY, partialTick));
         }
     }
 
     @Override
-    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        super.renderLabels(guiGraphics, mouseX, mouseY);
+    protected void extractLabels(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+        super.extractLabels(guiGraphics, mouseX, mouseY);
 
         drawWithTooltip(guiGraphics, 28, 50, GuiColors.DARK_GREY, "rights");
         drawWithTooltip(guiGraphics, 28, 70, GuiColors.DARK_GREY, "copy");

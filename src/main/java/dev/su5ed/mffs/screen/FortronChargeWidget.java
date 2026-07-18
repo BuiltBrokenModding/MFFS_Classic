@@ -1,7 +1,7 @@
 package dev.su5ed.mffs.screen;
 
 import dev.su5ed.mffs.MFFSMod;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -23,7 +23,7 @@ public class FortronChargeWidget extends AbstractWidget {
     }
 
     @Override
-    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    protected void extractWidgetRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float a) {
         double scale = this.scale.getAsDouble();
         if (scale > 0) {
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, COMPONENTS, getX(), getY(), 54, 11, (int) (scale * this.width), this.height, 256, 256, ARGB.white(this.alpha));

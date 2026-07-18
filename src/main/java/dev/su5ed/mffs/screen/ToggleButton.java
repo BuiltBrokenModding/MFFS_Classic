@@ -2,7 +2,7 @@ package dev.su5ed.mffs.screen;
 
 import dev.su5ed.mffs.setup.ModItems;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
@@ -21,7 +21,7 @@ public class ToggleButton extends BaseButton {
     }
 
     @Override
-    public void renderFg(GuiGraphics guiGraphics, Minecraft minecraft, int mouseX, int mouseY, float partialTick) {
-        guiGraphics.renderItem(this.enabled.getAsBoolean() ? this.itemOn : this.itemOff, getX() + 2, getY() - 1, 0);
+    public void extractForeground(GuiGraphicsExtractor guiGraphics, Minecraft minecraft, int mouseX, int mouseY, float partialTick) {
+        guiGraphics.item(this.enabled.getAsBoolean() ? this.itemOn : this.itemOff, getX() + 2, getY() - 1, 0);
     }
 }

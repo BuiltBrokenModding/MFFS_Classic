@@ -44,7 +44,8 @@ public class InterdictionMatrixBlockEntity extends ModularBlockEntity implements
         super(ModObjects.INTERDICTION_MATRIX_BLOCK_ENTITY.get(), pos, state);
 
         this.secondaryCard = addSlot("secondaryCard", InventorySlot.Mode.BOTH, stack -> ModUtil.isCard(stack) || stack.is(ModItems.INFINITE_POWER_CARD.get()), this::onFrequencySlotChanged);
-        this.upgradeSlots = createUpgradeSlots(8, Module.Category.INTERDICTION, stack -> {});
+        this.upgradeSlots = createUpgradeSlots(8, Module.Category.INTERDICTION, stack -> {
+        });
         this.bannedItemSlots = IntStreamEx.range(9)
             .mapToObj(i -> addVirtualSlot("banned_item_" + i))
             .toList();
@@ -119,12 +120,12 @@ public class InterdictionMatrixBlockEntity extends ModularBlockEntity implements
         List<LivingEntity> actionList = this.level.getEntitiesOfClass(LivingEntity.class, emptyBounds.inflate(getActionRange(), getActionRange(), getActionRange()));
 
         for (LivingEntity entity : warningList) {
-            if (entity instanceof Player player && !actionList.contains(entity) && !canPlayerBypass(identifier, player) && this.level.random.nextInt(3) == 0) {
-                player.displayClientMessage(ModUtil.translate("info", "interdiction_matrix.warning", getTitle()).withStyle(ChatFormatting.RED), false);
+            if (entity instanceof Player player && !actionList.contains(entity) && !canPlayerBypass(identifier, player) && this.level.getRandom().nextInt(3) == 0) {
+                player.sendSystemMessage(ModUtil.translate("info", "interdiction_matrix.warning", getTitle()).withStyle(ChatFormatting.RED));
             }
         }
 
-        if (this.level.random.nextInt(3) == 0) {
+        if (this.level.getRandom().nextInt(3) == 0) {
             for (LivingEntity entity : actionList) {
                 applyAction(entity);
             }

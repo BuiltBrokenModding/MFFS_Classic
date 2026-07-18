@@ -50,7 +50,7 @@ public class RemoteControllerItem extends BaseItem implements CoordLink {
             if (be != null && level.getCapability(ModCapabilities.FORTRON, be.getBlockPos(), be.getBlockState(), be, null) != null) {
                 setLink(stack, pos);
                 BlockState state = level.getBlockState(pos);
-                player.displayClientMessage(ModUtil.translate("info", "link", state.getBlock().getName(), pos.toShortString()).withStyle(ChatFormatting.AQUA), true);
+                player.sendOverlayMessage(ModUtil.translate("info", "link", state.getBlock().getName(), pos.toShortString()).withStyle(ChatFormatting.AQUA));
                 return InteractionResult.SUCCESS;
             }
         }
@@ -74,7 +74,7 @@ public class RemoteControllerItem extends BaseItem implements CoordLink {
                         return InteractionResult.SUCCESS;
                     }
 
-                    player.displayClientMessage(ModUtil.translate("info", "cannot_harness", Math.round(requiredEnergy)).withStyle(ChatFormatting.RED), true);
+                    player.sendOverlayMessage(ModUtil.translate("info", "cannot_harness", Math.round(requiredEnergy)).withStyle(ChatFormatting.RED));
                 }
             }
         }

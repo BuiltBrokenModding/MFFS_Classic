@@ -10,6 +10,7 @@ import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.CookingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
@@ -48,7 +49,14 @@ public class RecipesGen extends RecipeProvider {
             .unlockedBy("has_iron_ingot", has(Tags.Items.INGOTS_IRON))
             .save(this.output);
 
-        SimpleCookingRecipeBuilder.smelting(Ingredient.of(ModItems.STEEL_COMPOUND.get()), RecipeCategory.MISC, ModItems.STEEL_INGOT.get(), 0.5F, 200)
+        SimpleCookingRecipeBuilder.smelting(
+            Ingredient.of(ModItems.STEEL_COMPOUND.get()),
+                RecipeCategory.MISC,
+                CookingBookCategory.MISC,
+                ModItems.STEEL_INGOT.get(),
+                0.5F,
+                200
+            )
             .unlockedBy("has_steel_compound", has(ModItems.STEEL_COMPOUND.get()))
             .save(this.output);
 

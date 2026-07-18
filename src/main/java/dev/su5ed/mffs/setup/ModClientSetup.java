@@ -6,12 +6,13 @@ import dev.su5ed.mffs.render.*;
 import dev.su5ed.mffs.render.model.*;
 import dev.su5ed.mffs.render.particle.*;
 import dev.su5ed.mffs.screen.*;
-import dev.su5ed.mffs.util.ModFluidType;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.color.block.BlockTintSource;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.renderer.block.model.BlockStateModel;
-import net.minecraft.resources.Identifier;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -21,11 +22,9 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.*;
-import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
-import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -86,53 +85,11 @@ public final class ModClientSetup {
     }
 
     @SubscribeEvent
-    public static void registerBlockColor(RegisterColorHandlersEvent.Block event) {
+    public static void registerBlockColor(RegisterColorHandlersEvent.BlockTintSources event) {
         Block forceFieldBlock = ModBlocks.FORCE_FIELD.get();
-        event.register((state, level, pos, tintIndex) -> {
-            BlockEntity be = level.getBlockEntity(pos);
-            if (be != null) {
-                BlockState camo = be.getModelData().get(ForceFieldBlockImpl.CAMOUFLAGE_BLOCK);
-                if (camo != null && !camo.is(forceFieldBlock)) {
-                    return event.getBlockColors().getColor(camo, level, pos, tintIndex);
-                }
-            }
-            return 3473151;
-        }, forceFieldBlock);
+        event.register(List.of(new ForceFieldBlockTintSource()), forceFieldBlock);
     }
 
-    @SubscribeEvent
-    public static void registerClientExtensions(RegisterClientExtensionsEvent event) {
-        ModFluidType.FluidRenderInfo properties = ModFluids.FORTRON.getProperties();
-        event.registerFluidType(new IClientFluidTypeExtensions() {
-            @Override
-            public Identifier getStillTexture() {
-                return properties.stillTexture();
-            }
-
-            @Override
-            public Identifier getFlowingTexture() {
-                return properties.flowingTexture();
-            }
-
-            @Nullable
-            @Override
-            public Identifier getOverlayTexture() {
-                return properties.overlayTexture();
-            }
-
-            @Nullable
-            @Override
-            public Identifier getRenderOverlayTexture(Minecraft mc) {
-                return properties.renderOverlayTexture();
-            }
-
-            @Override
-            public int getTintColor() {
-                return properties.tintColor();
-            }
-        }, ModFluids.FORTRON_FLUID_TYPE);
-    }
-    
     @SubscribeEvent
     public static void registerRenderPipelines(RegisterRenderPipelinesEvent event) {
         event.registerPipeline(ModRenderPipeline.HOLO_TRIANGLE);
@@ -155,6 +112,28 @@ public final class ModClientSetup {
     public static void registerParticleGroups(RegisterParticleGroupsEvent event) {
         event.register(ModParticleRenderType.BEAM, BeamParticleGroup::new);
         event.register(ModParticleRenderType.HOLO, MovingHolograpParticleGroup::new);
+    }
+
+    private static class ForceFieldBlockTintSource implements BlockTintSource {
+        @Override
+        public int color(BlockState state) {
+            return 0xFF34fEFF;
+        }
+
+        @Override
+        public int colorInWorld(BlockState state, BlockAndTintGetter level, BlockPos pos) {
+            BlockEntity be = level.getBlockEntity(pos);
+            if (be != null) {
+                BlockState camo = be.getModelData().get(ForceFieldBlockImpl.CAMOUFLAGE_BLOCK);
+                if (camo != null && !camo.is(ModBlocks.FORCE_FIELD)) {
+                    BlockTintSource source = Minecraft.getInstance().getBlockColors().getTintSource(camo, 0);
+                    if (source != null) {
+                        return source.colorInWorld(state, level, pos);
+                    }
+                }
+            }
+            return color(state);
+        }
     }
 
     private ModClientSetup() {

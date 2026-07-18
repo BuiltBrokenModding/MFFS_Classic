@@ -7,7 +7,7 @@ import dev.su5ed.mffs.network.SwitchEnergyModePacket;
 import dev.su5ed.mffs.util.ModUtil;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
@@ -41,23 +41,23 @@ public class CoercionDeriverScreen extends FortronScreen<CoercionDeriverMenu> {
     }
 
     @Override
-    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        super.renderLabels(guiGraphics, mouseX, mouseY);
+    protected void extractLabels(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+        super.extractLabels(guiGraphics, mouseX, mouseY);
 
         Matrix3x2fStack poseStack = guiGraphics.pose();
         poseStack.pushMatrix();
         poseStack.rotateAbout((float) Math.toRadians(-90), 140, 95);
-        guiGraphics.drawString(this.font, ModUtil.translate("screen", "upgrade"), 140, 95, GuiColors.DARK_GREY, false);
+        guiGraphics.text(this.font, ModUtil.translate("screen", "upgrade"), 140, 95, GuiColors.DARK_GREY, false);
         poseStack.popMatrix();
 
-        guiGraphics.drawString(this.font, ModUtil.translate("screen", "progress")
+        guiGraphics.text(this.font, ModUtil.translate("screen", "progress")
             .append(ModUtil.translate("screen", "progress." + (this.menu.blockEntity.isActive() ? "running" : "idle"))), 8, 70, GuiColors.DARK_GREY, false);
 
         int energy = this.menu.blockEntity.fortronStorage.getStoredFortron();
-        guiGraphics.drawString(this.font, ModUtil.translate("screen", "fortron.short", energy), 8, 105, GuiColors.DARK_GREY, false);
+        guiGraphics.text(this.font, ModUtil.translate("screen", "fortron.short", energy), 8, 105, GuiColors.DARK_GREY, false);
         boolean inversed = this.menu.blockEntity.isInversed();
         int displayFortron = this.menu.blockEntity.fortronProducedLastTick * ModUtil.TICKS_PER_SECOND;
-        guiGraphics.drawString(this.font, ModUtil.translate("screen", "fortron_cost", inversed ? "-" : "+", displayFortron)
+        guiGraphics.text(this.font, ModUtil.translate("screen", "fortron_cost", inversed ? "-" : "+", displayFortron)
             .withStyle(inversed ? ChatFormatting.DARK_RED : ChatFormatting.DARK_GREEN), 114, 117, GuiColors.DARK_GREY, false);
     }
 }

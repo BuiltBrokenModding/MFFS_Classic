@@ -11,6 +11,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
@@ -33,7 +34,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 public class CustomStructureSavedData extends SavedData {
-    private static final String NAME = MFFSMod.MODID + "_custom_structures";
+    private static final Identifier NAME = MFFSMod.location("custom_structures");
     public static final Codec<AABB> AABB_CODEC = RecordCodecBuilder.create(instance -> instance.group(
         Codec.DOUBLE.fieldOf("minX").forGetter(a -> a.minX),
         Codec.DOUBLE.fieldOf("minY").forGetter(a -> a.minY),

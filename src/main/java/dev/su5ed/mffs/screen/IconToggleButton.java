@@ -1,7 +1,7 @@
 package dev.su5ed.mffs.screen;
 
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -42,7 +42,7 @@ public class IconToggleButton extends AbstractButton {
     }
 
     @Override
-    protected void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    protected void extractContents(GuiGraphicsExtractor guiGraphics, int i, int i1, float v) {
         int color;
         if (this.value.getAsBoolean()) {
             color = ARGB.colorFromFloat(this.alpha, 0.6F, 0.6F, 0.6F);

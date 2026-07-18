@@ -5,7 +5,7 @@ import dev.su5ed.mffs.menu.ProjectorMenu;
 import dev.su5ed.mffs.util.ModUtil;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
@@ -23,14 +23,14 @@ public class ProjectorScreen extends FortronScreen<ProjectorMenu> {
     }
 
     @Override
-    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        super.renderLabels(guiGraphics, mouseX, mouseY);
+    protected void extractLabels(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+        super.extractLabels(guiGraphics, mouseX, mouseY);
 
         drawWithTooltip(guiGraphics, 32, 20, GuiColors.DARK_GREY, "matrix");
         drawWithTooltip(guiGraphics, 8, 110, GuiColors.DARK_GREY, "fortron", this.menu.blockEntity.fortronStorage.getStoredFortron(), this.menu.blockEntity.fortronStorage.getFortronCapacity());
         int cost = this.menu.getClientFortronCost() * 20;
         if (cost > 0) {
-            guiGraphics.drawString(this.font, ModUtil.translate("screen", "fortron_cost", "-", cost).withStyle(ChatFormatting.DARK_RED), 117, 121, GuiColors.DARK_GREY, false);
+            guiGraphics.text(this.font, ModUtil.translate("screen", "fortron_cost", "-", cost).withStyle(ChatFormatting.DARK_RED), 117, 121, GuiColors.DARK_GREY, false);
         }
     }
 }

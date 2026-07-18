@@ -1,7 +1,7 @@
 package dev.su5ed.mffs.screen;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.InputWithModifiers;
@@ -25,17 +25,18 @@ public abstract class BaseButton extends AbstractButton {
     }
 
     @Override
-    protected void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    protected void extractContents(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
         Minecraft minecraft = Minecraft.getInstance();
 
         Identifier widgetsLocation = SPRITES.get(this.active, this.isHovered());
         guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, widgetsLocation, getX(), getY(), this.width, this.height, ARGB.white(this.alpha));
 
-        renderFg(guiGraphics, minecraft, mouseX, mouseY, partialTick);
+        extractForeground(guiGraphics, minecraft, mouseX, mouseY, partialTick);
     }
 
-    protected abstract void renderFg(GuiGraphics guiGraphics, Minecraft minecraft, int mouseX, int mouseY, float partialTick);
+    protected abstract void extractForeground(GuiGraphicsExtractor guiGraphics, Minecraft minecraft, int mouseX, int mouseY, float partialTick);
 
     @Override
-    protected void updateWidgetNarration(NarrationElementOutput output) {}
+    protected void updateWidgetNarration(NarrationElementOutput output) {
+    }
 }

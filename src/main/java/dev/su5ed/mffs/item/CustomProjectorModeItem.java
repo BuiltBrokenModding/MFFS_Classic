@@ -91,17 +91,17 @@ public class CustomProjectorModeItem extends BaseItem {
                         String id = getOrCreateId(stack);
                         data.join(id, level, serverPlayer, primary, secondary, getMode(stack) == Mode.ADDITIVE);
 
-                        player.displayClientMessage(ModUtil.translate("item", "custom_mode.data_saved"), true);
+                        player.sendOverlayMessage(ModUtil.translate("item", "custom_mode.data_saved"));
                         ModObjects.FIELD_SHAPE_TRIGGER.get().trigger(serverPlayer);
                     } else {
-                        player.displayClientMessage(ModUtil.translate("item", "custom_mode.too_far", distance), true);
+                        player.sendOverlayMessage(ModUtil.translate("item", "custom_mode.too_far", distance));
                     }
                     return InteractionResult.SUCCESS;
                 } else if (stack.has(ModDataComponentTypes.PATTERN_ID)) {
                     String id = stack.get(ModDataComponentTypes.PATTERN_ID);
                     data.clear(level, serverPlayer, id);
                     stack.remove(ModDataComponentTypes.PATTERN_ID);
-                    player.displayClientMessage(ModUtil.translate("item", "custom_mode.clear"), true);
+                    player.sendOverlayMessage(ModUtil.translate("item", "custom_mode.clear"));
                     return InteractionResult.SUCCESS;
                 }
             } else if (coords != null && coords.selectSecondary()) {
@@ -113,7 +113,7 @@ public class CustomProjectorModeItem extends BaseItem {
                 }
             } else {
                 Mode mode = setMode(stack, getMode(stack).next());
-                player.displayClientMessage(ModUtil.translate("item", "custom_mode.changed_mode", mode.getName().withStyle(ChatFormatting.GREEN)), true);
+                player.sendOverlayMessage(ModUtil.translate("item", "custom_mode.changed_mode", mode.getName().withStyle(ChatFormatting.GREEN)));
                 return InteractionResult.CONSUME;
             }
         }
@@ -140,7 +140,7 @@ public class CustomProjectorModeItem extends BaseItem {
 
     private void selectBlock(Player player, String key, ChatFormatting color) {
         MutableComponent component = ModUtil.translate("item", "custom_mode.set_" + key).withStyle(color);
-        player.displayClientMessage(component, true);
+        player.sendOverlayMessage(component);
     }
 
     @Override

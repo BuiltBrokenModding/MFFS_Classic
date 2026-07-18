@@ -1,7 +1,7 @@
 package dev.su5ed.mffs.screen;
 
 import dev.su5ed.mffs.MFFSMod;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.InputWithModifiers;
@@ -44,7 +44,7 @@ public class IconCycleButton<T extends Enum<T>> extends AbstractButton {
     }
 
     @Override
-    protected void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    protected void extractContents(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float a) {
         int color = this.isHovered ? ARGB.colorFromFloat(this.alpha, 0.85F, 0.85F, 0.85F) : ARGB.white(this.alpha);
         int vOffset = this.imageV + this.value.get().ordinal() * this.yStep;
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, this.image, getX(), getY(), this.imageU, vOffset, this.width, this.height, 256, 256, color);

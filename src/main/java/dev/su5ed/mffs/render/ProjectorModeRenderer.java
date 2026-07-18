@@ -12,11 +12,11 @@ import dev.su5ed.mffs.util.projector.ModProjectorModes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.ARGB;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
@@ -102,7 +102,7 @@ public final class ProjectorModeRenderer {
             float alpha = (float) -Math.pow(Math.sin((ticks + PERIOD / 2.0) * (Math.PI / (double) PERIOD)), 20) + 1;
 
             VertexConsumer actualConsumer = source.getBuffer(info.renderType);
-            VertexConsumer wrapped = new TranslucentVertexConsumer(actualConsumer, (int) (alpha * 255));
+            VertexConsumer wrapped = new TranslucentVertexConsumer(actualConsumer, null, (int) (alpha * 255));
             renderer.render(poseStack, wrapped, renderTick, partialTick);
             source.getBuffer(ForceCubeModel.RENDER_TYPE);
         }
@@ -117,7 +117,7 @@ public final class ProjectorModeRenderer {
 
             poseStack.pushPose();
             hoverObject(poseStack, ticks, scale, this.centerPos);
-            this.model.render(poseStack, buffer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, ARGB.colorFromFloat(Math.min(alpha, 1), 1, 1, 1));
+            this.model.render(poseStack, buffer, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, ARGB.colorFromFloat(Math.min(alpha, 1), 1, 1, 1));
             poseStack.popPose();
         }
     }
@@ -140,7 +140,7 @@ public final class ProjectorModeRenderer {
 
                     Vec3 vec = new Vec3(Math.sin(theta) * Math.cos(phi), Math.cos(theta), Math.sin(theta) * Math.sin(phi)).multiply(radius, radius, radius);
                     poseStack.translate(vec.x, vec.y, vec.z);
-                    this.model.render(poseStack, buffer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, ARGB.colorFromFloat(Math.min(alpha, 1) / 5f, 1, 1, 1));
+                    this.model.render(poseStack, buffer, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, ARGB.colorFromFloat(Math.min(alpha, 1) / 5f, 1, 1, 1));
                     poseStack.translate(-vec.x, -vec.y, -vec.z);
                 }
             }
@@ -212,7 +212,7 @@ public final class ProjectorModeRenderer {
                             if (i % 2 == 0) {
                                 Vec3 vector = new Vec3(renderX, renderY, renderZ);
                                 poseStack.translate(vector.x, vector.y, vector.z);
-                                this.model.render(poseStack, buffer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, ARGB.colorFromFloat(Math.min(alpha, 1), 1, 1, 1));
+                                this.model.render(poseStack, buffer, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, ARGB.colorFromFloat(Math.min(alpha, 1), 1, 1, 1));
                                 poseStack.translate(-vector.x, -vector.y, -vector.z);
                             }
                             i++;

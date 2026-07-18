@@ -6,11 +6,11 @@ import dev.su5ed.mffs.render.ModRenderType;
 import net.minecraft.client.Camera;
 import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.particle.ParticleGroup;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.culling.Frustum;
-import net.minecraft.client.renderer.state.CameraRenderState;
-import net.minecraft.client.renderer.state.ParticleGroupRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.state.level.ParticleGroupRenderState;
+import net.minecraft.util.LightCoordsUtil;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
@@ -46,7 +46,7 @@ public class BeamParticleGroup extends ParticleGroup<BeamParticle> {
                     float u0 = 0.0F;
                     float u1 = 1.0F;
                     final float opacity = particle.opacity;
-                    int brightness = LightTexture.FULL_BRIGHT;
+                    int brightness = LightCoordsUtil.FULL_BRIGHT;
                     Vector3f[] vectors = particle.vectors;
                     Matrix4f mat = particle.mat;
 

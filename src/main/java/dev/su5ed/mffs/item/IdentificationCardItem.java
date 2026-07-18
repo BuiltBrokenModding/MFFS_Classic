@@ -41,7 +41,7 @@ public class IdentificationCardItem extends BaseItem {
             if (!level.isClientSide()) {
                 if (card.getIdentity() != null) {
                     card.setIdentity(null);
-                    player.displayClientMessage(ModUtil.translate("info", "identity_cleared"), true);
+                    player.sendOverlayMessage(ModUtil.translate("info", "identity_cleared"));
                 } else {
                     setCardIdentity(card, player, player.getGameProfile());
                 }
@@ -69,7 +69,7 @@ public class IdentificationCardItem extends BaseItem {
 
     private static void setCardIdentity(IdentificationCard card, Player user, GameProfile profile) {
         card.setIdentity(profile);
-        user.displayClientMessage(ModUtil.translate("info", "identity_set", Component.literal(profile.name()).withStyle(ChatFormatting.GREEN)), true);
+        user.sendOverlayMessage(ModUtil.translate("info", "identity_set", Component.literal(profile.name()).withStyle(ChatFormatting.GREEN)));
     }
 
     @Override

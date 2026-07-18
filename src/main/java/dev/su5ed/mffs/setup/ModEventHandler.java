@@ -1,12 +1,10 @@
-package dev.su5ed.mffs;
+package dev.su5ed.mffs.setup;
 
+import dev.su5ed.mffs.MFFSConfig;
 import dev.su5ed.mffs.api.EventForceManipulate;
 import dev.su5ed.mffs.api.security.FieldPermission;
 import dev.su5ed.mffs.api.security.InterdictionMatrix;
 import dev.su5ed.mffs.blockentity.FortronBlockEntity;
-import dev.su5ed.mffs.setup.ModBlocks;
-import dev.su5ed.mffs.setup.ModModules;
-import dev.su5ed.mffs.setup.ModObjects;
 import dev.su5ed.mffs.util.Fortron;
 import dev.su5ed.mffs.util.FrequencyGrid;
 import dev.su5ed.mffs.util.ModUtil;
@@ -23,7 +21,7 @@ import net.neoforged.neoforge.event.entity.living.MobSpawnEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 
-public class ForgeEventHandler {
+public class ModEventHandler {
 
     @SubscribeEvent
     public static void serverStarting(ServerStartingEvent event) {
@@ -81,7 +79,7 @@ public class ForgeEventHandler {
                         return;
                     }
                     if (!Fortron.hasPermission(level, pos, interdictionMatrix, action, player)) {
-                        player.displayClientMessage(ModUtil.translate("info", "interdiction_matrix.no_permission", interdictionMatrix.getTitle()), false);
+                        player.sendSystemMessage(ModUtil.translate("info", "interdiction_matrix.no_permission", interdictionMatrix.getTitle()));
                         cancellableEvent.setCanceled(true);
                     }
                 }

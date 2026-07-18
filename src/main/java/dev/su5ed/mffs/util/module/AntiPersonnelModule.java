@@ -41,7 +41,7 @@ public class AntiPersonnelModule extends BaseInterdictionModule {
                     tx.commit();
                 }
             }
-            player.displayClientMessage(ModUtil.translate("info", "interdiction_matrix.fairwell", interdictionMatrix.getTitle()), false);
+            player.sendSystemMessage(ModUtil.translate("info", "interdiction_matrix.fairwell", interdictionMatrix.getTitle()));
             return true;
         }
         return false;

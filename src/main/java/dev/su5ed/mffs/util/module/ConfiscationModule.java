@@ -52,7 +52,7 @@ public class ConfiscationModule extends BaseInterdictionModule {
             }
 
             if (confiscationCount > 0) {
-                player.displayClientMessage(ModUtil.translate("info", "interdiction_matrix.confiscation_" + (confiscationCount == 1 ? "singular" : "plural"), interdictionMatrix.getTitle(), confiscationCount), false);
+                player.sendSystemMessage(ModUtil.translate("info", "interdiction_matrix.confiscation_" + (confiscationCount == 1 ? "singular" : "plural"), interdictionMatrix.getTitle(), confiscationCount));
                 BlockEntity be = interdictionMatrix.be();
                 FortronStorage fortron = be.getLevel().getCapability(ModCapabilities.FORTRON, be.getBlockPos(), be.getBlockState(), be, null);
                 if (fortron != null) {

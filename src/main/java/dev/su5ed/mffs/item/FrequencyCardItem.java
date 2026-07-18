@@ -33,10 +33,12 @@ public class FrequencyCardItem extends BaseItem {
             FrequencyCard card = stack.getCapability(ModCapabilities.FREQUENCY_CARD);
             if (card != null) {
                 if (!level.isClientSide()) {
-                    int frequency = level.random.nextInt(MAX_FREQUENCY + 1);
+                    int frequency = level.getRandom().nextInt(MAX_FREQUENCY + 1);
                     card.setFrequency(frequency);
-                    player.displayClientMessage(ModUtil.translate("info", "frequency.generated",
-                        Component.literal(String.valueOf(frequency)).withStyle(ChatFormatting.AQUA)), true);
+                    player.sendOverlayMessage(
+                        ModUtil.translate("info", "frequency.generated",
+                        Component.literal(String.valueOf(frequency)).withStyle(ChatFormatting.AQUA))
+                    );
                 }
                 return InteractionResult.CONSUME;
             }
@@ -53,8 +55,10 @@ public class FrequencyCardItem extends BaseItem {
                 if (!level.isClientSide()) {
                     int frequency = Objects.requireNonNull(stack.getCapability(ModCapabilities.FREQUENCY_CARD)).getFrequency();
                     fortron.setFrequency(frequency);
-                    context.getPlayer().displayClientMessage(ModUtil.translate("info", "frequency.set",
-                        Component.literal(String.valueOf(frequency)).withStyle(ChatFormatting.GREEN)), true);
+                    context.getPlayer().sendOverlayMessage(
+                        ModUtil.translate("info", "frequency.set",
+                        Component.literal(String.valueOf(frequency)).withStyle(ChatFormatting.GREEN))
+                    );
                 }
                 return InteractionResult.SUCCESS;
             })

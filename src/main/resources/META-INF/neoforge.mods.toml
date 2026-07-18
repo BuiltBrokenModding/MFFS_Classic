@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[1,)"
+loaderVersion="*"
 license="Code: MIT, Assets: All Rights Reserved"
 issueTrackerURL="https://github.com/BuiltBrokenModding/MFFS_Classic/issues"
 
@@ -15,23 +15,19 @@ description='''
 Modular Force Field System is a mod that adds force fields, high tech machinery and defensive measures to Minecraft.
 Ever tired of nuclear explosions blowing up your house or want to keep people out of your secret bases? May the force (fields) be with you!
 '''
+
 [[mixins]]
 config="mffs.mixins.json"
+
 [[dependencies.mffs]]
     modId="neoforge"
     type="required"
-    versionRange="[21.11, 22)"
+    versionRange="[26.1,26.2)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.mffs]]
     modId="minecraft"
     type="required"
-    versionRange="[1.21.11,1.22)"
-    ordering="NONE"
-    side="BOTH"
-[[dependencies.mffs]]
-    modId="theoneprobe"
-    type="optional"
-    versionRange="[1.21_neo-12.0.0, )"
+    versionRange="[26.1,26.2)"
     ordering="NONE"
     side="BOTH"

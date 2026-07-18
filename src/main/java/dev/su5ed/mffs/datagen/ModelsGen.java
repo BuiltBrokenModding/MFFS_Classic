@@ -10,6 +10,7 @@ import net.minecraft.client.data.models.ModelProvider;
 import net.minecraft.client.data.models.MultiVariant;
 import net.minecraft.client.data.models.blockstates.MultiVariantGenerator;
 import net.minecraft.client.data.models.model.*;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
@@ -50,7 +51,6 @@ public class ModelsGen extends ModelProvider {
                     .cullface(d)
                     .texture(TextureSlot.ALL)
                     .tintindex(0)))
-            .renderType("translucent")
             .build())
         );
 
@@ -100,7 +100,7 @@ public class ModelsGen extends ModelProvider {
         itemModels.itemModelOutput.accept(ModItems.REDSTONE_TORCH_OFF.get(),
             ItemModelUtils.plainModel(
                 ModelTemplates.FLAT_ITEM.create(ModelLocationUtils.getModelLocation(ModItems.REDSTONE_TORCH_OFF.get()),
-                    TextureMapping.layer0(Identifier.withDefaultNamespace("block/redstone_torch_off")),
+                    TextureMapping.layer0(new Material(Identifier.withDefaultNamespace("block/redstone_torch_off"))),
                     itemModels.modelOutput)
             ));
     }
