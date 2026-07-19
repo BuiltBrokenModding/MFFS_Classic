@@ -17,6 +17,7 @@ import net.neoforged.neoforge.transfer.energy.EnergyHandlerUtil;
 import one.util.streamex.StreamEx;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
@@ -25,6 +26,7 @@ import java.util.function.Supplier;
 public abstract class ElectricTileEntity extends ModularBlockEntity {
     public final CustomEnergyStorage energy;
     private final Map<Direction, Supplier<EnergyHandler>> sidedEnergyCap;
+    private final boolean anySideEnergy;
 
     protected ElectricTileEntity(BlockEntityType<? extends BaseBlockEntity> type, BlockPos pos, BlockState state, int capacity) {
         super(type, pos, state);
@@ -38,10 +40,14 @@ public abstract class ElectricTileEntity extends ModularBlockEntity {
             .<Supplier<EnergyHandler>>mapToEntry(side -> Suppliers.memoize(
                 () -> new SidedEnergyWrapper(this.energy, side == null || inputSides.contains(side), side == null || outputSides.contains(side))))
             .toMap();
+        this.anySideEnergy = this.sidedEnergyCap.keySet().containsAll(Arrays.asList(Direction.values()));
     }
 
     @Nullable
-    public EnergyHandler getEnergy(Direction side) {
+    public EnergyHandler getEnergy(@Nullable Direction side) {
+        if (side == null && this.anySideEnergy) {
+            return this.energy;
+        }
         Supplier<EnergyHandler> supplier = this.sidedEnergyCap.get(side);
         return supplier != null ? supplier.get() : null;
     }
@@ -60,6 +66,8 @@ public abstract class ElectricTileEntity extends ModularBlockEntity {
      * Discharges electric item.
      */
     public void dischargeItemIntoSelf(ItemStack stack) {
+        if (stack.isEmpty()) return;
+
         EnergyHandler source = stack.getCapability(Capabilities.Energy.ITEM, ItemAccess.forStack(stack));
         if (source != null) {
             EnergyHandlerUtil.move(source, this.energy, this.energy.getRequestedEnergy(), null);

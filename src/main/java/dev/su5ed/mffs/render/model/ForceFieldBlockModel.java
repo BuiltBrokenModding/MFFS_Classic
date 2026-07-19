@@ -9,6 +9,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
+import net.minecraft.client.resources.model.geometry.BakedQuad.MaterialFlags;
 import net.minecraft.client.resources.model.sprite.Material.Baked;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
@@ -51,6 +52,14 @@ public class ForceFieldBlockModel extends DelegateBlockStateModel {
         ModelData data = level.getModelData(pos);
         Pair<BlockStateModel, BlockState> model = getCamouflageModel(null, data);
         return model.getFirst().particleMaterial(level, pos, state);
+    }
+
+    @Override
+    @MaterialFlags
+    public int materialFlags(BlockAndTintGetter level, BlockPos pos, BlockState state) {
+        ModelData data = level.getModelData(pos);
+        Pair<BlockStateModel, BlockState> model = getCamouflageModel(null, data);
+        return model.getFirst().materialFlags(level, pos, state);
     }
 
     private Pair<BlockStateModel, BlockState> getCamouflageModel(@Nullable BlockState state, ModelData data) {

@@ -2,25 +2,26 @@ package dev.su5ed.mffs.setup;
 
 import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.util.FluidRegistryObject;
-import dev.su5ed.mffs.util.ModFluidType.FluidProperties;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.fluids.FluidType.Properties;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
-
-import static dev.su5ed.mffs.MFFSMod.location;
 
 public final class ModFluids {
     private static final DeferredRegister<FluidType> FLUID_TYPES = DeferredRegister.create(NeoForgeRegistries.FLUID_TYPES, MFFSMod.MODID);
     private static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(BuiltInRegistries.FLUID, MFFSMod.MODID);
 
-    public static final FluidRegistryObject FORTRON = new FluidRegistryObject(new FluidProperties()
+    public static final FluidRegistryObject FORTRON = new FluidRegistryObject(Properties.create()
+        .sound(SoundActions.BUCKET_FILL, SoundEvents.BUCKET_FILL)
+        .sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY)
         .density(1000)
-        .lightLevel(8)
-        .texture(location("fluid/fortron")));
+        .lightLevel(8));
     public static final DeferredHolder<FluidType, FluidType> FORTRON_FLUID_TYPE = FLUID_TYPES.register("fortron", FORTRON.fluidType());
     public static final DeferredHolder<Fluid, Fluid> FORTRON_FLUID = FLUIDS.register("fortron_fluid", FORTRON.sourceFluid());
     public static final DeferredHolder<Fluid, Fluid> FLOWING_FORTRON = FLUIDS.register("flowing_fortron", FORTRON.flowingFluid());
@@ -30,5 +31,6 @@ public final class ModFluids {
         FLUIDS.register(bus);
     }
 
-    private ModFluids() {}
+    private ModFluids() {
+    }
 }

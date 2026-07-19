@@ -14,6 +14,7 @@ version = changelog.getVersionFromTag()
 val curseForgeId = project.property("curseForgeId") as String
 val modrinthId = project.property("modrinthId") as String
 val versionJei = project.property("versionJei") as String
+val versionJade = project.property("versionJade") as String
 val versionPatchouli = project.property("versionPatchouli") as String
 val versionStreamex = project.property("versionStreamex") as String
 
@@ -86,6 +87,10 @@ repositories {
         name = "Modmaven"
         url = uri("https://modmaven.dev/")
     }
+    maven {
+        name = "Modrinth"
+        url = uri("https://api.modrinth.com/maven")
+    }
     mavenCentral()
 }
 
@@ -97,6 +102,8 @@ dependencies {
     compileOnly("mezz.jei:jei-26.1.2-neoforge-api:$versionJei")
     // at runtime, use the full JEI jar for NeoForge
     runtimeOnly("mezz.jei:jei-26.1.2-neoforge:$versionJei")
+
+    implementation("maven.modrinth:jade:$versionJade")
 
 //    runtimeOnly("org.sinytra:item-asset-export-neoforge:1.0.2+1.21")
 }

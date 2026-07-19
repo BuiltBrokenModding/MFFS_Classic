@@ -11,7 +11,9 @@ import net.minecraft.client.color.block.BlockTintSource;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.FluidModel;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -27,6 +29,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+
+import static dev.su5ed.mffs.MFFSMod.location;
 
 @EventBusSubscriber(modid = MFFSMod.MODID, value = Dist.CLIENT)
 public final class ModClientSetup {
@@ -51,6 +55,17 @@ public final class ModClientSetup {
     @SubscribeEvent
     public static void clientSetup(FMLClientSetupEvent event) {
         event.enqueueWork(ModClientSetup::registerLazyRenderers);
+    }
+    
+    @SubscribeEvent
+    public static void registerFluidModels(RegisterFluidModelsEvent event) {
+        FluidModel.Unbaked fortronModel = new FluidModel.Unbaked(
+            new Material(location("fluid/fortron")),
+            new Material(location("fluid/fortron")),
+            null,
+            null
+        );
+        event.register(fortronModel, ModFluids.FORTRON_FLUID.get(), ModFluids.FLOWING_FORTRON.get());
     }
 
     @SubscribeEvent
@@ -130,6 +145,7 @@ public final class ModClientSetup {
                     if (source != null) {
                         return source.colorInWorld(state, level, pos);
                     }
+                    return 0xFFFFFF;
                 }
             }
             return color(state);
