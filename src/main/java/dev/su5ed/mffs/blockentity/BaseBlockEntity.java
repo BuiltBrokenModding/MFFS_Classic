@@ -37,6 +37,8 @@ public abstract class BaseBlockEntity extends BlockEntity implements MenuProvide
     public void tickServer() {
         ++this.tickCounter;
     }
+    
+    public void beforeBlockEntityRemoved() {}
 
     public void beforeBlockRemove() {}
 

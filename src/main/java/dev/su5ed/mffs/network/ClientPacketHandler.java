@@ -1,5 +1,6 @@
 package dev.su5ed.mffs.network;
 
+import dev.su5ed.mffs.blockentity.InventoryBlockEntity;
 import dev.su5ed.mffs.blockentity.ProjectorBlockEntity;
 import dev.su5ed.mffs.render.CustomProjectorModeClientHandler;
 import dev.su5ed.mffs.render.particle.BeamParticleOptions;
@@ -7,6 +8,7 @@ import dev.su5ed.mffs.render.particle.MovingHologramParticleOptions;
 import dev.su5ed.mffs.render.particle.ParticleColor;
 import dev.su5ed.mffs.setup.ModObjects;
 import net.minecraft.client.Minecraft;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
@@ -49,5 +51,14 @@ public final class ClientPacketHandler {
             .ifPresent(be -> be.handleCustomUpdateTag(packet.data(), be.getLevel().registryAccess()));
     }
 
-    private ClientPacketHandler() {}
+    public static void handleBlockEntityUpdateItemInSlotPacket(SetBlocktItemInSlotPacket packet, IPayloadContext ctx) {
+        Minecraft minecraft = Minecraft.getInstance();
+        BlockEntity blockEntity = minecraft.level.getBlockEntity(packet.pos());
+        if (blockEntity instanceof InventoryBlockEntity inv) {
+            inv.getItems().setStackInSlot(packet.slot(), packet.stack());
+        }
+    }
+
+    private ClientPacketHandler() {
+    }
 }

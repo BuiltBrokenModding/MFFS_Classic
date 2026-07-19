@@ -15,6 +15,7 @@ import dev.su5ed.mffs.api.module.ModuleType;
 import dev.su5ed.mffs.api.module.ProjectorMode;
 import dev.su5ed.mffs.item.CustomProjectorModeItem;
 import dev.su5ed.mffs.menu.ProjectorMenu;
+import dev.su5ed.mffs.network.SetBlocktItemInSlotPacket;
 import dev.su5ed.mffs.network.UpdateAnimationSpeed;
 import dev.su5ed.mffs.setup.*;
 import dev.su5ed.mffs.util.ModUtil;
@@ -135,6 +136,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
     @Override
     public void onLoad() {
         super.onLoad();
+        updateProjectorModeOnClient();
         if (!this.level.isClientSide) {
             NeoForge.EVENT_BUS.register(this);
             reCalculateForceField();
@@ -194,6 +196,11 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
             this.clientAnimationSpeed = speed;
             sendToChunk(new UpdateAnimationSpeed(this.worldPosition, speed));
         }
+    }
+
+    @Override
+    public void beforeBlockEntityRemoved() {
+        destroyField();
     }
 
     @Override
@@ -411,6 +418,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
     }
 
     private void onModeChanged(ItemStack stack) {
+        updateProjectorModeOnClient();
         this.level.getLightEngine().checkBlock(this.worldPosition);
         destroyField();
     }
@@ -451,6 +459,14 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
                     MFFSMod.LOGGER.error("Error calculating force field blocks", throwable);
                     return null;
                 });
+        }
+    }
+
+    private void updateProjectorModeOnClient() {
+        if (!this.level.isClientSide) {
+            // Update mode on client for rendering
+            SetBlocktItemInSlotPacket packet = new SetBlocktItemInSlotPacket(this.worldPosition, this.projectorModeSlot.getIndex(), this.projectorModeSlot.getItem());
+            sendToChunk(packet);
         }
     }
 
