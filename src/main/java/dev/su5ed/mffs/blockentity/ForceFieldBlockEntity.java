@@ -50,6 +50,11 @@ public class ForceFieldBlockEntity extends BlockEntity {
     public void onLoad() {
         super.onLoad();
 
+        if (this.projector != null && getProjector().isEmpty()) {
+            this.level.removeBlock(this.worldPosition, false);
+            return;
+        }
+
         if (this.level.isClientSide) {
             InitialDataRequestPacket packet = new InitialDataRequestPacket(this.worldPosition);
             Network.INSTANCE.sendToServer(packet);

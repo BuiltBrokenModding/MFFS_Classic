@@ -4,11 +4,7 @@ import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.BufferUploader;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.vertex.*;
 import dev.su5ed.mffs.MFFSConfig;
 import dev.su5ed.mffs.MFFSMod;
 import net.minecraft.client.Minecraft;
@@ -69,7 +65,6 @@ public final class RenderPostProcessor {
         }
     }
 
-    @SuppressWarnings("unused") // Called from injected hook
     public static void resizeDisplay() {
         if (enableGlitchEffect) {
             Minecraft minecraft = Minecraft.getInstance();

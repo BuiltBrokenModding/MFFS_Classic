@@ -15,20 +15,26 @@ public class InventorySlot implements INBTSerializable<CompoundTag> {
     private final Predicate<ItemStack> filter;
     private final Consumer<ItemStack> onChanged;
     private final boolean virtual;
+    private final int index;
 
     private ItemStack content = ItemStack.EMPTY;
 
-    public InventorySlot(InventorySlotItemHandler parent, String name, Mode mode, Predicate<ItemStack> filter, Consumer<ItemStack> onChanged, boolean virtual) {
+    public InventorySlot(InventorySlotItemHandler parent, String name, Mode mode, Predicate<ItemStack> filter, Consumer<ItemStack> onChanged, boolean virtual, int index) {
         this.parent = parent;
         this.name = name;
         this.mode = mode;
         this.filter = filter;
         this.onChanged = onChanged;
         this.virtual = virtual;
+        this.index = index;
     }
 
     public String getName() {
         return this.name;
+    }
+
+    public int getIndex() {
+        return index;
     }
 
     public boolean canInsert(ItemStack stack) {
@@ -88,7 +94,11 @@ public class InventorySlot implements INBTSerializable<CompoundTag> {
         if (canExtract()) {
             if (!simulate) {
                 ItemStack stack = this.content.split(amount);
-                onChanged(true);
+                if (this.content.isEmpty()) {
+                    setItem(ItemStack.EMPTY);
+                } else {
+                    onChanged(true);
+                }
                 return stack;
             }
             return ItemHandlerHelper.copyStackWithSize(this.content, Math.min(amount, this.content.getCount()));

@@ -1,11 +1,13 @@
 package dev.su5ed.mffs.network;
 
+import dev.su5ed.mffs.blockentity.InventoryBlockEntity;
 import dev.su5ed.mffs.blockentity.ProjectorBlockEntity;
 import dev.su5ed.mffs.render.particle.BeamParticleOptions;
 import dev.su5ed.mffs.render.particle.MovingHologramParticleOptions;
 import dev.su5ed.mffs.render.particle.ParticleColor;
 import dev.su5ed.mffs.setup.ModObjects;
 import net.minecraft.client.Minecraft;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 
 public final class ClientPacketHandler {
@@ -40,6 +42,14 @@ public final class ClientPacketHandler {
         Minecraft minecraft = Minecraft.getInstance();
         minecraft.level.getBlockEntity(packet.pos(), ModObjects.FORCE_FIELD_BLOCK_ENTITY.get())
             .ifPresent(be -> be.handleCustomUpdateTag(packet.data()));
+    }
+    
+    public static void handleSetBlockItemInSlotPacket(SetBlockItemInSlotPacket packet) {
+        Minecraft minecraft = Minecraft.getInstance();
+        BlockEntity blockEntity = minecraft.level.getBlockEntity(packet.pos());
+        if (blockEntity instanceof InventoryBlockEntity inventory) {
+            inventory.getItems().setStackInSlot(packet.slot(), packet.stack());
+        }
     }
 
     private ClientPacketHandler() {}

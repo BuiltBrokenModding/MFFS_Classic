@@ -33,6 +33,10 @@ public abstract class InventoryBlockEntity extends BaseBlockEntity {
         this.itemCap = LazyOptional.of(() -> this.items);
     }
 
+    public InventorySlotItemHandler getItems() {
+        return this.items;
+    }
+
     protected InventorySlot addSlot(String name, InventorySlot.Mode mode) {
         return addSlot(name, mode, stack -> true);
     }

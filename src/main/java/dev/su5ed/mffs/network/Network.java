@@ -97,6 +97,11 @@ public final class Network {
             .decoder(SetStructureShapePacket::decode)
             .consumerMainThread(SetStructureShapePacket::processClientPacket)
             .add();
+        INSTANCE.messageBuilder(SetBlockItemInSlotPacket.class, id++, NetworkDirection.PLAY_TO_CLIENT)
+            .encoder(SetBlockItemInSlotPacket::encode)
+            .decoder(SetBlockItemInSlotPacket::decode)
+            .consumerMainThread(SetBlockItemInSlotPacket::processClientPacket)
+            .add();
     }
 
     public static <T extends BlockEntity> Optional<T> findBlockEntity(BlockEntityType<T> type, Level level, BlockPos pos) {

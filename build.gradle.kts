@@ -1,6 +1,5 @@
 import me.modmuss50.mpp.ReleaseType
 import net.minecraftforge.gradle.userdev.tasks.JarJar
-import java.time.LocalDateTime
 
 plugins {
     eclipse
@@ -9,8 +8,7 @@ plugins {
     id("org.parchmentmc.librarian.forgegradle") version "1.+"
     id("wtf.gofancy.git-changelog") version "1.1.+"
     id("me.modmuss50.mod-publish-plugin") version "0.5.+"
-    // Required to run mixin mods in dev
-    id("org.spongepowered.mixin") version "0.7-SNAPSHOT"
+    id("org.spongepowered.mixin") version "0.7.+"
 }
 
 group = "dev.su5ed.mffs"
@@ -84,6 +82,7 @@ repositories {
 
 dependencies {
     minecraft(group = "net.minecraftforge", name = "forge", version = "$versionMc-$versionForge")
+    annotationProcessor("org.spongepowered:mixin:0.8.5:processor")
 
     minecraftLibrary(jarJar(group = "one.util", name = "streamex", version = "0.8.1")) { // Streams galore!
         jarJar.ranged(this, "[0.8.1, 0.9)")
@@ -95,6 +94,11 @@ dependencies {
 
     runtimeOnly(fg.deobf("mezz.jei:jei-$versionMc-forge:$versionJei"))
     runtimeOnly(fg.deobf("vazkii.patchouli:Patchouli:$versionPatchouli"))
+}
+
+mixin {
+    add(sourceSets.main.get(), "mixins.mffs.refmap.json")
+    config("mffs.mixins.json")
 }
 
 reobf {
@@ -119,7 +123,7 @@ tasks {
                 "Implementation-Title" to project.name,
                 "Implementation-Version" to project.version,
                 "Implementation-Vendor" to "Su5eD",
-                "Implementation-Timestamp" to LocalDateTime.now()
+                "MixinConfigs" to "mffs.mixins.json"
             )
         }
     }

@@ -15,13 +15,9 @@ import dev.su5ed.mffs.api.module.ModuleType;
 import dev.su5ed.mffs.api.module.ProjectorMode;
 import dev.su5ed.mffs.item.CustomProjectorModeItem;
 import dev.su5ed.mffs.menu.ProjectorMenu;
+import dev.su5ed.mffs.network.SetBlockItemInSlotPacket;
 import dev.su5ed.mffs.network.UpdateAnimationSpeed;
-import dev.su5ed.mffs.setup.ModBlocks;
-import dev.su5ed.mffs.setup.ModCapabilities;
-import dev.su5ed.mffs.setup.ModModules;
-import dev.su5ed.mffs.setup.ModObjects;
-import dev.su5ed.mffs.setup.ModSounds;
-import dev.su5ed.mffs.setup.ModTags;
+import dev.su5ed.mffs.setup.*;
 import dev.su5ed.mffs.util.ModUtil;
 import dev.su5ed.mffs.util.ObjectCache;
 import dev.su5ed.mffs.util.SetBlockEvent;
@@ -48,16 +44,7 @@ import one.util.streamex.IntStreamEx;
 import one.util.streamex.StreamEx;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -93,7 +80,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
         super(ModObjects.PROJECTOR_BLOCK_ENTITY.get(), pos, state, 50);
 
         this.secondaryCard = addSlot("secondaryCard", InventorySlot.Mode.BOTH, ModUtil::isCard);
-        this.projectorModeSlot = addSlot("projectorMode", InventorySlot.Mode.BOTH, ModUtil::isProjectorMode, stack -> destroyField());
+        this.projectorModeSlot = addSlot("projectorMode", InventorySlot.Mode.BOTH, ModUtil::isProjectorMode, stack -> onModeChanged());
         this.fieldModuleSlots = StreamEx.of(Direction.values())
             .flatMap(side -> IntStreamEx.range(2)
                 .mapToEntry(i -> side, i -> addSlot("field_module_" + side.getName() + "_" + i, InventorySlot.Mode.BOTH, stack -> ModUtil.isModule(stack, Module.Category.FIELD), stack -> destroyField())))
@@ -134,6 +121,11 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
         }
         this.clientAnimationSpeed = clientAnimationSpeed;
     }
+    
+    private void onModeChanged() {
+        updateProjectorModeOnClient();
+        destroyField();
+    }
 
     @Override
     public BlockEntity be() {
@@ -148,6 +140,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
     @Override
     public void onLoad() {
         super.onLoad();
+        updateProjectorModeOnClient();
         if (!this.level.isClientSide) {
             MinecraftForge.EVENT_BUS.register(this);
             reCalculateForceField();
@@ -218,6 +211,12 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
     }
 
     @Override
+    public void beforeBlockEntityRemoved() {
+        super.beforeBlockEntityRemoved();
+        destroyField();
+    }
+
+    @Override
     public void beforeBlockRemove() {
         destroyField();
         super.beforeBlockRemove();
@@ -259,6 +258,14 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
     public void handleUpdateTag(CompoundTag tag) {
         super.handleUpdateTag(tag);
         this.clientAnimationSpeed = tag.getInt("animationSpeed");
+    }
+
+    @Override
+    protected void loadTag(CompoundTag tag) {
+        super.loadTag(tag);
+        if (this.level != null) {
+            updateProjectorModeOnClient();
+        }
     }
 
     @Override
@@ -467,6 +474,14 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
                     MFFSMod.LOGGER.error("Error calculating force field blocks", throwable);
                     return null;
                 });
+        }
+    }
+
+    private void updateProjectorModeOnClient() {
+        if (!this.level.isClientSide) {
+            // Update mode on client for rendering
+            SetBlockItemInSlotPacket packet = new SetBlockItemInSlotPacket(this.worldPosition, this.projectorModeSlot.getIndex(), this.projectorModeSlot.getItem());
+            sendToChunk(packet);
         }
     }
 

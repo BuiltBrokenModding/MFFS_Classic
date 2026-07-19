@@ -31,7 +31,7 @@ public class InventorySlotItemHandler implements IItemHandler, IItemHandlerModif
     }
 
     public InventorySlot addSlot(String name, InventorySlot.Mode mode, Predicate<ItemStack> filter, Consumer<ItemStack> onChanged, boolean virtual) {
-        InventorySlot slot = new InventorySlot(this, name, mode, filter, onChanged, virtual);
+        InventorySlot slot = new InventorySlot(this, name, mode, filter, onChanged, virtual, this.slots.size());
         this.slots.add(slot);
         return slot;
     }

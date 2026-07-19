@@ -205,7 +205,6 @@ public final class ModUtil {
         }
     }
 
-    @SuppressWarnings("unused") // Called from injected hook
     public static void onSetBlock(Level level, BlockPos pos, BlockState state) {
         SetBlockEvent event = new SetBlockEvent(level, pos, state);
         MinecraftForge.EVENT_BUS.post(event);
