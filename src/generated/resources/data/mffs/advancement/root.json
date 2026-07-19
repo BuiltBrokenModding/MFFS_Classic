@@ -18,7 +18,6 @@
       "translate": "advancements.mffs.root.description"
     },
     "icon": {
-      "count": 1,
       "id": "mffs:coercion_deriver"
     },
     "show_toast": false,

@@ -42,16 +42,17 @@ public class ModelsGen extends ModelProvider {
         itemModels.itemModelOutput.accept(ModBlocks.INTERDICTION_MATRIX.asItem(),
             ItemModelUtils.plainModel(location("block/interdiction_matrix")));
 
-        blockModels.createTrivialBlock(ModBlocks.FORCE_FIELD.get(), TexturedModel.CUBE.updateTemplate(t -> t.extend()
-            .element(e -> e
-                .from(0, 0, 0)
-                .to(16, 16, 16)
-                .allFaces((d, f) -> f
-                    .uvs(0, 0, 16, 16)
-                    .cullface(d)
-                    .texture(TextureSlot.ALL)
-                    .tintindex(0)))
-            .build())
+        blockModels.createTrivialBlock(ModBlocks.FORCE_FIELD.get(), TexturedModel.CUBE
+            .updateTemplate(t -> t.extend()
+                .element(e -> e
+                    .from(0, 0, 0)
+                    .to(16, 16, 16)
+                    .allFaces((d, f) -> f
+                        .uvs(0, 0, 16, 16)
+                        .cullface(d)
+                        .texture(TextureSlot.ALL)
+                        .tintindex(0)))
+                .build())
         );
 
         // Items

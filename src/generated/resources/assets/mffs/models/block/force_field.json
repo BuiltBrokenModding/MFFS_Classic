@@ -46,7 +46,6 @@
       ]
     }
   ],
-  "render_type": "minecraft:translucent",
   "textures": {
     "all": "mffs:block/force_field"
   }

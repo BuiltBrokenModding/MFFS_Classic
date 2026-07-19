@@ -17,7 +17,6 @@
       "translate": "advancements.mffs.smelt_steel.description"
     },
     "icon": {
-      "count": 1,
       "id": "mffs:steel_ingot"
     },
     "title": {
