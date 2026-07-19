@@ -35,6 +35,7 @@ public final class Network {
         registrar.playToServer(StructureDataRequestPacket.TYPE, StructureDataRequestPacket.STREAM_CODEC, mainThreadHandler(StructureDataRequestPacket::handle));
 
         registrar.playToClient(UpdateBlockEntityPacket.TYPE, UpdateBlockEntityPacket.STREAM_CODEC, mainThreadHandler(() -> ClientPacketHandler::handleBlockEntityUpdatePacket));
+        registrar.playToClient(UpdateInventoryPacket.TYPE, UpdateInventoryPacket.STREAM_CODEC, mainThreadHandler(() -> ClientPacketHandler::handleBlockEntityUpdateItemInSlotPacket));
         registrar.playToClient(SetStructureShapePacket.TYPE, SetStructureShapePacket.STREAM_CODEC, mainThreadHandler(() -> ClientPacketHandler::handleSetStructureShapePacket));
         registrar.playToClient(DrawBeamPacket.TYPE, DrawBeamPacket.STREAM_CODEC, mainThreadHandler(() -> ClientPacketHandler::handleDrawBeamPacket));
         registrar.playToClient(UpdateAnimationSpeed.TYPE, UpdateAnimationSpeed.STREAM_CODEC, mainThreadHandler(() -> ClientPacketHandler::handleUpdateAnimationSpeedPacket));

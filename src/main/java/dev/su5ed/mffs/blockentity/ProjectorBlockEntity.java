@@ -138,6 +138,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
     @Override
     public void onLoad() {
         super.onLoad();
+        updateProjectorModeOnClient();
         if (!this.level.isClientSide()) {
             NeoForge.EVENT_BUS.register(this);
             reCalculateForceField();
@@ -206,9 +207,14 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
     }
 
     @Override
+    public void beforeBlockEntityRemoved() {
+        super.beforeBlockEntityRemoved();
+        destroyField();
+    }
+
+    @Override
     public void preRemoveSideEffects(BlockPos pos, BlockState state) {
         destroyField();
-
         super.preRemoveSideEffects(pos, state);
     }
 
@@ -424,6 +430,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
     }
 
     private void onModeChanged(ItemStack stack) {
+        updateProjectorModeOnClient();
         this.level.getLightEngine().checkBlock(this.worldPosition);
         destroyField();
     }
@@ -464,6 +471,13 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
                     MFFSMod.LOGGER.error("Error calculating force field blocks", throwable);
                     return null;
                 });
+        }
+    }
+
+    private void updateProjectorModeOnClient() {
+        if (!this.level.isClientSide()) {
+            // Update mode on client for rendering
+            sendClientInventory(this.projectorModeSlot);
         }
     }
 

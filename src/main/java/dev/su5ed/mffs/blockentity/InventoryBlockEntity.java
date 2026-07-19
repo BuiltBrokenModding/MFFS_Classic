@@ -1,13 +1,18 @@
 package dev.su5ed.mffs.blockentity;
 
+import dev.su5ed.mffs.network.UpdateInventoryPacket;
 import dev.su5ed.mffs.util.inventory.InventorySlot;
 import dev.su5ed.mffs.util.inventory.InventorySlotItemHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.Capabilities;
@@ -15,6 +20,7 @@ import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.item.ItemUtil;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -50,6 +56,18 @@ public abstract class InventoryBlockEntity extends BaseBlockEntity {
     }
 
     protected void onInventoryChanged() {
+    }
+    
+    protected void sendClientInventory(InventorySlot... slots) {
+        TagValueOutput output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, this.level.registryAccess());
+        this.items.serializeSome(output, Arrays.asList(slots));
+        UpdateInventoryPacket packet = new UpdateInventoryPacket(this.worldPosition, output.buildResult());
+        sendToChunk(packet);
+    }
+
+    public void receiveClientInventory(CompoundTag data) {
+        ValueInput input = TagValueInput.create(ProblemReporter.DISCARDING, this.level.registryAccess(), data);
+        this.items.deserialize(input);
     }
 
     @Override

@@ -38,7 +38,7 @@ public class InventorySlotItemHandler implements ResourceHandler<ItemResource>, 
     }
 
     public InventorySlot addSlot(String name, InventorySlot.Mode mode, Predicate<ItemStack> filter, Consumer<ItemStack> onChanged, boolean virtual) {
-        InventorySlot slot = new InventorySlot(this, name, mode, filter, onChanged, virtual);
+        InventorySlot slot = new InventorySlot(this, name, mode, filter, onChanged, virtual, this.slots.size());
         this.slots.add(slot);
         this.snapshotJournals.add(new InventorySlotJournal(this.slots.size() - 1));
         return slot;
@@ -61,9 +61,15 @@ public class InventorySlotItemHandler implements ResourceHandler<ItemResource>, 
     }
 
     @Override
-    public void serialize(ValueOutput valueOutput) {
-        ValueOutput slots = valueOutput.child("slots");
-        this.slots.forEach(slot -> slots.putChild(slot.getName(), slot));
+    public void serialize(ValueOutput output) {
+        serializeSome(output, this.slots);
+    }
+
+    public void serializeSome(ValueOutput output, Collection<InventorySlot> slots) {
+        ValueOutput slotsOut = output.child("slots");
+        for (InventorySlot slot : slots) {
+            slotsOut.putChild(slot.getName(), slot);
+        }
     }
 
     @Override
