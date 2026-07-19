@@ -49,6 +49,7 @@ public class ModRenderPipeline {
     public static final RenderPipeline HOLO_QUAD = RenderPipeline.builder(RenderPipelines.GUI_TEXTURED_SNIPPET)
         .withLocation(MFFSMod.location("pipeline/holo_quad"))
         .withCull(false)
+        .withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, false))
         .build();
 
     public static final RenderPipeline BLOCK_FILL = RenderPipeline.builder(DEBUG_FILLED_SNIPPET)

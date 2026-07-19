@@ -225,7 +225,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
 
     @Override
     public float getAmplifier() {
-        return Math.max(Math.min(getCalculatedFieldPositions().size() / 1000, 10), 1);
+        return Math.clamp(getCalculatedFieldPositions().size() / 1000, 1, 10);
     }
 
     @Override
