@@ -41,18 +41,13 @@ public abstract class FortronScreen<T extends FortronMenu<?>> extends BaseScreen
 
         addRenderableWidget(new FortronChargeWidget(this.leftPos + this.fortronEnergyBarPos.leftInt(), this.topPos + this.fortronEnergyBarPos.rightInt(), this.fortronEnergyBarWidth, 11, Component.empty(),
             () -> this.menu.blockEntity.fortronStorage.getStoredFortron() / (double) this.menu.blockEntity.fortronStorage.getFortronCapacity()));
+        addRenderableWidget(this.frequency);
     }
 
     private void updateFrequencyValue() {
         this.frequency.setResponder(null);
         this.frequency.setValue(Integer.toString(this.menu.blockEntity.fortronStorage.getFrequency()));
         this.frequency.setResponder(this::onFrequencyChanged);
-    }
-
-
-    @Override
-    public void extractForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
-        this.frequency.extractRenderState(guiGraphics, mouseX, mouseY, partialTick);
     }
 
     @Override
