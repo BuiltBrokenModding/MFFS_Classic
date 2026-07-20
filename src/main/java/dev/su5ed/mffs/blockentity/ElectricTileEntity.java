@@ -15,15 +15,13 @@ import net.neoforged.neoforge.energy.IEnergyStorage;
 import one.util.streamex.StreamEx;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collections;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Supplier;
 
 public abstract class ElectricTileEntity extends ModularBlockEntity {
     public final CustomEnergyStorage energy;
     private final Map<Direction, Supplier<IEnergyStorage>> sidedEnergyCap;
+    private final boolean anySideEnergy;
 
     protected ElectricTileEntity(BlockEntityType<? extends BaseBlockEntity> type, BlockPos pos, BlockState state, int capacity) {
         super(type, pos, state);
@@ -36,10 +34,15 @@ public abstract class ElectricTileEntity extends ModularBlockEntity {
             .distinct()
             .<Supplier<IEnergyStorage>>mapToEntry(side -> Suppliers.memoize(() -> new SidedEnergyWrapper(this.energy, side == null || inputSides.contains(side), side == null || outputSides.contains(side))))
             .toMap();
+        this.anySideEnergy = this.sidedEnergyCap.keySet().containsAll(Arrays.asList(Direction.values()));
     }
-    
+
     @Nullable
     public IEnergyStorage getEnergy(Direction side) {
+        if (side == null && this.anySideEnergy) {
+            return this.energy;
+        }
+
         Supplier<IEnergyStorage> supplier = this.sidedEnergyCap.get(side);
         return supplier != null ? supplier.get() : null;
     }
