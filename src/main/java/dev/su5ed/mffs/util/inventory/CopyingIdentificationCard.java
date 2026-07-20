@@ -1,9 +1,9 @@
 package dev.su5ed.mffs.util.inventory;
 
-import com.mojang.authlib.GameProfile;
+import dev.su5ed.mffs.api.card.CardIdentity;
 import dev.su5ed.mffs.api.card.IdentificationCard;
 import dev.su5ed.mffs.api.security.FieldPermission;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
@@ -47,19 +47,19 @@ public class CopyingIdentificationCard implements IdentificationCard {
 
     @Nullable
     @Override
-    public GameProfile getIdentity() {
+    public CardIdentity getIdentity() {
         return this.card.getIdentity();
     }
 
     @Override
-    public void setIdentity(GameProfile profile) {
-        this.card.setIdentity(profile);
+    public void setIdentity(CardIdentity identity) {
+        this.card.setIdentity(identity);
         this.card.copyTo(this.copy);
     }
 
     @Override
-    public boolean checkIdentity(Player player) {
-        return this.card.checkIdentity(player);
+    public boolean checkIdentity(LivingEntity entity) {
+        return this.card.checkIdentity(entity);
     }
 
     @Override

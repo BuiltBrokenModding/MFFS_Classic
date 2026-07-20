@@ -12,6 +12,7 @@ import dev.su5ed.mffs.util.inventory.CopyingIdentificationCard;
 import dev.su5ed.mffs.util.inventory.InventorySlot;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -83,6 +84,16 @@ public class BiometricIdentifierBlockEntity extends FortronBlockEntity implement
             .anyMatch(slot -> {
                 IdentificationCard card = slot.getItem().getCapability(ModCapabilities.IDENTIFICATION_CARD);
                 return card != null && card.checkIdentity(player);
+            });
+    }
+
+    @Override
+    public boolean isAccessGranted(LivingEntity entity, FieldPermission permission) {
+        return !isActive() || StreamEx.of(this.masterSlot)
+            .append(this.identitySlots)
+            .anyMatch(slot -> {
+                IdentificationCard card = slot.getItem().getCapability(ModCapabilities.IDENTIFICATION_CARD);
+                return card != null && card.checkIdentity(entity);
             });
     }
 

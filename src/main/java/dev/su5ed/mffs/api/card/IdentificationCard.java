@@ -1,8 +1,7 @@
 package dev.su5ed.mffs.api.card;
 
-import com.mojang.authlib.GameProfile;
 import dev.su5ed.mffs.api.security.FieldPermission;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
@@ -19,11 +18,11 @@ public interface IdentificationCard {
     void removePermission(FieldPermission permission);
 
     @Nullable
-    GameProfile getIdentity();
+    CardIdentity getIdentity();
 
-    void setIdentity(GameProfile profile);
+    void setIdentity(CardIdentity profile);
     
-    boolean checkIdentity(Player player);
+    boolean checkIdentity(LivingEntity entity);
     
     void copyTo(IdentificationCard other);
 }

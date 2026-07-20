@@ -8,7 +8,6 @@ import dev.su5ed.mffs.network.DrawBeamPacket;
 import dev.su5ed.mffs.render.particle.BeamParticleOptions;
 import dev.su5ed.mffs.render.particle.ParticleColor;
 import dev.su5ed.mffs.setup.ModCapabilities;
-import dev.su5ed.mffs.setup.ModFluids;
 import dev.su5ed.mffs.setup.ModModules;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
@@ -18,7 +17,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import one.util.streamex.StreamEx;
@@ -32,10 +30,6 @@ import java.util.Optional;
  * @author Calclavia
  */
 public final class Fortron {
-    public static FluidStack getFortron(int amount) {
-        return new FluidStack(ModFluids.FORTRON_FLUID.get(), amount);
-    }
-
     public static void transferFortron(FortronStorage transmitter, Collection<? extends FortronStorage> receivers, TransferMode transferMode, int limit) {
         if (transmitter != null && receivers.size() > 1) {
             // Check spread mode. Equal, Give All, Take All

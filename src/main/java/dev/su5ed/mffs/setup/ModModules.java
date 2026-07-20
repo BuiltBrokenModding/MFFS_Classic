@@ -30,7 +30,7 @@ public final class ModModules {
     public static final ModuleType<InterdictionMatrixModule> WARN = createInterdiction(WarnModule::new);
     public static final ModuleType<InterdictionMatrixModule> BLOCK_ACCESS = createInterdiction(10.0F);
     public static final ModuleType<InterdictionMatrixModule> BLOCK_ALTER = createInterdiction(15.0F);
-    public static final ModuleType<InterdictionMatrixModule> ANTI_FRIENDLY = createInterdiction((type, stack) -> new ExterminatingModule(type, stack, target -> target instanceof Mob && target.getType().getCategory().isFriendly()));
+    public static final ModuleType<InterdictionMatrixModule> ANTI_FRIENDLY = createInterdiction(AntiFriendlyModule::new);
     public static final ModuleType<InterdictionMatrixModule> ANTI_HOSTILE = createInterdiction((type, stack) -> new ExterminatingModule(type, stack, target -> target instanceof Mob && !target.getType().getCategory().isFriendly()));
     public static final ModuleType<InterdictionMatrixModule> ANTI_PERSONNEL = createInterdiction(AntiPersonnelModule::new);
     public static final ModuleType<InterdictionMatrixModule> ANTI_SPAWN = createInterdiction(10.0F);

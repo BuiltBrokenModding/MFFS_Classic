@@ -1,6 +1,8 @@
 package dev.su5ed.mffs.item;
 
-import com.mojang.authlib.GameProfile;
+import dev.su5ed.mffs.api.card.CardIdentity;
+import dev.su5ed.mffs.api.card.CardIdentity.EntityCardIdentity;
+import dev.su5ed.mffs.api.card.CardIdentity.PlayerCardIdentity;
 import dev.su5ed.mffs.api.card.IdentificationCard;
 import dev.su5ed.mffs.api.security.FieldPermission;
 import dev.su5ed.mffs.setup.ModCapabilities;
@@ -12,6 +14,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -43,7 +46,7 @@ public class IdentificationCardItem extends BaseItem {
                     card.setIdentity(null);
                     player.sendOverlayMessage(ModUtil.translate("info", "identity_cleared"));
                 } else {
-                    setCardIdentity(card, player, player.getGameProfile());
+                    setCardIdentity(card, player, new PlayerCardIdentity(player.getGameProfile()));
                 }
             }
             return InteractionResult.CONSUME;
@@ -55,11 +58,24 @@ public class IdentificationCardItem extends BaseItem {
         ItemStack stack = event.getItemStack();
         Player player = event.getEntity();
         Entity target = event.getTarget();
-        if (player.isShiftKeyDown() && target instanceof Player targetPlayer) {
+        if (player.isShiftKeyDown()) {
             IdentificationCard card = stack.getCapability(ModCapabilities.IDENTIFICATION_CARD);
-            if (card != null) {
+            if (card == null) return;
+
+            if (target instanceof Player targetPlayer) {
                 if (!player.level().isClientSide()) {
-                    setCardIdentity(card, player, targetPlayer.getGameProfile());
+                    setCardIdentity(card, player, new PlayerCardIdentity(targetPlayer.getGameProfile()));
+                }
+                event.setCanceled(true);
+                event.setCancellationResult(InteractionResult.SUCCESS);
+            } else if (target instanceof LivingEntity living) {
+                if (!player.level().isClientSide()) {
+                    Component customName = living.getCustomName();
+                    setCardIdentity(card, player, new EntityCardIdentity(
+                        customName != null ? customName.getString() : null,
+                        living.getType().getDescriptionId(),
+                        living.getUUID()
+                    ));
                 }
                 event.setCanceled(true);
                 event.setCancellationResult(InteractionResult.SUCCESS);
@@ -67,9 +83,9 @@ public class IdentificationCardItem extends BaseItem {
         }
     }
 
-    private static void setCardIdentity(IdentificationCard card, Player user, GameProfile profile) {
-        card.setIdentity(profile);
-        user.sendOverlayMessage(ModUtil.translate("info", "identity_set", Component.literal(profile.name()).withStyle(ChatFormatting.GREEN)));
+    private static void setCardIdentity(IdentificationCard card, Player user, CardIdentity identity) {
+        card.setIdentity(identity);
+        user.sendOverlayMessage(ModUtil.translate("info", "identity_set", identity.getSimpleName()));
     }
 
     @Override
@@ -78,10 +94,9 @@ public class IdentificationCardItem extends BaseItem {
 
         IdentificationCard card = stack.getCapability(ModCapabilities.IDENTIFICATION_CARD);
         if (card != null) {
-            GameProfile identity = card.getIdentity();
+            CardIdentity identity = card.getIdentity();
             if (identity != null) {
-                tooltipAdder.accept(ModUtil.translate("info", "identity",
-                    Component.literal(identity.name()).withStyle(ChatFormatting.GREEN)).withStyle(ChatFormatting.DARK_GRAY));
+                tooltipAdder.accept(identity.getTooltip());
             }
             List<FieldPermission> perms = List.copyOf(card.getPermissions());
             if (!perms.isEmpty()) {
@@ -130,19 +145,19 @@ public class IdentificationCardItem extends BaseItem {
 
         @Nullable
         @Override
-        public GameProfile getIdentity() {
+        public CardIdentity getIdentity() {
             return this.stack.get(ModDataComponentTypes.ID_CARD_PROFILE);
         }
 
         @Override
-        public void setIdentity(GameProfile profile) {
+        public void setIdentity(CardIdentity profile) {
             this.stack.set(ModDataComponentTypes.ID_CARD_PROFILE, profile);
         }
 
         @Override
-        public boolean checkIdentity(Player player) {
-            GameProfile profile = getIdentity();
-            return profile == null || player.getGameProfile().equals(profile);
+        public boolean checkIdentity(LivingEntity entity) {
+            CardIdentity identity = getIdentity();
+            return identity != null && identity.matches(entity);
         }
 
         @Override

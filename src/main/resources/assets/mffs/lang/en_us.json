@@ -10,6 +10,7 @@
   "info.mffs.cannot_harness": "Cannot harness %s FE from the Fortron field.",
   "info.mffs.stored_energy": "Stored Energy: %s / %s FE",
   "info.mffs.identity": "Identity: %s",
+  "info.mffs.entity_identity": "%s (%s)",
   "info.mffs.identity_set": "Identity set to: %s",
   "info.mffs.identity_cleared": "Identity cleared",
   "info.mffs.field_permission.warp": "Warp",

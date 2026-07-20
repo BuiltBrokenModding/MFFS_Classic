@@ -1,8 +1,8 @@
 package dev.su5ed.mffs.setup;
 
-import com.mojang.authlib.GameProfile;
 import com.mojang.serialization.Codec;
 import dev.su5ed.mffs.MFFSMod;
+import dev.su5ed.mffs.api.card.CardIdentity;
 import dev.su5ed.mffs.api.security.FieldPermission;
 import dev.su5ed.mffs.item.CustomProjectorModeItem.Mode;
 import dev.su5ed.mffs.item.CustomProjectorModeItem.StructureCoords;
@@ -11,7 +11,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.util.ExtraCodecs;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -30,8 +29,8 @@ public final class ModDataComponentTypes {
         "card_frequency", () -> DataComponentType.<Integer>builder().persistent(Codec.INT).networkSynchronized(ByteBufCodecs.INT).build());
 
     // Identification Card
-    public static final Supplier<DataComponentType<GameProfile>> ID_CARD_PROFILE = DATA_COMPONENT_TYPES.register(
-        "id_card_profile", () -> DataComponentType.<GameProfile>builder().persistent(ExtraCodecs.AUTHLIB_GAME_PROFILE).networkSynchronized(ByteBufCodecs.GAME_PROFILE).build());
+    public static final Supplier<DataComponentType<CardIdentity>> ID_CARD_PROFILE = DATA_COMPONENT_TYPES.register(
+        "id_card_profile", () -> DataComponentType.<CardIdentity>builder().persistent(CardIdentity.CODEC).networkSynchronized(CardIdentity.STREAM_CODEC).build());
     public static final Supplier<DataComponentType<List<FieldPermission>>> ID_CARD_PERMISSIONS = DATA_COMPONENT_TYPES.register(
         "id_card_permissions", () -> DataComponentType.<List<FieldPermission>>builder().persistent(ModUtil.FIELD_PERMISSION_CODEC.listOf()).networkSynchronized(ModUtil.FIELD_PERMISSION_STREAM_CODEC.apply(ByteBufCodecs.list())).build());
 
