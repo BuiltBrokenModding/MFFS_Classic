@@ -11,7 +11,7 @@ import java.util.Set;
 
 public class CylinderProjectorMode implements ProjectorMode {
     public static final int RADIUS_EXPANSION = 0;
-    
+
     @Override
     public Set<Vec3> getExteriorPoints(Projector projector) {
         Set<Vec3> fieldBlocks = new HashSet<>();
@@ -20,13 +20,14 @@ public class CylinderProjectorMode implements ProjectorMode {
         BlockPos negScale = projector.getNegativeScale();
 
         int radius = (posScale.getX() + negScale.getX() + posScale.getZ() + negScale.getZ()) / 2;
-        int height = posScale.getY() + negScale.getY();
+        int minY = -negScale.getY();
+        int maxY = posScale.getY();
 
         for (float x = -radius; x <= radius; x += 1) {
             for (float z = -radius; z <= radius; z += 1) {
-                for (float y = 0; y < height; y += 1) {
+                for (float y = minY; y < maxY; y += 1) {
                     float area = x * x + z * z + RADIUS_EXPANSION;
-                    if (area <= radius * radius && (y == 0 || y == height - 1 || area >= (radius - 1) * (radius - 1))) {
+                    if (area <= radius * radius && (y == minY || y == maxY - 1 || area >= (radius - 1) * (radius - 1))) {
                         fieldBlocks.add(new Vec3(x, y, z));
                     }
                 }
