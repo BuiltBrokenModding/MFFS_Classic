@@ -89,8 +89,13 @@ public abstract class ElectricTileEntity extends ModularBlockEntity {
     @NotNull
     @Override
     public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        if (cap == ForgeCapabilities.ENERGY && this.sidedEnergyCap.containsKey(side)) {
-            return this.sidedEnergyCap.get(side).cast();
+        if (cap == ForgeCapabilities.ENERGY) {
+            if (side == null) {
+                return LazyOptional.of(() -> this.energy).cast();
+            }
+            if (this.sidedEnergyCap.containsKey(side)) {
+                return this.sidedEnergyCap.get(side).cast();
+            }
         }
         return super.getCapability(cap, side);
     }
