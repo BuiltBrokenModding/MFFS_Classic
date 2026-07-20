@@ -56,6 +56,8 @@ public abstract class ElectricTileEntity extends ModularBlockEntity {
      * Charges electric item.
      */
     public void chargeItemFromSelf(ItemStack stack) {
+        if (stack.isEmpty()) return;
+
         EnergyHandler receiver = stack.getCapability(Capabilities.Energy.ITEM, ItemAccess.forStack(stack));
         if (receiver != null) {
             EnergyHandlerUtil.move(this.energy, receiver, this.energy.getAmountAsInt(), null);
