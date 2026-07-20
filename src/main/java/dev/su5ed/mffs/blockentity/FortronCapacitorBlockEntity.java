@@ -68,27 +68,28 @@ public class FortronCapacitorBlockEntity extends ModularBlockEntity implements F
     public void tickServer() {
         super.tickServer();
 
-        consumeCost();
+        if (isActive()) {
+            consumeCost();
 
-        // Distribute fortron across the network
-        if (isActive() && getTicks() % 10 == 0) {
-            Set<FortronStorage> machines = new HashSet<>();
+            // Distribute fortron across the network
+            if (getTicks() % 10 == 0) {
+                Set<FortronStorage> machines = new HashSet<>();
 
-            for (ItemStack stack : getCards()) {
-                if (stack.is(ModItems.INFINITE_POWER_CARD.get())) {
-                    this.fortronStorage.setStoredFortron(this.fortronStorage.getFortronCapacity());
+                for (ItemStack stack : getCards()) {
+                    if (stack.is(ModItems.INFINITE_POWER_CARD.get())) {
+                        this.fortronStorage.setStoredFortron(this.fortronStorage.getFortronCapacity());
+                    } else if (stack.getItem() instanceof CoordLink coordLink) {
+                        Optional.ofNullable(coordLink.getLink(stack))
+                            .map(linkPosition -> this.level.getCapability(ModCapabilities.FORTRON, linkPosition, null))
+                            .ifPresent(fortron -> {
+                                machines.add(this.fortronStorage);
+                                machines.add(fortron);
+                            });
+                    }
                 }
-                else if (stack.getItem() instanceof CoordLink coordLink) {
-                    Optional.ofNullable(coordLink.getLink(stack))
-                        .map(linkPosition -> this.level.getCapability(ModCapabilities.FORTRON, linkPosition, null))
-                        .ifPresent(fortron -> {
-                            machines.add(this.fortronStorage);
-                            machines.add(fortron);
-                        });
-                }
+
+                Fortron.transferFortron(this.fortronStorage, machines.isEmpty() ? getDevicesByFrequency() : machines, this.transferMode, getTransmissionRate());
             }
-
-            Fortron.transferFortron(this.fortronStorage, machines.isEmpty() ? getDevicesByFrequency() : machines, this.transferMode, getTransmissionRate());
         }
     }
 

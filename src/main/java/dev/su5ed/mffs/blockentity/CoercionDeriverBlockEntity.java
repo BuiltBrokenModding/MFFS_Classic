@@ -46,7 +46,6 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity {
         this.batterySlot = addSlot("battery", InventorySlot.Mode.BOTH, stack -> stack.getCapability(Capabilities.EnergyStorage.ITEM) != null);
         this.fuelSlot = addSlot("fuel", InventorySlot.Mode.BOTH, stack -> stack.is(ModTags.FORTRON_FUEL));
         this.upgradeSlots = createUpgradeSlots(3);
-        this.energy.setMaxTransfer(getMaxFETransferRate());
     }
 
     public EnergyMode getEnergyMode() {
@@ -71,6 +70,12 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity {
 
     public void setProcessTime(int processTime) {
         this.processTime = processTime;
+    }
+
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        this.energy.setMaxTransfer(getMaxFETransferRate());
     }
 
     @Override
