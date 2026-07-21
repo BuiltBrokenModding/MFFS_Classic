@@ -9,11 +9,13 @@ import net.minecraft.world.phys.Vec3;
 import java.util.HashSet;
 import java.util.Set;
 
+import static dev.su5ed.mffs.util.projector.FieldSizeLimits.clampRadius;
+
 public class SphereProjectorMode implements ProjectorMode {
     @Override
     public Set<Vec3> getExteriorPoints(Projector projector) {
         Set<Vec3> fieldBlocks = new HashSet<>();
-        int radius = projector.getModuleCount(ModModules.SCALE);
+        int radius = clampRadius(projector, projector.getModuleCount(ModModules.SCALE));
         int steps = (int) Math.ceil(Math.PI / Math.atan(1.0D / radius / 2));
         for (int phi_n = 0; phi_n < 2 * steps; phi_n++) {
             for (int theta_n = 0; theta_n < steps; theta_n++) {
@@ -33,7 +35,7 @@ public class SphereProjectorMode implements ProjectorMode {
     public Set<Vec3> getInteriorPoints(Projector projector) {
         Set<Vec3> fieldBlocks = new HashSet<>();
         BlockPos projectorPos = projector.be().getBlockPos().offset(projector.getTranslation());
-        int radius = projector.getModuleCount(ModModules.SCALE);
+        int radius = clampRadius(projector, projector.getModuleCount(ModModules.SCALE));
         for (int x = -radius; x <= radius; x++) {
             for (int z = -radius; z <= radius; z++) {
                 for (int y = -radius; y <= radius; y++) {
@@ -54,7 +56,7 @@ public class SphereProjectorMode implements ProjectorMode {
 
     private boolean isInField(Projector projector, Vec3 position, double tolerance) {
         BlockPos projectorPos = projector.be().getBlockPos();
-        int radius = projector.getModuleCount(ModModules.SCALE);
+        int radius = clampRadius(projector, projector.getModuleCount(ModModules.SCALE));
         return projectorPos.offset(projector.getTranslation()).closerThan(BlockPos.containing(position), radius + tolerance);
     }
 }

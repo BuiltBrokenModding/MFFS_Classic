@@ -9,6 +9,8 @@ import net.minecraft.world.phys.Vec3;
 import java.util.HashSet;
 import java.util.Set;
 
+import static dev.su5ed.mffs.util.projector.FieldSizeLimits.*;
+
 public class CylinderProjectorMode implements ProjectorMode {
     public static final int RADIUS_EXPANSION = 0;
 
@@ -19,9 +21,9 @@ public class CylinderProjectorMode implements ProjectorMode {
         BlockPos posScale = projector.getPositiveScale();
         BlockPos negScale = projector.getNegativeScale();
 
-        int radius = (posScale.getX() + negScale.getX() + posScale.getZ() + negScale.getZ()) / 2;
-        int minY = -negScale.getY();
-        int maxY = posScale.getY();
+        int radius = clampHorizontal(projector, (posScale.getX() + negScale.getX() + posScale.getZ() + negScale.getZ()) / 2);
+        int minY = -clampVertical(projector, negScale.getY());
+        int maxY = clampVertical(projector, posScale.getY());
 
         for (float x = -radius; x <= radius; x += 1) {
             for (float z = -radius; z <= radius; z += 1) {
@@ -45,14 +47,14 @@ public class CylinderProjectorMode implements ProjectorMode {
         BlockPos negScale = projector.getNegativeScale();
         BlockPos projectorPos = projector.be().getBlockPos().offset(projector.getTranslation());
 
-        int radius = (posScale.getX() + negScale.getX() + posScale.getZ() + negScale.getZ()) / 2;
-        int height = posScale.getY() + negScale.getY();
+        int radius = clampHorizontal(projector, (posScale.getX() + negScale.getX() + posScale.getZ() + negScale.getZ()) / 2);
+        int height = clampSize(posScale.getY() + negScale.getY(), projector.getMaxFieldHeight());
 
         for (int x = -radius; x <= radius; x++) {
             for (int z = -radius; z <= radius; z++) {
                 for (int y = 0; y < height; y++) {
                     Vec3 position = new Vec3(x, y, z);
-                    if (isInField(projector, position.add(projectorPos.getX(), projectorPos.getY(), projectorPos.getZ()))) {
+                    if (isInField(projector, position.add(projectorPos.getX(), projectorPos.getY(), projectorPos.getZ()), radius)) {
                         fieldBlocks.add(position);
                     }
                 }
@@ -67,6 +69,10 @@ public class CylinderProjectorMode implements ProjectorMode {
         BlockPos posScale = projector.getPositiveScale();
         BlockPos negScale = projector.getNegativeScale();
         int radius = (posScale.getX() + negScale.getX() + posScale.getZ() + negScale.getZ()) / 2;
+        return isInField(projector, position, radius);
+    }
+
+    private boolean isInField(Projector projector, Vec3 position, int radius) {
         BlockPos projectorPos = projector.be().getBlockPos().offset(projector.getTranslation());
 
         Vec3 relativePosition = position.subtract(projectorPos.getX(), projectorPos.getY(), projectorPos.getZ());

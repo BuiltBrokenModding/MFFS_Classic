@@ -7,12 +7,14 @@ import net.minecraft.world.phys.Vec3;
 import java.util.HashSet;
 import java.util.Set;
 
+import static dev.su5ed.mffs.util.projector.FieldSizeLimits.clampFieldScale;
+
 public class TubeProjectorMode extends CubeProjectorMode {
     @Override
     public Set<Vec3> getExteriorPoints(Projector projector) {
         Set<Vec3> fieldBlocks = new HashSet<>();
-        BlockPos posScale = projector.getPositiveScale();
-        BlockPos negScale = projector.getNegativeScale();
+        BlockPos posScale = clampFieldScale(projector, projector.getPositiveScale());
+        BlockPos negScale = clampFieldScale(projector, projector.getNegativeScale());
         for (int x = -negScale.getX(); x <= posScale.getX(); x++) {
             for (int z = -negScale.getZ(); z <= posScale.getZ(); z++) {
                 fieldBlocks.add(new Vec3(x, posScale.getY(), z));

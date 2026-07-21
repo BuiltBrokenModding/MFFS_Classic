@@ -11,12 +11,14 @@ import net.minecraft.world.phys.Vec3;
 import java.util.HashSet;
 import java.util.Set;
 
+import static dev.su5ed.mffs.util.projector.FieldSizeLimits.clampFieldScale;
+
 public class CubeProjectorMode implements ProjectorMode {
     @Override
     public Set<Vec3> getExteriorPoints(Projector projector) {
         Set<Vec3> fieldBlocks = new HashSet<>();
-        Vec3i posScale = projector.getPositiveScale();
-        Vec3i negScale = projector.getNegativeScale();
+        Vec3i posScale = clampFieldScale(projector, projector.getPositiveScale());
+        Vec3i negScale = clampFieldScale(projector, projector.getNegativeScale());
         for (int x = -negScale.getX(); x <= posScale.getX(); x++) {
             for (int z = -negScale.getZ(); z <= posScale.getZ(); z++) {
                 fieldBlocks.add(new Vec3(x, posScale.getY(), z));
@@ -42,8 +44,8 @@ public class CubeProjectorMode implements ProjectorMode {
     @Override
     public Set<Vec3> getInteriorPoints(Projector projector) {
         Set<Vec3> fieldBlocks = new HashSet<>();
-        Vec3i posScale = projector.getPositiveScale();
-        Vec3i negScale = projector.getNegativeScale();
+        Vec3i posScale = clampFieldScale(projector, projector.getPositiveScale());
+        Vec3i negScale = clampFieldScale(projector, projector.getNegativeScale());
         for (int x = -negScale.getX(); x <= posScale.getX(); x++) {
             for (int z = -negScale.getZ(); z <= posScale.getZ(); z++) {
                 for (int y = -negScale.getY(); y <= posScale.getY(); y++) {

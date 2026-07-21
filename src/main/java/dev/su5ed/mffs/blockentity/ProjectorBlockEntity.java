@@ -7,6 +7,7 @@ import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.mojang.datafixers.util.Pair;
 import dev.su5ed.mffs.MFFSConfig;
+import dev.su5ed.mffs.MFFSConfig.ProjectorConfig;
 import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.api.Projector;
 import dev.su5ed.mffs.api.TargetPosPair;
@@ -460,6 +461,16 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
         return module == ModModules.SCALE && getModeStack().getItem() instanceof CustomProjectorModeItem ? 0 : super.getModuleCount(module, slots);
     }
 
+    @Override
+    public int getMaxFieldWidth() {
+        return getConfig().maxFieldWidth.getAsInt();
+    }
+
+    @Override
+    public int getMaxFieldHeight() {
+        return getConfig().maxFieldHeight.getAsInt();
+    }
+
     private void reCalculateForceField() {
         if (getMode().isPresent()) {
             if (getModeStack().getItem() instanceof ObjectCache cache) {
@@ -573,7 +584,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
         for (Module module : modules) {
             module.beforeSelect(this, fieldToBeProjected);
         }
-        int constructionSpeed = Math.min(getProjectionSpeed(), MFFSConfig.COMMON.maxFFGenPerTick.get());
+        int constructionSpeed = Math.min(getProjectionSpeed(), getConfig().maxFFGenPerTick.get());
         List<TargetPosPair> projectable = new ArrayList<>();
         fieldLoop:
         for (int i = 0, constructionCount = 0; i < fieldToBeProjected.size() && constructionCount < constructionSpeed && !isRemoved() && this.semaphore.isInStage(ProjectionStage.SELECTING); i++) {
@@ -620,6 +631,10 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
             }
         }
         return countMap;
+    }
+
+    private static ProjectorConfig getConfig() {
+        return MFFSConfig.COMMON.projectorConfig;
     }
 
     private static class ScheduledEvent {

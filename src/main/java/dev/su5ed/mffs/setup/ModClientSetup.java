@@ -132,6 +132,9 @@ public final class ModClientSetup {
     private static class ForceFieldBlockTintSource implements BlockTintSource {
         @Override
         public int color(BlockState state) {
+            if (state.getValueOrElse(ForceFieldBlockImpl.CAMOUFLAGED, false)) {
+                return 0xFFFFFF;
+            }
             return 0xFF34fEFF;
         }
 
@@ -145,7 +148,6 @@ public final class ModClientSetup {
                     if (source != null) {
                         return source.colorInWorld(state, level, pos);
                     }
-                    return 0xFFFFFF;
                 }
             }
             return color(state);

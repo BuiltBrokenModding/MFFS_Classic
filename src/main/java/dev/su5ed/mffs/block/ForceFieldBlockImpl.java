@@ -46,6 +46,7 @@ public class ForceFieldBlockImpl extends Block implements ForceFieldBlock, Entit
     private static final VoxelShape COLLIDABLE_BLOCK = Shapes.create(0.01, 0.01, 0.01, 0.99, 0.99, 0.99);
     public static final BooleanProperty PROPAGATES_SKYLIGHT = BooleanProperty.create("propagates_skylight");
     public static final BooleanProperty SOLID = BooleanProperty.create("solid");
+    public static final BooleanProperty CAMOUFLAGED = BooleanProperty.create("camouflaged");
 
     public ForceFieldBlockImpl(Properties properties) {
         super(properties
@@ -61,13 +62,16 @@ public class ForceFieldBlockImpl extends Block implements ForceFieldBlock, Entit
             .strength(-1.0F, 3600000.0F)
             .noLootTable());
 
-        registerDefaultState(this.stateDefinition.any().setValue(PROPAGATES_SKYLIGHT, true).setValue(SOLID, true));
+        registerDefaultState(this.stateDefinition.any()
+            .setValue(PROPAGATES_SKYLIGHT, true)
+            .setValue(SOLID, true)
+            .setValue(CAMOUFLAGED, false));
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
-        builder.add(PROPAGATES_SKYLIGHT, SOLID);
+        builder.add(PROPAGATES_SKYLIGHT, SOLID, CAMOUFLAGED);
     }
 
     @Nullable
@@ -75,7 +79,8 @@ public class ForceFieldBlockImpl extends Block implements ForceFieldBlock, Entit
     public BlockState getStateForPlacement(BlockPlaceContext pContext) {
         return super.getStateForPlacement(pContext)
             .setValue(PROPAGATES_SKYLIGHT, true)
-            .setValue(SOLID, true);
+            .setValue(SOLID, true)
+            .setValue(CAMOUFLAGED, false);
     }
 
     @Override

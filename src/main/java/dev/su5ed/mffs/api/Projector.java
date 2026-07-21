@@ -87,4 +87,8 @@ public interface Projector extends ModuleAcceptor, BiometricIdentifierLink {
     void schedule(int delay, Runnable runnable);
 
     boolean mergeIntoInventory(ItemStack stack);
+    
+    int getMaxFieldWidth();
+
+    int getMaxFieldHeight();
 }

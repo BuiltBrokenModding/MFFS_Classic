@@ -56,7 +56,8 @@ public class ForceFieldBlockEntity extends BlockEntity {
             worldPosition,
             getBlockState()
                 .setValue(ForceFieldBlockImpl.PROPAGATES_SKYLIGHT, camouflage.propagatesSkylightDown())
-                .setValue(ForceFieldBlockImpl.SOLID, !camouflage.getOcclusionShape().isEmpty()),
+                .setValue(ForceFieldBlockImpl.SOLID, !camouflage.getOcclusionShape().isEmpty())
+                .setValue(ForceFieldBlockImpl.CAMOUFLAGED, true),
             Block.UPDATE_ALL
         );
     }

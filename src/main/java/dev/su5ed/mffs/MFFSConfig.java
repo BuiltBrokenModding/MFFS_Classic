@@ -26,12 +26,12 @@ public class MFFSConfig {
     public static final class Common {
         public final ModConfigSpec.BooleanValue enableElectricity;
         public final ModConfigSpec.BooleanValue useCache;
-        public final ModConfigSpec.IntValue maxFFGenPerTick;
         public final ModConfigSpec.BooleanValue allowOpBiometryOverride;
         public final ModConfigSpec.BooleanValue interactCreative;
         public final ModConfigSpec.IntValue maxCustomModeScale;
         public final ModConfigSpec.BooleanValue giveGuidebookOnFirstJoin;
 
+        public final ProjectorConfig projectorConfig;
         public final CoercionDeriverConfig coercionDeriverConfig;
 
         public final ModConfigSpec.IntValue interdictionMatrixKillEnergy;
@@ -48,9 +48,6 @@ public class MFFSConfig {
             this.useCache = builder
                 .comment("Cache allows temporary data saving to decrease calculations required")
                 .define("useCache", true);
-            this.maxFFGenPerTick = builder
-                .comment("How many force field blocks can be generated per tick? Less reduces lag.")
-                .defineInRange("maxFFGenPerTick", 1_000_000, 0, Integer.MAX_VALUE);
             this.allowOpBiometryOverride = builder
                 .comment("Allow server operators to bypass Force Field biometry")
                 .define("allowOpBiometryOverride", true);
@@ -65,6 +62,7 @@ public class MFFSConfig {
                 .define("giveGuidebookOnFirstJoin", true);
             builder.pop();
 
+            this.projectorConfig = new ProjectorConfig(builder);
             this.coercionDeriverConfig = new CoercionDeriverConfig(builder);
 
             builder.push("balance");
@@ -83,6 +81,30 @@ public class MFFSConfig {
             this.allowWalkThroughForceFields = builder
                 .comment("Allow authorized players to walk through force fields without sneaking. WARNING: May cause occasional clipping issues on horizontal platforms.")
                 .define("allowWalkThroughForceFields", false);
+            builder.pop();
+        }
+    }
+
+    public static final class ProjectorConfig {
+        public final ModConfigSpec.IntValue maxFFGenPerTick;
+
+        public final ModConfigSpec.IntValue maxFieldWidth;
+        public final ModConfigSpec.IntValue maxFieldHeight;
+
+        private ProjectorConfig(ModConfigSpec.Builder builder) {
+            builder.push("force_field_projector");
+
+            this.maxFFGenPerTick = builder
+                .comment("How many force field blocks can be generated per tick? Less reduces lag.")
+                .defineInRange("maxFFGenPerTick", 1_000_000, 0, Integer.MAX_VALUE);
+
+            this.maxFieldWidth = builder
+                .comment("Maximum horizontal size (in blocks) of a force field. 0 indicates no limit.")
+                .defineInRange("maxFieldWidth", 0, 0, Integer.MAX_VALUE);
+            this.maxFieldHeight = builder
+                .comment("Maximum vertical size (in blocks) of a force field. 0 indicates no limit.")
+                .defineInRange("maxFieldHeight", 0, 0, Integer.MAX_VALUE);
+
             builder.pop();
         }
     }

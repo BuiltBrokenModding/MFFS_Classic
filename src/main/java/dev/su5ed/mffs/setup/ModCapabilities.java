@@ -40,17 +40,17 @@ public final class ModCapabilities {
 
         event.registerBlock(
             FORTRON,
-            (level, pos, state, be, context) -> be != null ? ((FortronBlockEntity) be).fortronStorage : null,
+            (level, pos, state, be, context) -> be instanceof FortronBlockEntity fort ? fort.fortronStorage : null,
             modMachines
         );
         event.registerBlock(
             Capabilities.Fluid.BLOCK,
-            (level, pos, state, be, context) -> be != null ? ((FortronBlockEntity) be).fortronStorage.getFortronTank() : null,
+            (level, pos, state, be, context) -> be instanceof FortronBlockEntity fort ? fort.fortronStorage.getFortronTank() : null,
             modMachines
         );
         event.registerBlock(
             Capabilities.Item.BLOCK,
-            (level, pos, state, be, context) -> ((InventoryBlockEntity) be).getItems(),
+            (level, pos, state, be, context) -> be instanceof InventoryBlockEntity inv ? inv.getItems() : null,
             modMachines
         );
         event.registerBlockEntity(PROJECTOR, ModObjects.PROJECTOR_BLOCK_ENTITY.get(), (be, unused) -> be);
