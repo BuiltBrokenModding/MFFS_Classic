@@ -32,13 +32,7 @@ public class MFFSConfig {
         public final ModConfigSpec.IntValue maxCustomModeScale;
         public final ModConfigSpec.BooleanValue giveGuidebookOnFirstJoin;
 
-        public final ModConfigSpec.IntValue coercionDriverFePerFortron;
-        public final ModConfigSpec.IntValue coercionDriverFortronToFeLoss;
-        public final ModConfigSpec.IntValue coercionDriverFortronPerTick;
-        public final ModConfigSpec.IntValue coercionDriverFortronPerTickSpeedModule;
-
-        public final ModConfigSpec.DoubleValue catalystMultiplier;
-        public final ModConfigSpec.IntValue catalystBurnTime;
+        public final CoercionDeriverConfig coercionDeriverConfig;
 
         public final ModConfigSpec.IntValue interdictionMatrixKillEnergy;
 
@@ -71,28 +65,9 @@ public class MFFSConfig {
                 .define("giveGuidebookOnFirstJoin", true);
             builder.pop();
 
-            builder.push("coercion_deriver");
-            this.coercionDriverFePerFortron = builder
-                .comment("FE to convert into 1 Fortron")
-                .defineInRange("feCostPerFortron", 400, 1, Integer.MAX_VALUE);
-            this.coercionDriverFortronToFeLoss = builder
-                .comment("FE to subtract when converting Fortron to FE")
-                .defineInRange("fortronToFeLoss", 1, 0, Integer.MAX_VALUE);
-            this.coercionDriverFortronPerTick = builder
-                .comment("Base limit of fortron produced per tick (20 per second). Scales with speed modules and catalyst.")
-                .defineInRange("fortronPerTick", 200, 1, Integer.MAX_VALUE);
-            coercionDriverFortronPerTickSpeedModule = builder
-                .comment("Production bonus per speed module. production = fortronPerTick + (fortronPerTick * speedModuleCount)... or x2 multiplicative")
-                .defineInRange("fortronPerTickSpeedModule", 200, 1, Integer.MAX_VALUE);
-            builder.pop();
+            this.coercionDeriverConfig = new CoercionDeriverConfig(builder);
 
             builder.push("balance");
-            this.catalystMultiplier = builder
-                .comment("Fortron catalyst production multiplier")
-                .defineInRange("catalystMultiplier", 2.0, 0.0, 10_000.0);
-            this.catalystBurnTime = builder
-                .comment("The amount of ticks a single catalyst item lasts for")
-                .defineInRange("catalystBurnTime", 10 * 20, 1, 10_000);
             this.interdictionMatrixKillEnergy = builder
                 .comment("Energy to consume when the Interdiction Matrix kills a player")
                 .defineInRange("interdictionMatrixKillEnergy", 0, 0, Integer.MAX_VALUE);
@@ -108,6 +83,45 @@ public class MFFSConfig {
             this.allowWalkThroughForceFields = builder
                 .comment("Allow authorized players to walk through force fields without sneaking. WARNING: May cause occasional clipping issues on horizontal platforms.")
                 .define("allowWalkThroughForceFields", false);
+            builder.pop();
+        }
+    }
+
+    public static final class CoercionDeriverConfig {
+        public final ModConfigSpec.IntValue fePerFortron;
+        public final ModConfigSpec.IntValue fortronToFeLoss;
+        public final ModConfigSpec.IntValue fortronPerTick;
+        public final ModConfigSpec.IntValue fortronPerTickSpeedModule;
+        public final ModConfigSpec.DoubleValue speedModuleTransferRateBonus;
+
+        public final ModConfigSpec.DoubleValue catalystMultiplier;
+        public final ModConfigSpec.IntValue catalystBurnTime;
+
+        private CoercionDeriverConfig(ModConfigSpec.Builder builder) {
+            builder.push("coercion_deriver");
+            this.catalystMultiplier = builder
+                .comment("Fortron catalyst production multiplier")
+                .defineInRange("catalystMultiplier", 2.0, 0.0, 10_000.0);
+            this.catalystBurnTime = builder
+                .comment("The amount of ticks a single catalyst item lasts for")
+                .defineInRange("catalystBurnTime", 10 * 20, 1, 10_000);
+
+            this.fePerFortron = builder
+                .comment("FE to convert into 1 Fortron")
+                .defineInRange("feCostPerFortron", 400, 1, Integer.MAX_VALUE);
+            this.fortronToFeLoss = builder
+                .comment("FE to subtract when converting Fortron to FE")
+                .defineInRange("fortronToFeLoss", 1, 0, Integer.MAX_VALUE);
+            this.fortronPerTick = builder
+                .comment("Base limit of fortron produced per tick (20 per second). Scales with speed modules and catalyst.")
+                .defineInRange("fortronPerTick", 200, 1, Integer.MAX_VALUE);
+            this.fortronPerTickSpeedModule = builder
+                .comment("Production bonus per speed module. production = fortronPerTick + (fortronPerTick * speedModuleCount)... or x2 multiplicative")
+                .defineInRange("fortronPerTickSpeedModule", 200, 1, Integer.MAX_VALUE);
+
+            this.speedModuleTransferRateBonus = builder
+                .comment("Increases the maximum FE transfer rate per each speed module. Each module boosts the transfer rate by DEFAULT_FE_CAPACITY * multiplier FE/t.")
+                .defineInRange("speedModuleTransferRateBonus", 0.125D, 0.0D, 1.0D);
             builder.pop();
         }
     }
