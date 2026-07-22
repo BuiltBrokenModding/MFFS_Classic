@@ -4,11 +4,12 @@ import dev.su5ed.mffs.MFFSConfig;
 import dev.su5ed.mffs.api.ForceFieldBlock;
 import dev.su5ed.mffs.api.Projector;
 import dev.su5ed.mffs.api.module.Module;
-import dev.su5ed.mffs.api.security.BiometricIdentifier;
+import dev.su5ed.mffs.api.security.BiometricIdentifierLink;
 import dev.su5ed.mffs.api.security.FieldPermission;
 import dev.su5ed.mffs.blockentity.ForceFieldBlockEntity;
 import dev.su5ed.mffs.compat.CreateTrainCompat;
 import dev.su5ed.mffs.setup.ModObjects;
+import dev.su5ed.mffs.util.BiometricIdentity;
 import dev.su5ed.mffs.util.ModUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -124,8 +125,7 @@ public class ForceFieldBlockImpl extends Block implements ForceFieldBlock, Entit
         return getProjector(level, pos)
             .map(projector -> {
                 if (context instanceof EntityCollisionContext entityContext && entityContext.getEntity() instanceof Player player) {
-                    BiometricIdentifier identifier = projector.getBiometricIdentifier();
-                    if (isAuthorized(identifier, player)) {
+                    if (isAuthorized(projector, player)) {
                         // Walk-through mode: authorized players can walk through without sneaking
                         if (MFFSConfig.COMMON.allowWalkThroughForceFields.get()) {
                             // If player is standing on top, keep it solid (prevents falling through floors)
@@ -155,8 +155,7 @@ public class ForceFieldBlockImpl extends Block implements ForceFieldBlock, Entit
                     }
                 }
                 if (!entity.level().isClientSide && entity.distanceToSqr(new Vec3(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5)) < Mth.square(0.7)) {
-                    BiometricIdentifier identifier = projector.getBiometricIdentifier();
-                    boolean isAuthorizedPlayer = entity instanceof Player player && isAuthorized(identifier, player);
+                    boolean isAuthorizedPlayer = entity instanceof Player player && isAuthorized(projector, player);
 
                     if (entity instanceof LivingEntity living) {
                         // Apply nausea and slowness effects
@@ -197,8 +196,8 @@ public class ForceFieldBlockImpl extends Block implements ForceFieldBlock, Entit
         return !state.is(this);
     }
 
-    private boolean isAuthorized(BiometricIdentifier identifier, Player player) {
-        return player.isCreative() || identifier != null && identifier.isAccessGranted(player, FieldPermission.WARP);
+    private boolean isAuthorized(BiometricIdentifierLink link, Player player) {
+        return player.isCreative() || BiometricIdentity.isAccessGranted(link.getBiometricIdentifiers(), player, FieldPermission.WARP);
     }
 
     @Nullable

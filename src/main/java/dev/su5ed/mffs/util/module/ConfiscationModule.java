@@ -2,10 +2,10 @@ package dev.su5ed.mffs.util.module;
 
 import dev.su5ed.mffs.api.fortron.FortronStorage;
 import dev.su5ed.mffs.api.module.ModuleType;
-import dev.su5ed.mffs.api.security.BiometricIdentifier;
 import dev.su5ed.mffs.api.security.FieldPermission;
 import dev.su5ed.mffs.api.security.InterdictionMatrix;
 import dev.su5ed.mffs.setup.ModCapabilities;
+import dev.su5ed.mffs.util.BiometricIdentity;
 import dev.su5ed.mffs.util.ModUtil;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
@@ -23,27 +23,25 @@ public class ConfiscationModule extends BaseInterdictionModule {
     }
 
     @Override
-    public boolean onDefend(InterdictionMatrix interdictionMatrix, LivingEntity target) {
-        if (target instanceof Player player) {
-            BiometricIdentifier identifier = interdictionMatrix.getBiometricIdentifier();
-            if (identifier != null && identifier.isAccessGranted(player, FieldPermission.BYPASS_CONFISCATION)) {
-                return false;
-            }
+    public boolean onDefend(InterdictionMatrix matrix, LivingEntity target) {
+        if (BiometricIdentity.isAccessGranted(matrix.getBiometricIdentifiers(), target, FieldPermission.BYPASS_CONFISCATION)) {
+            return false;
         }
 
-        BiometricIdentifier identifier = interdictionMatrix.getBiometricIdentifier();
-        if (target instanceof Player player && (identifier == null || !identifier.isAccessGranted(player, FieldPermission.BYPASS_DEFENSE))) {
+        if (target instanceof Player player
+            && !BiometricIdentity.isAccessGranted(matrix.getBiometricIdentifiers(), player, FieldPermission.BYPASS_DEFENSE)
+        ) {
             Inventory inventory = player.getInventory();
-            Collection<ItemStack> filteredItems = interdictionMatrix.getFilteredItems();
+            Collection<ItemStack> filteredItems = matrix.getFilteredItems();
             int confiscationCount = 0;
 
             for (int i = 0; i < inventory.getContainerSize(); i++) {
                 ItemStack checkStack = inventory.getItem(i);
                 if (!checkStack.isEmpty()) {
                     boolean stacksMatch = StreamEx.of(filteredItems).anyMatch(stack -> ItemStack.isSameItem(stack, checkStack));
-                    InterdictionMatrix.ConfiscationMode mode = interdictionMatrix.getConfiscationMode();
+                    InterdictionMatrix.ConfiscationMode mode = matrix.getConfiscationMode();
                     if (mode == InterdictionMatrix.ConfiscationMode.BLACKLIST && stacksMatch || mode == InterdictionMatrix.ConfiscationMode.WHITELIST && !stacksMatch) {
-                        interdictionMatrix.mergeIntoInventory(inventory.getItem(i));
+                        matrix.mergeIntoInventory(inventory.getItem(i));
                         inventory.setItem(i, ItemStack.EMPTY);
                         confiscationCount++;
                     }
@@ -51,8 +49,8 @@ public class ConfiscationModule extends BaseInterdictionModule {
             }
 
             if (confiscationCount > 0) {
-                player.displayClientMessage(ModUtil.translate("info", "interdiction_matrix.confiscation_" + (confiscationCount == 1 ? "singular" : "plural"), interdictionMatrix.getTitle(), confiscationCount), false);
-                BlockEntity be = interdictionMatrix.be();
+                player.displayClientMessage(ModUtil.translate("info", "interdiction_matrix.confiscation_" + (confiscationCount == 1 ? "singular" : "plural"), matrix.getTitle(), confiscationCount), false);
+                BlockEntity be = matrix.be();
                 FortronStorage fortron = be.getLevel().getCapability(ModCapabilities.FORTRON, be.getBlockPos(), be.getBlockState(), be, null);
                 if (fortron != null) {
                     fortron.extractFortron(confiscationCount, false);   

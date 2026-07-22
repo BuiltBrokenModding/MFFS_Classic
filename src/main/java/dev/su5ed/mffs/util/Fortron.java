@@ -2,6 +2,7 @@ package dev.su5ed.mffs.util;
 
 import dev.su5ed.mffs.api.fortron.FortronStorage;
 import dev.su5ed.mffs.api.module.ModuleAcceptor;
+import dev.su5ed.mffs.api.security.BiometricIdentifier;
 import dev.su5ed.mffs.api.security.FieldPermission;
 import dev.su5ed.mffs.api.security.InterdictionMatrix;
 import dev.su5ed.mffs.network.DrawBeamPacket;
@@ -148,15 +149,18 @@ public final class Fortron {
             .orElse(null);
     }
 
-    public static boolean isPermittedByInterdictionMatrix(InterdictionMatrix interdictionMatrix, Player player, FieldPermission... permissions) {
-        if (interdictionMatrix != null && interdictionMatrix.isActive() && interdictionMatrix.getBiometricIdentifier() != null) {
-            for (FieldPermission permission : permissions) {
-                if (!interdictionMatrix.getBiometricIdentifier().isAccessGranted(player, permission)) {
-                    return interdictionMatrix.hasModule(ModModules.INVERTER);
+    public static boolean isPermittedByInterdictionMatrix(InterdictionMatrix matrix, Player player, FieldPermission... permissions) {
+        if (matrix != null && matrix.isActive()) {
+            Collection<BiometricIdentifier> identifiers = matrix.getBiometricIdentifiers();
+            if (!identifiers.isEmpty()) {
+                for (FieldPermission permission : permissions) {
+                    if (!BiometricIdentity.isAccessGranted(identifiers, player, permission)) {
+                        return matrix.hasModule(ModModules.INVERTER);
+                    }
                 }
             }
         }
-        return !interdictionMatrix.hasModule(ModModules.INVERTER);
+        return !matrix.hasModule(ModModules.INVERTER);
     }
 
     private static void doTransferFortron(FortronStorage source, FortronStorage destination, int joules, int limit, boolean isCamo) {
