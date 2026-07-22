@@ -36,6 +36,7 @@ public class MFFSConfig {
         public final CoercionDeriverConfig coercionDeriverConfig;
         public final FortronCapacitorConfig fortronCapacitorConfig;
         public final ProjectorConfig projectorConfig;
+        public final InterdictionMatrixConfig interdictionMatrixConfig;
 
         public final ModConfigSpec.IntValue interdictionMatrixKillEnergy;
 
@@ -68,6 +69,7 @@ public class MFFSConfig {
             this.coercionDeriverConfig = new CoercionDeriverConfig(builder);
             this.fortronCapacitorConfig = new FortronCapacitorConfig(builder);
             this.projectorConfig = new ProjectorConfig(builder);
+            this.interdictionMatrixConfig = new InterdictionMatrixConfig(builder);
 
             builder.push("balance");
             this.interdictionMatrixKillEnergy = builder
@@ -156,6 +158,24 @@ public class MFFSConfig {
                 .defineInRange("speedModuleTransferRateBonus", 0.125D, 0.0D, 1.0D);
 
             this.upgradeLimitConfig = new UpgradeLimitConfig(builder);
+
+            builder.pop();
+        }
+    }
+
+    public static final class InterdictionMatrixConfig {
+        public final ModConfigSpec.IntValue maxActionRange;
+        public final ModConfigSpec.IntValue maxWarningRange;
+
+        private InterdictionMatrixConfig(ModConfigSpec.Builder builder) {
+            builder.push("interdiction_matrix");
+
+            this.maxActionRange = builder
+                .comment("Maximum action range (in blocks, as distance from interdiction matrix). 0 indicates no limit.")
+                .defineInRange("maxActionRange", 0, 0, Integer.MAX_VALUE);
+            this.maxWarningRange = builder
+                .comment("Maximum warning range (in blocks, as distance from interdiction matrix). 0 indicates no limit.")
+                .defineInRange("maxWarningRange", 0, 0, Integer.MAX_VALUE);
 
             builder.pop();
         }

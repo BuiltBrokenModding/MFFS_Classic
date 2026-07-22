@@ -44,19 +44,22 @@ public class InterdictionMatrixBlockEntity extends ModularBlockEntity implements
         super(ModObjects.INTERDICTION_MATRIX_BLOCK_ENTITY.get(), pos, state);
 
         this.secondaryCard = addSlot("secondaryCard", InventorySlot.Mode.BOTH, stack -> ModUtil.isCard(stack) || stack.is(ModItems.INFINITE_POWER_CARD.get()), this::onFrequencySlotChanged);
-        this.upgradeSlots = createUpgradeSlots(8, Module.Category.INTERDICTION, stack -> {
-        });
+        this.upgradeSlots = createUpgradeSlots(8, Module.Category.INTERDICTION, stack -> {});
         this.bannedItemSlots = IntStreamEx.range(9)
             .mapToObj(i -> addVirtualSlot("banned_item_" + i))
             .toList();
     }
 
     public int getWarningRange() {
-        return getModuleCount(ModModules.WARN) + getActionRange() + 3;
+        int limit = MFFSConfig.COMMON.interdictionMatrixConfig.maxWarningRange.getAsInt();
+        int base = getModuleCount(ModModules.WARN) + getActionRange() + 3;
+        return limit == 0 ? base : Math.min(limit, base);
     }
 
     public int getActionRange() {
-        return getModuleCount(ModModules.SCALE);
+        int limit = MFFSConfig.COMMON.interdictionMatrixConfig.maxActionRange.getAsInt();
+        int base = getModuleCount(ModModules.SCALE);
+        return limit == 0 ? base : Math.min(limit, base);
     }
 
     @Override
@@ -109,7 +112,7 @@ public class InterdictionMatrixBlockEntity extends ModularBlockEntity implements
 
     @Override
     protected float getAmplifier() {
-        return Math.max(Math.min(getActionRange() / 20, 10), 1);
+        return Math.clamp(getActionRange() / 20, 1, 10);
     }
 
     public void scan() {
