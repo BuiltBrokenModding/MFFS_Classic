@@ -139,16 +139,6 @@ public abstract class FortronBlockEntity extends InventoryBlockEntity implements
         output.putBoolean("active", this.active);
     }
 
-    /**
-     * Gets the first linked security station, based on the card slots and frequency.
-     */
-    @Override
-    public BiometricIdentifier getBiometricIdentifier() {
-        return getBiometricIdentifiers().stream()
-            .findFirst()
-            .orElse(null);
-    }
-
     @Override
     public Set<BiometricIdentifier> getBiometricIdentifiers() {
         return StreamEx.of(getCards())

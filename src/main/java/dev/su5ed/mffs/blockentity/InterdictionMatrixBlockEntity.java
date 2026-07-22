@@ -3,13 +3,13 @@ package dev.su5ed.mffs.blockentity;
 import dev.su5ed.mffs.MFFSConfig;
 import dev.su5ed.mffs.api.module.InterdictionMatrixModule;
 import dev.su5ed.mffs.api.module.Module;
-import dev.su5ed.mffs.api.security.BiometricIdentifier;
 import dev.su5ed.mffs.api.security.FieldPermission;
 import dev.su5ed.mffs.api.security.InterdictionMatrix;
 import dev.su5ed.mffs.menu.InterdictionMatrixMenu;
 import dev.su5ed.mffs.setup.ModItems;
 import dev.su5ed.mffs.setup.ModModules;
 import dev.su5ed.mffs.setup.ModObjects;
+import dev.su5ed.mffs.util.BiometricIdentity;
 import dev.su5ed.mffs.util.ModUtil;
 import dev.su5ed.mffs.util.inventory.InventorySlot;
 import net.minecraft.ChatFormatting;
@@ -113,14 +113,13 @@ public class InterdictionMatrixBlockEntity extends ModularBlockEntity implements
     }
 
     public void scan() {
-        BiometricIdentifier identifier = getBiometricIdentifier();
         AABB emptyBounds = AABB.encapsulatingFullBlocks(this.worldPosition, this.worldPosition.offset(1, 1, 1));
 
         List<LivingEntity> warningList = this.level.getEntitiesOfClass(LivingEntity.class, emptyBounds.inflate(getWarningRange(), getWarningRange(), getWarningRange()));
         List<LivingEntity> actionList = this.level.getEntitiesOfClass(LivingEntity.class, emptyBounds.inflate(getActionRange(), getActionRange(), getActionRange()));
 
         for (LivingEntity entity : warningList) {
-            if (entity instanceof Player player && !actionList.contains(entity) && !canPlayerBypass(identifier, player) && this.level.getRandom().nextInt(3) == 0) {
+            if (entity instanceof Player player && !actionList.contains(entity) && !canPlayerBypass(player) && this.level.getRandom().nextInt(3) == 0) {
                 player.sendSystemMessage(ModUtil.translate("info", "interdiction_matrix.warning", getTitle()).withStyle(ChatFormatting.RED));
             }
         }
@@ -135,8 +134,7 @@ public class InterdictionMatrixBlockEntity extends ModularBlockEntity implements
     public void applyAction(LivingEntity target) {
         // Check for security permission to see if this player should be ignored.
         if (target instanceof Player player) {
-            BiometricIdentifier identifier = getBiometricIdentifier();
-            if (canPlayerBypass(identifier, player) || MFFSConfig.COMMON.interactCreative.get() && player.isCreative()) {
+            if (canPlayerBypass(player) || MFFSConfig.COMMON.interactCreative.get() && player.isCreative()) {
                 return;
             }
         }
@@ -147,8 +145,8 @@ public class InterdictionMatrixBlockEntity extends ModularBlockEntity implements
         }
     }
 
-    public boolean canPlayerBypass(BiometricIdentifier identifier, Player player) {
-        return identifier != null && identifier.isAccessGranted(player, FieldPermission.BYPASS_CONFISCATION);
+    public boolean canPlayerBypass(Player player) {
+        return BiometricIdentity.isAccessGranted(getBiometricIdentifiers(), player, FieldPermission.BYPASS_CONFISCATION);
     }
 
     @Override

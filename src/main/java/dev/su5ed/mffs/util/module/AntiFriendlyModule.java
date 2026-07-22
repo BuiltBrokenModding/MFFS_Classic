@@ -1,9 +1,9 @@
 package dev.su5ed.mffs.util.module;
 
 import dev.su5ed.mffs.api.module.ModuleType;
-import dev.su5ed.mffs.api.security.BiometricIdentifier;
 import dev.su5ed.mffs.api.security.FieldPermission;
 import dev.su5ed.mffs.api.security.InterdictionMatrix;
+import dev.su5ed.mffs.util.BiometricIdentity;
 import dev.su5ed.mffs.util.ModUtil;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -27,9 +27,7 @@ public class AntiFriendlyModule extends BaseInterdictionModule {
             return false;
         }
 
-        // TODO Handle Multiple biometric identifiers
-        BiometricIdentifier identifier = matrix.getBiometricIdentifier();
-        if (identifier != null && identifier.isActive() && identifier.isAccessGranted(target, FieldPermission.BYPASS_DEFENSE)) {
+        if (BiometricIdentity.isAccessGranted(matrix.getBiometricIdentifiers(), target, FieldPermission.BYPASS_DEFENSE)) {
             return false;
         }
 

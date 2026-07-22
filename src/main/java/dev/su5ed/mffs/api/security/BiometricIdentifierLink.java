@@ -8,7 +8,5 @@ import java.util.Set;
  * @author Calclavia
  */
 public interface BiometricIdentifierLink {
-    BiometricIdentifier getBiometricIdentifier();
-
     Set<BiometricIdentifier> getBiometricIdentifiers();
 }
