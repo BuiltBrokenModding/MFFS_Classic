@@ -104,7 +104,7 @@ dependencies {
     runtimeOnly("mezz.jei:jei-26.1.2-neoforge:$versionJei")
 
     implementation("maven.modrinth:jade:$versionJade")
-
+    runtimeOnly("maven.modrinth:nU0bVIaL:2CsnFLom") // Patchouli
 //    runtimeOnly("org.sinytra:item-asset-export-neoforge:1.0.2+1.21")
 }
 
