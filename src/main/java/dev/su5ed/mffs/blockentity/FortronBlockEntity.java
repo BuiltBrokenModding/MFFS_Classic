@@ -7,11 +7,7 @@ import dev.su5ed.mffs.api.security.BiometricIdentifier;
 import dev.su5ed.mffs.api.security.BiometricIdentifierLink;
 import dev.su5ed.mffs.block.BaseEntityBlock;
 import dev.su5ed.mffs.setup.ModCapabilities;
-import dev.su5ed.mffs.util.Fortron;
-import dev.su5ed.mffs.util.FortronStorageImpl;
-import dev.su5ed.mffs.util.FrequencyGrid;
-import dev.su5ed.mffs.util.ModUtil;
-import dev.su5ed.mffs.util.TransferMode;
+import dev.su5ed.mffs.util.*;
 import dev.su5ed.mffs.util.inventory.InventorySlot;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -157,16 +153,6 @@ public abstract class FortronBlockEntity extends InventoryBlockEntity implements
             return this.fluidCap.cast();
         }
         return super.getCapability(cap, side);
-    }
-
-    /**
-     * Gets the first linked security station, based on the card slots and frequency.
-     */
-    @Override
-    public BiometricIdentifier getBiometricIdentifier() {
-        return getBiometricIdentifiers().stream()
-            .findFirst()
-            .orElse(null);
     }
 
     @Override

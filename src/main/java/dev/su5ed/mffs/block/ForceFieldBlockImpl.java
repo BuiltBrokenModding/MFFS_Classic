@@ -3,11 +3,12 @@ package dev.su5ed.mffs.block;
 import dev.su5ed.mffs.api.ForceFieldBlock;
 import dev.su5ed.mffs.api.Projector;
 import dev.su5ed.mffs.api.module.Module;
-import dev.su5ed.mffs.api.security.BiometricIdentifier;
+import dev.su5ed.mffs.api.security.BiometricIdentifierLink;
 import dev.su5ed.mffs.api.security.FieldPermission;
 import dev.su5ed.mffs.blockentity.ForceFieldBlockEntity;
 import dev.su5ed.mffs.compat.CreateTrainCompat;
 import dev.su5ed.mffs.setup.ModObjects;
+import dev.su5ed.mffs.util.BiometricIdentity;
 import dev.su5ed.mffs.util.ModUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -115,8 +116,7 @@ public class ForceFieldBlockImpl extends Block implements ForceFieldBlock, Entit
         return getProjector(level, pos)
             .map(projector -> {
                 if (context instanceof EntityCollisionContext entityContext && entityContext.getEntity() instanceof Player player) {
-                    BiometricIdentifier bioIndentifier = projector.getBiometricIdentifier();
-                    if (player.isShiftKeyDown() && !context.isAbove(COLLIDABLE_BLOCK, pos, true) && (player.isCreative() || bioIndentifier != null && bioIndentifier.isAccessGranted(player, FieldPermission.WARP))) {
+                    if (player.isShiftKeyDown() && !context.isAbove(COLLIDABLE_BLOCK, pos, true) && isAuthorized(projector, player)) {
                         return Shapes.empty();
                     }
                 }
@@ -141,12 +141,15 @@ public class ForceFieldBlockImpl extends Block implements ForceFieldBlock, Entit
                         living.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 4 * 20, 3));
                         living.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 20, 1));
                     }
-                    BiometricIdentifier identifier = projector.getBiometricIdentifier();
-                    if (!(entity instanceof Player player) || !isSneaking(entity) || !player.isCreative() && (identifier == null || !identifier.isAccessGranted(player, FieldPermission.WARP))) {
+                    if (!(entity instanceof Player player) || !isSneaking(entity) || !isAuthorized(projector, player)) {
                         ModUtil.shockEntity(entity, Integer.MAX_VALUE);
                     }
                 }
             });
+    }
+
+    private boolean isAuthorized(BiometricIdentifierLink link, Player player) {
+        return player.isCreative() || BiometricIdentity.isAccessGranted(link.getBiometricIdentifiers(), player, FieldPermission.WARP);
     }
 
     private boolean isSneaking(Entity entity) {

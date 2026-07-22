@@ -20,4 +20,6 @@ public interface BiometricIdentifier {
      * Gets the card currently placed in the manipulating slot.
      */
     LazyOptional<IdentificationCard> getManipulatingCard();
+
+    boolean isActive();
 }
