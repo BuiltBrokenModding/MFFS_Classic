@@ -1,5 +1,7 @@
 package dev.su5ed.mffs;
 
+import dev.su5ed.mffs.api.module.ModuleType;
+import dev.su5ed.mffs.setup.ModModules;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -31,8 +33,9 @@ public class MFFSConfig {
         public final ModConfigSpec.IntValue maxCustomModeScale;
         public final ModConfigSpec.BooleanValue giveGuidebookOnFirstJoin;
 
-        public final ProjectorConfig projectorConfig;
         public final CoercionDeriverConfig coercionDeriverConfig;
+        public final FortronCapacitorConfig fortronCapacitorConfig;
+        public final ProjectorConfig projectorConfig;
 
         public final ModConfigSpec.IntValue interdictionMatrixKillEnergy;
 
@@ -62,8 +65,9 @@ public class MFFSConfig {
                 .define("giveGuidebookOnFirstJoin", true);
             builder.pop();
 
-            this.projectorConfig = new ProjectorConfig(builder);
             this.coercionDeriverConfig = new CoercionDeriverConfig(builder);
+            this.fortronCapacitorConfig = new FortronCapacitorConfig(builder);
+            this.projectorConfig = new ProjectorConfig(builder);
 
             builder.push("balance");
             this.interdictionMatrixKillEnergy = builder
@@ -91,6 +95,8 @@ public class MFFSConfig {
         public final ModConfigSpec.IntValue maxFieldWidth;
         public final ModConfigSpec.IntValue maxFieldHeight;
 
+        public final UpgradeLimitConfig upgradeLimitConfig;
+
         private ProjectorConfig(ModConfigSpec.Builder builder) {
             builder.push("force_field_projector");
 
@@ -105,6 +111,8 @@ public class MFFSConfig {
                 .comment("Maximum vertical size (in blocks) of a force field. 0 indicates no limit.")
                 .defineInRange("maxFieldHeight", 0, 0, Integer.MAX_VALUE);
 
+            this.upgradeLimitConfig = new UpgradeLimitConfig(builder);
+
             builder.pop();
         }
     }
@@ -118,6 +126,8 @@ public class MFFSConfig {
 
         public final ModConfigSpec.DoubleValue catalystMultiplier;
         public final ModConfigSpec.IntValue catalystBurnTime;
+
+        public final UpgradeLimitConfig upgradeLimitConfig;
 
         private CoercionDeriverConfig(ModConfigSpec.Builder builder) {
             builder.push("coercion_deriver");
@@ -144,7 +154,50 @@ public class MFFSConfig {
             this.speedModuleTransferRateBonus = builder
                 .comment("Increases the maximum FE transfer rate per each speed module. Each module boosts the transfer rate by DEFAULT_FE_CAPACITY * multiplier FE/t.")
                 .defineInRange("speedModuleTransferRateBonus", 0.125D, 0.0D, 1.0D);
+
+            this.upgradeLimitConfig = new UpgradeLimitConfig(builder);
+
             builder.pop();
+        }
+    }
+
+    public static final class FortronCapacitorConfig {
+        public final UpgradeLimitConfig upgradeLimitConfig;
+
+        public FortronCapacitorConfig(ModConfigSpec.Builder builder) {
+            builder.comment("Fortron Capacitor").push("fortron_capacitor");
+
+            this.upgradeLimitConfig = new UpgradeLimitConfig(builder);
+
+            builder.pop();
+        }
+    }
+
+    public static final class UpgradeLimitConfig {
+        public final ModConfigSpec.IntValue maxSpeedUpgradeCount;
+        public final ModConfigSpec.IntValue maxCapacityUpgradeCount;
+
+        private UpgradeLimitConfig(ModConfigSpec.Builder builder) {
+            builder.push("upgrades");
+
+            this.maxSpeedUpgradeCount = builder
+                .comment("Maximum amount of Speed Modules this device accepts. 0 indicates no limit.")
+                .defineInRange("maxSpeedUpgradeCount", 0, 0, Integer.MAX_VALUE);
+            this.maxCapacityUpgradeCount = builder
+                .comment("Maximum amount of Capacity Modules this device accepts. 0 indicates no limit.")
+                .defineInRange("maxCapacityUpgradeCount", 0, 0, Integer.MAX_VALUE);
+
+            builder.pop();
+        }
+
+        public int getLimit(ModuleType<?> module) {
+            if (module == ModModules.SPEED) {
+                return this.maxSpeedUpgradeCount.getAsInt();
+            }
+            if (module == ModModules.CAPACITY) {
+                return this.maxCapacityUpgradeCount.getAsInt();
+            }
+            return 0;
         }
     }
 

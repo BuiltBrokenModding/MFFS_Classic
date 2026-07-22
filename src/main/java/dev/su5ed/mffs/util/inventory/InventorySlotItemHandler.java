@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -39,6 +40,13 @@ public class InventorySlotItemHandler implements ResourceHandler<ItemResource>, 
 
     public InventorySlot addSlot(String name, InventorySlot.Mode mode, Predicate<ItemStack> filter, Consumer<ItemStack> onChanged, boolean virtual) {
         InventorySlot slot = new InventorySlot(this, name, mode, filter, onChanged, virtual, this.slots.size());
+        this.slots.add(slot);
+        this.snapshotJournals.add(new InventorySlotJournal(this.slots.size() - 1));
+        return slot;
+    }
+
+    public InventorySlot addSlot(BiFunction<InventorySlotItemHandler, Integer, InventorySlot> factory) {
+        InventorySlot slot = factory.apply(this, this.slots.size());
         this.slots.add(slot);
         this.snapshotJournals.add(new InventorySlotJournal(this.slots.size() - 1));
         return slot;

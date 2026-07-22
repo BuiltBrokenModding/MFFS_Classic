@@ -77,6 +77,12 @@ public class CoercionDeriverBlockEntity extends ElectricTileEntity {
     }
 
     @Override
+    @Nullable
+    protected MFFSConfig.UpgradeLimitConfig getLimitConfig() {
+        return getConfig().upgradeLimitConfig;
+    }
+
+    @Override
     public void onLoad() {
         super.onLoad();
         this.energy.setMaxTransfer(getMaxFETransferRate());

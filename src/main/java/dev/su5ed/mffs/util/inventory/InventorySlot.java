@@ -66,6 +66,10 @@ public class InventorySlot implements ValueIOSerializable {
         onChanged(notify);
     }
 
+    public int getMaxStackSize(ItemStack stack) {
+        return stack.getMaxStackSize();
+    }
+
     public ItemStack insert(ItemStack stack, boolean simulate) {
         if (!stack.isEmpty() && canAdd(stack)) {
             if (this.content.isEmpty()) {

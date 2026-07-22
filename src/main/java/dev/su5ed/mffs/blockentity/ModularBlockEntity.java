@@ -1,6 +1,7 @@
 package dev.su5ed.mffs.blockentity;
 
 import dev.su5ed.mffs.MFFSConfig;
+import dev.su5ed.mffs.MFFSConfig.UpgradeLimitConfig;
 import dev.su5ed.mffs.api.module.Module;
 import dev.su5ed.mffs.api.module.ModuleAcceptor;
 import dev.su5ed.mffs.api.module.ModuleType;
@@ -9,6 +10,7 @@ import dev.su5ed.mffs.setup.ModModules;
 import dev.su5ed.mffs.util.ModUtil;
 import dev.su5ed.mffs.util.ObjectCache;
 import dev.su5ed.mffs.util.inventory.InventorySlot;
+import dev.su5ed.mffs.util.inventory.UpgradeInventorySlot;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -20,6 +22,7 @@ import one.util.streamex.StreamEx;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -56,6 +59,21 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
         }
     }
 
+    @Nullable
+    protected UpgradeLimitConfig getLimitConfig() {
+        return null;
+    }
+
+    public int getModuleLimit(ModuleType<?> module) {
+        UpgradeLimitConfig config = getLimitConfig();
+        return config != null ? config.getLimit(module) : 0;
+    }
+    
+    public int applyModuleLimit(ModuleType<?> module, int amount) {
+        int limit = getModuleLimit(module);
+        return limit == 0 ? amount : Math.min(limit, amount);
+    }
+
     protected float getAmplifier() {
         return 1;
     }
@@ -89,10 +107,13 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
     @Override
     public int getModuleCount(ModuleType<?> module, Collection<InventorySlot> slots) {
         String key = MODULE_COUNT_CACHE_KEY + module.hashCode() + "_" + slots.hashCode();
-        return cached(key, () -> getModuleItemsStream(slots)
-            .filter(stack -> ModUtil.isModule(stack, module))
-            .mapToInt(ItemStack::getCount)
-            .sum());
+        return cached(key, () -> {
+            int total = getModuleItemsStream(slots)
+                .filter(stack -> ModUtil.isModule(stack, module))
+                .mapToInt(ItemStack::getCount)
+                .sum();
+            return applyModuleLimit(module, total);
+        });
     }
 
     @Override
@@ -144,12 +165,20 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
     }
 
     protected int doGetFortronCost() {
-        double cost = StreamEx.of(getModuleStacks())
-            .mapToDouble(stack -> stack.getCount() * Optional.ofNullable(stack.getCapability(ModCapabilities.MODULE_TYPE))
-                .map(module -> (double) module.getFortronCost(getAmplifier()))
-                .orElse(0.0))
-            .sum();
-        return (int) Math.round(cost);
+        Map<ModuleType<?>, Integer> totals = new HashMap<>();
+        for (ItemStack stack : getModuleStacks()) {
+            ModuleType<?> type = stack.getCapability(ModCapabilities.MODULE_TYPE);
+            if (type != null) {
+                totals.put(type, totals.getOrDefault(type, 0) + stack.getCount());
+            }
+        }
+        double total = 0;
+        for (Entry<ModuleType<?>, Integer> entry : totals.entrySet()) {
+            double cost = entry.getKey().getFortronCost(getAmplifier());
+            int count = applyModuleLimit(entry.getKey(), entry.getValue());
+            total += cost * count;
+        }
+        return (int) Math.round(total);
     }
 
     protected void addModuleSlots(List<? super InventorySlot> list) {
@@ -166,7 +195,8 @@ public abstract class ModularBlockEntity extends FortronBlockEntity implements M
 
     protected List<InventorySlot> createUpgradeSlots(int count, Predicate<ItemStack> filter, Consumer<ItemStack> onChanged) {
         return IntStreamEx.range(count)
-            .mapToObj(i -> addSlot("upgrade_" + i, InventorySlot.Mode.BOTH, filter, onChanged))
+            .mapToObj(i -> this.items.addSlot((parent, index) ->
+                new UpgradeInventorySlot(this, parent, "upgrade_" + i, InventorySlot.Mode.BOTH, filter, onChanged, false, index)))
             .toList();
     }
 

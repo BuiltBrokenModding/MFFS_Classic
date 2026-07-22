@@ -1,5 +1,6 @@
 package dev.su5ed.mffs.blockentity;
 
+import dev.su5ed.mffs.MFFSConfig;
 import dev.su5ed.mffs.api.card.CoordLink;
 import dev.su5ed.mffs.api.fortron.FortronCapacitor;
 import dev.su5ed.mffs.api.fortron.FortronStorage;
@@ -46,6 +47,12 @@ public class FortronCapacitorBlockEntity extends ModularBlockEntity implements F
     public void setTransferMode(TransferMode transferMode) {
         this.transferMode = transferMode;
         setChanged();
+    }
+
+    @Override
+    @Nullable
+    protected MFFSConfig.UpgradeLimitConfig getLimitConfig() {
+        return MFFSConfig.COMMON.fortronCapacitorConfig.upgradeLimitConfig;
     }
 
     @Override

@@ -127,6 +127,12 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
     }
 
     @Override
+    @Nullable
+    protected MFFSConfig.UpgradeLimitConfig getLimitConfig() {
+        return getConfig().upgradeLimitConfig;
+    }
+
+    @Override
     public BlockEntity be() {
         return this;
     }

@@ -38,10 +38,6 @@ public abstract class InventoryBlockEntity extends BaseBlockEntity {
         return this.items;
     }
 
-    protected InventorySlot addSlot(String name, InventorySlot.Mode mode) {
-        return addSlot(name, mode, stack -> true);
-    }
-
     protected InventorySlot addSlot(String name, InventorySlot.Mode mode, Predicate<ItemStack> filter) {
         return this.items.addSlot(name, mode, filter);
     }

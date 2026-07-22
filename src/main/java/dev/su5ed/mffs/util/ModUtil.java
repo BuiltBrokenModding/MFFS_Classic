@@ -89,7 +89,7 @@ public final class ModUtil {
                 ItemStack slotStack = slot.getItem();
                 if (!slotStack.isEmpty() && ItemStack.isSameItemSameComponents(stack, slotStack)) {
                     int total = stack.getCount() + slotStack.getCount();
-                    int maxCount = Math.min(slot.getMaxStackSize(), stack.getMaxStackSize());
+                    int maxCount = Math.min(slot.getMaxStackSize(stack), stack.getMaxStackSize());
 
                     if (total <= maxCount) {
                         stack.setCount(0);
@@ -113,8 +113,8 @@ public final class ModUtil {
                 Slot slot = slots.get(i);
                 ItemStack slotStack = slot.getItem();
                 if (slotStack.isEmpty() && slot.mayPlace(stack)) {
-                    if (stack.getCount() > slot.getMaxStackSize()) {
-                        slot.set(stack.split(slot.getMaxStackSize()));
+                    if (stack.getCount() > slot.getMaxStackSize(stack)) {
+                        slot.set(stack.split(slot.getMaxStackSize(stack)));
                     } else {
                         slot.set(stack.split(stack.getCount()));
                     }
@@ -127,19 +127,6 @@ public final class ModUtil {
         }
 
         return success;
-    }
-
-    public static BlockPos normalize(BlockPos pos, BlockPos other) {
-        if (other.getX() <= pos.getX()) {
-            pos = pos.east();
-        }
-        if (other.getZ() <= pos.getZ()) {
-            pos = pos.south();
-        }
-        if (other.getY() <= pos.getY()) {
-            pos = pos.above();
-        }
-        return pos;
     }
 
     public static MutableComponent translate(FieldPermission permission) {
@@ -195,15 +182,6 @@ public final class ModUtil {
         return stack.getCapability(ModCapabilities.PROJECTOR_MODE) != null;
     }
 
-    @Nullable
-    public static <T extends Enum<T>> T getEnumConstantSafely(Class<T> clazz, String name) {
-        try {
-            return Enum.valueOf(clazz, name);
-        } catch (IllegalArgumentException ignored) {
-            return null;
-        }
-    }
-
     // Source: https://github.com/XFactHD/FramedBlocks/blob/518dcd984b874a0d3abac34d0f2ee6e9360062d7/src/main/java/xfacthd/framedblocks/api/util/Utils.java#L65
     public static VoxelShape rotateShape(Direction from, Direction to, VoxelShape shape) {
         if (from.getAxis() == Direction.Axis.Y || to.getAxis() == Direction.Axis.Y) {
@@ -235,7 +213,6 @@ public final class ModUtil {
         }
     }
 
-    @SuppressWarnings("unused") // Called from injected hook
     public static void onSetBlock(Level level, BlockPos pos, BlockState state) {
         SetBlockEvent event = new SetBlockEvent(level, pos, state);
         NeoForge.EVENT_BUS.post(event);

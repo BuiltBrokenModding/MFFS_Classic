@@ -63,7 +63,7 @@ public class SlotInventory extends Slot implements TooltipSlot {
 
     @Override
     public int getMaxStackSize(@NotNull ItemStack stack) {
-        return 64;
+        return this.inventorySlot.getMaxStackSize(stack);
     }
 
     @Override
