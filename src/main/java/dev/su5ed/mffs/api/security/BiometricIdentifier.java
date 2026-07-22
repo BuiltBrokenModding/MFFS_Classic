@@ -21,4 +21,6 @@ public interface BiometricIdentifier {
      * Gets the card currently placed in the manipulating slot.
      */
     Optional<IdentificationCard> getManipulatingCard();
+
+    boolean isActive();
 }

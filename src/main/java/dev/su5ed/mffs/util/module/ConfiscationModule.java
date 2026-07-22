@@ -24,13 +24,15 @@ public class ConfiscationModule extends BaseInterdictionModule {
 
     @Override
     public boolean onDefend(InterdictionMatrix matrix, LivingEntity target) {
-        if (BiometricIdentity.isAccessGranted(matrix.getBiometricIdentifiers(), target, FieldPermission.BYPASS_CONFISCATION)) {
+        if (!(target instanceof Player player)) {
             return false;
         }
 
-        if (target instanceof Player player
-            && !BiometricIdentity.isAccessGranted(matrix.getBiometricIdentifiers(), player, FieldPermission.BYPASS_DEFENSE)
-        ) {
+        if (BiometricIdentity.isAccessGranted(matrix.getBiometricIdentifiers(), player, FieldPermission.BYPASS_CONFISCATION)) {
+            return false;
+        }
+
+        if (!BiometricIdentity.isAccessGranted(matrix.getBiometricIdentifiers(), player, FieldPermission.BYPASS_DEFENSE)) {
             Inventory inventory = player.getInventory();
             Collection<ItemStack> filteredItems = matrix.getFilteredItems();
             int confiscationCount = 0;
@@ -53,7 +55,7 @@ public class ConfiscationModule extends BaseInterdictionModule {
                 BlockEntity be = matrix.be();
                 FortronStorage fortron = be.getLevel().getCapability(ModCapabilities.FORTRON, be.getBlockPos(), be.getBlockState(), be, null);
                 if (fortron != null) {
-                    fortron.extractFortron(confiscationCount, false);   
+                    fortron.extractFortron(confiscationCount, false);
                 }
             }
         }

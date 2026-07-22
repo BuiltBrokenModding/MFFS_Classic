@@ -10,6 +10,7 @@ import dev.su5ed.mffs.setup.ModObjects;
 import dev.su5ed.mffs.util.Fortron;
 import dev.su5ed.mffs.util.FrequencyGrid;
 import dev.su5ed.mffs.util.ModUtil;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -81,7 +82,10 @@ public class ForgeEventHandler {
                         return;
                     }
                     if (!Fortron.hasPermission(level, pos, interdictionMatrix, action, player)) {
-                        player.displayClientMessage(ModUtil.translate("info", "interdiction_matrix.no_permission", interdictionMatrix.getTitle()), false);
+                        if (!level.isClientSide()) {
+                            player.displayClientMessage(ModUtil.translate("info", "interdiction_matrix.no_permission", interdictionMatrix.getTitle())
+                                .withStyle(ChatFormatting.RED), true);
+                        }
                         cancellableEvent.setCanceled(true);
                     }
                 }
