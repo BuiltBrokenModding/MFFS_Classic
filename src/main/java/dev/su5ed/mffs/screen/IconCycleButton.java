@@ -52,6 +52,8 @@ public class IconCycleButton<T extends Enum<T>> extends AbstractButton {
         int vOffset = this.imageV + this.value.get().ordinal() * this.yStep;
         guiGraphics.blit(this.image, getX(), getY(), this.imageU, vOffset, this.width, this.height);
         guiGraphics.blit(this.image, getX() + this.width / 2, getY(), 200 - this.width / 2, vOffset, this.width / 2, this.height);
+
+        guiGraphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
     }
 
     @Override

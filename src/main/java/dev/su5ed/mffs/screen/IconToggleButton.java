@@ -54,6 +54,8 @@ public class IconToggleButton extends AbstractButton {
         guiGraphics.blit(this.image, getX(), getY(), this.imageU, this.imageV, this.width, this.height);
         guiGraphics.blit(this.image, getX() + this.width / 2, getY(), 200 - this.width / 2, this.imageV, this.width / 2, this.height);
         
+        guiGraphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
+        
         if (isHoveredOrFocused()) {
             guiGraphics.renderComponentTooltip(this.screen.getMinecraft().font, List.of(getMessage()), mouseX, mouseY);
         }
