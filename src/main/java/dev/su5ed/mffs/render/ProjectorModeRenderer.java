@@ -7,7 +7,6 @@ import dev.su5ed.mffs.api.module.ProjectorMode;
 import dev.su5ed.mffs.render.model.ForceCubeModel;
 import dev.su5ed.mffs.render.model.ForceTubeModel;
 import dev.su5ed.mffs.util.TranslucentVertexConsumer;
-import dev.su5ed.mffs.util.projector.CylinderProjectorMode;
 import dev.su5ed.mffs.util.projector.ModProjectorModes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -207,7 +206,7 @@ public final class ProjectorModeRenderer {
             for (float renderX = -radius; renderX <= radius; renderX += detail) {
                 for (float renderZ = -radius; renderZ <= radius; renderZ += detail) {
                     for (float renderY = -radius; renderY <= radius; renderY += detail) {
-                        float area = renderX * renderX + renderZ * renderZ + CylinderProjectorMode.RADIUS_EXPANSION;
+                        float area = renderX * renderX + renderZ * renderZ;
                         if (area <= radius * radius && area >= (radius - 1) * (radius - 1) || (renderY == 0 || renderY == radius - 1) && area <= radius * radius) {
                             if (i % 2 == 0) {
                                 Vec3 vector = new Vec3(renderX, renderY, renderZ);
