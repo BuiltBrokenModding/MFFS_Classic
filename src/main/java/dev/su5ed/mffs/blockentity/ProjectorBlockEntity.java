@@ -59,6 +59,8 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
     private static final String ROTATION_ROLL_CACHE_KEY = "getRotationRoll";
     private static final String INTERIOR_POINTS_CACHE_KEY = "getInteriorPoints";
 
+    private static final int CLEANUP_RADIUS = 32;
+
     private final List<ScheduledEvent> scheduledEvents = new ArrayList<>();
     public final InventorySlot secondaryCard;
     public final InventorySlot projectorModeSlot;
@@ -450,7 +452,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
         }
         // PATH B: Fallback scan executed when explosive destruction wipes inventory and memory
         else {
-            int radius = 32; // Search cube (65x65x65) around the projector
+            int radius = CLEANUP_RADIUS;
 
             BlockPos.betweenClosedStream(
                     this.worldPosition.offset(-radius, -radius, -radius),

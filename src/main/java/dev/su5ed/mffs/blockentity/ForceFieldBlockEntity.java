@@ -29,6 +29,7 @@ public class ForceFieldBlockEntity extends BaseBlockEntity {
     private BlockPos projector;
     private BlockState camouflage;
     private int clientBlockLight;
+    private static final int CHECK_INTERVAL_TICKS = 20;
 
     public ForceFieldBlockEntity(BlockPos pos, BlockState state) {
         super(ModObjects.FORCE_FIELD_BLOCK_ENTITY.get(), pos, state);
@@ -67,7 +68,7 @@ public class ForceFieldBlockEntity extends BaseBlockEntity {
         super.tickServer();
 
         // Check once per second if the parent projector still exists
-        if (this.projector != null && (this.level.getGameTime() + this.worldPosition.hashCode()) % 20 == 0) {
+        if (this.projector != null && (this.level.getGameTime() + this.worldPosition.hashCode()) % CHECK_INTERVAL_TICKS == 0) {
             if (getProjector().isEmpty()) {
                 this.level.removeBlock(this.worldPosition, false);
             }
