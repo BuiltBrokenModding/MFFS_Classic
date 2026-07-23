@@ -18,9 +18,14 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.network.PacketDistributor;
 
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.Optional;
 
-public class ForceFieldBlockEntity extends BlockEntity {
+public class ForceFieldBlockEntity extends BaseBlockEntity {
     private BlockPos projector;
     private BlockState camouflage;
     private int clientBlockLight;
@@ -45,6 +50,28 @@ public class ForceFieldBlockEntity extends BlockEntity {
     public void setCamouflage(BlockState camouflage) {
         this.camouflage = camouflage;
         setChanged();
+    }
+
+    public BlockPos getProjectorPos() {
+        return this.projector;
+    }
+
+    @Nullable
+    @Override
+    public AbstractContainerMenu createMenu(int containerId, Inventory playerInventory, Player player) {
+        return null; // Force field blocks do not possess a GUI/Menu
+    }
+
+    @Override
+    public void tickServer() {
+        super.tickServer();
+
+        // Check once per second if the parent projector still exists
+        if (this.projector != null && (this.level.getGameTime() + this.worldPosition.hashCode()) % 20 == 0) {
+            if (getProjector().isEmpty()) {
+                this.level.removeBlock(this.worldPosition, false);
+            }
+        }
     }
 
     @Override

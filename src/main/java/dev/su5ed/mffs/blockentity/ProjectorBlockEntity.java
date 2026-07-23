@@ -146,6 +146,7 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
     @Override
     public void setRemoved() {
         if (!this.level.isClientSide) {
+            destroyField();
             NeoForge.EVENT_BUS.unregister(this);
         }
         super.setRemoved();
@@ -425,15 +426,51 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
 
     @Override
     public void destroyField() {
-        Collection<TargetPosPair> fieldPositions = getCalculatedFieldPositions();
+        if (this.level == null || this.level.isClientSide()) {
+            return;
+        }
+
+        Set<BlockPos> blocksToRemove = new HashSet<>();
+
+        // 1. Calculate field positions if mode module is present
+        if (getMode().isPresent()) {
+            getCalculatedFieldPositions().forEach(pair -> blocksToRemove.add(pair.pos()));
+        }
+
+        // 2. Include positions stored in local memory
+        if (!this.projectedBlocks.isEmpty()) {
+            blocksToRemove.addAll(this.projectedBlocks);
+        }
+
+        // PATH A: Standard cleanup using cached memory or calculated positions
+        if (!blocksToRemove.isEmpty()) {
+            blocksToRemove.stream()
+                    .filter(pos -> this.level.isLoaded(pos) && this.level.getBlockState(pos).is(ModBlocks.FORCE_FIELD.get()))
+                    .forEach(pos -> this.level.removeBlock(pos, false));
+        }
+        // PATH B: Fallback scan executed when explosive destruction wipes inventory and memory
+        else {
+            int radius = 32; // Search cube (65x65x65) around the projector
+
+            BlockPos.betweenClosedStream(
+                    this.worldPosition.offset(-radius, -radius, -radius),
+                    this.worldPosition.offset(radius, radius, radius)
+            ).forEach(pos -> {
+                if (this.level.isLoaded(pos) && this.level.getBlockState(pos).is(ModBlocks.FORCE_FIELD.get())) {
+                    this.level.getBlockEntity(pos, ModObjects.FORCE_FIELD_BLOCK_ENTITY.get()).ifPresent(be -> {
+                        // Compare BlockPos against BlockPos using getProjectorPos()
+                        if (this.worldPosition.equals(be.getProjectorPos())) {
+                            this.level.removeBlock(pos, false);
+                        }
+                    });
+                }
+            });
+        }
+
         this.projectedBlocks.clear();
         this.projectionCache.invalidateAll();
-        this.semaphore.reset();
-        if (!this.level.isClientSide) {
-            StreamEx.of(fieldPositions)
-                .map(TargetPosPair::pos)
-                .filter(pos -> this.level.getBlockState(pos).is(ModBlocks.FORCE_FIELD.get()))
-                .forEach(pos -> this.level.removeBlock(pos, false));
+        if (this.semaphore != null) {
+            this.semaphore.reset();
         }
     }
 
