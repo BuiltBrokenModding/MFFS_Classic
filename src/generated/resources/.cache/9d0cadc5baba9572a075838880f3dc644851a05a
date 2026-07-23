@@ -1,4 +1,4 @@
-// 26.1.2	2026-07-19T12:29:09.139207	NeoForge recipes
+// 26.1.2	2026-07-23T22:18:08.438061	NeoForge recipes
 736794f5aac452d2a97b4e7496e7e27c4f8c379f data/mffs/advancement/recipes/misc/anti_friendly_module.json
 84094c7a57393bb72f7d4892e7c4418285f2bc2a data/mffs/advancement/recipes/misc/anti_hostile_module.json
 4904821c15dc125ceb77ed974a7668bd09053cc1 data/mffs/advancement/recipes/misc/anti_personnel_module.json
@@ -85,3 +85,5 @@ fd3b64b229dad718cbcc52b12b419fb2c96810f6 data/mffs/recipe/stabilization_module.j
 7028ec0a3349f4110fa19fb0ac1978cc48f06782 data/mffs/recipe/translation_module.json
 cd82c5e8f045a8f61ebc45c7b3a4f4ffe91a47bb data/mffs/recipe/tube_mode.json
 411fb54b067d244d7df5af90d601871d919cc017 data/mffs/recipe/warn_module.json
+b75f77f8a6eeea8da19442c0c9064d98c8059900 data/patchouli/advancement/recipes/misc/guide_book.json
+f2ea8ccb692c42d21d3e2c7144e8f7113094ce90 data/patchouli/recipe/guide_book.json

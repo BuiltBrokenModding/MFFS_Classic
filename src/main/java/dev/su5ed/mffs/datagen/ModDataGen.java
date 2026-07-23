@@ -37,8 +37,7 @@ public final class ModDataGen {
         generator.addProvider(true, new ItemTagsGen(output, registries));
         generator.addProvider(true, new RecipesGen.Runner(output, registries));
         generator.addProvider(true, new LootTableProvider(output, Set.of(), List.of(
-            new LootTableProvider.SubProviderEntry(LootTableGen.ModBlockLoot::new, LootContextParamSets.BLOCK),
-            new LootTableProvider.SubProviderEntry(LootTableGen.ModItemLoot::new, LootContextParamSets.EMPTY)
+            new LootTableProvider.SubProviderEntry(LootTableGen.ModBlockLoot::new, LootContextParamSets.BLOCK)
         ), registries));
         generator.addProvider(true, new AdvancementProvider(output, registries, List.of(new AdvancementsGen())));
         generator.addProvider(true, new DamageTypeTagsGen(output, registries));

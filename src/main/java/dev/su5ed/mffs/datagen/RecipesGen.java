@@ -1,18 +1,26 @@
 package dev.su5ed.mffs.datagen;
 
+import dev.su5ed.mffs.MFFSMod;
 import dev.su5ed.mffs.setup.ModItems;
 import dev.su5ed.mffs.setup.ModTags;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.CookingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Blocks;
+import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.common.Tags;
 
 import java.util.concurrent.CompletableFuture;
@@ -50,7 +58,7 @@ public class RecipesGen extends RecipeProvider {
             .save(this.output);
 
         SimpleCookingRecipeBuilder.smelting(
-            Ingredient.of(ModItems.STEEL_COMPOUND.get()),
+                Ingredient.of(ModItems.STEEL_COMPOUND.get()),
                 RecipeCategory.MISC,
                 CookingBookCategory.MISC,
                 ModItems.STEEL_INGOT.get(),
@@ -428,5 +436,21 @@ public class RecipesGen extends RecipeProvider {
             .pattern("PEP")
             .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
             .save(this.output);
+
+        if (ModList.get().isLoaded("patchouli")) {
+            Item book = BuiltInRegistries.ITEM.getValue(Identifier.fromNamespaceAndPath("patchouli", "guide_book"));
+            DataComponentType<Identifier> component = (DataComponentType<Identifier>) BuiltInRegistries.DATA_COMPONENT_TYPE
+                .getValue(Identifier.fromNamespaceAndPath("patchouli", "book"));
+
+            ItemStackTemplate template = new ItemStackTemplate(book, DataComponentPatch.builder()
+                .set(component, MFFSMod.location("handbook"))
+                .build());
+
+            shapeless(RecipeCategory.MISC, template)
+                .requires(Items.BOOK)
+                .requires(Items.IRON_INGOT)
+                .unlockedBy("has_book", has(Items.BOOK))
+                .save(this.output);
+        }
     }
 }

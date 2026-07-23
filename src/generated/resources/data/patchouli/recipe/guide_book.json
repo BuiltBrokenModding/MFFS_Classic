@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "minecraft:book",
+    "minecraft:iron_ingot"
+  ],
+  "result": {
+    "components": {
+      "patchouli:book": "mffs:handbook"
+    },
+    "id": "patchouli:guide_book"
+  }
+}
