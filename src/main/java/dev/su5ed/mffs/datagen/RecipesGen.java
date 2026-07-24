@@ -367,7 +367,7 @@ public class RecipesGen extends RecipeProvider {
             .define('O', Items.OBSIDIAN)
             .pattern("ISI")
             .pattern("OFO")
-            .pattern("IOI")
+            .pattern("ISI")
             .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
             .save(this.output);
 

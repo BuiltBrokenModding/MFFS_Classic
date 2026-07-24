@@ -10,7 +10,7 @@
   "pattern": [
     "ISI",
     "OFO",
-    "IOI"
+    "ISI"
   ],
   "result": {
     "id": "mffs:reinforcement_module"
