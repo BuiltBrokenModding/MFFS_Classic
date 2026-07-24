@@ -67,7 +67,7 @@ neoForge {
 wiki {
     docs {
         register("mffs") {
-            root = file("docs/mffs")
+            root = file("docs")
         }
     }
 }

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "F": "mffs:anti_friendly_module",
+    "H": "mffs:anti_hostile_module"
+  },
+  "pattern": [
+    " H ",
+    "F F",
+    " H "
+  ],
+  "result": {
+    "count": 1,
+    "id": "mffs:anti_spawn_module"
+  }
+}
