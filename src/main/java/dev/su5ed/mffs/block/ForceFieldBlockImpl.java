@@ -4,8 +4,6 @@ import dev.su5ed.mffs.MFFSConfig;
 import dev.su5ed.mffs.api.ForceFieldBlock;
 import dev.su5ed.mffs.api.Projector;
 import dev.su5ed.mffs.api.module.Module;
-import dev.su5ed.mffs.api.security.BiometricIdentifierLink;
-import dev.su5ed.mffs.api.security.FieldPermission;
 import dev.su5ed.mffs.blockentity.ForceFieldBlockEntity;
 import dev.su5ed.mffs.compat.CreateTrainCompat;
 import dev.su5ed.mffs.setup.ModObjects;
@@ -154,16 +152,11 @@ public class ForceFieldBlockImpl extends Block implements ForceFieldBlock, Entit
     public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         return getProjector(level, pos)
             .map(projector -> {
-                if (context instanceof EntityCollisionContext entityContext && entityContext.getEntity() instanceof Player player) {
-                    if (isAuthorized(projector, player)) {
-                        // Walk-through mode: authorized players can walk through without sneaking
-                        if (MFFSConfig.COMMON.allowWalkThroughForceFields.get()) {
-                            // If player is standing on top, keep it solid (prevents falling through floors)
-                            // Otherwise allow walk-through
+                if (context instanceof EntityCollisionContext entityContext && entityContext.getEntity() instanceof LivingEntity entity) {
+                    if (BiometricIdentity.isWarpAuthorized(projector, entity)) {
+                        if (BiometricIdentity.isWalkWarpAuthorized(projector, entity)) {
                             return context.isAbove(COLLIDABLE_BLOCK, pos, true) ? null : Shapes.empty();
-                        }
-                        // Sneak mode: must sneak to pass through
-                        else if (player.isShiftKeyDown() && !context.isAbove(COLLIDABLE_BLOCK, pos, true)) {
+                        } else if (entity.isShiftKeyDown() && !context.isAbove(COLLIDABLE_BLOCK, pos, true)) {
                             return Shapes.empty();
                         }
                     }
@@ -183,38 +176,25 @@ public class ForceFieldBlockImpl extends Block implements ForceFieldBlock, Entit
         getProjector(level, pos)
             .ifPresent(projector -> {
                 for (Module module : projector.getModuleInstances()) {
-                    if (module.onCollideWithForceField(level, pos, entity)) {
+                    if (module.onCollideWithForceField(level, pos, entity, projector)) {
                         return;
                     }
                 }
                 if (!entity.level().isClientSide() && entity.distanceToSqr(new Vec3(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5)) < Mth.square(0.7)) {
-                    boolean isAuthorizedPlayer = entity instanceof Player player && isAuthorized(projector, player);
+                    boolean neverApply = entity instanceof Player player && player.isCreative();
+                    boolean isAuthorized = entity instanceof LivingEntity living && BiometricIdentity.isWarpAuthorized(projector, living);
+                    boolean isWalkAuthorized = entity instanceof LivingEntity living && BiometricIdentity.isWalkWarpAuthorized(projector, living);
 
                     if (entity instanceof LivingEntity living) {
-                        // Apply nausea and slowness effects
-                        // Creative players never get effects
-                        // Authorized players don't get effects if config is enabled
-                        boolean applyEffects = !(entity instanceof Player player)
-                            || !player.isCreative()
-                            && (!isAuthorizedPlayer || !MFFSConfig.COMMON.disableForceFieldEffectsForAuthorizedPlayers.get());
-
-                        if (applyEffects) {
+                        // Apply debuffs when sneaking and walk through is not enabled
+                        if (!neverApply && (!isAuthorized || !isWalkAuthorized && MFFSConfig.COMMON.applyFieldWarpDebuff.get())) {
                             living.addEffect(new MobEffectInstance(MobEffects.NAUSEA, 4 * 20, 3));
                             living.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 20, 1));
                         }
                     }
 
-                    // Apply damage
-                    // Creative players never take damage
-                    // Sneaking authorized players don't take damage
-                    // Authorized players in walk-through mode don't take damage
-                    // Authorized players don't take damage if config is enabled
-                    boolean applyDamage = !(entity instanceof Player player) || !player.isCreative() && !isAuthorizedPlayer
-                        || !isSneaking(entity)
-                        && !MFFSConfig.COMMON.allowWalkThroughForceFields.get()
-                        && !MFFSConfig.COMMON.disableForceFieldDamageForAuthorizedPlayers.get();
-
-                    if (applyDamage) {
+                    // Apply damage if player is not sneaking and walk through is not enabled
+                    if (!neverApply && (!isAuthorized || !isSneaking(entity) && !isWalkAuthorized)) {
                         ModUtil.shockEntity(entity, Integer.MAX_VALUE);
                     }
                 }
@@ -227,10 +207,6 @@ public class ForceFieldBlockImpl extends Block implements ForceFieldBlock, Entit
 
     private boolean preventStackOverflow(BlockState state) {
         return !state.is(this);
-    }
-
-    private boolean isAuthorized(BiometricIdentifierLink link, Player player) {
-        return player.isCreative() || BiometricIdentity.isAccessGranted(link.getBiometricIdentifiers(), player, FieldPermission.WARP);
     }
 
     @Nullable

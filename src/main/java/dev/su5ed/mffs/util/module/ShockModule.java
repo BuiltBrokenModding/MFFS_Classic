@@ -1,6 +1,8 @@
 package dev.su5ed.mffs.util.module;
 
+import dev.su5ed.mffs.api.Projector;
 import dev.su5ed.mffs.api.module.ModuleType;
+import dev.su5ed.mffs.util.BiometricIdentity;
 import dev.su5ed.mffs.util.ModUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
@@ -15,10 +17,10 @@ public class ShockModule extends BaseModule {
     }
 
     @Override
-    public boolean onCollideWithForceField(Level level, BlockPos pos, Entity entity) {
-        if (entity instanceof LivingEntity living) {
+    public boolean onCollideWithForceField(Level level, BlockPos pos, Entity entity, Projector projector) {
+        if (entity instanceof LivingEntity living && !BiometricIdentity.isWarpAuthorized(projector, living)) {
             ModUtil.shockEntity(living, this.stack.getCount());
         }
-        return super.onCollideWithForceField(level, pos, entity);
+        return super.onCollideWithForceField(level, pos, entity, projector);
     }
 }

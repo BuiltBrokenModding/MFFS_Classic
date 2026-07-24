@@ -2,9 +2,13 @@ package dev.su5ed.mffs.api.security;
 
 public enum FieldPermission {
     /**
-     * Allows a player to go through force fields.
+     * Allows a player to sneak-walk through force fields.
      */
-    WARP,
+    WARP_SNEAK,
+    /**
+     * Allows a player to walk through force fields.
+     */
+    WARP_WALK,
     /**
      * Allows block access and opening GUIs.
      */

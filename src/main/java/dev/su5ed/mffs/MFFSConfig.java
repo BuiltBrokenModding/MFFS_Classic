@@ -40,9 +40,7 @@ public class MFFSConfig {
 
         public final ModConfigSpec.IntValue interdictionMatrixKillEnergy;
 
-        public final ModConfigSpec.BooleanValue disableForceFieldDamageForAuthorizedPlayers;
-        public final ModConfigSpec.BooleanValue disableForceFieldEffectsForAuthorizedPlayers;
-        public final ModConfigSpec.BooleanValue allowWalkThroughForceFields;
+        public final ModConfigSpec.BooleanValue applyFieldWarpDebuff;
 
         private Common(ModConfigSpec.Builder builder) {
             builder.push("general");
@@ -52,9 +50,6 @@ public class MFFSConfig {
             this.useCache = builder
                 .comment("Cache allows temporary data saving to decrease calculations required")
                 .define("useCache", true);
-            this.allowOpBiometryOverride = builder
-                .comment("Allow server operators to bypass Force Field biometry")
-                .define("allowOpBiometryOverride", true);
             this.interactCreative = builder
                 .comment("Should the interdiction matrix interact with creative players?")
                 .define("interactCreative", true);
@@ -78,15 +73,12 @@ public class MFFSConfig {
             builder.pop();
 
             builder.push("force_field");
-            this.disableForceFieldDamageForAuthorizedPlayers = builder
-                .comment("Prevent authorized players from taking damage when passing through force fields")
-                .define("disableForceFieldDamageForAuthorizedPlayers", false);
-            this.disableForceFieldEffectsForAuthorizedPlayers = builder
-                .comment("Remove confusion and slowness effects for authorized players passing through force fields")
-                .define("disableForceFieldEffectsForAuthorizedPlayers", false);
-            this.allowWalkThroughForceFields = builder
-                .comment("Allow authorized players to walk through force fields without sneaking. WARNING: May cause occasional clipping issues on horizontal platforms.")
-                .define("allowWalkThroughForceFields", false);
+            this.allowOpBiometryOverride = builder
+                .comment("Allow server operators to bypass Force Field biometry")
+                .define("allowOpBiometryOverride", true);
+            this.applyFieldWarpDebuff = builder
+                .comment("Apply confusion and slowness effects to players sneak-passing through force fields")
+                .define("applyFieldWarpDebuff", false);
             builder.pop();
         }
     }

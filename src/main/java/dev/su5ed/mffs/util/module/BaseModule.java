@@ -42,7 +42,7 @@ public class BaseModule implements Module {
     }
 
     @Override
-    public boolean onCollideWithForceField(Level level, BlockPos pos, Entity entity) {
+    public boolean onCollideWithForceField(Level level, BlockPos pos, Entity entity, Projector projector) {
         return false;
     }
 
