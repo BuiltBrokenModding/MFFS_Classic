@@ -127,27 +127,27 @@ public class MFFSConfig {
             builder.push("coercion_deriver");
             this.catalystMultiplier = builder
                 .comment("Fortron catalyst production multiplier")
-                .defineInRange("catalystMultiplier", 2.0, 0.0, 10_000.0);
+                .defineInRange("catalystMultiplier", 1.5, 0.0, 10_000.0);
             this.catalystBurnTime = builder
                 .comment("The amount of ticks a single catalyst item lasts for")
-                .defineInRange("catalystBurnTime", 10 * 20, 1, 10_000);
+                .defineInRange("catalystBurnTime", 5 * 20, 1, 10_000);
 
             this.fePerFortron = builder
                 .comment("FE to convert into 1 Fortron")
-                .defineInRange("feCostPerFortron", 400, 1, Integer.MAX_VALUE);
+                .defineInRange("feCostPerFortron", 600, 1, Integer.MAX_VALUE);
             this.fortronToFeLoss = builder
                 .comment("FE to subtract when converting Fortron to FE")
-                .defineInRange("fortronToFeLoss", 1, 0, Integer.MAX_VALUE);
+                .defineInRange("fortronToFeLoss", 10, 0, Integer.MAX_VALUE);
             this.fortronPerTick = builder
                 .comment("Base limit of fortron produced per tick (20 per second). Scales with speed modules and catalyst.")
-                .defineInRange("fortronPerTick", 200, 1, Integer.MAX_VALUE);
+                .defineInRange("fortronPerTick", 150, 1, Integer.MAX_VALUE);
             this.fortronPerTickSpeedModule = builder
                 .comment("Production bonus per speed module. production = fortronPerTick + (fortronPerTick * speedModuleCount)... or x2 multiplicative")
-                .defineInRange("fortronPerTickSpeedModule", 200, 1, Integer.MAX_VALUE);
+                .defineInRange("fortronPerTickSpeedModule", 25, 1, Integer.MAX_VALUE);
 
             this.speedModuleTransferRateBonus = builder
                 .comment("Increases the maximum FE transfer rate per each speed module. Each module boosts the transfer rate by DEFAULT_FE_CAPACITY * multiplier FE/t.")
-                .defineInRange("speedModuleTransferRateBonus", 0.125D, 0.0D, 1.0D);
+                .defineInRange("speedModuleTransferRateBonus", 0.1D, 0.0D, 1.0D);
 
             this.upgradeLimitConfig = new UpgradeLimitConfig(builder);
 
