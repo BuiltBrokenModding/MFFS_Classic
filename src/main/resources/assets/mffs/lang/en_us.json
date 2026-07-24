@@ -92,6 +92,8 @@
   "item.mffs.glow_module.description": "Makes force field block emit light",
   "item.mffs.silence_module": "Silence Module",
   "item.mffs.silence_module.description": "Silences the force field and prevents it from making sound.",
+  "item.mffs.reinforcement_module": "Reinforcement Module",
+  "item.mffs.reinforcement_module.description": "Makes Force Field blocks immune to the Wither",
   "item.mffs.shock_module": "Shock Module",
   "item.mffs.shock_module.description": "Touching the force field hurts entities.",
   "item.mffs.sponge_module": "Sponge Module",

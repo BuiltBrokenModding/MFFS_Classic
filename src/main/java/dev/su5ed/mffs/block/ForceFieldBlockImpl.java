@@ -17,7 +17,9 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.InsideBlockEffectApplier;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.boss.wither.WitherBoss;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.hurtingprojectile.WitherSkull;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -46,6 +48,7 @@ public class ForceFieldBlockImpl extends Block implements ForceFieldBlock, Entit
     public static final BooleanProperty PROPAGATES_SKYLIGHT = BooleanProperty.create("propagates_skylight");
     public static final BooleanProperty SOLID = BooleanProperty.create("solid");
     public static final BooleanProperty CAMOUFLAGED = BooleanProperty.create("camouflaged");
+    public static final BooleanProperty REINFORCED = BooleanProperty.create("reinforced");
 
     public ForceFieldBlockImpl(Properties properties) {
         super(properties
@@ -64,13 +67,14 @@ public class ForceFieldBlockImpl extends Block implements ForceFieldBlock, Entit
         registerDefaultState(this.stateDefinition.any()
             .setValue(PROPAGATES_SKYLIGHT, true)
             .setValue(SOLID, true)
-            .setValue(CAMOUFLAGED, false));
+            .setValue(CAMOUFLAGED, false)
+            .setValue(REINFORCED, false));
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
-        builder.add(PROPAGATES_SKYLIGHT, SOLID, CAMOUFLAGED);
+        builder.add(PROPAGATES_SKYLIGHT, SOLID, CAMOUFLAGED, REINFORCED);
     }
 
     @Nullable
@@ -79,7 +83,8 @@ public class ForceFieldBlockImpl extends Block implements ForceFieldBlock, Entit
         return super.getStateForPlacement(pContext)
             .setValue(PROPAGATES_SKYLIGHT, true)
             .setValue(SOLID, true)
-            .setValue(CAMOUFLAGED, false);
+            .setValue(CAMOUFLAGED, false)
+            .setValue(REINFORCED, false);
     }
 
     @Override
@@ -199,6 +204,14 @@ public class ForceFieldBlockImpl extends Block implements ForceFieldBlock, Entit
                     }
                 }
             });
+    }
+
+    @Override
+    public boolean canEntityDestroy(BlockState state, BlockGetter level, BlockPos pos, Entity entity) {
+        if (entity instanceof WitherBoss || entity instanceof WitherSkull) {
+            return !state.getValue(REINFORCED);
+        }
+        return super.canEntityDestroy(state, level, pos, entity);
     }
 
     private boolean isSneaking(Entity entity) {

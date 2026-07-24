@@ -14,6 +14,7 @@ import dev.su5ed.mffs.api.TargetPosPair;
 import dev.su5ed.mffs.api.module.Module;
 import dev.su5ed.mffs.api.module.ModuleType;
 import dev.su5ed.mffs.api.module.ProjectorMode;
+import dev.su5ed.mffs.block.ForceFieldBlockImpl;
 import dev.su5ed.mffs.item.CustomProjectorModeItem;
 import dev.su5ed.mffs.menu.ProjectorMenu;
 import dev.su5ed.mffs.network.UpdateAnimationSpeed;
@@ -386,6 +387,10 @@ public class ProjectorBlockEntity extends ModularBlockEntity implements Projecto
             module.beforeProject(this);
         }
         BlockState state = ModBlocks.FORCE_FIELD.get().defaultBlockState();
+        if (hasModule(ModModules.REINFORCEMENT)) {
+            state = state.setValue(ForceFieldBlockImpl.REINFORCED, true);
+        }
+
         List<TargetPosPair> projectable = this.semaphore.getResult(ProjectionStage.SELECTING);
         fieldLoop:
         for (TargetPosPair pair : projectable) {

@@ -1,4 +1,4 @@
-// 26.1.2	2026-07-23T22:18:08.438061	NeoForge recipes
+// 26.1.2	2026-07-24T19:16:52.192574	NeoForge recipes
 736794f5aac452d2a97b4e7496e7e27c4f8c379f data/mffs/advancement/recipes/misc/anti_friendly_module.json
 84094c7a57393bb72f7d4892e7c4418285f2bc2a data/mffs/advancement/recipes/misc/anti_hostile_module.json
 4904821c15dc125ceb77ed974a7668bd09053cc1 data/mffs/advancement/recipes/misc/anti_personnel_module.json
@@ -28,6 +28,7 @@ ff77cf60467bf9d49ec963a902cb85850b490eec data/mffs/advancement/recipes/misc/inte
 f1729578ffce174b24354b67fea4f635d3690b8c data/mffs/advancement/recipes/misc/inverter_module.json
 55c4450332218a4f82e0c0965520d06b13e23fd1 data/mffs/advancement/recipes/misc/projector.json
 8c9e580cc3dd2597d982918ccca3ea7e4cbe6a4d data/mffs/advancement/recipes/misc/pyramid_mode.json
+6e9aa65d34d126e5e15ab2cc76ce51c2318c685f data/mffs/advancement/recipes/misc/reinforcement_module.json
 8d9651be72e822f4581b4ceb5815befbd616bb6b data/mffs/advancement/recipes/misc/remote_controller.json
 3a6f4ca1dff2f15555de6d6799e3a4b60730678d data/mffs/advancement/recipes/misc/rotation_module.json
 92ba4de30f7d0cb7a92171c89ee37c52529e9158 data/mffs/advancement/recipes/misc/scale_module.json
@@ -71,6 +72,7 @@ b98ed64a574401d787aabd39c1bd1dd03db6335a data/mffs/recipe/id_card.json
 73c285157ff8804fc1788b4bb8f6506592a9ade6 data/mffs/recipe/inverter_module.json
 a1834004f6390b3ec0b992fe06e1b2e6b23d0d0c data/mffs/recipe/projector.json
 104e0bd7c6eb41fd62ae8243bb7e08b4dcda15a4 data/mffs/recipe/pyramid_mode.json
+169788dccf21d42b76026fbdd950281364dd7a7a data/mffs/recipe/reinforcement_module.json
 e23d498ac687c85fc6fa19fc5363c13ada761660 data/mffs/recipe/remote_controller.json
 cc8cb1a072e19a7d5c84c3b2d3d175a66715b54e data/mffs/recipe/rotation_module.json
 1a4be31d1708ab029ad1b754900c86c02dc29e0c data/mffs/recipe/scale_module.json

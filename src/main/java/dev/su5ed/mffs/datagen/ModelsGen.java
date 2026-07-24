@@ -66,6 +66,7 @@ public class ModelsGen extends ModelProvider {
         itemModels.generateFlatItem(ModItems.GLOW_MODULE.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModItems.REMOTE_CONTROLLER_ITEM.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModItems.SILENCE_MODULE.get(), ModelTemplates.FLAT_ITEM);
+        itemModels.generateFlatItem(ModItems.REINFORCEMENT_MODULE.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModItems.SHOCK_MODULE.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModItems.SPONGE_MODULE.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModItems.FUSION_MODULE.get(), ModelTemplates.FLAT_ITEM);

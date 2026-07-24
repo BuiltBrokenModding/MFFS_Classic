@@ -21,6 +21,7 @@ public final class ModModules {
     public static final ModuleType<Module> ROTATION = create(0.1F, Module.Category.FIELD);
     public static final ModuleType<Module> GLOW = create(Module.Category.MATRIX);
     public static final ModuleType<Module> SILENCE = create(1.0F);
+    public static final ModuleType<Module> REINFORCEMENT = create(50.0F);
     public static final ModuleType<Module> SPONGE = create(SpongeModule::new, 1.0F);
     public static final ModuleType<Module> DOME = create(DomeModule::new, 0.5F, Module.Category.MATRIX);
     public static final ModuleType<Module> COLLECTION = create(15.0F);

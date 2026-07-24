@@ -56,6 +56,7 @@ public final class ModItems {
     public static final DeferredItem<ModuleItem<Module>> COLLECTION_MODULE = module("collection_module", ModModules.COLLECTION, ModItems::singleWithDescription);
     public static final DeferredItem<ModuleItem<Module>> INVERTER_MODULE = module("inverter_module", ModModules.INVERTER, ModItems::singleWithDescription);
     public static final DeferredItem<ModuleItem<Module>> SILENCE_MODULE = module("silence_module", ModModules.SILENCE, ModItems::singleWithDescription);
+    public static final DeferredItem<ModuleItem<Module>> REINFORCEMENT_MODULE = module("reinforcement_module", ModModules.REINFORCEMENT, ModItems::singleWithDescription);
     public static final DeferredItem<ModuleItem<InterdictionMatrixModule>> WARN_MODULE = interdictionMatrixModule("warn_module", ModModules.WARN);
     public static final DeferredItem<ModuleItem<InterdictionMatrixModule>> BLOCK_ACCESS_MODULE = interdictionMatrixModule("block_access_module", ModModules.BLOCK_ACCESS);
     public static final DeferredItem<ModuleItem<InterdictionMatrixModule>> BLOCK_ALTER_MODULE = interdictionMatrixModule("block_alter_module", ModModules.BLOCK_ALTER);

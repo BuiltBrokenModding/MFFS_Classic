@@ -360,6 +360,17 @@ public class RecipesGen extends RecipeProvider {
             .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
             .save(this.output);
 
+        shaped(RecipeCategory.MISC, ModItems.REINFORCEMENT_MODULE.get())
+            .define('F', ModItems.FOCUS_MATRIX.get())
+            .define('I', Items.IRON_BARS)
+            .define('S', Items.NETHER_STAR)
+            .define('O', Items.OBSIDIAN)
+            .pattern("ISI")
+            .pattern("OFO")
+            .pattern("IOI")
+            .unlockedBy("has_focus_matrix", has(ModItems.FOCUS_MATRIX.get()))
+            .save(this.output);
+
         shaped(RecipeCategory.MISC, ModItems.WARN_MODULE.get())
             .define('F', ModItems.FOCUS_MATRIX.get())
             .define('N', Items.NOTE_BLOCK)
