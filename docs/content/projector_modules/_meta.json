@@ -1,13 +1,14 @@
 {
     "interaction": "Interaction",
+    "translation_module.mdx": "",
+    "rotation_module.mdx": "",
     "camouflage_module.mdx": "",
     "dome_module.mdx": "",
     "fusion_module.mdx": "",
     "glow_module.mdx": "",
     "inverter_module.mdx": "",
-    "rotation_module.mdx": "",
+    "reinforcement_module.mdx": "",
     "shock_module.mdx": "",
     "silence_module.mdx": "",
-    "sponge_module.mdx": "",
-    "translation_module.mdx": ""
+    "sponge_module.mdx": ""
 }

@@ -1,0 +1,18 @@
+{
+    "name": "Reinforcement Module",
+    "icon": "mffs:reinforcement_module",
+    "category": "mffs:projector_modules",
+    "pages": [
+        {
+            "type": "patchouli:spotlight",
+            "item": "mffs:reinforcement_module",
+            "link_recipe": true,
+            "text": "Placing a $(5)Reinforcement Module$() in a $(l:mffs:machines/projector)Force Field Projector$() makes projected force field blocks immune to destruction by the Wither."
+        },
+        {
+            "type": "patchouli:crafting",
+            "recipe": "mffs:reinforcement_module",
+            "text": "Crafting the $(5)Reinforcement Module$()."
+        }
+    ]
+}
