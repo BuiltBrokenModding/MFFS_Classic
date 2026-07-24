@@ -37,9 +37,10 @@ public interface Module {
      * @param level  the level being projected in
      * @param pos    the position being collided with
      * @param entity the entity colliding with the field
+     * @param projector force field projector
      * @return whether to stop the default process of entity collision
      */
-    boolean onCollideWithForceField(Level level, BlockPos pos, Entity entity);
+    boolean onCollideWithForceField(Level level, BlockPos pos, Entity entity, Projector projector);
 
     /**
      * Called in this module when it is being calculated by the projector.

@@ -40,7 +40,7 @@ public class BiometricIdentifierScreen extends FortronScreen<BiometricIdentifier
             AbstractWidget widget = addWidget(new IconToggleButton(this, this.width / 2 - 21 + 20 * x, this.height / 2 - 87 + 20 * y, 18, 18, ModUtil.translateTooltip(permission), 18, 18 * i,
                 () -> this.menu.hasPermission(permission), value -> togglePermission(permission, !value)));
             this.permissionButtons.add(widget);
-            if (i % 3 == 0 && i != 0) {
+            if ((i + 1) % 4 == 0 && i != 0) {
                 x = 0;
                 y++;
             }
