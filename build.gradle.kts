@@ -145,6 +145,8 @@ publishMods {
         projectId.set(curseForgeId)
         minecraftVersions.add(versionMc)
         displayName.set("MFFS $versionMc-${project.version}")
+        clientRequired.set(true)
+        serverRequired.set(true)
     }
     modrinth {
         accessToken.set(providers.environmentVariable("MODRINTH_TOKEN"))
