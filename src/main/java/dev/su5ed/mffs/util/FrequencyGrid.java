@@ -20,10 +20,7 @@ public class FrequencyGrid {
 
     public <T extends FortronStorage> void register(T fortron) {
         BlockPos pos = fortron.getOwner().getBlockPos();
-        this.frequencyGrid.removeIf(frequency -> {
-            BlockEntity owner = frequency.getOwner();
-            return frequency == null || owner.isRemoved() || owner.getBlockPos().equals(pos);
-        });
+        this.frequencyGrid.removeIf(frequency -> isOrphaned(frequency) || frequency.getOwner().getBlockPos().equals(pos));
         this.frequencyGrid.add(fortron);
     }
 
@@ -46,7 +43,8 @@ public class FrequencyGrid {
 
     public Set<FortronStorage> get(int frequency) {
         return StreamEx.of(get())
-            .filter(fortron -> fortron != null && !fortron.getOwner().isRemoved() && fortron.getFrequency() == frequency)
+            .remove(this::isOrphaned)
+            .filter(fortron -> fortron.getFrequency() == frequency)
             .toSet();
     }
 
@@ -60,7 +58,21 @@ public class FrequencyGrid {
     }
 
     public void cleanUp() {
-        this.frequencyGrid.removeIf(fortron -> fortron == null || fortron.getOwner().isRemoved());
+        this.frequencyGrid.removeIf(this::isOrphaned);
+    }
+
+    private boolean isOrphaned(FortronStorage fortron) {
+        if (fortron == null) {
+            return true;
+        }
+
+        BlockEntity owner = fortron.getOwner();
+        if (owner == null || owner.isRemoved()) {
+            return true;
+        }
+
+        Level level = owner.getLevel();
+        return level == null || level.getBlockEntity(owner.getBlockPos()) != owner;
     }
 
     /**
