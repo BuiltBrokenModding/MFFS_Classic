@@ -97,6 +97,10 @@ public abstract class FortronBlockEntity extends InventoryBlockEntity implements
     @Override
     public void setRemoved() {
         super.setRemoved();
+        unregisterFromFrequencyGrids();
+    }
+
+    private void unregisterFromFrequencyGrids() {
         if (this.level != null) {
             FrequencyGrid.instance(this.level.isClientSide()).unregister(this.fortronStorage);
         } else {

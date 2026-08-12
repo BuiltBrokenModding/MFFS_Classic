@@ -20,7 +20,14 @@ public class FrequencyGrid {
 
     public <T extends FortronStorage> void register(T fortron) {
         BlockPos pos = fortron.getOwner().getBlockPos();
-        this.frequencyGrid.removeIf(frequency -> isOrphaned(frequency) || frequency.getOwner().getBlockPos().equals(pos));
+        this.frequencyGrid.removeIf(frequency -> {
+            if (isOrphaned(frequency)) {
+                return true;
+            }
+
+            BlockEntity owner = frequency.getOwner();
+            return owner.getBlockPos().equals(pos);
+        });
         this.frequencyGrid.add(fortron);
     }
 
