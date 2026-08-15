@@ -89,8 +89,8 @@ public abstract class FortronBlockEntity extends InventoryBlockEntity implements
     }
 
     @Override
-    public void onChunkUnloaded() {
-        super.onChunkUnloaded();
+    public void beforeBlockEntityRemoved() {
+        super.beforeBlockEntityRemoved();
         FrequencyGrid.instance().unregister(this.fortronStorage);
     }
 
