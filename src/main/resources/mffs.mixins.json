@@ -10,7 +10,8 @@
       "ExplosionMixin"
   ],
   "client": [
-      "MinecraftMixin"
+      "MinecraftMixin",
+      "BlockEntityRenderDispatcherMixin"
   ],
   "injectors": {
     "defaultRequire": 1
