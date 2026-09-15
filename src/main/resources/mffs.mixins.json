@@ -8,7 +8,9 @@
       "LevelChunkMixin",
       "ServerExplosionMixin"
   ],
-  "client": [],
+  "client": [
+      "BlockEntityRenderDispatcherMixin"
+  ],
   "injectors": {
     "defaultRequire": 1
   }
